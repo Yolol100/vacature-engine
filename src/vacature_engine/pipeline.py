@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+import math
 from collections.abc import Iterable
-from contextlib import suppress
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import suppress
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
-import math
 from typing import Any
 
 from .adapters import AdapterRegistry
