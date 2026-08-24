@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.1.1 - 2026-08-25
+
+- Allow established live job-board listings to satisfy active/link gate evidence without requiring an employer/ATS duplicate.
+- Add generic `posting_active` / `listing_link_working` inputs while preserving the legacy official-key inputs.
+- Relax the draft-recipient provenance rule from official-source-only to any verified HTTPS recruitment/application-relevant published source; keep syntactic email and explicit relevance checks.
+- Preserve no-email candidates for manual Indeed/LinkedIn/external-form handoff instead of treating missing email as a vacancy failure.
+- Add regression/scenario coverage for job-board-only evidence, no-email prepare/manual handoff and backward compatibility.
+
 ## 3.1.0 - 2026-08-25
 
 - Hardened all numeric/type gates against booleans, NaN/infinity, invalid blocking flags and future dates.

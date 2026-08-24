@@ -5,7 +5,7 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
-LOGIC_VERSION = "2026-08-25-v3"
+LOGIC_VERSION = "2026-08-25-v4"
 
 MATCH_COMPONENTS = {
     "hard_requirements": 35,
@@ -69,10 +69,12 @@ def hard_gate(data: dict[str, Any]) -> dict[str, Any]:
     age = _finite_number(data.get("posted_age_days"))
     if age is None or age < 0 or age > 7:
         reasons.append("posting_age_not_within_7_days")
-    if data.get("active") is not True:
-        reasons.append("official_posting_not_confirmed_active")
-    if data.get("official_link_working") is not True:
-        reasons.append("official_link_not_confirmed_working")
+    posting_active = data.get("posting_active", data.get("active"))
+    if posting_active is not True:
+        reasons.append("posting_not_confirmed_active")
+    listing_link_working = data.get("listing_link_working", data.get("official_link_working"))
+    if listing_link_working is not True:
+        reasons.append("listing_link_not_confirmed_working")
     if data.get("fully_remote") is not True:
         reasons.append("not_confirmed_fully_remote")
     if data.get("netherlands_eligibility") not in {"allowed", "plausible"}:
@@ -167,13 +169,16 @@ def application_guard(data: dict[str, Any]) -> dict[str, Any]:
     if stage == "draft":
         email = str(data.get("recipient_email", "")).strip()
         source = str(data.get("recipient_source_url", "")).strip()
+        recruitment_relevant = data.get(
+            "recipient_recruitment_relevant", data.get("recipient_authorized_for_role")
+        )
         if (
             data.get("recipient_verified") is not True
-            or data.get("recipient_authorized_for_role") is not True
+            or recruitment_relevant is not True
             or not _EMAIL_RE.fullmatch(email)
             or not _valid_https_url(source)
         ):
-            reasons.append("verified_role_application_recipient_missing")
+            reasons.append("verified_recruitment_recipient_missing")
         if data.get("factual_qa") != "pass":
             reasons.append("factual_qa_not_passed")
         if data.get("style_qa") != "pass":

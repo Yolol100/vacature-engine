@@ -68,7 +68,7 @@ Do not use this repository as the orchestrator. The reliable order is:
 
 1. The ChatGPT Skill reads Drive state and discovers candidates.
 2. Use this repo only for deterministic normalization, adapters, dedupe, gates and score arithmetic.
-3. Reopen serious candidates at the official employer/original ATS and independently verify original date, remote scope, Netherlands eligibility and active status.
+3. Reopen serious candidates at the best available live listing and independently verify freshness, remote scope, Netherlands eligibility and active status; recover employer/original ATS evidence only for missing, conflicting or suspicious facts or to recover an application route.
 4. Only after those semantic checks pass, prepare an application package; Outlook remains draft-only.
 5. Persist results to Drive and read them back.
 
@@ -79,13 +79,13 @@ python -m pip install -e '.[dev]'
 python scripts/release_check.py --require-ruff
 ```
 
-The release check verifies required files, full-SHA Action pins, least-privilege CI, compilation, unit/regression tests, the adversarial/metamorphic scenario audit and Ruff. Runtime vacancy correctness still requires live official evidence; a green build is not proof that a vacancy passes the hard gates.
+The release check verifies required files, full-SHA Action pins, least-privilege CI, compilation, unit/regression tests, the adversarial/metamorphic scenario audit and Ruff. Runtime vacancy correctness still requires live evidence from the selected listing; a complete established job-board listing may prove visible facts, while employer/original evidence is used to resolve conflicts or missing application routes. A green build is not proof that a vacancy passes the hard gates.
 
 ## Adapter policy
 
 Adapters only call public employer/ATS endpoints. A 401/403/406 is classified as blocked and stops; it is never retried through proxies, stealth browsers or alternate identities. 408/429/selected 5xx responses receive at most one bounded retry. HTTPS redirects may not downgrade to HTTP. Redirects away from the expected ATS host are rejected so an invalid company slug cannot silently become a marketing page.
 
-`posted_at=None` is intentional when a source does not expose an original publication timestamp. The Skill must treat that as unknown and fail its <=7-day freshness gate unless another official source proves the original date.
+`posted_at=None` is intentional when an adapter does not expose a trustworthy source timestamp. The Skill may still use a clearly displayed <=7-day date/age from a live established job-board listing, recording its semantics as listing freshness; conflicting older employer/original evidence must be handled conservatively.
 
 ## Supported public-read adapters
 
@@ -101,7 +101,7 @@ Workable and Teamtailor are not implemented as keyless API adapters because thei
 
 ## Optional public catalog
 
-The `catalog` extra integrates only the base `ats-scrapers` hosted-dataset search. It does not enable that project's scraper/stealth extras. This provides broad discovery without an API key or account; every serious candidate still needs canonical official-source verification by the Skill.
+The `catalog` extra integrates only the base `ats-scrapers` hosted-dataset search. It does not enable that project's scraper/stealth extras. This provides broad discovery without an API key or account. A candidate still needs a complete live listing before hard-gate use; employer/original verification is only mandatory when material facts conflict, remain unclear or the application route must be recovered.
 
 ## Development
 
