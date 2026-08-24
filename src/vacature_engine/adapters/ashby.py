@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from urllib.parse import quote
 
-from .base import AdapterRegistry, BaseAdapter
 from ..models import JobRecord
+from .base import AdapterRegistry, BaseAdapter
 
 
 def _salary_summary(comp: object) -> str | None:

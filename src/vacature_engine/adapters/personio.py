@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from html import unescape
 import re
+from html import unescape
 from urllib.parse import quote
 from xml.etree import ElementTree
 
-from .base import AdapterRegistry, BaseAdapter
 from ..models import JobRecord
+from .base import AdapterRegistry, BaseAdapter
 
 _TAGS = re.compile(r"<[^>]+>")
 

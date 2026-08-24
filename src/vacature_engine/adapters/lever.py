@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from html import unescape
-import re
 from urllib.parse import quote
 
-from .base import AdapterRegistry, BaseAdapter
 from ..models import JobRecord
+from .base import AdapterRegistry, BaseAdapter
 
 _TAGS = re.compile(r"<[^>]+>")
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 def extract_public_html(html: str, url: str) -> str:
     """Extract main text/metadata from already-fetched public HTML."""
     try:
@@ -11,6 +12,7 @@ def extract_public_html(html: str, url: str) -> str:
     if not result:
         raise ValueError("no extractable main content")
     return result
+
 
 def render_public_page(url: str, timeout_ms: int = 20000) -> str:
     """Render a public JS page. Never use for login/CAPTCHA/access-control bypass."""

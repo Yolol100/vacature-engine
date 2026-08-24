@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1 - 2026-08-25
+
+- Fixed Ruff/import formatting found by the first GitHub Actions run; no logic change.
+
 ## 3.0.0 - 2026-08-25
 
 - Added normalized `JobRecord` schema and adapter registry.

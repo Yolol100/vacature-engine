@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Any
 
 LOGIC_VERSION = "2026-08-24-v2"

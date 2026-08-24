@@ -1,5 +1,5 @@
-from .base import AdapterRegistry, BaseAdapter
 from .ashby import AshbyAdapter
+from .base import AdapterRegistry, BaseAdapter
 from .greenhouse import GreenhouseAdapter
 from .lever import LeverAdapter
 from .personio import PersonioAdapter
