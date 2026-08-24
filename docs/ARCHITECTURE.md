@@ -39,7 +39,7 @@ Treat readiness as layered evidence rather than one headline score:
 2. **Deterministic** — unit, regression and Skill↔repo parity tests pass.
 3. **Dependency/live** — public-source assumptions and GitHub Action pins are rechecked against current official sources.
 4. **State** — Drive schema/version writes are read back.
-5. **Runtime** — a real candidate must still pass official-source freshness, remote/NL and duplicate verification; never manufacture a positive golden path.
+5. **Runtime** — a real candidate must still pass best-available live-listing freshness, remote/NL and duplicate verification; use employer/original evidence for conflicts, gaps or application-route recovery and never manufacture a positive golden path.
 
 A build/configuration audit and a real vacancy-run proof are separate claims.
 
