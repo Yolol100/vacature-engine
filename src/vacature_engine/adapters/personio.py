@@ -9,6 +9,7 @@ from ..models import JobRecord
 from .base import AdapterRegistry, BaseAdapter
 
 _TAGS = re.compile(r"<[^>]+>")
+_SLUG_RE = re.compile(r"^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$")
 
 
 def _text(node: ElementTree.Element, name: str) -> str | None:
@@ -36,12 +37,14 @@ class PersonioAdapter(BaseAdapter):
 
     def __init__(self, slug: str, *, language: str = "en", **kwargs: object) -> None:
         super().__init__(slug, **kwargs)
+        if not _SLUG_RE.fullmatch(self.slug):
+            raise ValueError("invalid Personio account slug")
         if language not in {"de", "en", "fr", "es", "nl", "it", "pt"}:
             raise ValueError("unsupported Personio language")
         self.language = language
 
     def fetch(self) -> list[JobRecord]:
-        host = f"{self.slug}.jobs.personio.de"
+        host = f"{self.slug}.jobs.personio.com"
         feed_url = f"https://{host}/xml?language={quote(self.language, safe='')}"
         xml = self.client.get_text(feed_url, allowed_hosts={host})
         try:
@@ -52,23 +55,27 @@ class PersonioAdapter(BaseAdapter):
         for position in root.findall(".//position"):
             source_id = _text(position, "id") or ""
             title = _text(position, "name") or ""
+            if not source_id or not title:
+                continue
+            job_url = f"https://{host}/job/{quote(source_id, safe='')}"
             result.append(
                 JobRecord(
                     source=self.source,
                     source_job_id=source_id,
                     title=title,
                     employer=self.slug,
-                    job_url=feed_url,
+                    job_url=job_url,
                     location=_text(position, "office"),
                     employment_type=_text(position, "employmentType"),
                     department=_text(position, "department"),
                     description=_description(position),
                     posted_at=None,
                     raw={
+                        "feed_url": feed_url,
                         "subcompany": _text(position, "subcompany"),
                         "recruiting_category": _text(position, "recruitingCategory"),
-                        "requires_canonical_job_resolution": True,
+                        "requires_canonical_job_resolution": False,
                     },
                 )
             )
-        return [j for j in result if j.source_job_id and j.title]
+        return result

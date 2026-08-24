@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import re
 from datetime import UTC, datetime
 from html import unescape
@@ -18,9 +19,15 @@ def _plain(value: str | None) -> str | None:
 
 
 def _millis_iso(value: object) -> str | None:
-    if not isinstance(value, (int, float)):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
-    return datetime.fromtimestamp(float(value) / 1000, UTC).isoformat()
+    number = float(value)
+    if not math.isfinite(number):
+        return None
+    try:
+        return datetime.fromtimestamp(number / 1000, UTC).isoformat()
+    except (OverflowError, OSError, ValueError):
+        return None
 
 
 @AdapterRegistry.register
@@ -44,11 +51,18 @@ class LeverAdapter(BaseAdapter):
             if not isinstance(item, dict):
                 continue
             categories = item.get("categories") if isinstance(item.get("categories"), dict) else {}
-            workplace = str(item.get("workplaceType") or "").lower()
+            workplace = str(item.get("workplaceType") or "").strip().lower()
             location = categories.get("location")
-            is_remote = True if workplace == "remote" else None
-            if is_remote is None and isinstance(location, str) and "remote" in location.lower():
+            if workplace == "remote":
+                is_remote: bool | None = True
+            elif workplace in {"hybrid", "onsite", "on-site"}:
+                is_remote = False
+            elif isinstance(location, str) and "remote" in location.lower():
                 is_remote = True
+            else:
+                is_remote = None
+            created = _millis_iso(item.get("createdAt"))
+            updated = _millis_iso(item.get("updatedAt"))
             result.append(
                 JobRecord(
                     source=self.source,
@@ -59,11 +73,17 @@ class LeverAdapter(BaseAdapter):
                     apply_url=str(item.get("applyUrl") or "").strip() or None,
                     location=location if isinstance(location, str) else None,
                     is_remote=is_remote,
-                    employment_type=categories.get("commitment") if isinstance(categories.get("commitment"), str) else None,
-                    department=categories.get("department") if isinstance(categories.get("department"), str) else None,
+                    employment_type=categories.get("commitment")
+                    if isinstance(categories.get("commitment"), str)
+                    else None,
+                    department=categories.get("department")
+                    if isinstance(categories.get("department"), str)
+                    else None,
                     team=categories.get("team") if isinstance(categories.get("team"), str) else None,
                     description=_plain(item.get("descriptionPlain") or item.get("description")),
-                    posted_at=_millis_iso(item.get("createdAt")),
+                    posted_at=created,
+                    source_date=updated,
+                    source_date_semantics="updated_at" if updated else None,
                     raw={"workplace_type": item.get("workplaceType"), "categories": categories},
                 )
             )

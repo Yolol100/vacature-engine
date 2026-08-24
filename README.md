@@ -11,7 +11,8 @@ The Skill remains the control plane. This repository only owns deterministic cod
 - one normalized `JobRecord` schema
 - credential-free public-read adapters for Greenhouse, Lever, Ashby, SmartRecruiters and Personio XML
 - shared HTTP retries/backoff/error mapping without proxy rotation or access-control bypass
-- bounded parallel source fetching, deduplication and recency helpers
+- bounded parallel source fetching with deterministic source order, same-source/semantic deduplication and finite recency helpers
+- official `JobPosting` JSON-LD evidence extraction with explicit remote/location/date signals
 - optional public catalog search through `ats-scrapers` (no account/API key)
 - optional Trafilatura extraction and Playwright rendering for normal public pages
 - CI, Dependabot and regression/parity vectors
@@ -56,6 +57,7 @@ vacature-engine fetch --source ashby --slug openai --days-back 7
 vacature-engine fetch --source lever --slug example --option region=eu
 vacature-engine batch --json sources.json --max-workers 4
 vacature-engine catalog --json catalog-search.json
+vacature-engine structured --file vacancy.html
 ```
 
 All commands emit JSON to stdout. Errors are JSON on stderr and return exit code 2.
@@ -77,11 +79,11 @@ python -m pip install -e '.[dev]'
 python scripts/release_check.py --require-ruff
 ```
 
-The release check verifies required files, full-SHA Action pins, least-privilege CI, compilation, unit/regression tests and Ruff. Runtime vacancy correctness still requires live official evidence; a green build is not proof that a vacancy passes the hard gates.
+The release check verifies required files, full-SHA Action pins, least-privilege CI, compilation, unit/regression tests, the adversarial/metamorphic scenario audit and Ruff. Runtime vacancy correctness still requires live official evidence; a green build is not proof that a vacancy passes the hard gates.
 
 ## Adapter policy
 
-Adapters only call public employer/ATS endpoints. A 401/403/406 is classified as blocked and stops; it is never retried through proxies, stealth browsers or alternate identities. 408/429/selected 5xx responses receive bounded exponential backoff. Redirects away from the expected ATS host are rejected so an invalid company slug cannot silently become a marketing page.
+Adapters only call public employer/ATS endpoints. A 401/403/406 is classified as blocked and stops; it is never retried through proxies, stealth browsers or alternate identities. 408/429/selected 5xx responses receive at most one bounded retry. HTTPS redirects may not downgrade to HTTP. Redirects away from the expected ATS host are rejected so an invalid company slug cannot silently become a marketing page.
 
 `posted_at=None` is intentional when a source does not expose an original publication timestamp. The Skill must treat that as unknown and fail its <=7-day freshness gate unless another official source proves the original date.
 
@@ -89,11 +91,11 @@ Adapters only call public employer/ATS endpoints. A 401/403/406 is classified as
 
 | Adapter | Public route | Important limitation |
 | --- | --- | --- |
-| Greenhouse | Job Board GET API | `updated_at` is not treated as original publish date |
-| Lever | Postings API | Supports global and EU hosts |
-| Ashby | Public Job Postings API | Uses explicit `isRemote` when available |
-| SmartRecruiters | Posting API public-posting route | No credential is configured; if the provider/account requires auth, fail closed and mark the source degraded |
-| Personio | Public careers XML feed | Feed jobs still need exact canonical vacancy resolution |
+| Greenhouse | Job Board GET API | Prefer `first_published` for original age; never substitute `updated_at` |
+| Lever | Postings API | Creation timestamp is distinct from update time; supports global and EU hosts |
+| Ashby | Public Job Postings API | `publishedAt` is last-published evidence, not automatically original |
+| SmartRecruiters | Posting API public-posting route | Paginated; `releasedDate` stays discovery-only unless original-age semantics are proven |
+| Personio | Public careers XML feed | Uses current `*.jobs.personio.com/xml` and direct `/job/{id}` URLs; publication age may remain unknown |
 
 Workable and Teamtailor are not implemented as keyless API adapters because their official APIs require credentials. Recruitee's careers API is intentionally not made a long-term dependency because Recruitee has announced authentication will become mandatory on 10 February 2027.
 
@@ -105,8 +107,7 @@ The `catalog` extra integrates only the base `ats-scrapers` hosted-dataset searc
 
 ```bash
 python -m pip install -e '.[dev]'
-ruff check .
-python -m unittest discover -s tests -v
+python scripts/release_check.py --require-ruff
 ```
 
 See `docs/ARCHITECTURE.md`, `docs/COMPARABLE_REPOS.md` and `SECURITY.md` for design boundaries and review decisions.

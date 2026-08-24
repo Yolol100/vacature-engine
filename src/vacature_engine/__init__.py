@@ -1,4 +1,4 @@
-__version__ = "3.0.2"
+__version__ = "3.1.0"
 
 from .adapters import AdapterRegistry
 from .core import canonical_url, content_hash, norm, vacancy_id
@@ -13,6 +13,7 @@ from .pipeline import (
     posted_age_days,
 )
 from .policy import LOGIC_VERSION, application_guard, hard_gate, score
+from .structured import extract_jobposting_jsonld, jobposting_facts
 
 __all__ = [
     "AdapterRegistry",
@@ -31,5 +32,7 @@ __all__ = [
     "norm",
     "posted_age_days",
     "score",
+    "extract_jobposting_jsonld",
+    "jobposting_facts",
     "vacancy_id",
 ]
