@@ -23,6 +23,12 @@ class CoreTests(unittest.TestCase):
     def test_hash_stable_for_case_space(self):
         self.assertEqual(content_hash("HELLO   world"), content_hash("hello world"))
 
+    def test_material_content_change_changes_hash(self):
+        self.assertNotEqual(
+            content_hash("Senior WordPress role with WooCommerce"),
+            content_hash("Senior WordPress role with WooCommerce and mandatory React"),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

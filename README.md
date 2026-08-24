@@ -9,7 +9,7 @@ The Skill remains the control plane. This repository only owns deterministic cod
 - URL/title/employer normalization, stable vacancy IDs and content hashes
 - deterministic hard gates, scoring and application draft guard
 - one normalized `JobRecord` schema
-- keyless public adapters for Greenhouse, Lever, Ashby, SmartRecruiters and Personio XML
+- credential-free public-read adapters for Greenhouse, Lever, Ashby, SmartRecruiters and Personio XML
 - shared HTTP retries/backoff/error mapping without proxy rotation or access-control bypass
 - bounded parallel source fetching, deduplication and recency helpers
 - optional public catalog search through `ats-scrapers` (no account/API key)
@@ -60,20 +60,39 @@ vacature-engine catalog --json catalog-search.json
 
 All commands emit JSON to stdout. Errors are JSON on stderr and return exit code 2.
 
+## Recommended execution
+
+Do not use this repository as the orchestrator. The reliable order is:
+
+1. The ChatGPT Skill reads Drive state and discovers candidates.
+2. Use this repo only for deterministic normalization, adapters, dedupe, gates and score arithmetic.
+3. Reopen serious candidates at the official employer/original ATS and independently verify original date, remote scope, Netherlands eligibility and active status.
+4. Only after those semantic checks pass, prepare an application package; Outlook remains draft-only.
+5. Persist results to Drive and read them back.
+
+For maintenance/release checks run:
+
+```bash
+python -m pip install -e '.[dev]'
+python scripts/release_check.py --require-ruff
+```
+
+The release check verifies required files, full-SHA Action pins, least-privilege CI, compilation, unit/regression tests and Ruff. Runtime vacancy correctness still requires live official evidence; a green build is not proof that a vacancy passes the hard gates.
+
 ## Adapter policy
 
 Adapters only call public employer/ATS endpoints. A 401/403/406 is classified as blocked and stops; it is never retried through proxies, stealth browsers or alternate identities. 408/429/selected 5xx responses receive bounded exponential backoff. Redirects away from the expected ATS host are rejected so an invalid company slug cannot silently become a marketing page.
 
 `posted_at=None` is intentional when a source does not expose an original publication timestamp. The Skill must treat that as unknown and fail its <=7-day freshness gate unless another official source proves the original date.
 
-## Supported keyless adapters
+## Supported public-read adapters
 
 | Adapter | Public route | Important limitation |
 | --- | --- | --- |
 | Greenhouse | Job Board GET API | `updated_at` is not treated as original publish date |
 | Lever | Postings API | Supports global and EU hosts |
 | Ashby | Public Job Postings API | Uses explicit `isRemote` when available |
-| SmartRecruiters | Public Posting API | Fetches public detail per posting |
+| SmartRecruiters | Posting API public-posting route | No credential is configured; if the provider/account requires auth, fail closed and mark the source degraded |
 | Personio | Public careers XML feed | Feed jobs still need exact canonical vacancy resolution |
 
 Workable and Teamtailor are not implemented as keyless API adapters because their official APIs require credentials. Recruitee's careers API is intentionally not made a long-term dependency because Recruitee has announced authentication will become mandatory on 10 February 2027.

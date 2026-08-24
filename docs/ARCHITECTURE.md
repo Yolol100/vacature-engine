@@ -30,3 +30,15 @@ Before adding an adapter:
 4. Preserve unknown fields instead of guessing.
 5. Add it to `AdapterRegistry`; callers never import provider classes by path.
 6. Keep browser rendering as fallback, never as the first path for a structured public API.
+
+## Release verification method
+
+Treat readiness as layered evidence rather than one headline score:
+
+1. **Contract** — Skill, Drive and repo each own one class of truth.
+2. **Deterministic** — unit, regression and Skill↔repo parity tests pass.
+3. **Dependency/live** — public-source assumptions and GitHub Action pins are rechecked against current official sources.
+4. **State** — Drive schema/version writes are read back.
+5. **Runtime** — a real candidate must still pass official-source freshness, remote/NL and duplicate verification; never manufacture a positive golden path.
+
+A build/configuration audit and a real vacancy-run proof are separate claims.

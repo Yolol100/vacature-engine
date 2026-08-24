@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.2 - 2026-08-25
+
+- Updated GitHub Actions to current verified full-SHA releases of checkout v7.0.1 and setup-python v7.0.0.
+- Added a repeatable `scripts/release_check.py` release gate for structure, SHA pins, least privilege, compilation, tests and Ruff.
+- Expanded regression coverage for US-only, stale postings, prompt-injection-shaped input, unsupported application claims, material content changes and unknown salary.
+- Clarified that build readiness and live vacancy verification are separate claims.
+- Clarified SmartRecruiters authentication ambiguity: the project never supplies credentials and fails closed if anonymous public reads are rejected.
+
 ## 3.0.1 - 2026-08-25
 
 - Fixed Ruff/import formatting found by the first GitHub Actions run; no logic change.

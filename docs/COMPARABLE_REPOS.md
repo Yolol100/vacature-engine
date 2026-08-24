@@ -1,55 +1,24 @@
-# Comparable repository review
+# Compared repositories and patterns
 
-Reviewed in August 2026. This repository implements compatible ideas independently; it does not copy third-party source code.
+The repository intentionally borrows architecture patterns, not scraping-bypass techniques.
 
-## kalil0321/ats-scrapers
+## Patterns retained
 
-Useful patterns adopted:
+- provider adapters behind one stable registry/interface;
+- one normalized job schema with explicit unknown values;
+- shared HTTP/retry/error handling instead of per-adapter plumbing;
+- bounded concurrency, recency filtering and deduplication;
+- deterministic fixture/regression tests and versioned CI;
+- public ATS/dataset routes for discovery, followed by canonical official-source verification.
 
-- canonical typed job schema across sources;
-- adapter registry and small stable adapter interface;
-- shared HTTP layer instead of per-source retry code;
-- async/concurrency concept translated here to bounded standard-library thread concurrency;
-- separate hosted public dataset from scraper runtime;
-- live tests separated from deterministic unit tests;
-- Ruff/dev-quality configuration.
+## Patterns intentionally rejected
 
-Not adopted:
+- proxy rotation, VPN hopping and residential proxy dependencies;
+- TLS/browser fingerprint impersonation or stealth escalation;
+- CAPTCHA/login automation or access-control bypass;
+- treating aggregator dates as original publication dates;
+- automatic applications or sending email.
 
-- proxy support, TLS impersonation, stealth Chromium and escalation around blocks;
-- broad source surface that would make the Skill harder to audit.
+## Operational conclusion
 
-## JobSpy
-
-Useful patterns adopted:
-
-- one normalized output shape across discovery sources;
-- remote/compensation/date fields represented explicitly;
-- source-specific exceptions/failure handling;
-- `results_wanted`/recency-style bounded retrieval concept.
-
-Not adopted:
-
-- direct scraping of LinkedIn/Indeed/Glassdoor/ZipRecruiter as a core dependency;
-- proxy/VPN recommendations after rate limiting.
-
-Those sites remain discovery sources handled by ChatGPT web search and canonical employer verification.
-
-## job-seek / ATS job scraper projects
-
-Useful patterns adopted:
-
-- configurable source list;
-- public ATS-first approach;
-- dedupe before ranking;
-- separation between discovery and canonical verification;
-- public JavaScript rendering only for sites that genuinely need it.
-
-Not adopted:
-
-- dashboards/databases/servers that duplicate the existing Drive state layer;
-- SerpAPI/Apify or other token-based services as mandatory dependencies.
-
-## Result
-
-The repository stays deliberately smaller than general job-scraper frameworks. Breadth comes from the optional no-key public catalog and ChatGPT web discovery; correctness comes from a small set of official adapters plus the Skill's verification gates.
+The useful split is: broad recall from public feeds/adapters, deterministic normalization/filtering in this repo, and semantic truth/final verification in the ChatGPT Skill. More scrapers are not automatically better; an adapter is useful only when it improves verified recall without weakening provenance or freshness checks.
