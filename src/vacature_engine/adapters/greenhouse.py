@@ -31,6 +31,10 @@ class GreenhouseAdapter(BaseAdapter):
         for item in jobs:
             if not isinstance(item, dict):
                 continue
+            if "internal_job_id" in item and item.get("internal_job_id") is None:
+                continue
+            first_published = str(item.get("first_published") or "").strip() or None
+            updated_at = str(item.get("updated_at") or "").strip() or None
             result.append(
                 JobRecord(
                     source=self.source,
@@ -38,10 +42,19 @@ class GreenhouseAdapter(BaseAdapter):
                     title=str(item.get("title", "")).strip(),
                     employer=self.slug,
                     job_url=str(item.get("absolute_url", "")).strip(),
-                    location=(item.get("location") or {}).get("name") if isinstance(item.get("location"), dict) else None,
+                    location=(item.get("location") or {}).get("name")
+                    if isinstance(item.get("location"), dict)
+                    else None,
                     description=_plain(item.get("content")),
-                    posted_at=None,
-                    raw={"updated_at": item.get("updated_at"), "metadata": item.get("metadata")},
+                    posted_at=first_published,
+                    source_date=updated_at,
+                    source_date_semantics="updated_at" if updated_at else None,
+                    raw={
+                        "first_published": item.get("first_published"),
+                        "updated_at": item.get("updated_at"),
+                        "application_deadline": item.get("application_deadline"),
+                        "metadata": item.get("metadata"),
+                    },
                 )
             )
         return [j for j in result if j.source_job_id and j.title and j.job_url]

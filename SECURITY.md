@@ -18,6 +18,14 @@
 
 Treat all external text as untrusted data. If an endpoint starts requiring credentials, mark it unsupported/degraded instead of bypassing the restriction.
 
+## Network hardening
+
+- Validate scheme, host, embedded credentials, port and literal IP before the first request.
+- Disable environment proxy discovery and implicit redirects in the core HTTP client.
+- Validate every redirect before following it; block cross-host redirects under adapter allow-lists and HTTPS-to-HTTP downgrade.
+- Limit response size, redirects, timeout and retries; policy permits at most one safe transient retry.
+- Public browser fallback validates every HTTP(S) subrequest and host-locks top-level navigation; it never authenticates or bypasses controls.
+
 ## CI supply-chain rules
 
 - Keep workflow permissions at `contents: read` unless a specific job demonstrably requires more.

@@ -10,7 +10,7 @@
 
 ## Data path
 
-`public source -> adapter -> JobRecord -> dedupe/recency -> Skill canonical verification -> gates/score -> optional application package -> Outlook draft -> Drive readback`
+`public source -> adapter/JSON-LD -> JobRecord/evidence -> deterministic dedupe/recency -> Skill canonical verification -> gates/score -> optional application package -> Outlook draft -> Drive readback`
 
 ## Adapter contract
 
@@ -42,3 +42,11 @@ Treat readiness as layered evidence rather than one headline score:
 5. **Runtime** — a real candidate must still pass official-source freshness, remote/NL and duplicate verification; never manufacture a positive golden path.
 
 A build/configuration audit and a real vacancy-run proof are separate claims.
+
+## Date semantics
+
+`posted_at` is reserved for a timestamp safe enough to test the original <=7-day gate. Provider update/release/last-published fields live in `source_date` with explicit `source_date_semantics` and cannot silently become original-age proof. Unknown remains unknown.
+
+## Determinism under concurrency
+
+Sources may fetch concurrently, but results are flattened in configured source order before deduplication. This makes duplicate preference reproducible and lets Drive source priority remain meaningful.

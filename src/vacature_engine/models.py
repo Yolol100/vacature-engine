@@ -22,6 +22,8 @@ class JobRecord:
     team: str | None = None
     description: str | None = None
     posted_at: str | None = None
+    source_date: str | None = None
+    source_date_semantics: str | None = None
     salary_summary: str | None = None
     fetched_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
     raw: dict[str, Any] = field(default_factory=dict)

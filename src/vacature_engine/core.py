@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import ipaddress
 import re
 import unicodedata
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
@@ -27,12 +28,22 @@ def canonical_url(url: str) -> str:
     p = urlsplit(url.strip())
     if p.scheme.lower() not in {"http", "https"} or not p.netloc:
         raise ValueError("absolute http(s) URL required")
-    host = (p.hostname or "").lower()
-    if p.port and not (
-        (p.scheme.lower() == "http" and p.port == 80)
-        or (p.scheme.lower() == "https" and p.port == 443)
+    if p.username is not None or p.password is not None:
+        raise ValueError("URL credentials are not allowed")
+    host = (p.hostname or "").lower().rstrip(".")
+    if not host:
+        raise ValueError("URL hostname required")
+    try:
+        if ipaddress.ip_address(host).version == 6:
+            host = f"[{host}]"
+    except ValueError:
+        pass
+    port = p.port
+    if port and not (
+        (p.scheme.lower() == "http" and port == 80)
+        or (p.scheme.lower() == "https" and port == 443)
     ):
-        host = f"{host}:{p.port}"
+        host = f"{host}:{port}"
     path = re.sub(r"/{2,}", "/", p.path or "/")
     if path != "/":
         path = path.rstrip("/")

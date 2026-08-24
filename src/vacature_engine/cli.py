@@ -11,6 +11,7 @@ from .catalog import search_public_catalog
 from .core import canonical_url, content_hash, norm, vacancy_id
 from .pipeline import SourceSpec, fetch_many, fetch_source, filter_recency
 from .policy import LOGIC_VERSION, application_guard, hard_gate, score
+from .structured import jobposting_facts
 
 
 def _load_json(path: str | None) -> Any:
@@ -53,6 +54,10 @@ def main(argv: list[str] | None = None) -> int:
     p_catalog = sub.add_parser("catalog")
     p_catalog.add_argument("--json")
 
+    p_structured = sub.add_parser("structured")
+    p_structured.add_argument("--html")
+    p_structured.add_argument("--file")
+
     args = parser.parse_args(argv)
     try:
         if args.command == "id":
@@ -84,6 +89,11 @@ def main(argv: list[str] | None = None) -> int:
                 payload["fresh"] = [job.to_dict() for job in fresh]
                 payload["unknown_date"] = [job.to_dict() for job in unknown]
             result = payload
+        elif args.command == "structured":
+            if bool(args.file) == bool(args.html):
+                raise ValueError("structured requires exactly one of --file or --html")
+            html = Path(args.file).read_text(encoding="utf-8") if args.file else args.html
+            result = {"job_postings": jobposting_facts(html)}
         elif args.command == "batch":
             data = _load_json(args.json)
             if not isinstance(data, list):

@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.1.0 - 2026-08-25
+
+- Hardened all numeric/type gates against booleans, NaN/infinity, invalid blocking flags and future dates.
+- Tightened seniority: generic Engineer no longer proves medior+, and junior/intern/trainee/graduate/entry-level roles fail.
+- Added deterministic same-source and semantic deduplication with stable source-order results under concurrency.
+- Added source-date semantics: Greenhouse `first_published`, Lever creation time, and conservative Ashby/SmartRecruiters handling.
+- Updated Personio to current `.jobs.personio.com` XML/job URLs and added SmartRecruiters pagination.
+- Added official `JobPosting` JSON-LD evidence extraction with bounded block size.
+- Hardened public HTTP/browser access: pre-request host/port/credential checks, manual redirects, HTTPS downgrade blocking, response limits and one-retry maximum.
+- Hardened application guard with role-authorized recipient, HTTPS evidence source, valid email, selected/ready CV and exact-subject checks.
+- Expanded release audit to 88 unit tests plus 400 adversarial/metamorphic scenarios and direct Skill parity checks.
+
 ## 3.0.2 - 2026-08-25
 
 - Updated GitHub Actions to current verified full-SHA releases of checkout v7.0.1 and setup-python v7.0.0.
