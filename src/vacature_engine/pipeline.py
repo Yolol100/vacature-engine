@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-import math
 from collections.abc import Iterable
+from contextlib import suppress
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
+import math
 from typing import Any
 
 from .adapters import AdapterRegistry
@@ -86,10 +87,8 @@ def deduplicate(jobs: Iterable[JobRecord]) -> list[JobRecord]:
     for job in jobs:
         keys = [f"source:{job.source}:{job.source_job_id}"]
         if job.raw.get("requires_canonical_job_resolution") is not True:
-            try:
+            with suppress(ValueError):
                 keys.append(f"url:{job.canonical_url}")
-            except ValueError:
-                pass
             semantic = _semantic_duplicate_key(job)
             if semantic:
                 keys.append(semantic)

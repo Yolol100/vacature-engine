@@ -1,5 +1,4 @@
 import io
-import json
 import unittest
 from email.message import Message
 from urllib.error import HTTPError

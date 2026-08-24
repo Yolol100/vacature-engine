@@ -3,7 +3,13 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
 from vacature_engine.models import JobRecord
-from vacature_engine.pipeline import SourceSpec, deduplicate, fetch_many, filter_recency, posted_age_days
+from vacature_engine.pipeline import (
+    SourceSpec,
+    deduplicate,
+    fetch_many,
+    filter_recency,
+    posted_age_days,
+)
 
 
 def job(url="https://example.com/1", *, posted_at=None, source="x", source_id="1", description="Same exact body", location="Remote"):
