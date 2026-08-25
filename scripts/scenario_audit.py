@@ -21,6 +21,7 @@ from vacature_engine.policy import (  # noqa: E402
     MATCH_COMPONENTS,
     OPPORTUNITY_COMPONENTS,
     application_guard,
+    choose_application_language,
     hard_gate,
     score,
 )
@@ -98,6 +99,9 @@ def good_draft(**overrides) -> dict[str, object]:
         "recipient_source_url": "https://example.com/jobs/1",
         "factual_qa": "pass",
         "style_qa": "pass",
+        "language_qa_pass": True,
+        "ai_policy_compliant": True,
+        "authenticity_qa_pass": True,
         "motivation_qa_pass": True,
         "cv_attachment_ready": True,
         "subject_exact_vacancy_title": True,
@@ -240,6 +244,9 @@ def run_audit() -> dict[str, object]:
         "legitimacy_check_pass",
         "recipient_verified",
         "recipient_authorized_for_role",
+        "language_qa_pass",
+        "ai_policy_compliant",
+        "authenticity_qa_pass",
         "motivation_qa_pass",
         "cv_attachment_ready",
         "subject_exact_vacancy_title",
@@ -254,6 +261,55 @@ def run_audit() -> dict[str, object]:
         except ValueError:
             ok = True
         audit.check(f"stage_invalid_{stage!r}", ok)
+
+    language_cases = (
+        (
+            {"explicit_required_language": "nl", "vacancy_primary_language": "en"},
+            ("nl", "explicit_required_language", "high"),
+        ),
+        (
+            {"explicit_cover_letter_language": "English", "vacancy_primary_language": "Dutch"},
+            ("en", "explicit_cover_letter_language", "high"),
+        ),
+        (
+            {"form_language": "Nederlands", "vacancy_primary_language": "English"},
+            ("nl", "form_language", "high"),
+        ),
+        ({"vacancy_primary_language": "English"}, ("en", "vacancy_primary_language", "high")),
+        ({"vacancy_primary_language": "Dutch"}, ("nl", "vacancy_primary_language", "high")),
+        (
+            {"vacancy_primary_language": "mixed", "working_language": "Dutch"},
+            ("nl", "working_language", "medium"),
+        ),
+        (
+            {"vacancy_primary_language": "mixed", "application_interface_language": "English"},
+            ("en", "application_interface_language", "medium"),
+        ),
+        (
+            {"vacancy_primary_language": "mixed"},
+            ("en", "mixed_unresolved_default_english", "low"),
+        ),
+        (
+            {"application_interface_language": "Dutch"},
+            ("nl", "application_interface_language", "medium"),
+        ),
+        ({}, ("en", "ambiguous_default_english", "low")),
+    )
+    for data, expected in language_cases:
+        result = choose_application_language(data)
+        actual = (result["language"], result["reason"], result["confidence"])
+        audit.check(f"language_{data!r}", actual == expected)
+    for data in (
+        {"explicit_required_language": "German"},
+        {"form_language": True},
+        {"vacancy_primary_language": []},
+    ):
+        try:
+            choose_application_language(data)
+            ok = False
+        except ValueError:
+            ok = True
+        audit.check(f"language_invalid_{data!r}", ok)
 
     rng = random.Random(20260825)
     base = "https://Example.com/jobs/42?a=1&b=2"
