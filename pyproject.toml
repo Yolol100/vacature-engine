@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vacature-engine"
-version = "3.2.0"
+version = "3.3.0"
 description = "Credential-free vacancy normalization, ATS adapters and deterministic helpers for vacature-search"
 readme = "README.md"
 requires-python = ">=3.11"
