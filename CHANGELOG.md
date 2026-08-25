@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.4.0 - 2026-08-25
+
+- Added explicit fail-closed type handling for work eligibility, seniority and application-stage inputs so malformed values cannot be coerced into a valid state or raise unintended type errors.
+- Added a deterministic `motivation_qa_pass` requirement for Outlook/email draft readiness, aligning the code guard with the Skill's evidence-bank, swap, reuse and name-masked anti-template checks.
+- Expanded the adversarial scenario audit to combinatorial gate, scoring and application matrices, including `stale_repost`, motivation QA, invalid types, URL/hash invariants, recency, public-target safety and JobPosting semantics.
+- Kept scoring weights, worldwide discovery policy and search qualification semantics unchanged.
+
 ## 3.3.0 - 2026-08-25
 
 - Added an explicit backwards-compatible `stale_repost` hard-gate input so evidence-backed recycled/re-dated vacancies fail deterministically instead of relying only on prose policy.
