@@ -5,7 +5,7 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
-LOGIC_VERSION = "2026-08-25-v7"
+LOGIC_VERSION = "2026-08-25-v8"
 
 MATCH_COMPONENTS = {
     "hard_requirements": 35,
@@ -48,6 +48,14 @@ _SENIORITY_BLOCKED = (
     "apprentice",
 )
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_LANGUAGE_ALIASES = {
+    "nl": "nl",
+    "dutch": "nl",
+    "nederlands": "nl",
+    "en": "en",
+    "english": "en",
+    "engels": "en",
+}
 
 
 def _finite_number(value: object) -> float | None:
@@ -62,6 +70,72 @@ def _strict_optional_bool(data: dict[str, Any], key: str) -> bool:
     if not isinstance(value, bool):
         raise ValueError(f"{key} must be boolean")
     return value
+
+
+def _normalize_application_language(value: object, *, allow_mixed: bool = False) -> str | None:
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise ValueError("application language values must be strings")
+    raw = value.strip().lower()
+    if not raw or raw in {"unknown", "unspecified", "not_found", "none"}:
+        return None
+    if allow_mixed and raw in {
+        "mixed",
+        "bilingual",
+        "nl/en",
+        "en/nl",
+        "dutch/english",
+        "english/dutch",
+    }:
+        return "mixed"
+    language = _LANGUAGE_ALIASES.get(raw)
+    if language is None:
+        raise ValueError(f"unsupported application language: {value}")
+    return language
+
+
+def choose_application_language(data: dict[str, Any]) -> dict[str, str]:
+    """Choose Dutch/English from application evidence with explicit instructions first."""
+    for key in (
+        "explicit_required_language",
+        "explicit_cover_letter_language",
+        "form_language",
+    ):
+        language = _normalize_application_language(data.get(key))
+        if language:
+            return {"language": language, "reason": key, "confidence": "high"}
+
+    primary = _normalize_application_language(
+        data.get("vacancy_primary_language"), allow_mixed=True
+    )
+    if primary in {"nl", "en"}:
+        return {
+            "language": primary,
+            "reason": "vacancy_primary_language",
+            "confidence": "high",
+        }
+
+    if primary == "mixed":
+        for key in ("working_language", "application_interface_language"):
+            language = _normalize_application_language(data.get(key))
+            if language:
+                return {"language": language, "reason": key, "confidence": "medium"}
+        return {
+            "language": "en",
+            "reason": "mixed_unresolved_default_english",
+            "confidence": "low",
+        }
+
+    for key in ("application_interface_language", "working_language"):
+        language = _normalize_application_language(data.get(key))
+        if language:
+            return {"language": language, "reason": key, "confidence": "medium"}
+    return {
+        "language": "en",
+        "reason": "ambiguous_default_english",
+        "confidence": "low",
+    }
 
 
 def hard_gate(data: dict[str, Any]) -> dict[str, Any]:
@@ -204,6 +278,12 @@ def application_guard(data: dict[str, Any]) -> dict[str, Any]:
             reasons.append("factual_qa_not_passed")
         if data.get("style_qa") != "pass":
             reasons.append("style_qa_not_passed")
+        if data.get("language_qa_pass") is not True:
+            reasons.append("language_qa_not_passed")
+        if data.get("ai_policy_compliant") is not True:
+            reasons.append("ai_policy_not_compliant")
+        if data.get("authenticity_qa_pass") is not True:
+            reasons.append("authenticity_qa_not_passed")
         if data.get("motivation_qa_pass") is not True:
             reasons.append("motivation_qa_not_passed")
         if data.get("cv_attachment_ready") is not True:
