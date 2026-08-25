@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.6.0 - 2026-08-25
+
+- Added a deterministic `manual` final-application stage so paste-ready external-form/platform packages receive the same final QA as Outlook/email drafts without requiring a fake email recipient.
+- Added fail-closed `cv_fit_qa`, resolved `letter_language`, explicit AI-policy state/compliance and human-authenticity/motivation QA requirements for all final application routes.
+- Added route-specific safeguards: email drafts require `application_route=email`, verified recruitment recipient, CV attachment and subject compliance; manual routes require a supported route, verified HTTPS application URL and CV-upload readiness.
+- Added explicit AI-policy states (`allowed`, `restricted`, `prohibited`, `not_found`, `unknown`); prohibited/unknown states cannot be overridden by a loose compliance boolean.
+- Added subject-instruction override support when an employer or user explicitly requires a subject different from the exact vacancy title.
+- Expanded unit, adversarial, mutation and Skill↔repo parity coverage for the new final-application state machine.
+
+## 3.5.0 - 2026-08-25
+
+- Added deterministic Dutch/English application-language selection with explicit employer instructions taking precedence over form and vacancy language.
+- Added language QA, employer AI-policy compliance and human-authenticity QA as fail-closed email-draft safeguards.
+- Expanded adversarial application-language scenarios and direct Skill↔repo parity coverage.
+- This entry restores the release-history note that was omitted when 3.5.0 was published.
+
 ## 3.4.0 - 2026-08-25
 
 - Added explicit fail-closed type handling for work eligibility, seniority and application-stage inputs so malformed values cannot be coerced into a valid state or raise unintended type errors.
