@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.0 - 2026-08-25
+
+- Generalized location semantics for worldwide-remote discovery: prefer `work_eligibility` and `work_eligibility_certainty` while preserving legacy Netherlands-specific inputs.
+- Added a generic incompatible-geography blocker while keeping the legacy US-only flag compatible.
+- Separated search qualification from application readiness: `plausible` work eligibility may remain discoverable, but application preparation now requires explicit work-eligibility confirmation.
+- Added a mandatory legitimacy check before application preparation/drafting so unresolved employer/recruiter/domain/payment risk cannot reach an application-ready state.
+- Expanded parity and scenario coverage for worldwide eligibility aliases, generic geography blockers, eligibility confirmation and legitimacy checks.
+
 ## 3.1.1 - 2026-08-25
 
 - Allow established live job-board listings to satisfy active/link gate evidence without requiring an employer/ATS duplicate.
