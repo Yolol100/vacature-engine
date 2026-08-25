@@ -30,14 +30,15 @@ def recruitment_draft():
         "recipient_source_url": "https://example.com/careers",
         "factual_qa": "pass",
         "style_qa": "pass",
+        "motivation_qa_pass": True,
         "cv_attachment_ready": True,
         "subject_exact_vacancy_title": True,
     }
 
 
 class JobboardRoutingTests(unittest.TestCase):
-    def test_logic_version_v6(self):
-        self.assertEqual(LOGIC_VERSION, "2026-08-25-v6")
+    def test_logic_version_v7(self):
+        self.assertEqual(LOGIC_VERSION, "2026-08-25-v7")
 
     def test_jobboard_listing_keys_pass_without_official_duplicate(self):
         self.assertTrue(hard_gate(jobboard_gate())["pass"])
