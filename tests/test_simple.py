@@ -16,9 +16,9 @@ def vacancy(**overrides):
         "wordpress_related": True,
         "central_hard_mismatch": False,
         "salary_monthly_eur": 4500,
-        "core_fit": 45,
-        "evidence_fit": 22,
-        "workstyle_fit": 13,
+        "core_fit": 40,
+        "evidence_fit": 18,
+        "workstyle_fit": 10,
     }
     data.update(overrides)
     return data
@@ -48,32 +48,42 @@ class SimplePolicyTests(unittest.TestCase):
         self.assertTrue(eligibility(at_limit, today=TODAY)["pass"])
         self.assertFalse(eligibility(too_old, today=TODAY)["pass"])
 
+    def test_recency_anchors(self):
+        expected = {0: 78, 14: 78, 15: 76, 30: 76, 31: 74, 60: 74, 61: 72, 90: 72, 91: 70, 120: 70}
+        for age_days, score in expected.items():
+            item = vacancy(posted_date=(TODAY - timedelta(days=age_days)).isoformat())
+            ranked = top_vacancies([item], today=TODAY)
+            self.assertEqual(score, ranked[0]["score"])
+
     def test_unknown_salary_is_strong_match_fallback(self):
-        known = vacancy(title="Known", salary_monthly_eur=4000, core_fit=35)
-        strong_unknown = vacancy(title="Strong Unknown", salary_monthly_eur=None, core_fit=50)
-        weak_unknown = vacancy(
-            title="Weak Unknown",
-            salary_monthly_eur=None,
-            core_fit=30,
-            evidence_fit=15,
-            workstyle_fit=10,
-        )
+        known = vacancy(title="Known", salary_monthly_eur=4000, core_fit=25, evidence_fit=10, workstyle_fit=5)
+        strong_unknown = vacancy(title="Strong Unknown", salary_monthly_eur=None, core_fit=50, evidence_fit=18, workstyle_fit=10)
+        weak_unknown = vacancy(title="Weak Unknown", salary_monthly_eur=None, core_fit=25, evidence_fit=10, workstyle_fit=5)
         ranked = top_vacancies([strong_unknown, weak_unknown, known], today=TODAY)
         self.assertEqual(["Known", "Strong Unknown"], [row["title"] for row in ranked])
 
     def test_ranking_prefers_better_fit(self):
-        strong = vacancy(title="Strong", core_fit=49, evidence_fit=24, workstyle_fit=14)
-        weak = vacancy(title="Weak", core_fit=30, evidence_fit=15, workstyle_fit=10)
+        strong = vacancy(title="Strong", core_fit=50, evidence_fit=25, workstyle_fit=15)
+        weak = vacancy(title="Weak", core_fit=25, evidence_fit=10, workstyle_fit=5)
         ranked = top_vacancies([weak, strong], today=TODAY)
         self.assertEqual("Strong", ranked[0]["title"])
+
+    def test_tie_break_prefers_core_then_evidence(self):
+        higher_core = vacancy(title="Higher Core", core_fit=50, evidence_fit=10, workstyle_fit=5)
+        lower_core = vacancy(title="Lower Core", core_fit=40, evidence_fit=10, workstyle_fit=15)
+        self.assertEqual("Higher Core", top_vacancies([lower_core, higher_core], today=TODAY)[0]["title"])
+
+        higher_evidence = vacancy(title="Higher Evidence", core_fit=40, evidence_fit=25, workstyle_fit=0)
+        lower_evidence = vacancy(title="Lower Evidence", core_fit=40, evidence_fit=10, workstyle_fit=15)
+        self.assertEqual("Higher Evidence", top_vacancies([lower_evidence, higher_evidence], today=TODAY)[0]["title"])
 
     def test_top_ten_limit(self):
         items = [vacancy(title=f"Role {i}") for i in range(12)]
         self.assertEqual(10, len(top_vacancies(items, today=TODAY)))
 
-    def test_invalid_score_component_raises(self):
+    def test_non_anchor_score_component_raises(self):
         with self.assertRaises(ValueError):
-            top_vacancies([vacancy(core_fit=51)], today=TODAY)
+            top_vacancies([vacancy(core_fit=45)], today=TODAY)
 
     def test_language_priority(self):
         self.assertEqual("nl", choose_language(vacancy_language="Nederlands"))
