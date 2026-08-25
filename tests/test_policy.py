@@ -57,7 +57,7 @@ def good_draft():
 
 class PolicyTests(unittest.TestCase):
     def test_logic_version(self):
-        self.assertEqual(LOGIC_VERSION, "2026-08-25-v5")
+        self.assertEqual(LOGIC_VERSION, "2026-08-25-v6")
 
     def test_good_gate(self):
         self.assertTrue(hard_gate(good_gate())["pass"])
@@ -84,6 +84,7 @@ class PolicyTests(unittest.TestCase):
             "suspicious_payment",
             "marketplace_excluded",
             "duplicate",
+            "stale_repost",
             "geographic_restriction_blocks",
             "us_residents_only",
         ):
@@ -254,6 +255,7 @@ class PolicyTests(unittest.TestCase):
             "suspicious_payment",
             "marketplace_excluded",
             "duplicate",
+            "stale_repost",
             "geographic_restriction_blocks",
             "us_residents_only",
         ):
