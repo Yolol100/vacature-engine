@@ -5,7 +5,7 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
-LOGIC_VERSION = "2026-08-25-v4"
+LOGIC_VERSION = "2026-08-25-v5"
 
 MATCH_COMPONENTS = {
     "hard_requirements": 35,
@@ -19,7 +19,7 @@ MATCH_COMPONENTS = {
 OPPORTUNITY_COMPONENTS = {
     "freshness": 15,
     "competition": 10,
-    "netherlands_certainty": 10,
+    "work_eligibility_certainty": 10,
     "employer_credibility": 5,
     "compensation_contract_fit": 5,
 }
@@ -77,8 +77,9 @@ def hard_gate(data: dict[str, Any]) -> dict[str, Any]:
         reasons.append("listing_link_not_confirmed_working")
     if data.get("fully_remote") is not True:
         reasons.append("not_confirmed_fully_remote")
-    if data.get("netherlands_eligibility") not in {"allowed", "plausible"}:
-        reasons.append("netherlands_eligibility_not_sufficiently_supported")
+    work_eligibility = data.get("work_eligibility", data.get("netherlands_eligibility"))
+    if work_eligibility not in {"allowed", "plausible"}:
+        reasons.append("work_eligibility_not_sufficiently_supported")
 
     for key, reason in {
         "mandatory_relocation": "mandatory_relocation",
@@ -88,6 +89,7 @@ def hard_gate(data: dict[str, Any]) -> dict[str, Any]:
         "suspicious_payment": "suspicious_payment_terms",
         "marketplace_excluded": "excluded_marketplace_or_paywall",
         "duplicate": "duplicate_or_previously_shown",
+        "geographic_restriction_blocks": "incompatible_geographic_restriction",
         "us_residents_only": "us_residents_only",
     }.items():
         value = data.get(key, False)
@@ -125,9 +127,14 @@ def score(data: dict[str, Any]) -> dict[str, Any]:
     multiple = _strict_optional_bool(data, "multiple_central_hard_mismatches")
     central_missing = _strict_optional_bool(data, "central_hard_missing")
     match_score = min(raw_match, 59.0) if central_missing else raw_match
-    opportunity_parts = {
-        key: _bounded(data, key, maximum) for key, maximum in OPPORTUNITY_COMPONENTS.items()
-    }
+    opportunity_parts: dict[str, float] = {}
+    for key, maximum in OPPORTUNITY_COMPONENTS.items():
+        if key == "work_eligibility_certainty" and key not in data and "netherlands_certainty" in data:
+            legacy = dict(data)
+            legacy[key] = legacy["netherlands_certainty"]
+            opportunity_parts[key] = _bounded(legacy, key, maximum)
+        else:
+            opportunity_parts[key] = _bounded(data, key, maximum)
     match_contribution = match_score * 0.55
     return {
         "logic_version": LOGIC_VERSION,
@@ -147,7 +154,12 @@ def score(data: dict[str, Any]) -> dict[str, Any]:
 def _valid_https_url(value: str) -> bool:
     try:
         parts = urlsplit(value)
-        return parts.scheme == "https" and bool(parts.hostname) and parts.username is None and parts.password is None
+        return (
+            parts.scheme == "https"
+            and bool(parts.hostname)
+            and parts.username is None
+            and parts.password is None
+        )
     except ValueError:
         return False
 
@@ -165,6 +177,10 @@ def application_guard(data: dict[str, Any]) -> dict[str, Any]:
         reasons.append("vacancy_hard_gate_not_passed")
     if data.get("cv_selected") is not True:
         reasons.append("cv_not_selected")
+    if data.get("work_eligibility_confirmed") is not True:
+        reasons.append("work_eligibility_not_confirmed")
+    if data.get("legitimacy_check_pass") is not True:
+        reasons.append("legitimacy_check_not_passed")
 
     if stage == "draft":
         email = str(data.get("recipient_email", "")).strip()
