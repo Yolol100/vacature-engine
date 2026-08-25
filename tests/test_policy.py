@@ -1,7 +1,13 @@
 import math
 import unittest
 
-from vacature_engine.policy import LOGIC_VERSION, application_guard, hard_gate, score
+from vacature_engine.policy import (
+    LOGIC_VERSION,
+    application_guard,
+    choose_application_language,
+    hard_gate,
+    score,
+)
 
 
 def good_gate(**overrides):
@@ -54,6 +60,9 @@ def good_draft(**overrides):
         "recipient_source_url": "https://example.com/jobs/1",
         "factual_qa": "pass",
         "style_qa": "pass",
+        "language_qa_pass": True,
+        "ai_policy_compliant": True,
+        "authenticity_qa_pass": True,
         "motivation_qa_pass": True,
         "cv_attachment_ready": True,
         "subject_exact_vacancy_title": True,
@@ -64,7 +73,7 @@ def good_draft(**overrides):
 
 class PolicyTests(unittest.TestCase):
     def test_logic_version(self):
-        self.assertEqual(LOGIC_VERSION, "2026-08-25-v7")
+        self.assertEqual(LOGIC_VERSION, "2026-08-25-v8")
 
     def test_good_gate(self):
         self.assertTrue(hard_gate(good_gate())["pass"])
@@ -112,13 +121,26 @@ class PolicyTests(unittest.TestCase):
 
     def test_seniority_rules_and_invalid_types(self):
         for level in (
-            "Medior Developer", "Mid-level Developer", "Senior Engineer", "Lead Developer",
-            "Principal Engineer", "Staff Engineer", "SEO Specialist", "Technical Consultant",
+            "Medior Developer",
+            "Mid-level Developer",
+            "Senior Engineer",
+            "Lead Developer",
+            "Principal Engineer",
+            "Staff Engineer",
+            "SEO Specialist",
+            "Technical Consultant",
         ):
             self.assertTrue(hard_gate(good_gate(level=level))["pass"], level)
         for level in (
-            "Software Engineer", "Developer", "Junior Engineer", "Engineering Intern",
-            "Graduate Engineer", "Entry-level Engineer", "Trainee Developer", "Apprentice Web Developer", "",
+            "Software Engineer",
+            "Developer",
+            "Junior Engineer",
+            "Engineering Intern",
+            "Graduate Engineer",
+            "Entry-level Engineer",
+            "Trainee Developer",
+            "Apprentice Web Developer",
+            "",
         ):
             self.assertFalse(hard_gate(good_gate(level=level))["pass"], level)
         for level in (None, True, 1, ["Senior"], {"level": "Senior"}):
@@ -164,7 +186,14 @@ class PolicyTests(unittest.TestCase):
             "legitimacy_check_pass": True,
         }
         self.assertTrue(application_guard(base)["pass"])
-        for key in ("user_explicitly_requested", "final_verification_pass", "hard_gate_pass", "cv_selected", "work_eligibility_confirmed", "legitimacy_check_pass"):
+        for key in (
+            "user_explicitly_requested",
+            "final_verification_pass",
+            "hard_gate_pass",
+            "cv_selected",
+            "work_eligibility_confirmed",
+            "legitimacy_check_pass",
+        ):
             data = dict(base)
             data[key] = False
             self.assertFalse(application_guard(data)["pass"], key)
@@ -184,6 +213,9 @@ class PolicyTests(unittest.TestCase):
             "recipient_authorized_for_role": False,
             "factual_qa": "fail",
             "style_qa": "fail",
+            "language_qa_pass": False,
+            "ai_policy_compliant": False,
+            "authenticity_qa_pass": False,
             "motivation_qa_pass": False,
             "cv_attachment_ready": False,
             "subject_exact_vacancy_title": False,
@@ -191,6 +223,61 @@ class PolicyTests(unittest.TestCase):
         for key, value in mutations.items():
             with self.subTest(key=key):
                 self.assertFalse(application_guard(good_draft(**{key: value}))["pass"])
+
+    def test_application_language_priority_and_fallbacks(self):
+        self.assertEqual(
+            {
+                "language": "nl",
+                "reason": "explicit_required_language",
+                "confidence": "high",
+            },
+            choose_application_language(
+                {
+                    "explicit_required_language": "Nederlands",
+                    "vacancy_primary_language": "English",
+                }
+            ),
+        )
+        self.assertEqual(
+            {
+                "language": "en",
+                "reason": "vacancy_primary_language",
+                "confidence": "high",
+            },
+            choose_application_language({"vacancy_primary_language": "English"}),
+        )
+        self.assertEqual(
+            {
+                "language": "nl",
+                "reason": "vacancy_primary_language",
+                "confidence": "high",
+            },
+            choose_application_language({"vacancy_primary_language": "Dutch"}),
+        )
+        self.assertEqual(
+            {"language": "nl", "reason": "working_language", "confidence": "medium"},
+            choose_application_language(
+                {"vacancy_primary_language": "mixed", "working_language": "nl"}
+            ),
+        )
+        self.assertEqual(
+            {
+                "language": "en",
+                "reason": "mixed_unresolved_default_english",
+                "confidence": "low",
+            },
+            choose_application_language({"vacancy_primary_language": "mixed"}),
+        )
+
+    def test_application_language_rejects_unsupported_or_malformed_values(self):
+        for data in (
+            {"explicit_required_language": "German"},
+            {"vacancy_primary_language": ["nl"]},
+            {"form_language": True},
+        ):
+            with self.subTest(data=repr(data)):
+                with self.assertRaises(ValueError):
+                    choose_application_language(data)
 
     def test_invalid_stage_types_raise_value_error(self):
         for stage in (None, True, 1, [], {}, "send"):
