@@ -5,7 +5,7 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
-LOGIC_VERSION = "2026-08-25-v6"
+LOGIC_VERSION = "2026-08-25-v7"
 
 MATCH_COMPONENTS = {
     "hard_requirements": 35,
@@ -78,7 +78,7 @@ def hard_gate(data: dict[str, Any]) -> dict[str, Any]:
     if data.get("fully_remote") is not True:
         reasons.append("not_confirmed_fully_remote")
     work_eligibility = data.get("work_eligibility", data.get("netherlands_eligibility"))
-    if work_eligibility not in {"allowed", "plausible"}:
+    if not isinstance(work_eligibility, str) or work_eligibility not in {"allowed", "plausible"}:
         reasons.append("work_eligibility_not_sufficiently_supported")
 
     for key, reason in {
@@ -99,11 +99,15 @@ def hard_gate(data: dict[str, Any]) -> dict[str, Any]:
         elif value:
             reasons.append(reason)
 
-    level = str(data.get("level", "")).strip().lower()
-    if any(term in level for term in _SENIORITY_BLOCKED):
-        reasons.append("level_below_required_seniority")
-    elif not level or not any(term in level for term in _SENIORITY_ALLOWED):
-        reasons.append("level_not_confirmed_medior_or_above")
+    level_value = data.get("level", "")
+    if not isinstance(level_value, str):
+        reasons.append("invalid_level")
+    else:
+        level = level_value.strip().lower()
+        if any(term in level for term in _SENIORITY_BLOCKED):
+            reasons.append("level_below_required_seniority")
+        elif not level or not any(term in level for term in _SENIORITY_ALLOWED):
+            reasons.append("level_not_confirmed_medior_or_above")
 
     mismatch_count = data.get("central_hard_mismatch_count", 0)
     if isinstance(mismatch_count, bool) or not isinstance(mismatch_count, int) or mismatch_count < 0:
@@ -167,7 +171,7 @@ def _valid_https_url(value: str) -> bool:
 
 def application_guard(data: dict[str, Any]) -> dict[str, Any]:
     stage = data.get("stage")
-    if stage not in {"prepare", "draft"}:
+    if not isinstance(stage, str) or stage not in {"prepare", "draft"}:
         raise ValueError("stage must be prepare or draft")
     reasons: list[str] = []
     if data.get("user_explicitly_requested") is not True:
@@ -200,6 +204,8 @@ def application_guard(data: dict[str, Any]) -> dict[str, Any]:
             reasons.append("factual_qa_not_passed")
         if data.get("style_qa") != "pass":
             reasons.append("style_qa_not_passed")
+        if data.get("motivation_qa_pass") is not True:
+            reasons.append("motivation_qa_not_passed")
         if data.get("cv_attachment_ready") is not True:
             reasons.append("cv_attachment_not_ready")
         if data.get("subject_exact_vacancy_title") is not True:
