@@ -7,7 +7,8 @@ MIN_MONTHLY_EUR = 3500.0
 MAX_AGE_DAYS = 120
 TARGET_YEAR = 2026
 MAX_RESULTS = 10
-LOGIC_VERSION = "2026-08-25-simple-v1"
+UNKNOWN_SALARY_MIN_SCORE = 75.0
+LOGIC_VERSION = "2026-08-25-simple-v2"
 
 
 def _number(value: Any) -> float | None:
@@ -94,6 +95,8 @@ def top_vacancies(vacancies: list[dict[str, Any]], *, today: date | None = None)
         ranked["age_days"] = gate["age_days"]
         ranked["salary_known"] = gate["salary_known"]
         ranked["score"] = score(ranked, age_days=int(gate["age_days"] or 0))
+        if not gate["salary_known"] and ranked["score"] < UNKNOWN_SALARY_MIN_SCORE:
+            continue
         (known_salary if gate["salary_known"] else unknown_salary).append(ranked)
 
     key = lambda row: (row["score"], -(row["age_days"] or 0))
