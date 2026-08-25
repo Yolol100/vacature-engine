@@ -7,11 +7,13 @@ MIN_MONTHLY_EUR = 3500.0
 MAX_AGE_DAYS = 120
 TARGET_YEAR = 2026
 MAX_RESULTS = 10
-UNKNOWN_SALARY_MIN_SCORE = 75.0
+MIN_OUTPUT_SCORE = 75.0
+MIN_CORE_FIT = 40.0
+MIN_EVIDENCE_FIT = 10.0
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-26-simple-v3"
+LOGIC_VERSION = "2026-08-26-simple-v4"
 
 
 def _number(value: Any) -> float | None:
@@ -109,7 +111,11 @@ def top_vacancies(vacancies: list[dict[str, Any]], *, today: date | None = None)
         ranked["age_days"] = gate["age_days"]
         ranked["salary_known"] = gate["salary_known"]
         ranked["score"] = score(ranked, age_days=int(gate["age_days"] or 0))
-        if not gate["salary_known"] and ranked["score"] < UNKNOWN_SALARY_MIN_SCORE:
+        if ranked["score"] < MIN_OUTPUT_SCORE:
+            continue
+        if float(ranked["core_fit"]) < MIN_CORE_FIT:
+            continue
+        if float(ranked["evidence_fit"]) < MIN_EVIDENCE_FIT:
             continue
         (known_salary if gate["salary_known"] else unknown_salary).append(ranked)
 
