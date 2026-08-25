@@ -93,18 +93,48 @@ def good_draft(**overrides) -> dict[str, object]:
         "cv_selected": True,
         "work_eligibility_confirmed": True,
         "legitimacy_check_pass": True,
+        "application_route": "email",
         "recipient_verified": True,
         "recipient_authorized_for_role": True,
         "recipient_email": "jobs@example.com",
         "recipient_source_url": "https://example.com/jobs/1",
+        "cv_fit_qa": "pass",
+        "letter_language": "nl",
         "factual_qa": "pass",
         "style_qa": "pass",
-        "language_qa_pass": True,
-        "ai_policy_compliant": True,
-        "authenticity_qa_pass": True,
-        "motivation_qa_pass": True,
+        "language_qa": "pass",
+        "ai_policy_state": "not_found",
+        "ai_policy_compliance": "pass",
+        "authenticity_qa": "pass",
+        "motivation_qa": "pass",
         "cv_attachment_ready": True,
         "subject_exact_vacancy_title": True,
+    }
+    data.update(overrides)
+    return data
+
+
+def good_manual(**overrides) -> dict[str, object]:
+    data: dict[str, object] = {
+        "stage": "manual",
+        "user_explicitly_requested": True,
+        "final_verification_pass": True,
+        "hard_gate_pass": True,
+        "cv_selected": True,
+        "work_eligibility_confirmed": True,
+        "legitimacy_check_pass": True,
+        "application_route": "manual_external_form",
+        "application_url": "https://example.com/jobs/1/apply",
+        "cv_fit_qa": "pass",
+        "letter_language": "en",
+        "factual_qa": "pass",
+        "style_qa": "pass",
+        "language_qa": "pass",
+        "ai_policy_state": "not_found",
+        "ai_policy_compliance": "pass",
+        "authenticity_qa": "pass",
+        "motivation_qa": "pass",
+        "cv_upload_ready": True,
     }
     data.update(overrides)
     return data
@@ -198,9 +228,9 @@ def run_audit() -> dict[str, object]:
         for key, bit in zip(score_keys, bits, strict=True):
             data[key] = maxima[key] if bit else 0
         result = score(data)
-        expected_match = sum(float(data[k]) for k in MATCH_COMPONENTS)
+        expected_match = sum(float(data[key]) for key in MATCH_COMPONENTS)
         expected_opp = expected_match * 0.55 + sum(
-            float(data[k]) for k in OPPORTUNITY_COMPONENTS
+            float(data[key]) for key in OPPORTUNITY_COMPONENTS
         )
         audit.check("score_match_cartesian", result["match_score"] == round(expected_match, 1))
         audit.check("score_opp_cartesian", result["opportunity_score"] == round(expected_opp, 1))
@@ -235,7 +265,7 @@ def run_audit() -> dict[str, object]:
         data = {"stage": "prepare", **dict(zip(prepare_keys, bits, strict=True))}
         audit.check(f"prepare_{bits}", application_guard(data)["pass"] is all(bits))
 
-    draft_keys = (
+    draft_bool_keys = (
         "user_explicitly_requested",
         "final_verification_pass",
         "hard_gate_pass",
@@ -244,16 +274,126 @@ def run_audit() -> dict[str, object]:
         "legitimacy_check_pass",
         "recipient_verified",
         "recipient_authorized_for_role",
-        "language_qa_pass",
-        "ai_policy_compliant",
-        "authenticity_qa_pass",
-        "motivation_qa_pass",
         "cv_attachment_ready",
         "subject_exact_vacancy_title",
     )
-    for bits in itertools.product((False, True), repeat=len(draft_keys)):
-        data = good_draft(**dict(zip(draft_keys, bits, strict=True)))
-        audit.check(f"draft_{bits}", application_guard(data)["pass"] is all(bits))
+    qa_keys = ("cv_fit_qa", "language_qa", "authenticity_qa", "motivation_qa")
+    draft_dimensions = len(draft_bool_keys) + len(qa_keys) + 1
+    for bits in itertools.product((False, True), repeat=draft_dimensions):
+        bool_bits = bits[: len(draft_bool_keys)]
+        qa_bits = bits[len(draft_bool_keys) : len(draft_bool_keys) + len(qa_keys)]
+        compliance_bit = bits[-1]
+        overrides: dict[str, object] = dict(
+            zip(draft_bool_keys, bool_bits, strict=True)
+        )
+        overrides.update(
+            {
+                key: "pass" if bit else "fail"
+                for key, bit in zip(qa_keys, qa_bits, strict=True)
+            }
+        )
+        overrides["ai_policy_compliance"] = "pass" if compliance_bit else "fail"
+        result = application_guard(good_draft(**overrides))
+        audit.check(f"draft_final_{bits}", result["pass"] is all(bits))
+
+    manual_bool_keys = (
+        "user_explicitly_requested",
+        "final_verification_pass",
+        "hard_gate_pass",
+        "cv_selected",
+        "work_eligibility_confirmed",
+        "legitimacy_check_pass",
+        "cv_upload_ready",
+    )
+    manual_dimensions = len(manual_bool_keys) + len(qa_keys) + 1
+    for bits in itertools.product((False, True), repeat=manual_dimensions):
+        bool_bits = bits[: len(manual_bool_keys)]
+        qa_bits = bits[len(manual_bool_keys) : len(manual_bool_keys) + len(qa_keys)]
+        compliance_bit = bits[-1]
+        overrides = dict(zip(manual_bool_keys, bool_bits, strict=True))
+        overrides.update(
+            {
+                key: "pass" if bit else "fail"
+                for key, bit in zip(qa_keys, qa_bits, strict=True)
+            }
+        )
+        overrides["ai_policy_compliance"] = "pass" if compliance_bit else "fail"
+        result = application_guard(good_manual(**overrides))
+        audit.check(f"manual_final_{bits}", result["pass"] is all(bits))
+
+    for factual, style in (("fail", "pass"), ("pass", "fail"), ("FAIL", "pass"), ("pass", "PASS")):
+        audit.check(
+            f"draft_bad_qa_{factual}_{style}",
+            application_guard(good_draft(factual_qa=factual, style_qa=style))["pass"] is False,
+        )
+        audit.check(
+            f"manual_bad_qa_{factual}_{style}",
+            application_guard(good_manual(factual_qa=factual, style_qa=style))["pass"] is False,
+        )
+
+    for state, expected in (
+        ("allowed", True),
+        ("restricted", True),
+        ("not_found", True),
+        ("prohibited", False),
+        ("unknown", False),
+        (None, False),
+        ("unchecked", False),
+    ):
+        audit.check(
+            f"draft_ai_{state!r}",
+            application_guard(good_draft(ai_policy_state=state))["pass"] is expected,
+        )
+        audit.check(
+            f"manual_ai_{state!r}",
+            application_guard(good_manual(ai_policy_state=state))["pass"] is expected,
+        )
+
+    route_cases = (
+        (good_draft(application_route="email"), True),
+        (good_draft(application_route="manual_platform"), False),
+        (good_manual(application_route="manual_external_form"), True),
+        (good_manual(application_route="manual_platform"), True),
+        (good_manual(application_route="indeed"), True),
+        (good_manual(application_route="linkedin"), True),
+        (good_manual(application_route="other_platform"), True),
+        (good_manual(application_route="email"), False),
+        (good_manual(application_route="unknown"), False),
+    )
+    for index, (data, expected) in enumerate(route_cases):
+        audit.check(f"application_route_{index}", application_guard(data)["pass"] is expected)
+
+    for url in ("", "http://example.com/apply", "https://u:p@example.com/apply"):
+        audit.check(
+            f"manual_bad_url_{url}",
+            application_guard(good_manual(application_url=url))["pass"] is False,
+        )
+
+    audit.check(
+        "subject_explicit_override",
+        application_guard(
+            good_draft(
+                subject_exact_vacancy_title=False,
+                subject_instruction_followed=True,
+            )
+        )["pass"]
+        is True,
+    )
+
+    for state_key, bool_key in (
+        ("cv_fit_qa", "cv_fit_qa_pass"),
+        ("language_qa", "language_qa_pass"),
+        ("authenticity_qa", "authenticity_qa_pass"),
+        ("motivation_qa", "motivation_qa_pass"),
+    ):
+        data = good_draft(**{state_key: "fail", bool_key: True})
+        audit.check(f"qa_state_precedence_{state_key}", application_guard(data)["pass"] is False)
+    audit.check(
+        "ai_state_precedence_prohibited",
+        application_guard(good_draft(ai_policy_state="prohibited", ai_policy_compliant=True))["pass"]
+        is False,
+    )
+
     for stage in (None, True, 1, [], {}, "send"):
         try:
             application_guard({"stage": stage})
@@ -274,6 +414,15 @@ def run_audit() -> dict[str, object]:
         (
             {"form_language": "Nederlands", "vacancy_primary_language": "English"},
             ("nl", "form_language", "high"),
+        ),
+        (
+            {
+                "explicit_required_language": "nl",
+                "explicit_cover_letter_language": "en",
+                "form_language": "en",
+                "vacancy_primary_language": "en",
+            },
+            ("nl", "explicit_required_language", "high"),
         ),
         ({"vacancy_primary_language": "English"}, ("en", "vacancy_primary_language", "high")),
         ({"vacancy_primary_language": "Dutch"}, ("nl", "vacancy_primary_language", "high")),
