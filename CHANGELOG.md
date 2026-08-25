@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.4 - 2026-08-26
+- De engine gebruikt geen impliciete hostdatum meer; `today` moet expliciet uit de canonieke Config-timezone komen.
+- CI gebruikt actuele gepinde GitHub Actions en test Python 3.11, 3.12, 3.13 en 3.14.
+
 ## 4.0.3 - 2026-08-26
 - Alleen sterke matches worden nog uitgevoerd: score >=75, eisenmatch >=40 en bewijs >=10.
 - Nieuwe regressietests blokkeren zwakke bekende-salarismatches en bewaken de 75-puntgrens.
