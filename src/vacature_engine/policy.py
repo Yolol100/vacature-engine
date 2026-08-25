@@ -5,7 +5,7 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
-LOGIC_VERSION = "2026-08-25-v5"
+LOGIC_VERSION = "2026-08-25-v6"
 
 MATCH_COMPONENTS = {
     "hard_requirements": 35,
@@ -89,6 +89,7 @@ def hard_gate(data: dict[str, Any]) -> dict[str, Any]:
         "suspicious_payment": "suspicious_payment_terms",
         "marketplace_excluded": "excluded_marketplace_or_paywall",
         "duplicate": "duplicate_or_previously_shown",
+        "stale_repost": "stale_or_recycled_repost",
         "geographic_restriction_blocks": "incompatible_geographic_restriction",
         "us_residents_only": "us_residents_only",
     }.items():
