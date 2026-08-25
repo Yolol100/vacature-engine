@@ -8,7 +8,10 @@ MAX_AGE_DAYS = 120
 TARGET_YEAR = 2026
 MAX_RESULTS = 10
 UNKNOWN_SALARY_MIN_SCORE = 75.0
-LOGIC_VERSION = "2026-08-25-simple-v2"
+CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
+EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
+WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
+LOGIC_VERSION = "2026-08-26-simple-v3"
 
 
 def _number(value: Any) -> float | None:
@@ -26,6 +29,18 @@ def _posted_date(value: Any) -> date | None:
         return date.fromisoformat(value[:10])
     except ValueError:
         return None
+
+
+def _recency_points(age_days: int) -> float:
+    if age_days <= 14:
+        return 10.0
+    if age_days <= 30:
+        return 8.0
+    if age_days <= 60:
+        return 6.0
+    if age_days <= 90:
+        return 4.0
+    return 2.0
 
 
 def eligibility(vacancy: dict[str, Any], *, today: date | None = None) -> dict[str, Any]:
@@ -72,14 +87,13 @@ def score(vacancy: dict[str, Any], *, age_days: int) -> float:
     core_fit = _number(vacancy.get("core_fit"))
     evidence_fit = _number(vacancy.get("evidence_fit"))
     workstyle_fit = _number(vacancy.get("workstyle_fit"))
-    if core_fit is None or not 0 <= core_fit <= 50:
-        raise ValueError("core_fit must be 0..50")
-    if evidence_fit is None or not 0 <= evidence_fit <= 25:
-        raise ValueError("evidence_fit must be 0..25")
-    if workstyle_fit is None or not 0 <= workstyle_fit <= 15:
-        raise ValueError("workstyle_fit must be 0..15")
-    recency = max(0.0, 10.0 * (1.0 - min(age_days, MAX_AGE_DAYS) / MAX_AGE_DAYS))
-    return round(core_fit + evidence_fit + workstyle_fit + recency, 1)
+    if core_fit not in CORE_FIT_ANCHORS:
+        raise ValueError("core_fit must use 0, 25, 40, or 50")
+    if evidence_fit not in EVIDENCE_FIT_ANCHORS:
+        raise ValueError("evidence_fit must use 0, 10, 18, or 25")
+    if workstyle_fit not in WORKSTYLE_FIT_ANCHORS:
+        raise ValueError("workstyle_fit must use 0, 5, 10, or 15")
+    return core_fit + evidence_fit + workstyle_fit + _recency_points(age_days)
 
 
 def top_vacancies(vacancies: list[dict[str, Any]], *, today: date | None = None) -> list[dict[str, Any]]:
@@ -99,14 +113,22 @@ def top_vacancies(vacancies: list[dict[str, Any]], *, today: date | None = None)
             continue
         (known_salary if gate["salary_known"] else unknown_salary).append(ranked)
 
-    key = lambda row: (row["score"], -(row["age_days"] or 0))
+    def key(row: dict[str, Any]) -> tuple[float, float, float, int]:
+        return (
+            float(row["score"]),
+            float(row["core_fit"]),
+            float(row["evidence_fit"]),
+            -(row["age_days"] or 0),
+        )
+
     known_salary.sort(key=key, reverse=True)
     unknown_salary.sort(key=key, reverse=True)
     return (known_salary + unknown_salary)[:MAX_RESULTS]
 
 
 def choose_language(
-    *, explicit_language: str | None = None,
+    *,
+    explicit_language: str | None = None,
     form_language: str | None = None,
     vacancy_language: str | None = None,
 ) -> str:
