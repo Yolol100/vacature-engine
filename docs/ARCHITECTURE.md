@@ -12,6 +12,8 @@
 
 `public source -> adapter/JSON-LD -> JobRecord/evidence -> deterministic dedupe/recency -> Skill canonical verification -> gates/score -> optional application package -> Outlook draft -> Drive readback`
 
+Search qualification and application readiness are deliberately separate. `work_eligibility=plausible` can remain a searchable/rankable candidate, but the application guard requires explicit work-eligibility confirmation and a passed employer/application-route legitimacy check.
+
 ## Adapter contract
 
 Every adapter accepts one employer/board slug and returns `list[JobRecord]`. Adapters do not decide whether a job fits the user. Unknown values remain `None`; adapters do not invent dates, countries, remote status or salary.
@@ -39,9 +41,13 @@ Treat readiness as layered evidence rather than one headline score:
 2. **Deterministic** — unit, regression and Skill↔repo parity tests pass.
 3. **Dependency/live** — public-source assumptions and GitHub Action pins are rechecked against current official sources.
 4. **State** — Drive schema/version writes are read back.
-5. **Runtime** — a real candidate must still pass best-available live-listing freshness, remote/NL and duplicate verification; use employer/original evidence for conflicts, gaps or application-route recovery and never manufacture a positive golden path.
+5. **Runtime** — a real candidate must still pass best-available live-listing freshness, fully-remote scope, work/location eligibility, legitimacy and duplicate verification; use employer/original evidence for conflicts, gaps or application-route recovery and never manufacture a positive golden path.
 
 A build/configuration audit and a real vacancy-run proof are separate claims.
+
+## Eligibility semantics
+
+Preferred deterministic fields are `work_eligibility` and `work_eligibility_certainty`. Legacy `netherlands_eligibility` and `netherlands_certainty` remain accepted so older Drive/test inputs do not break. A generic `geographic_restriction_blocks` flag represents any explicit incompatible country/residence restriction; `us_residents_only` remains a legacy specific flag.
 
 ## Date semantics
 
