@@ -14,7 +14,7 @@ Het zoeken op websites, het lezen van CV/portfolio en het schrijven van motivati
 
 - volledig remote;
 - salaris minimaal EUR 3.500 per maand wanneer gepubliceerd;
-- onbekend salaris alleen als fallback;
+- onbekend salaris alleen als fallback bij een score van minimaal 75/100;
 - geen expliciet onverenigbare country-only vacature;
 - WordPress is verplicht als inhoudelijke kern;
 - Elementor, WooCommerce, Gutenberg, ACF, PHP, front-end, performance, SEO en QA tellen alleen mee als ze duidelijk aan WordPress gekoppeld zijn;
