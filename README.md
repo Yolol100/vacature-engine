@@ -7,7 +7,8 @@ The Skill remains the control plane. This repository only owns deterministic cod
 ## What it owns
 
 - URL/title/employer normalization, stable vacancy IDs and content hashes
-- deterministic hard gates, scoring and application draft guard
+- deterministic hard gates, scoring and application-readiness guard
+- generic worldwide work-eligibility aliases with legacy Netherlands-key compatibility
 - one normalized `JobRecord` schema
 - credential-free public-read adapters for Greenhouse, Lever, Ashby, SmartRecruiters and Personio XML
 - shared HTTP retries/backoff/error mapping without proxy rotation or access-control bypass
@@ -66,11 +67,12 @@ All commands emit JSON to stdout. Errors are JSON on stderr and return exit code
 
 Do not use this repository as the orchestrator. The reliable order is:
 
-1. The ChatGPT Skill reads Drive state and discovers candidates.
+1. The ChatGPT Skill reads Drive state and discovers worldwide remote candidates across multiple source lanes.
 2. Use this repo only for deterministic normalization, adapters, dedupe, gates and score arithmetic.
-3. Reopen serious candidates at the best available live listing and independently verify freshness, remote scope, Netherlands eligibility and active status; recover employer/original ATS evidence only for missing, conflicting or suspicious facts or to recover an application route.
-4. Only after those semantic checks pass, prepare an application package; Outlook remains draft-only.
-5. Persist results to Drive and read them back.
+3. Reopen serious candidates at the best available live listing and independently verify freshness, fully-remote scope, work/location eligibility and active status; recover employer/original ATS evidence only for missing, conflicting or suspicious facts or to recover an application route.
+4. A `plausible` work-eligibility state can remain visible during search, but application preparation requires explicit eligibility confirmation for the actual employee/contractor arrangement and a passed legitimacy check.
+5. Only after those semantic checks pass, prepare an application package; Outlook remains draft-only.
+6. Persist results to Drive and read them back.
 
 For maintenance/release checks run:
 
@@ -80,6 +82,12 @@ python scripts/release_check.py --require-ruff
 ```
 
 The release check verifies required files, full-SHA Action pins, least-privilege CI, compilation, unit/regression tests, the adversarial/metamorphic scenario audit and Ruff. Runtime vacancy correctness still requires live evidence from the selected listing; a complete established job-board listing may prove visible facts, while employer/original evidence is used to resolve conflicts or missing application routes. A green build is not proof that a vacancy passes the hard gates.
+
+## Eligibility compatibility
+
+Preferred policy inputs are `work_eligibility` and `work_eligibility_certainty`. Legacy `netherlands_eligibility` and `netherlands_certainty` remain accepted for compatibility with older vectors and Drive data. `geographic_restriction_blocks` is the generic incompatible-location flag; `us_residents_only` remains accepted as a legacy specific blocker.
+
+The application guard also requires `work_eligibility_confirmed=true` and `legitimacy_check_pass=true`. These conditions apply to both email and no-email/manual-form preparation.
 
 ## Adapter policy
 
