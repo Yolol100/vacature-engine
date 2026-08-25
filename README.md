@@ -21,9 +21,11 @@ Score-input gebruikt alleen vaste ankers:
 
 Een resultaat verschijnt alleen bij score >=75, `core_fit >=40` en `evidence_fit >=10`. Bekend salaris komt vóór onbekend salaris. Bij gelijke score: hogere eisenmatch -> hoger bewijs -> nieuwere vacature.
 
+De aanroeper moet `today` altijd expliciet meegeven, bepaald met de canonieke timezone uit `Config`. De engine gebruikt nooit stil de host- of serverdatum.
+
 ```python
 from vacature_engine import top_vacancies
-best = top_vacancies(vacancies)
+best = top_vacancies(vacancies, today=today_from_config)
 ```
 
 Geen scraping, e-mail of sollicitatieformulieren. `wordpress_related=true` mag alleen worden gezet wanneer WordPress aantoonbaar centraal staat.

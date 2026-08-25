@@ -13,7 +13,7 @@ MIN_EVIDENCE_FIT = 10.0
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-26-simple-v4"
+LOGIC_VERSION = "2026-08-26-simple-v5"
 
 
 def _number(value: Any) -> float | None:
@@ -45,8 +45,7 @@ def _recency_points(age_days: int) -> float:
     return 2.0
 
 
-def eligibility(vacancy: dict[str, Any], *, today: date | None = None) -> dict[str, Any]:
-    today = today or date.today()
+def eligibility(vacancy: dict[str, Any], *, today: date) -> dict[str, Any]:
     reasons: list[str] = []
 
     posted = _posted_date(vacancy.get("posted_date"))
@@ -98,8 +97,7 @@ def score(vacancy: dict[str, Any], *, age_days: int) -> float:
     return core_fit + evidence_fit + workstyle_fit + _recency_points(age_days)
 
 
-def top_vacancies(vacancies: list[dict[str, Any]], *, today: date | None = None) -> list[dict[str, Any]]:
-    today = today or date.today()
+def top_vacancies(vacancies: list[dict[str, Any]], *, today: date) -> list[dict[str, Any]]:
     known_salary: list[dict[str, Any]] = []
     unknown_salary: list[dict[str, Any]] = []
 
