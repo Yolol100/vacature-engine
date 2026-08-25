@@ -234,6 +234,8 @@ class PolicyTests(unittest.TestCase):
             choose_application_language(
                 {
                     "explicit_required_language": "Nederlands",
+                    "explicit_cover_letter_language": "English",
+                    "form_language": "English",
                     "vacancy_primary_language": "English",
                 }
             ),
@@ -275,9 +277,8 @@ class PolicyTests(unittest.TestCase):
             {"vacancy_primary_language": ["nl"]},
             {"form_language": True},
         ):
-            with self.subTest(data=repr(data)):
-                with self.assertRaises(ValueError):
-                    choose_application_language(data)
+            with self.subTest(data=repr(data)), self.assertRaises(ValueError):
+                choose_application_language(data)
 
     def test_invalid_stage_types_raise_value_error(self):
         for stage in (None, True, 1, [], {}, "send"):
