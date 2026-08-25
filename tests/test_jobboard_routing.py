@@ -24,24 +24,52 @@ def recruitment_draft():
         "cv_selected": True,
         "work_eligibility_confirmed": True,
         "legitimacy_check_pass": True,
+        "application_route": "email",
         "recipient_verified": True,
         "recipient_recruitment_relevant": True,
         "recipient_email": "jobs@example.com",
         "recipient_source_url": "https://example.com/careers",
+        "cv_fit_qa": "pass",
+        "letter_language": "en",
         "factual_qa": "pass",
         "style_qa": "pass",
-        "language_qa_pass": True,
-        "ai_policy_compliant": True,
-        "authenticity_qa_pass": True,
-        "motivation_qa_pass": True,
+        "language_qa": "pass",
+        "ai_policy_state": "not_found",
+        "ai_policy_compliance": "pass",
+        "authenticity_qa": "pass",
+        "motivation_qa": "pass",
         "cv_attachment_ready": True,
         "subject_exact_vacancy_title": True,
     }
 
 
+def manual_handoff():
+    return {
+        "stage": "manual",
+        "user_explicitly_requested": True,
+        "final_verification_pass": True,
+        "hard_gate_pass": True,
+        "cv_selected": True,
+        "work_eligibility_confirmed": True,
+        "legitimacy_check_pass": True,
+        "application_route": "manual_external_form",
+        "application_url": "https://example.com/careers/apply",
+        "cv_fit_qa": "pass",
+        "letter_language": "en",
+        "factual_qa": "pass",
+        "style_qa": "pass",
+        "language_qa": "pass",
+        "ai_policy_state": "not_found",
+        "ai_policy_compliance": "pass",
+        "authenticity_qa": "pass",
+        "motivation_qa": "pass",
+        "cv_upload_ready": True,
+    }
+
+
 class JobboardRoutingTests(unittest.TestCase):
-    def test_logic_version_v8(self):
-        self.assertEqual(LOGIC_VERSION, "2026-08-25-v8")
+    def test_logic_version_v9(self):
+        self.assertEqual(LOGIC_VERSION, "2026-08-25-v9")
 
     def test_jobboard_listing_keys_pass_without_official_duplicate(self):
         self.assertTrue(hard_gate(jobboard_gate())["pass"])
@@ -70,6 +98,9 @@ class JobboardRoutingTests(unittest.TestCase):
 
     def test_verified_recruitment_email_can_create_draft(self):
         self.assertTrue(application_guard(recruitment_draft())["pass"])
+
+    def test_manual_external_form_can_be_finalized_without_email(self):
+        self.assertTrue(application_guard(manual_handoff())["pass"])
 
     def test_legacy_role_authorization_remains_compatible(self):
         data = recruitment_draft()
