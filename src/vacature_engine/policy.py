@@ -5,7 +5,7 @@ import re
 from typing import Any
 from urllib.parse import urlsplit
 
-LOGIC_VERSION = "2026-08-25-v8"
+LOGIC_VERSION = "2026-08-25-v9"
 
 MATCH_COMPONENTS = {
     "hard_requirements": 35,
@@ -56,6 +56,15 @@ _LANGUAGE_ALIASES = {
     "english": "en",
     "engels": "en",
 }
+_FINAL_APPLICATION_STAGES = {"draft", "manual"}
+_MANUAL_APPLICATION_ROUTES = {
+    "manual_external_form",
+    "manual_platform",
+    "indeed",
+    "linkedin",
+    "other_platform",
+}
+_AI_POLICY_STATES = {"allowed", "restricted", "prohibited", "not_found", "unknown"}
 
 
 def _finite_number(value: object) -> float | None:
@@ -201,14 +210,20 @@ def _bounded(data: dict[str, Any], key: str, maximum: float) -> float:
 
 
 def score(data: dict[str, Any]) -> dict[str, Any]:
-    match_parts = {key: _bounded(data, key, maximum) for key, maximum in MATCH_COMPONENTS.items()}
+    match_parts = {
+        key: _bounded(data, key, maximum) for key, maximum in MATCH_COMPONENTS.items()
+    }
     raw_match = sum(match_parts.values())
     multiple = _strict_optional_bool(data, "multiple_central_hard_mismatches")
     central_missing = _strict_optional_bool(data, "central_hard_missing")
     match_score = min(raw_match, 59.0) if central_missing else raw_match
     opportunity_parts: dict[str, float] = {}
     for key, maximum in OPPORTUNITY_COMPONENTS.items():
-        if key == "work_eligibility_certainty" and key not in data and "netherlands_certainty" in data:
+        if (
+            key == "work_eligibility_certainty"
+            and key not in data
+            and "netherlands_certainty" in data
+        ):
             legacy = dict(data)
             legacy[key] = legacy["netherlands_certainty"]
             opportunity_parts[key] = _bounded(legacy, key, maximum)
@@ -243,10 +258,31 @@ def _valid_https_url(value: str) -> bool:
         return False
 
 
+def _qa_pass(data: dict[str, Any], state_key: str, legacy_bool_key: str) -> bool:
+    """Prefer explicit pass/fail state, with a boolean alias for backward compatibility."""
+    if state_key in data:
+        return data.get(state_key) == "pass"
+    return data.get(legacy_bool_key) is True
+
+
+def _ai_policy_state(data: dict[str, Any]) -> str | None:
+    value = data.get("ai_policy_state", data.get("ai_policy"))
+    if not isinstance(value, str):
+        return None
+    normalized = value.strip().lower()
+    return normalized if normalized in _AI_POLICY_STATES else None
+
+
+def _ai_policy_compliance_pass(data: dict[str, Any]) -> bool:
+    if "ai_policy_compliance" in data:
+        return data.get("ai_policy_compliance") == "pass"
+    return data.get("ai_policy_compliant") is True
+
+
 def application_guard(data: dict[str, Any]) -> dict[str, Any]:
     stage = data.get("stage")
-    if not isinstance(stage, str) or stage not in {"prepare", "draft"}:
-        raise ValueError("stage must be prepare or draft")
+    if not isinstance(stage, str) or stage not in {"prepare", "draft", "manual"}:
+        raise ValueError("stage must be prepare, draft or manual")
     reasons: list[str] = []
     if data.get("user_explicitly_requested") is not True:
         reasons.append("user_request_missing")
@@ -261,7 +297,34 @@ def application_guard(data: dict[str, Any]) -> dict[str, Any]:
     if data.get("legitimacy_check_pass") is not True:
         reasons.append("legitimacy_check_not_passed")
 
+    if stage in _FINAL_APPLICATION_STAGES:
+        if not _qa_pass(data, "cv_fit_qa", "cv_fit_qa_pass"):
+            reasons.append("cv_fit_qa_not_passed")
+        if data.get("letter_language") not in {"nl", "en"}:
+            reasons.append("letter_language_not_resolved")
+        if data.get("factual_qa") != "pass":
+            reasons.append("factual_qa_not_passed")
+        if data.get("style_qa") != "pass":
+            reasons.append("style_qa_not_passed")
+        if not _qa_pass(data, "language_qa", "language_qa_pass"):
+            reasons.append("language_qa_not_passed")
+
+        policy_state = _ai_policy_state(data)
+        if policy_state is None:
+            reasons.append("ai_policy_state_unresolved")
+        elif policy_state in {"prohibited", "unknown"}:
+            reasons.append("ai_policy_state_blocks_final_prose")
+        if not _ai_policy_compliance_pass(data):
+            reasons.append("ai_policy_not_compliant")
+
+        if not _qa_pass(data, "authenticity_qa", "authenticity_qa_pass"):
+            reasons.append("authenticity_qa_not_passed")
+        if not _qa_pass(data, "motivation_qa", "motivation_qa_pass"):
+            reasons.append("motivation_qa_not_passed")
+
     if stage == "draft":
+        if data.get("application_route") != "email":
+            reasons.append("email_application_route_not_confirmed")
         email = str(data.get("recipient_email", "")).strip()
         source = str(data.get("recipient_source_url", "")).strip()
         recruitment_relevant = data.get(
@@ -274,20 +337,22 @@ def application_guard(data: dict[str, Any]) -> dict[str, Any]:
             or not _valid_https_url(source)
         ):
             reasons.append("verified_recruitment_recipient_missing")
-        if data.get("factual_qa") != "pass":
-            reasons.append("factual_qa_not_passed")
-        if data.get("style_qa") != "pass":
-            reasons.append("style_qa_not_passed")
-        if data.get("language_qa_pass") is not True:
-            reasons.append("language_qa_not_passed")
-        if data.get("ai_policy_compliant") is not True:
-            reasons.append("ai_policy_not_compliant")
-        if data.get("authenticity_qa_pass") is not True:
-            reasons.append("authenticity_qa_not_passed")
-        if data.get("motivation_qa_pass") is not True:
-            reasons.append("motivation_qa_not_passed")
         if data.get("cv_attachment_ready") is not True:
             reasons.append("cv_attachment_not_ready")
-        if data.get("subject_exact_vacancy_title") is not True:
-            reasons.append("subject_not_exact_vacancy_title")
+        subject_ok = (
+            data.get("subject_exact_vacancy_title") is True
+            or data.get("subject_instruction_followed") is True
+        )
+        if not subject_ok:
+            reasons.append("subject_requirement_not_met")
+
+    if stage == "manual":
+        if data.get("application_route") not in _MANUAL_APPLICATION_ROUTES:
+            reasons.append("manual_application_route_not_confirmed")
+        application_url = str(data.get("application_url", "")).strip()
+        if not _valid_https_url(application_url):
+            reasons.append("manual_application_url_not_verified")
+        if data.get("cv_upload_ready") is not True:
+            reasons.append("cv_upload_not_ready")
+
     return {"pass": not reasons, "stage": stage, "reasons": reasons}
