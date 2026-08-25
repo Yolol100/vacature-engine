@@ -18,8 +18,8 @@ def good_gate(**overrides):
 
 
 class RepostCompatibilityTests(unittest.TestCase):
-    def test_logic_version_is_current_v7(self):
-        self.assertEqual(LOGIC_VERSION, "2026-08-25-v7")
+    def test_logic_version_is_current_v8(self):
+        self.assertEqual(LOGIC_VERSION, "2026-08-25-v8")
 
     def test_explicit_stale_repost_blocks(self):
         result = hard_gate(good_gate(stale_repost=True))
