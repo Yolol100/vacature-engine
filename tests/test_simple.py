@@ -29,6 +29,17 @@ class SimplePolicyTests(unittest.TestCase):
         self.assertTrue(eligibility(vacancy(), today=TODAY)["pass"])
         self.assertEqual(1, len(top_vacancies([vacancy()], today=TODAY)))
 
+    def test_today_is_required(self):
+        with self.assertRaises(TypeError):
+            eligibility(vacancy())
+        with self.assertRaises(TypeError):
+            top_vacancies([vacancy()])
+
+        amsterdam_today = date(2026, 8, 26)
+        same_day = vacancy(posted_date=amsterdam_today.isoformat())
+        self.assertTrue(eligibility(same_day, today=amsterdam_today)["pass"])
+        self.assertEqual(1, len(top_vacancies([same_day], today=amsterdam_today)))
+
     def test_hard_filters(self):
         cases = [
             vacancy(fully_remote=False),
