@@ -36,8 +36,8 @@ def recruitment_draft():
 
 
 class JobboardRoutingTests(unittest.TestCase):
-    def test_logic_version_v5(self):
-        self.assertEqual(LOGIC_VERSION, "2026-08-25-v5")
+    def test_logic_version_v6(self):
+        self.assertEqual(LOGIC_VERSION, "2026-08-25-v6")
 
     def test_jobboard_listing_keys_pass_without_official_duplicate(self):
         self.assertTrue(hard_gate(jobboard_gate())["pass"])
