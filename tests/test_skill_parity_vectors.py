@@ -1,7 +1,7 @@
 import unittest
 
 from vacature_engine.core import canonical_url, content_hash, vacancy_id
-from vacature_engine.policy import application_guard, hard_gate, score
+from vacature_engine.policy import application_guard, choose_application_language, hard_gate, score
 
 
 class SkillParityVectors(unittest.TestCase):
@@ -51,6 +51,27 @@ class SkillParityVectors(unittest.TestCase):
             "legitimacy_check_pass": True,
         }
         self.assertEqual(application_guard(data), {"pass": True, "stage": "prepare", "reasons": []})
+
+    def test_language_vector(self):
+        self.assertEqual(
+            choose_application_language(
+                {
+                    "explicit_required_language": "Nederlands",
+                    "vacancy_primary_language": "English",
+                }
+            ),
+            {
+                "language": "nl",
+                "reason": "explicit_required_language",
+                "confidence": "high",
+            },
+        )
+        self.assertEqual(
+            choose_application_language(
+                {"vacancy_primary_language": "mixed", "working_language": "English"}
+            ),
+            {"language": "en", "reason": "working_language", "confidence": "medium"},
+        )
 
     def test_score_vector(self):
         data = {
