@@ -1,4 +1,4 @@
-__version__ = "3.5.0"
+__version__ = "3.6.0"
 
 from .adapters import AdapterRegistry
 from .core import canonical_url, content_hash, norm, vacancy_id
