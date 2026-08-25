@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.3.0 - 2026-08-25
+
+- Added an explicit backwards-compatible `stale_repost` hard-gate input so evidence-backed recycled/re-dated vacancies fail deterministically instead of relying only on prose policy.
+- Added regression coverage for stale-repost blocking, legacy absence/default behavior and invalid input types.
+- Kept duplicate and freshness semantics unchanged: the workflow must still establish semantic repost evidence before setting the new blocker.
+
 ## 3.2.0 - 2026-08-25
 
 - Generalized location semantics for worldwide-remote discovery: prefer `work_eligibility` and `work_eligibility_certainty` while preserving legacy Netherlands-specific inputs.
