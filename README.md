@@ -5,7 +5,7 @@ Kleine deterministische helper voor `vacature-search`.
 Doet alleen:
 1. harde vacaturefilters;
 2. vaste 100-puntsscore;
-3. maximaal 10 resultaten sorteren.
+3. sterke matches selecteren en maximaal 10 resultaten sorteren.
 
 De Skill doet discovery, semantische beoordeling, bewijscontrole en motivatie.
 
@@ -19,7 +19,7 @@ Score-input gebruikt alleen vaste ankers:
 - `workstyle_fit`: `0 / 5 / 10 / 15`
 - actualiteit: `10 / 8 / 6 / 4 / 2` voor `0-14 / 15-30 / 31-60 / 61-90 / 91-120` dagen
 
-Onbekend salaris is alleen fallback bij score >=75. Bekend salaris komt eerst. Bij gelijke score: hogere eisenmatch -> hoger bewijs -> nieuwere vacature.
+Een resultaat verschijnt alleen bij score >=75, `core_fit >=40` en `evidence_fit >=10`. Bekend salaris komt vóór onbekend salaris. Bij gelijke score: hogere eisenmatch -> hoger bewijs -> nieuwere vacature.
 
 ```python
 from vacature_engine import top_vacancies
