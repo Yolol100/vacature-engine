@@ -3,9 +3,9 @@ import unittest
 from vacature_engine.policy import LOGIC_VERSION, application_guard, hard_gate
 
 
-class V7HardeningTests(unittest.TestCase):
-    def test_logic_version_v7(self):
-        self.assertEqual(LOGIC_VERSION, "2026-08-25-v7")
+class V8HardeningTests(unittest.TestCase):
+    def test_logic_version_v8(self):
+        self.assertEqual(LOGIC_VERSION, "2026-08-25-v8")
 
     def test_any_positive_central_hard_mismatch_blocks(self):
         base = {
@@ -24,7 +24,7 @@ class V7HardeningTests(unittest.TestCase):
                 data["central_hard_mismatch_count"] = count
                 self.assertFalse(hard_gate(data)["pass"])
 
-    def test_draft_requires_explicit_motivation_qa(self):
+    def test_draft_requires_motivation_language_ai_policy_and_authenticity_qa(self):
         data = {
             "stage": "draft",
             "user_explicitly_requested": True,
@@ -44,6 +44,10 @@ class V7HardeningTests(unittest.TestCase):
         }
         self.assertFalse(application_guard(data)["pass"])
         data["motivation_qa_pass"] = True
+        self.assertFalse(application_guard(data)["pass"])
+        data["language_qa_pass"] = True
+        data["ai_policy_compliant"] = True
+        data["authenticity_qa_pass"] = True
         self.assertTrue(application_guard(data)["pass"])
 
 
