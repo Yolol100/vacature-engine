@@ -37,7 +37,7 @@ def good_gate() -> dict[str, object]:
         "active": True,
         "official_link_working": True,
         "fully_remote": True,
-        "netherlands_eligibility": "allowed",
+        "work_eligibility": "allowed",
         "level": "Senior Engineer",
         "central_hard_mismatch_count": 0,
     }
@@ -54,7 +54,7 @@ def perfect_score() -> dict[str, object]:
         "preferred_requirements": 5,
         "freshness": 15,
         "competition": 10,
-        "netherlands_certainty": 10,
+        "work_eligibility_certainty": 10,
         "employer_credibility": 5,
         "compensation_contract_fit": 5,
         "central_hard_missing": False,
@@ -69,6 +69,8 @@ def good_draft() -> dict[str, object]:
         "final_verification_pass": True,
         "hard_gate_pass": True,
         "cv_selected": True,
+        "work_eligibility_confirmed": True,
+        "legitimacy_check_pass": True,
         "recipient_verified": True,
         "recipient_authorized_for_role": True,
         "recipient_email": "jobs@example.com",
@@ -92,17 +94,27 @@ def run_audit() -> dict[str, object]:
         "suspicious_payment",
         "marketplace_excluded",
         "duplicate",
+        "geographic_restriction_blocks",
         "us_residents_only",
     ):
         data = good_gate()
         data[flag] = True
         audit.check(f"gate_flag_{flag}", hard_gate(data)["pass"] is False)
+        bad_type = good_gate()
+        bad_type[flag] = "true"
+        result = hard_gate(bad_type)
+        audit.check(
+            f"gate_flag_type_{flag}",
+            result["pass"] is False and f"invalid_{flag}" in result["reasons"],
+        )
 
     for age in [0, 0.01, 1, 3.5, 6.99, 7]:
         data = good_gate()
         data["posted_age_days"] = age
         audit.check(f"gate_age_pass_{age}", hard_gate(data)["pass"] is True)
-    for index, age in enumerate([None, True, False, -1, -0.001, 7.0001, 8, math.nan, math.inf, -math.inf, "2"]):
+    for index, age in enumerate(
+        [None, True, False, -1, -0.001, 7.0001, 8, math.nan, math.inf, -math.inf, "2"]
+    ):
         data = good_gate()
         data["posted_age_days"] = age
         audit.check(f"gate_age_fail_{index}", hard_gate(data)["pass"] is False)
@@ -138,14 +150,18 @@ def run_audit() -> dict[str, object]:
         data["level"] = level
         audit.check(f"level_fail_{level}", hard_gate(data)["pass"] is False)
 
-    for nl in ("allowed", "plausible"):
+    for state in ("allowed", "plausible"):
         data = good_gate()
-        data["netherlands_eligibility"] = nl
-        audit.check(f"nl_pass_{nl}", hard_gate(data)["pass"] is True)
-    for nl in (None, "denied", "unknown", "us-only", True):
+        data["work_eligibility"] = state
+        audit.check(f"work_pass_{state}", hard_gate(data)["pass"] is True)
+    for state in (None, "blocked", "unknown", "us-only", True):
         data = good_gate()
-        data["netherlands_eligibility"] = nl
-        audit.check(f"nl_fail_{nl}", hard_gate(data)["pass"] is False)
+        data["work_eligibility"] = state
+        audit.check(f"work_fail_{state}", hard_gate(data)["pass"] is False)
+    legacy = good_gate()
+    legacy.pop("work_eligibility")
+    legacy["netherlands_eligibility"] = "allowed"
+    audit.check("legacy_nl_eligibility", hard_gate(legacy)["pass"] is True)
 
     component_max = {
         "hard_requirements": 35,
@@ -157,7 +173,7 @@ def run_audit() -> dict[str, object]:
         "preferred_requirements": 5,
         "freshness": 15,
         "competition": 10,
-        "netherlands_certainty": 10,
+        "work_eligibility_certainty": 10,
         "employer_credibility": 5,
         "compensation_contract_fit": 5,
     }
@@ -167,11 +183,15 @@ def run_audit() -> dict[str, object]:
             data[key] = value
             try:
                 result = score(data)
-                ok = math.isfinite(result["match_score"]) and math.isfinite(result["opportunity_score"])
+                ok = math.isfinite(result["match_score"]) and math.isfinite(
+                    result["opportunity_score"]
+                )
             except ValueError:
                 ok = False
             audit.check(f"score_valid_{key}_{value}", ok)
-        for index, value in enumerate((-0.01, maximum + 0.01, True, math.nan, math.inf, -math.inf, "1")):
+        for index, value in enumerate(
+            (-0.01, maximum + 0.01, True, math.nan, math.inf, -math.inf, "1")
+        ):
             data = perfect_score()
             data[key] = value
             try:
@@ -180,6 +200,11 @@ def run_audit() -> dict[str, object]:
             except ValueError:
                 ok = True
             audit.check(f"score_invalid_{key}_{index}", ok)
+
+    legacy_score = perfect_score()
+    legacy_score.pop("work_eligibility_certainty")
+    legacy_score["netherlands_certainty"] = 10
+    audit.check("legacy_nl_score", score(legacy_score)["opportunity_score"] == 100.0)
 
     capped = perfect_score()
     capped["central_hard_missing"] = True
@@ -194,6 +219,8 @@ def run_audit() -> dict[str, object]:
         "final_verification_pass": False,
         "hard_gate_pass": False,
         "cv_selected": False,
+        "work_eligibility_confirmed": False,
+        "legitimacy_check_pass": False,
         "recipient_verified": False,
         "recipient_authorized_for_role": False,
         "factual_qa": "fail",
@@ -209,21 +236,48 @@ def run_audit() -> dict[str, object]:
         data["recipient_email"] = email
         audit.check(f"draft_bad_email_{index}", application_guard(data)["pass"] is False)
 
+    prepare = good_draft()
+    prepare["stage"] = "prepare"
+    for key in (
+        "recipient_verified",
+        "recipient_authorized_for_role",
+        "recipient_email",
+        "recipient_source_url",
+        "factual_qa",
+        "style_qa",
+        "cv_attachment_ready",
+        "subject_exact_vacancy_title",
+    ):
+        prepare.pop(key, None)
+    audit.check("prepare_without_email", application_guard(prepare)["pass"] is True)
+    prepare_bad = dict(prepare)
+    prepare_bad["work_eligibility_confirmed"] = False
+    audit.check("prepare_plausible_blocks", application_guard(prepare_bad)["pass"] is False)
+    prepare_bad = dict(prepare)
+    prepare_bad["legitimacy_check_pass"] = False
+    audit.check("prepare_legitimacy_blocks", application_guard(prepare_bad)["pass"] is False)
+
     rng = random.Random(20260825)
     base = "https://Example.com/jobs/42?a=1&b=2"
     canonical = canonical_url(base)
     tracking = ["utm_source", "utm_campaign", "gclid", "fbclid", "ref", "source"]
-    for index in range(100):
-        params = [f"{key}={rng.randint(1, 99999)}" for key in rng.sample(tracking, k=rng.randint(1, len(tracking)))]
+    for index in range(110):
+        params = [
+            f"{key}={rng.randint(1, 99999)}"
+            for key in rng.sample(tracking, k=rng.randint(1, len(tracking)))
+        ]
         variant = base + "&" + "&".join(params) + ("#section" if index % 2 else "")
         audit.check(f"canonical_tracking_{index}", canonical_url(variant) == canonical)
 
     reference = content_hash("Senior WordPress Developer with WooCommerce")
-    for index in range(30):
+    for index in range(40):
         noise = " " * (index % 5 + 1)
-        variant = f"{noise}SENIOR{noise}WordPress Developer with WooCommerce https://track.example/{index}{noise}"
+        variant = (
+            f"{noise}SENIOR{noise}WordPress Developer with WooCommerce "
+            f"https://track.example/{index}{noise}"
+        )
         audit.check(f"hash_noise_{index}", content_hash(variant) == reference)
-    for index in range(20):
+    for index in range(30):
         audit.check(
             f"hash_material_{index}",
             content_hash(f"Senior WordPress Developer requirement {index}") != reference,
@@ -231,11 +285,25 @@ def run_audit() -> dict[str, object]:
 
     now = datetime.now(UTC)
     for days in (0, 1, 3, 6.999):
-        item = JobRecord("x", str(days), "Senior Dev", "Acme", f"https://example.com/{days}", posted_at=(now - timedelta(days=days)).isoformat())
+        item = JobRecord(
+            "x",
+            str(days),
+            "Senior Dev",
+            "Acme",
+            f"https://example.com/{days}",
+            posted_at=(now - timedelta(days=days)).isoformat(),
+        )
         fresh, _ = filter_recency([item], 7)
         audit.check(f"recency_past_{days}", len(fresh) == 1)
     for days in (0.001, 1, 30):
-        item = JobRecord("x", f"f{days}", "Senior Dev", "Acme", f"https://example.com/f{days}", posted_at=(now + timedelta(days=days)).isoformat())
+        item = JobRecord(
+            "x",
+            f"f{days}",
+            "Senior Dev",
+            "Acme",
+            f"https://example.com/f{days}",
+            posted_at=(now + timedelta(days=days)).isoformat(),
+        )
         fresh, unknown = filter_recency([item], 7)
         audit.check(f"recency_future_{days}", not fresh and not unknown)
 
@@ -265,8 +333,8 @@ def run_audit() -> dict[str, object]:
             ok = True
         audit.check(f"target_block_{index}", ok)
 
-    for index in range(20):
-        country = "NL" if index % 2 == 0 else "DE"
+    for index in range(30):
+        country = "NL" if index % 3 == 0 else ("DE" if index % 3 == 1 else "US")
         payload = {
             "@context": "https://schema.org",
             "@type": "JobPosting",
@@ -279,6 +347,23 @@ def run_audit() -> dict[str, object]:
         facts = jobposting_facts(html)[0]
         audit.check(f"jsonld_remote_{index}", facts["fully_remote_signal"] is True)
         audit.check(f"jsonld_country_{index}", facts["netherlands_explicit"] is (country == "NL"))
+
+    blockers = [
+        "mandatory_relocation",
+        "structural_office_attendance",
+        "unpaid_test",
+        "commission_only",
+        "suspicious_payment",
+        "marketplace_excluded",
+        "duplicate",
+        "geographic_restriction_blocks",
+        "us_residents_only",
+    ]
+    for index in range(60):
+        data = good_gate()
+        chosen = rng.choice(blockers)
+        data[chosen] = True
+        audit.check(f"random_block_{index}_{chosen}", hard_gate(data)["pass"] is False)
 
     return {
         "pass": not audit.failures,
