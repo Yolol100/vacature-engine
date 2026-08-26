@@ -121,6 +121,12 @@ class SimplePolicyTests(unittest.TestCase):
         older = vacancy(title="Older", posted_date=(TODAY - timedelta(days=2)).isoformat())
         self.assertEqual("Newer", top_vacancies([older, newer], today=TODAY)[0]["title"])
 
+    def test_exact_ties_are_input_order_independent(self):
+        items = [vacancy(title=f"Role {i}", url=f"https://example.com/{i}") for i in range(12)]
+        forward = [row["url"] for row in top_vacancies(items, today=TODAY)]
+        reverse = [row["url"] for row in top_vacancies(list(reversed(items)), today=TODAY)]
+        self.assertEqual(forward, reverse)
+
     def test_top_ten_limit(self):
         items = [vacancy(title=f"Role {i}") for i in range(12)]
         self.assertEqual(10, len(top_vacancies(items, today=TODAY)))
