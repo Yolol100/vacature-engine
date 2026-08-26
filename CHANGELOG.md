@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.5 - 2026-08-26
+- Kalenderjaarcontrole gebruikt nu dynamisch `today.year` in plaats van een vast 2026-jaar.
+- `NaN` en `+/-inf` tellen niet meer als bekend salaris.
+- Ongeldige losse records worden overgeslagen zonder de rest van de batch te blokkeren.
+- Regressiedekking toegevoegd voor jaarwisseling, niet-eindige salarissen, kapotte records en de nieuwste-eerst tie-break.
+
 ## 4.0.4 - 2026-08-26
 - De engine gebruikt geen impliciete hostdatum meer; `today` moet expliciet uit de canonieke Config-timezone komen.
 - CI gebruikt actuele gepinde GitHub Actions en test Python 3.11, 3.12, 3.13 en 3.14.
