@@ -6,7 +6,11 @@ import vacature_engine
 class PackageImportTests(unittest.TestCase):
     def test_public_package_imports_cleanly(self):
         self.assertTrue(callable(vacature_engine.top_vacancies))
-        self.assertFalse(hasattr(vacature_engine, "TARGET_YEAR"))
+        self.assertTrue(callable(vacature_engine.policy_from_config))
+        self.assertTrue(hasattr(vacature_engine, "VacancyPolicy"))
+        self.assertFalse(hasattr(vacature_engine, "MIN_MONTHLY_EUR"))
+        self.assertFalse(hasattr(vacature_engine, "MAX_AGE_DAYS"))
+        self.assertFalse(hasattr(vacature_engine, "MAX_RESULTS"))
 
 
 if __name__ == "__main__":
