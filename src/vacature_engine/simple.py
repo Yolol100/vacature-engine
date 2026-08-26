@@ -125,12 +125,14 @@ def top_vacancies(vacancies: list[Any], *, today: date) -> list[dict[str, Any]]:
             continue
         (known_salary if gate["salary_known"] else unknown_salary).append(ranked)
 
-    def key(row: dict[str, Any]) -> tuple[float, float, float, int]:
+    def key(row: dict[str, Any]) -> tuple[float, float, float, int, str, str]:
         return (
             float(row["score"]),
             float(row["core_fit"]),
             float(row["evidence_fit"]),
             -(row["age_days"] or 0),
+            str(row.get("canonical_url") or row.get("url") or ""),
+            str(row.get("title") or ""),
         )
 
     known_salary.sort(key=key, reverse=True)
