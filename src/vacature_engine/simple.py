@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from datetime import date
+import math
 from typing import Any
 
 MIN_MONTHLY_EUR = 3500.0
 MAX_AGE_DAYS = 120
-TARGET_YEAR = 2026
 MAX_RESULTS = 10
 MIN_OUTPUT_SCORE = 75.0
 MIN_CORE_FIT = 40.0
@@ -13,14 +13,15 @@ MIN_EVIDENCE_FIT = 10.0
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-26-simple-v5"
+LOGIC_VERSION = "2026-08-26-simple-v6"
 
 
 def _number(value: Any) -> float | None:
     if isinstance(value, bool) or value is None:
         return None
     if isinstance(value, (int, float)):
-        return float(value)
+        number = float(value)
+        return number if math.isfinite(number) else None
     return None
 
 
@@ -54,8 +55,8 @@ def eligibility(vacancy: dict[str, Any], *, today: date) -> dict[str, Any]:
         reasons.append("date_missing")
     else:
         age_days = (today - posted).days
-        if posted.year != TARGET_YEAR:
-            reasons.append("not_2026")
+        if posted.year != today.year:
+            reasons.append("not_current_year")
         if age_days < 0:
             reasons.append("future_date")
         elif age_days > MAX_AGE_DAYS:
@@ -97,23 +98,30 @@ def score(vacancy: dict[str, Any], *, age_days: int) -> float:
     return core_fit + evidence_fit + workstyle_fit + _recency_points(age_days)
 
 
-def top_vacancies(vacancies: list[dict[str, Any]], *, today: date) -> list[dict[str, Any]]:
+def top_vacancies(vacancies: list[Any], *, today: date) -> list[dict[str, Any]]:
     known_salary: list[dict[str, Any]] = []
     unknown_salary: list[dict[str, Any]] = []
 
     for item in vacancies:
+        if not isinstance(item, dict):
+            continue
         gate = eligibility(item, today=today)
         if not gate["pass"]:
             continue
         ranked = dict(item)
         ranked["age_days"] = gate["age_days"]
         ranked["salary_known"] = gate["salary_known"]
-        ranked["score"] = score(ranked, age_days=int(gate["age_days"] or 0))
+        try:
+            ranked["score"] = score(ranked, age_days=int(gate["age_days"] or 0))
+            core_fit = float(ranked["core_fit"])
+            evidence_fit = float(ranked["evidence_fit"])
+        except (KeyError, TypeError, ValueError, OverflowError):
+            continue
         if ranked["score"] < MIN_OUTPUT_SCORE:
             continue
-        if float(ranked["core_fit"]) < MIN_CORE_FIT:
+        if core_fit < MIN_CORE_FIT:
             continue
-        if float(ranked["evidence_fit"]) < MIN_EVIDENCE_FIT:
+        if evidence_fit < MIN_EVIDENCE_FIT:
             continue
         (known_salary if gate["salary_known"] else unknown_salary).append(ranked)
 
