@@ -19,7 +19,7 @@ Score-input gebruikt alleen vaste ankers:
 - `workstyle_fit`: `0 / 5 / 10 / 15`
 - actualiteit: `10 / 8 / 6 / 4 / 2` voor `0-14 / 15-30 / 31-60 / 61-90 / 91-120` dagen
 
-Een resultaat verschijnt alleen bij score >=75, `core_fit >=40` en `evidence_fit >=10`. Bekend salaris komt vóór onbekend salaris. Niet-eindige numerieke waarden (`NaN`, `+/-inf`) tellen niet als bekend salaris. Bij gelijke score: hogere eisenmatch -> hoger bewijs -> nieuwere vacature.
+Een resultaat verschijnt alleen bij score >=75, `core_fit >=40` en `evidence_fit >=10`. Bekend salaris komt vóór onbekend salaris. Niet-eindige numerieke waarden (`NaN`, `+/-inf`) tellen niet als bekend salaris. Bij gelijke score: hogere eisenmatch -> hoger bewijs -> nieuwere vacature. Als kandidaten daarna nog exact gelijk staan, gebruikt de engine canonieke URL en titel uitsluitend als stabiele technische tie-break zodat de uitkomst niet van invoervolgorde afhangt.
 
 De aanroeper moet `today` altijd expliciet meegeven, bepaald met de canonieke timezone uit `Config`. De engine gebruikt nooit stil de host- of serverdatum en gebruikt `today.year` voor de kalenderjaarcontrole.
 
