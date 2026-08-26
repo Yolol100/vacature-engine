@@ -8,6 +8,7 @@ class PackageImportTests(unittest.TestCase):
         self.assertTrue(callable(vacature_engine.top_vacancies))
         self.assertTrue(callable(vacature_engine.policy_from_config))
         self.assertTrue(hasattr(vacature_engine, "VacancyPolicy"))
+        self.assertEqual("2026-08-26-config-policy-v8", vacature_engine.LOGIC_VERSION)
         self.assertFalse(hasattr(vacature_engine, "MIN_MONTHLY_EUR"))
         self.assertFalse(hasattr(vacature_engine, "MAX_AGE_DAYS"))
         self.assertFalse(hasattr(vacature_engine, "MAX_RESULTS"))

@@ -57,6 +57,12 @@ class CliTests(unittest.TestCase):
         self.assertEqual(0, result.returncode, result.stderr)
         self.assertEqual([], json.loads(result.stdout))
 
+    def test_cli_rejects_malformed_salary(self):
+        bad = {**VACANCY, "salary_monthly_eur": "4500"}
+        result = self.run_cli({"today": "2026-08-26", "policy": POLICY, "vacancies": [bad]})
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual([], json.loads(result.stdout))
+
 
 if __name__ == "__main__":
     unittest.main()
