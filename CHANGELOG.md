@@ -5,6 +5,7 @@
 - `NaN` en `+/-inf` tellen niet meer als bekend salaris.
 - Ongeldige losse records worden overgeslagen zonder de rest van de batch te blokkeren.
 - Regressiedekking toegevoegd voor jaarwisseling, niet-eindige salarissen, kapotte records en de nieuwste-eerst tie-break.
+- Exact gelijke kandidaten krijgen een stabiele technische tie-break op canonieke URL/titel zodat de top-10 niet van invoervolgorde afhangt.
 
 ## 4.0.4 - 2026-08-26
 - De engine gebruikt geen impliciete hostdatum meer; `today` moet expliciet uit de canonieke Config-timezone komen.
