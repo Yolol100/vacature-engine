@@ -1,27 +1,19 @@
 from .simple import (
     LOGIC_VERSION,
-    MAX_AGE_DAYS,
-    MAX_RESULTS,
-    MIN_CORE_FIT,
-    MIN_EVIDENCE_FIT,
-    MIN_MONTHLY_EUR,
-    MIN_OUTPUT_SCORE,
+    VacancyPolicy,
     choose_language,
     eligibility,
+    policy_from_config,
     score,
     top_vacancies,
 )
 
 __all__ = [
     "LOGIC_VERSION",
-    "MAX_AGE_DAYS",
-    "MAX_RESULTS",
-    "MIN_CORE_FIT",
-    "MIN_EVIDENCE_FIT",
-    "MIN_MONTHLY_EUR",
-    "MIN_OUTPUT_SCORE",
+    "VacancyPolicy",
     "choose_language",
     "eligibility",
+    "policy_from_config",
     "score",
     "top_vacancies",
 ]
