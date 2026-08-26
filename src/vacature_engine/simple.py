@@ -1,19 +1,25 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
+from dataclasses import dataclass
 from datetime import date
 import math
 from typing import Any
 
-MIN_MONTHLY_EUR = 3500.0
-MAX_AGE_DAYS = 120
-MAX_RESULTS = 10
-MIN_OUTPUT_SCORE = 75.0
-MIN_CORE_FIT = 40.0
-MIN_EVIDENCE_FIT = 10.0
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-26-simple-v6"
+LOGIC_VERSION = "2026-08-26-config-policy-v7"
+
+
+@dataclass(frozen=True, slots=True)
+class VacancyPolicy:
+    min_monthly_salary_eur: float
+    max_posting_age_days: int
+    max_output_roles: int
+    min_output_score: float
+    min_core_fit: float
+    min_evidence_fit: float
 
 
 def _number(value: Any) -> float | None:
@@ -23,6 +29,62 @@ def _number(value: Any) -> float | None:
         number = float(value)
         return number if math.isfinite(number) else None
     return None
+
+
+def _policy_number(config: Mapping[str, Any], key: str, *, integer: bool = False) -> float | int:
+    if key not in config:
+        raise ValueError(f"policy missing required Config key: {key}")
+    value = config[key]
+    if isinstance(value, bool) or value is None:
+        raise ValueError(f"policy key {key} must be numeric")
+    if isinstance(value, str):
+        try:
+            number = float(value.strip())
+        except ValueError as exc:
+            raise ValueError(f"policy key {key} must be numeric") from exc
+    elif isinstance(value, (int, float)):
+        number = float(value)
+    else:
+        raise ValueError(f"policy key {key} must be numeric")
+    if not math.isfinite(number):
+        raise ValueError(f"policy key {key} must be finite")
+    if integer:
+        if not number.is_integer():
+            raise ValueError(f"policy key {key} must be an integer")
+        return int(number)
+    return number
+
+
+def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
+    policy = VacancyPolicy(
+        min_monthly_salary_eur=float(_policy_number(config, "min_monthly_salary_eur")),
+        max_posting_age_days=int(_policy_number(config, "max_posting_age_days", integer=True)),
+        max_output_roles=int(_policy_number(config, "max_output_roles", integer=True)),
+        min_output_score=float(_policy_number(config, "min_output_score")),
+        min_core_fit=float(_policy_number(config, "min_core_fit")),
+        min_evidence_fit=float(_policy_number(config, "min_evidence_fit")),
+    )
+    if policy.min_monthly_salary_eur < 0:
+        raise ValueError("min_monthly_salary_eur must be >= 0")
+    if policy.max_posting_age_days < 0:
+        raise ValueError("max_posting_age_days must be >= 0")
+    if policy.max_output_roles < 1:
+        raise ValueError("max_output_roles must be >= 1")
+    if not 0 <= policy.min_output_score <= 100:
+        raise ValueError("min_output_score must be between 0 and 100")
+    if not 0 <= policy.min_core_fit <= 50:
+        raise ValueError("min_core_fit must be between 0 and 50")
+    if not 0 <= policy.min_evidence_fit <= 25:
+        raise ValueError("min_evidence_fit must be between 0 and 25")
+    return policy
+
+
+def _coerce_policy(policy: VacancyPolicy | Mapping[str, Any]) -> VacancyPolicy:
+    if isinstance(policy, VacancyPolicy):
+        return policy
+    if isinstance(policy, Mapping):
+        return policy_from_config(policy)
+    raise TypeError("policy must be VacancyPolicy or a Config mapping")
 
 
 def _posted_date(value: Any) -> date | None:
@@ -46,7 +108,13 @@ def _recency_points(age_days: int) -> float:
     return 2.0
 
 
-def eligibility(vacancy: dict[str, Any], *, today: date) -> dict[str, Any]:
+def eligibility(
+    vacancy: dict[str, Any],
+    *,
+    today: date,
+    policy: VacancyPolicy | Mapping[str, Any],
+) -> dict[str, Any]:
+    runtime_policy = _coerce_policy(policy)
     reasons: list[str] = []
 
     posted = _posted_date(vacancy.get("posted_date"))
@@ -59,8 +127,8 @@ def eligibility(vacancy: dict[str, Any], *, today: date) -> dict[str, Any]:
             reasons.append("not_current_year")
         if age_days < 0:
             reasons.append("future_date")
-        elif age_days > MAX_AGE_DAYS:
-            reasons.append("older_than_120_days")
+        elif age_days > runtime_policy.max_posting_age_days:
+            reasons.append("older_than_max_age")
 
     if vacancy.get("fully_remote") is not True:
         reasons.append("not_remote")
@@ -73,8 +141,8 @@ def eligibility(vacancy: dict[str, Any], *, today: date) -> dict[str, Any]:
 
     salary = _number(vacancy.get("salary_monthly_eur"))
     salary_known = salary is not None
-    if salary_known and salary < MIN_MONTHLY_EUR:
-        reasons.append("salary_below_3500")
+    if salary_known and salary < runtime_policy.min_monthly_salary_eur:
+        reasons.append("salary_below_minimum")
 
     return {
         "pass": not reasons,
@@ -98,14 +166,20 @@ def score(vacancy: dict[str, Any], *, age_days: int) -> float:
     return core_fit + evidence_fit + workstyle_fit + _recency_points(age_days)
 
 
-def top_vacancies(vacancies: list[Any], *, today: date) -> list[dict[str, Any]]:
+def top_vacancies(
+    vacancies: list[Any],
+    *,
+    today: date,
+    policy: VacancyPolicy | Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    runtime_policy = _coerce_policy(policy)
     known_salary: list[dict[str, Any]] = []
     unknown_salary: list[dict[str, Any]] = []
 
     for item in vacancies:
         if not isinstance(item, dict):
             continue
-        gate = eligibility(item, today=today)
+        gate = eligibility(item, today=today, policy=runtime_policy)
         if not gate["pass"]:
             continue
         ranked = dict(item)
@@ -117,11 +191,11 @@ def top_vacancies(vacancies: list[Any], *, today: date) -> list[dict[str, Any]]:
             evidence_fit = float(ranked["evidence_fit"])
         except (KeyError, TypeError, ValueError, OverflowError):
             continue
-        if ranked["score"] < MIN_OUTPUT_SCORE:
+        if ranked["score"] < runtime_policy.min_output_score:
             continue
-        if core_fit < MIN_CORE_FIT:
+        if core_fit < runtime_policy.min_core_fit:
             continue
-        if evidence_fit < MIN_EVIDENCE_FIT:
+        if evidence_fit < runtime_policy.min_evidence_fit:
             continue
         (known_salary if gate["salary_known"] else unknown_salary).append(ranked)
 
@@ -137,7 +211,7 @@ def top_vacancies(vacancies: list[Any], *, today: date) -> list[dict[str, Any]]:
 
     known_salary.sort(key=key, reverse=True)
     unknown_salary.sort(key=key, reverse=True)
-    return (known_salary + unknown_salary)[:MAX_RESULTS]
+    return (known_salary + unknown_salary)[: runtime_policy.max_output_roles]
 
 
 def choose_language(
