@@ -2,9 +2,23 @@ from datetime import date, timedelta
 import math
 import unittest
 
-from vacature_engine.simple import choose_language, eligibility, score, top_vacancies
+from vacature_engine.simple import (
+    choose_language,
+    eligibility,
+    policy_from_config,
+    score,
+    top_vacancies,
+)
 
 TODAY = date(2026, 8, 26)
+POLICY = {
+    "min_monthly_salary_eur": 3500,
+    "max_posting_age_days": 120,
+    "max_output_roles": 10,
+    "min_output_score": 75,
+    "min_core_fit": 40,
+    "min_evidence_fit": 10,
+}
 
 
 def vacancy(**overrides):
@@ -27,18 +41,52 @@ def vacancy(**overrides):
 
 class SimplePolicyTests(unittest.TestCase):
     def test_good_vacancy_passes(self):
-        self.assertTrue(eligibility(vacancy(), today=TODAY)["pass"])
-        self.assertEqual(1, len(top_vacancies([vacancy()], today=TODAY)))
+        self.assertTrue(eligibility(vacancy(), today=TODAY, policy=POLICY)["pass"])
+        self.assertEqual(1, len(top_vacancies([vacancy()], today=TODAY, policy=POLICY)))
 
-    def test_today_is_required(self):
+    def test_today_and_policy_are_required(self):
         with self.assertRaises(TypeError):
-            eligibility(vacancy())
+            eligibility(vacancy(), policy=POLICY)
         with self.assertRaises(TypeError):
-            top_vacancies([vacancy()])
+            top_vacancies([vacancy()], policy=POLICY)
+        with self.assertRaises(TypeError):
+            eligibility(vacancy(), today=TODAY)
+        with self.assertRaises(TypeError):
+            top_vacancies([vacancy()], today=TODAY)
 
-        same_day = vacancy(posted_date=TODAY.isoformat())
-        self.assertTrue(eligibility(same_day, today=TODAY)["pass"])
-        self.assertEqual(1, len(top_vacancies([same_day], today=TODAY)))
+    def test_policy_is_read_from_config_keys(self):
+        policy = policy_from_config({key: str(value) for key, value in POLICY.items()})
+        self.assertEqual(3500, policy.min_monthly_salary_eur)
+        self.assertEqual(120, policy.max_posting_age_days)
+        self.assertEqual(10, policy.max_output_roles)
+
+    def test_missing_policy_key_fails_closed(self):
+        broken = dict(POLICY)
+        broken.pop("min_output_score")
+        with self.assertRaises(ValueError):
+            top_vacancies([vacancy()], today=TODAY, policy=broken)
+
+    def test_config_salary_threshold_changes_behavior(self):
+        self.assertTrue(eligibility(vacancy(salary_monthly_eur=4500), today=TODAY, policy=POLICY)["pass"])
+        stricter = {**POLICY, "min_monthly_salary_eur": 5000}
+        gate = eligibility(vacancy(salary_monthly_eur=4500), today=TODAY, policy=stricter)
+        self.assertFalse(gate["pass"])
+        self.assertIn("salary_below_minimum", gate["reasons"])
+
+    def test_config_age_and_output_limits_change_behavior(self):
+        thirty_days = {**POLICY, "max_posting_age_days": 30}
+        older = vacancy(posted_date=(TODAY - timedelta(days=31)).isoformat())
+        self.assertFalse(eligibility(older, today=TODAY, policy=thirty_days)["pass"])
+
+        top_three = {**POLICY, "max_output_roles": 3}
+        items = [vacancy(title=f"Role {i}", url=f"https://example.com/{i}") for i in range(12)]
+        self.assertEqual(3, len(top_vacancies(items, today=TODAY, policy=top_three)))
+
+    def test_config_score_threshold_changes_behavior(self):
+        item = vacancy(core_fit=40, evidence_fit=10, workstyle_fit=15, posted_date=TODAY.isoformat())
+        self.assertEqual(75, top_vacancies([item], today=TODAY, policy=POLICY)[0]["score"])
+        stricter = {**POLICY, "min_output_score": 76}
+        self.assertEqual([], top_vacancies([item], today=TODAY, policy=stricter))
 
     def test_hard_filters(self):
         cases = [
@@ -52,21 +100,21 @@ class SimplePolicyTests(unittest.TestCase):
         ]
         for item in cases:
             with self.subTest(item=item):
-                self.assertFalse(eligibility(item, today=TODAY)["pass"])
+                self.assertFalse(eligibility(item, today=TODAY, policy=POLICY)["pass"])
 
     def test_current_year_is_dynamic(self):
         jan_2027 = date(2027, 1, 1)
         same_day = vacancy(posted_date="2027-01-01")
         old_year = vacancy(posted_date="2026-12-31")
-        self.assertTrue(eligibility(same_day, today=jan_2027)["pass"])
-        self.assertFalse(eligibility(old_year, today=jan_2027)["pass"])
-        self.assertIn("not_current_year", eligibility(old_year, today=jan_2027)["reasons"])
+        self.assertTrue(eligibility(same_day, today=jan_2027, policy=POLICY)["pass"])
+        self.assertFalse(eligibility(old_year, today=jan_2027, policy=POLICY)["pass"])
+        self.assertIn("not_current_year", eligibility(old_year, today=jan_2027, policy=POLICY)["reasons"])
 
     def test_age_boundary(self):
         at_limit = vacancy(posted_date=(TODAY - timedelta(days=120)).isoformat())
         too_old = vacancy(posted_date=(TODAY - timedelta(days=121)).isoformat())
-        self.assertTrue(eligibility(at_limit, today=TODAY)["pass"])
-        self.assertFalse(eligibility(too_old, today=TODAY)["pass"])
+        self.assertTrue(eligibility(at_limit, today=TODAY, policy=POLICY)["pass"])
+        self.assertFalse(eligibility(too_old, today=TODAY, policy=POLICY)["pass"])
 
     def test_recency_anchors(self):
         expected = {0: 78, 14: 78, 15: 76, 30: 76, 31: 74, 60: 74, 61: 72, 90: 72, 91: 70, 120: 70}
@@ -78,58 +126,54 @@ class SimplePolicyTests(unittest.TestCase):
         weak_score = vacancy(title="Weak score", core_fit=40, evidence_fit=10, workstyle_fit=5, posted_date=(TODAY - timedelta(days=31)).isoformat())
         weak_core = vacancy(title="Weak core", core_fit=25, evidence_fit=25, workstyle_fit=15)
         weak_evidence = vacancy(title="Weak evidence", core_fit=50, evidence_fit=0, workstyle_fit=15)
-        self.assertEqual([], top_vacancies([weak_score, weak_core, weak_evidence], today=TODAY))
+        self.assertEqual([], top_vacancies([weak_score, weak_core, weak_evidence], today=TODAY, policy=POLICY))
 
     def test_score_75_boundary_passes(self):
         item = vacancy(core_fit=40, evidence_fit=10, workstyle_fit=15, posted_date=TODAY.isoformat())
-        ranked = top_vacancies([item], today=TODAY)
+        ranked = top_vacancies([item], today=TODAY, policy=POLICY)
         self.assertEqual(75, ranked[0]["score"])
 
     def test_unknown_salary_is_strong_match_fallback(self):
         weak_known = vacancy(title="Weak Known", salary_monthly_eur=4000, core_fit=25, evidence_fit=10, workstyle_fit=5)
         strong_unknown = vacancy(title="Strong Unknown", salary_monthly_eur=None, core_fit=50, evidence_fit=18, workstyle_fit=10)
         weak_unknown = vacancy(title="Weak Unknown", salary_monthly_eur=None, core_fit=25, evidence_fit=10, workstyle_fit=5)
-        ranked = top_vacancies([strong_unknown, weak_unknown, weak_known], today=TODAY)
+        ranked = top_vacancies([strong_unknown, weak_unknown, weak_known], today=TODAY, policy=POLICY)
         self.assertEqual(["Strong Unknown"], [row["title"] for row in ranked])
 
     def test_non_finite_salary_is_unknown_not_known(self):
         for salary in [math.nan, math.inf, -math.inf]:
             with self.subTest(salary=salary):
                 item = vacancy(salary_monthly_eur=salary, core_fit=50, evidence_fit=18, workstyle_fit=10)
-                gate = eligibility(item, today=TODAY)
+                gate = eligibility(item, today=TODAY, policy=POLICY)
                 self.assertFalse(gate["salary_known"])
-                ranked = top_vacancies([item], today=TODAY)
+                ranked = top_vacancies([item], today=TODAY, policy=POLICY)
                 self.assertEqual(1, len(ranked))
                 self.assertFalse(ranked[0]["salary_known"])
 
     def test_ranking_prefers_better_fit(self):
         strong = vacancy(title="Strong", core_fit=50, evidence_fit=25, workstyle_fit=15)
         adequate = vacancy(title="Adequate", core_fit=40, evidence_fit=10, workstyle_fit=15)
-        ranked = top_vacancies([adequate, strong], today=TODAY)
+        ranked = top_vacancies([adequate, strong], today=TODAY, policy=POLICY)
         self.assertEqual(["Strong", "Adequate"], [row["title"] for row in ranked])
 
     def test_tie_break_prefers_core_then_evidence_then_newer(self):
         higher_core = vacancy(title="Higher Core", core_fit=50, evidence_fit=10, workstyle_fit=5)
         lower_core = vacancy(title="Lower Core", core_fit=40, evidence_fit=10, workstyle_fit=15)
-        self.assertEqual("Higher Core", top_vacancies([lower_core, higher_core], today=TODAY)[0]["title"])
+        self.assertEqual("Higher Core", top_vacancies([lower_core, higher_core], today=TODAY, policy=POLICY)[0]["title"])
 
         higher_evidence = vacancy(title="Higher Evidence", core_fit=40, evidence_fit=25, workstyle_fit=0)
         lower_evidence = vacancy(title="Lower Evidence", core_fit=40, evidence_fit=10, workstyle_fit=15)
-        self.assertEqual("Higher Evidence", top_vacancies([lower_evidence, higher_evidence], today=TODAY)[0]["title"])
+        self.assertEqual("Higher Evidence", top_vacancies([lower_evidence, higher_evidence], today=TODAY, policy=POLICY)[0]["title"])
 
         newer = vacancy(title="Newer", posted_date=(TODAY - timedelta(days=1)).isoformat())
         older = vacancy(title="Older", posted_date=(TODAY - timedelta(days=2)).isoformat())
-        self.assertEqual("Newer", top_vacancies([older, newer], today=TODAY)[0]["title"])
+        self.assertEqual("Newer", top_vacancies([older, newer], today=TODAY, policy=POLICY)[0]["title"])
 
     def test_exact_ties_are_input_order_independent(self):
         items = [vacancy(title=f"Role {i}", url=f"https://example.com/{i}") for i in range(12)]
-        forward = [row["url"] for row in top_vacancies(items, today=TODAY)]
-        reverse = [row["url"] for row in top_vacancies(list(reversed(items)), today=TODAY)]
+        forward = [row["url"] for row in top_vacancies(items, today=TODAY, policy=POLICY)]
+        reverse = [row["url"] for row in top_vacancies(list(reversed(items)), today=TODAY, policy=POLICY)]
         self.assertEqual(forward, reverse)
-
-    def test_top_ten_limit(self):
-        items = [vacancy(title=f"Role {i}") for i in range(12)]
-        self.assertEqual(10, len(top_vacancies(items, today=TODAY)))
 
     def test_bad_records_are_skipped_without_breaking_batch(self):
         bad_records = [
@@ -141,7 +185,7 @@ class SimplePolicyTests(unittest.TestCase):
             vacancy(title="Infinite core", core_fit=math.inf),
         ]
         good = vacancy(title="Good")
-        ranked = top_vacancies([*bad_records, good], today=TODAY)
+        ranked = top_vacancies([*bad_records, good], today=TODAY, policy=POLICY)
         self.assertEqual(["Good"], [row["title"] for row in ranked])
 
     def test_score_still_rejects_non_anchor_when_called_directly(self):
