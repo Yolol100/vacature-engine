@@ -5,7 +5,7 @@
 - Publicatiedatums accepteren alleen een ISO-datum of ISO-datetime en blokkeren suffix-smuggling.
 - Actuele v5/v8 golden-, property/metamorphic-, adversarial- en gecontroleerde mutation-tests toegevoegd.
 - Reproduceerbare source-release-evidence toegevoegd met SPDX 2.3 SBOM, package-verification-code, SHA-256 checksums en lokale provenance receipt.
-- GitHub CodeQL, dependency review, Dependabot, CODEOWNERS, PR-template en SECURITY.md toegevoegd.
+- GitHub CodeQL, Dependabot, een deterministische dependency-policygate, CODEOWNERS, PR-template en SECURITY.md toegevoegd. Dependency Review zelf is niet bruikbaar zolang GitHub Dependency Graph op repositoryniveau uitstaat.
 - Release Evidence workflow gebruikt GitHub artifact attestations met volledige commit-SHA-pinning van Actions.
 - De build-backend is gepind op `setuptools==84.0.0` voor reproduceerbaardere build-inputs.
 

@@ -6,7 +6,7 @@
 ## Verification
 - [ ] Unit/boundary tests pass.
 - [ ] Assurance/mutation smoke passes when engine behavior changed.
-- [ ] CodeQL and dependency review are green when applicable.
+- [ ] CodeQL and the deterministic dependency-policy gate are green.
 - [ ] Release evidence remains reproducible when release files changed.
 
 ## Safety

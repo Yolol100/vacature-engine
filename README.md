@@ -68,7 +68,7 @@ CLI-input is één JSON-object met dezelfde expliciete context:
 - CI test Python 3.11 t/m 3.14.
 - Boundary-, golden-, property/metamorphic- en adversarial-tests bewaken het enginecontract.
 - `scripts/mutation_smoke.py` moet alle gecontroleerde kernmutaties doden.
-- CodeQL en dependency review controleren respectievelijk code- en dependencyrisico's.
+- CodeQL controleert coderisico; `tests/test_dependency_policy.py` blokkeert runtime-dependencies en ongepinde build-backends. Dependabot bewaakt toekomstige dependency-updates.
 - `scripts/build_release_bundle.py` bouwt tweemaal byte-reproduceerbare source-evidence met SPDX 2.3 SBOM, package-verification-code, SHA-256 checksums en een lokale provenance receipt.
 - GitHub Actions op `main` maakt daarnaast artifact attestations; lokale `PROVENANCE.json` is geen vervanging voor die cryptografische attestation.
 - `SECURITY.md` beschrijft private vulnerability reporting en release-eisen.
