@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.1.0 - 2026-08-26
+- Ongeldige salarisdata faalt nu gesloten: alleen expliciet `null` geldt nog als onbekend salaris; strings, booleans en niet-eindige getallen worden `salary_invalid`.
+- Publicatiedatums accepteren alleen een ISO-datum of ISO-datetime en blokkeren suffix-smuggling.
+- Actuele v5/v8 golden-, property/metamorphic-, adversarial- en gecontroleerde mutation-tests toegevoegd.
+- Reproduceerbare source-release-evidence toegevoegd met SPDX 2.3 SBOM, package-verification-code, SHA-256 checksums en lokale provenance receipt.
+- GitHub CodeQL, Dependabot, een deterministische dependency-policygate, CODEOWNERS, PR-template en SECURITY.md toegevoegd. Dependency Review zelf is niet bruikbaar zolang GitHub Dependency Graph op repositoryniveau uitstaat.
+- Release Evidence workflow gebruikt GitHub artifact attestations met volledige commit-SHA-pinning van Actions.
+- De build-backend is gepind op `setuptools==84.0.0` voor reproduceerbaardere build-inputs.
+
 ## 5.0.0 - 2026-08-26
 - Veranderlijke gate- en outputdrempels zijn uit Python-constanten verwijderd en moeten expliciet uit `Config` worden doorgegeven.
 - Nieuwe `VacancyPolicy` en `policy_from_config()` valideren de zes vereiste runtimewaarden en falen gesloten bij ontbrekende of ongeldige Config.

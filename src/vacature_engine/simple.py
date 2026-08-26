@@ -9,7 +9,7 @@ from typing import Any
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-26-config-policy-v7"
+LOGIC_VERSION = "2026-08-26-config-policy-v8"
 
 
 @dataclass(frozen=True, slots=True)
@@ -88,7 +88,9 @@ def _coerce_policy(policy: VacancyPolicy | Mapping[str, Any]) -> VacancyPolicy:
 
 
 def _posted_date(value: Any) -> date | None:
-    if not isinstance(value, str):
+    if not isinstance(value, str) or len(value) < 10:
+        return None
+    if len(value) > 10 and value[10] not in {"T", " "}:
         return None
     try:
         return date.fromisoformat(value[:10])
@@ -139,9 +141,12 @@ def eligibility(
     if vacancy.get("central_hard_mismatch") is True:
         reasons.append("central_hard_mismatch")
 
-    salary = _number(vacancy.get("salary_monthly_eur"))
-    salary_known = salary is not None
-    if salary_known and salary < runtime_policy.min_monthly_salary_eur:
+    raw_salary = vacancy.get("salary_monthly_eur")
+    salary = _number(raw_salary)
+    salary_known = raw_salary is not None and salary is not None
+    if raw_salary is not None and salary is None:
+        reasons.append("salary_invalid")
+    elif salary_known and salary < runtime_policy.min_monthly_salary_eur:
         reasons.append("salary_below_minimum")
 
     return {

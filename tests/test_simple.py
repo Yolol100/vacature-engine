@@ -73,6 +73,12 @@ class SimplePolicyTests(unittest.TestCase):
         self.assertFalse(gate["pass"])
         self.assertIn("salary_below_minimum", gate["reasons"])
 
+    def test_salary_floor_boundary(self):
+        at_floor = vacancy(salary_monthly_eur=3500)
+        below_floor = vacancy(salary_monthly_eur=3499.99)
+        self.assertTrue(eligibility(at_floor, today=TODAY, policy=POLICY)["pass"])
+        self.assertFalse(eligibility(below_floor, today=TODAY, policy=POLICY)["pass"])
+
     def test_config_age_and_output_limits_change_behavior(self):
         thirty_days = {**POLICY, "max_posting_age_days": 30}
         older = vacancy(posted_date=(TODAY - timedelta(days=31)).isoformat())
@@ -128,6 +134,11 @@ class SimplePolicyTests(unittest.TestCase):
         weak_evidence = vacancy(title="Weak evidence", core_fit=50, evidence_fit=0, workstyle_fit=15)
         self.assertEqual([], top_vacancies([weak_score, weak_core, weak_evidence], today=TODAY, policy=POLICY))
 
+    def test_core_and_evidence_boundaries_pass(self):
+        item = vacancy(core_fit=40, evidence_fit=10, workstyle_fit=15, posted_date=TODAY.isoformat())
+        ranked = top_vacancies([item], today=TODAY, policy=POLICY)
+        self.assertEqual(1, len(ranked))
+
     def test_score_75_boundary_passes(self):
         item = vacancy(core_fit=40, evidence_fit=10, workstyle_fit=15, posted_date=TODAY.isoformat())
         ranked = top_vacancies([item], today=TODAY, policy=POLICY)
@@ -140,15 +151,21 @@ class SimplePolicyTests(unittest.TestCase):
         ranked = top_vacancies([strong_unknown, weak_unknown, weak_known], today=TODAY, policy=POLICY)
         self.assertEqual(["Strong Unknown"], [row["title"] for row in ranked])
 
-    def test_non_finite_salary_is_unknown_not_known(self):
-        for salary in [math.nan, math.inf, -math.inf]:
+    def test_invalid_salary_is_rejected_not_unknown(self):
+        for salary in [math.nan, math.inf, -math.inf, True, "4500", object()]:
             with self.subTest(salary=salary):
                 item = vacancy(salary_monthly_eur=salary, core_fit=50, evidence_fit=18, workstyle_fit=10)
                 gate = eligibility(item, today=TODAY, policy=POLICY)
+                self.assertFalse(gate["pass"])
                 self.assertFalse(gate["salary_known"])
-                ranked = top_vacancies([item], today=TODAY, policy=POLICY)
-                self.assertEqual(1, len(ranked))
-                self.assertFalse(ranked[0]["salary_known"])
+                self.assertIn("salary_invalid", gate["reasons"])
+                self.assertEqual([], top_vacancies([item], today=TODAY, policy=POLICY))
+
+    def test_known_salary_precedes_unknown_salary(self):
+        known = vacancy(title="Known", salary_monthly_eur=4000, core_fit=40, evidence_fit=10, workstyle_fit=15)
+        unknown = vacancy(title="Unknown", salary_monthly_eur=None, core_fit=50, evidence_fit=25, workstyle_fit=15)
+        ranked = top_vacancies([unknown, known], today=TODAY, policy=POLICY)
+        self.assertEqual(["Known", "Unknown"], [row["title"] for row in ranked])
 
     def test_ranking_prefers_better_fit(self):
         strong = vacancy(title="Strong", core_fit=50, evidence_fit=25, workstyle_fit=15)

@@ -1,11 +1,15 @@
 name: CI
+
 on:
   push:
   pull_request:
+
 permissions:
   contents: read
+
 jobs:
-  test:
+  unit-tests:
+    name: unit-tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -18,3 +22,23 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install -e .
       - run: python -m unittest discover -s tests -v
+
+  assurance:
+    name: assurance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.14'
+      - run: python -m pip install -e .
+      - name: Controlled mutation smoke
+        run: python scripts/mutation_smoke.py
+      - name: Reproducible release evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          epoch="$(git show -s --format=%ct HEAD)"
+          python scripts/build_release_bundle.py --output-dir release-a --commit "$GITHUB_SHA" --source-date-epoch "$epoch"
+          python scripts/build_release_bundle.py --output-dir release-b --commit "$GITHUB_SHA" --source-date-epoch "$epoch"
+          diff -qr release-a release-b

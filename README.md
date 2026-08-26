@@ -26,6 +26,8 @@ De aanroeper moet per run expliciet deze Config-waarden doorgeven:
 
 Ontbreekt een vereiste sleutel of is een waarde ongeldig, dan faalt de engine gesloten in plaats van een ingebouwde fallback te gebruiken.
 
+Alleen `salary_monthly_eur=null` betekent aantoonbaar onbekend salaris. Een string, boolean, `NaN`, `+/-inf` of ander ongeldig salarisformaat wordt afgewezen als `salary_invalid`; corrupte data mag nooit stil de onbekend-salarisfallback activeren. Publicatiedatums accepteren een ISO-datum of ISO-datetime, maar geen willekeurige suffix na de datum.
+
 ## Scorecontract
 
 Score-input gebruikt alleen vaste ankers:
@@ -34,7 +36,7 @@ Score-input gebruikt alleen vaste ankers:
 - `workstyle_fit`: `0 / 5 / 10 / 15`
 - actualiteit: `10 / 8 / 6 / 4 / 2` voor `0-14 / 15-30 / 31-60 / 61-90 / 91+` dagen
 
-Bekend salaris komt vóór onbekend salaris. Niet-eindige numerieke waarden (`NaN`, `+/-inf`) tellen niet als bekend salaris. Bij gelijke score: hogere eisenmatch -> hoger bewijs -> nieuwere vacature. Exact gelijke kandidaten krijgen canonieke URL en titel als stabiele technische tie-break.
+Bekend salaris komt vóór onbekend salaris. Bij gelijke score: hogere eisenmatch -> hoger bewijs -> nieuwere vacature. Exact gelijke kandidaten krijgen canonieke URL en titel als stabiele technische tie-break.
 
 De aanroeper moet `today` altijd expliciet meegeven, bepaald met de canonieke timezone uit `Config`. De engine gebruikt nooit stil de host- of serverdatum en gebruikt `today.year` voor de kalenderjaarcontrole.
 
@@ -60,5 +62,17 @@ CLI-input is één JSON-object met dezelfde expliciete context:
   "vacancies": []
 }
 ```
+
+## Assurance
+
+- CI test Python 3.11 t/m 3.14.
+- Boundary-, golden-, property/metamorphic- en adversarial-tests bewaken het enginecontract.
+- `scripts/mutation_smoke.py` moet alle gecontroleerde kernmutaties doden.
+- CodeQL controleert coderisico; `tests/test_dependency_policy.py` blokkeert runtime-dependencies en ongepinde build-backends. Dependabot bewaakt toekomstige dependency-updates.
+- `scripts/build_release_bundle.py` bouwt tweemaal byte-reproduceerbare source-evidence met SPDX 2.3 SBOM, package-verification-code, SHA-256 checksums en een lokale provenance receipt.
+- GitHub Actions op `main` maakt daarnaast artifact attestations; lokale `PROVENANCE.json` is geen vervanging voor die cryptografische attestation.
+- `SECURITY.md` beschrijft private vulnerability reporting en release-eisen.
+
+Branch protection is repository-instelling, geen bronbestand. Voor maximale governance moet `main` via GitHub Rules/Branch protection minimaal PR-review en de vereiste statuschecks afdwingen en force-push/delete blokkeren.
 
 Geen scraping, discovery, bronprioritering, e-mail of sollicitatieformulieren. `wordpress_related=true` mag alleen worden gezet wanneer WordPress aantoonbaar centraal staat.

@@ -1,0 +1,41 @@
+name: Release Evidence
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+jobs:
+  evidence:
+    name: build-sbom-attest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.14'
+      - name: Build deterministic source bundle, SBOM and local provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          epoch="$(git show -s --format=%ct "$GITHUB_SHA")"
+          python scripts/build_release_bundle.py --output-dir release --commit "$GITHUB_SHA" --source-date-epoch "$epoch"
+      - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
+        with:
+          subject-path: release/vacature-engine-*.zip
+      - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
+        with:
+          subject-path: release/vacature-engine-*.zip
+          sbom-path: release/SBOM.spdx.json
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-evidence-${{ github.sha }}
+          path: release/
+          if-no-files-found: error
