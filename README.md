@@ -7,7 +7,12 @@ Doet alleen:
 2. vaste 100-puntsscore;
 3. sterke matches selecteren en maximaal 10 resultaten sorteren.
 
-De Skill doet discovery, semantische beoordeling, bewijscontrole en motivatie.
+De Skill doet discovery, semantische beoordeling, bewijscontrole, cross-run deduplicatie en motivatie. Het `Vacature Register` is de enige runtime-bron voor configuratie en discovery-bronnen:
+- `Config` bezit regels, limieten en versies;
+- `Bronnen` bezit bron-URL, status en `high`/`medium`-prioriteit;
+- `Vacatures` bezit eerder verwerkte kandidaten voor cross-run deduplicatie.
+
+De repo bevat daarom bewust geen vaste jobboardlijst, landenlijst of bronprioriteiten. Wijzigingen zoals `medium -> high` horen in `Bronnen`, niet in Python-code.
 
 ## Contract
 
@@ -30,4 +35,4 @@ from vacature_engine import top_vacancies
 best = top_vacancies(vacancies, today=today_from_config)
 ```
 
-Geen scraping, e-mail of sollicitatieformulieren. `wordpress_related=true` mag alleen worden gezet wanneer WordPress aantoonbaar centraal staat.
+Geen scraping, discovery, bronprioritering, e-mail of sollicitatieformulieren. `wordpress_related=true` mag alleen worden gezet wanneer WordPress aantoonbaar centraal staat.
