@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.0 - 2026-08-26
+- Veranderlijke gate- en outputdrempels zijn uit Python-constanten verwijderd en moeten expliciet uit `Config` worden doorgegeven.
+- Nieuwe `VacancyPolicy` en `policy_from_config()` valideren de zes vereiste runtimewaarden en falen gesloten bij ontbrekende of ongeldige Config.
+- De CLI accepteert nu expliciet `today`, `policy` en `vacancies`; de eerdere kapotte impliciete aanroep zonder `today` is verwijderd.
+- Regressietests bewijzen dat wijzigingen in salarisgrens, leeftijdsgrens, outputlimiet en minimumscore direct het enginegedrag veranderen.
+- De publieke package-export bevat geen dubbele runtime-drempelconstanten meer.
+
 ## 4.0.5 - 2026-08-26
 - Kalenderjaarcontrole gebruikt nu dynamisch `today.year` in plaats van een vast 2026-jaar.
 - `NaN` en `+/-inf` tellen niet meer als bekend salaris.
