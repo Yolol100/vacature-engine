@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.2.0 - 2026-08-28
+- Discoverycontract verduidelijkt voor wereldwijd remote werk: de Skill zoekt wereldwijd; de engine accepteert alleen vacatures die voor de kandidaat geografisch, juridisch, payroll- en timezone-technisch uitvoerbaar zijn.
+- De kalenderjaarpoort is verwijderd. Alleen de echte leeftijd ten opzichte van `max_posting_age_days` bepaalt nu of een publicatiedatum te oud is.
+- Salarisranges worden ondersteund via `salary_min_monthly_eur` en `salary_max_monthly_eur`; alleen een geverifieerde range die volledig onder de minimumgrens ligt wordt afgewezen.
+- Exact salaris en range tegelijk, omgekeerde ranges en corrupte/niet-eindige bedragen falen gesloten als `salary_invalid`.
+- Regressietests toegevoegd voor jaarovergang, wereldwijd remote compatibiliteit en salarisranges. De bestaande score-ankers en minimumscore blijven ongewijzigd.
+
 ## 5.1.0 - 2026-08-26
 - Ongeldige salarisdata faalt nu gesloten: alleen expliciet `null` geldt nog als onbekend salaris; strings, booleans en niet-eindige getallen worden `salary_invalid`.
 - Publicatiedatums accepteren alleen een ISO-datum of ISO-datetime en blokkeren suffix-smuggling.
