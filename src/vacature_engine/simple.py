@@ -9,7 +9,7 @@ from typing import Any
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-26-config-policy-v8"
+LOGIC_VERSION = "2026-08-28-global-remote-v9"
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,6 +98,40 @@ def _posted_date(value: Any) -> date | None:
         return None
 
 
+def _salary_status(vacancy: Mapping[str, Any], minimum: float) -> tuple[bool, str | None]:
+    exact_raw = vacancy.get("salary_monthly_eur")
+    minimum_raw = vacancy.get("salary_min_monthly_eur")
+    maximum_raw = vacancy.get("salary_max_monthly_eur")
+    exact_present = exact_raw is not None
+    range_present = minimum_raw is not None or maximum_raw is not None
+
+    if exact_present and range_present:
+        return False, "salary_invalid"
+
+    if exact_present:
+        exact = _number(exact_raw)
+        if exact is None or exact < 0:
+            return False, "salary_invalid"
+        if exact < minimum:
+            return True, "salary_below_minimum"
+        return True, None
+
+    if range_present:
+        low = _number(minimum_raw) if minimum_raw is not None else None
+        high = _number(maximum_raw) if maximum_raw is not None else None
+        if minimum_raw is not None and (low is None or low < 0):
+            return False, "salary_invalid"
+        if maximum_raw is not None and (high is None or high < 0):
+            return False, "salary_invalid"
+        if low is not None and high is not None and low > high:
+            return False, "salary_invalid"
+        if high is not None and high < minimum:
+            return True, "salary_below_minimum"
+        return True, None
+
+    return False, None
+
+
 def _recency_points(age_days: int) -> float:
     if age_days <= 14:
         return 10.0
@@ -125,8 +159,6 @@ def eligibility(
         reasons.append("date_missing")
     else:
         age_days = (today - posted).days
-        if posted.year != today.year:
-            reasons.append("not_current_year")
         if age_days < 0:
             reasons.append("future_date")
         elif age_days > runtime_policy.max_posting_age_days:
@@ -141,13 +173,9 @@ def eligibility(
     if vacancy.get("central_hard_mismatch") is True:
         reasons.append("central_hard_mismatch")
 
-    raw_salary = vacancy.get("salary_monthly_eur")
-    salary = _number(raw_salary)
-    salary_known = raw_salary is not None and salary is not None
-    if raw_salary is not None and salary is None:
-        reasons.append("salary_invalid")
-    elif salary_known and salary < runtime_policy.min_monthly_salary_eur:
-        reasons.append("salary_below_minimum")
+    salary_known, salary_reason = _salary_status(vacancy, runtime_policy.min_monthly_salary_eur)
+    if salary_reason is not None:
+        reasons.append(salary_reason)
 
     return {
         "pass": not reasons,
