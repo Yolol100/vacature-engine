@@ -15,7 +15,7 @@ MUTANTS = [
     ("score-boundary", 'ranked["score"] < runtime_policy.min_output_score', 'ranked["score"] <= runtime_policy.min_output_score'),
     ("core-boundary", 'core_fit < runtime_policy.min_core_fit', 'core_fit <= runtime_policy.min_core_fit'),
     ("evidence-boundary", 'evidence_fit < runtime_policy.min_evidence_fit', 'evidence_fit <= runtime_policy.min_evidence_fit'),
-    ("salary-boundary", 'salary < runtime_policy.min_monthly_salary_eur', 'salary <= runtime_policy.min_monthly_salary_eur'),
+    ("salary-boundary", 'if exact < minimum:', 'if exact <= minimum:'),
     ("salary-order", 'return (known_salary + unknown_salary)[: runtime_policy.max_output_roles]', 'return (unknown_salary + known_salary)[: runtime_policy.max_output_roles]'),
     ("ranking-direction", '\n    known_salary.sort(key=key, reverse=True)', '\n    known_salary.sort(key=key, reverse=False)'),
     ("recency-14", 'if age_days <= 14:', 'if age_days < 14:'),

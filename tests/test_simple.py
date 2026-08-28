@@ -101,20 +101,21 @@ class SimplePolicyTests(unittest.TestCase):
             vacancy(wordpress_related=False),
             vacancy(central_hard_mismatch=True),
             vacancy(salary_monthly_eur=3499),
-            vacancy(posted_date="2025-12-31"),
-            vacancy(posted_date="2026-04-27"),
+            vacancy(posted_date=(TODAY - timedelta(days=121)).isoformat()),
         ]
         for item in cases:
             with self.subTest(item=item):
                 self.assertFalse(eligibility(item, today=TODAY, policy=POLICY)["pass"])
 
-    def test_current_year_is_dynamic(self):
+    def test_cross_year_vacancy_uses_age_not_calendar_year(self):
         jan_2027 = date(2027, 1, 1)
         same_day = vacancy(posted_date="2027-01-01")
-        old_year = vacancy(posted_date="2026-12-31")
+        previous_day = vacancy(posted_date="2026-12-31")
+        too_old = vacancy(posted_date=(jan_2027 - timedelta(days=121)).isoformat())
         self.assertTrue(eligibility(same_day, today=jan_2027, policy=POLICY)["pass"])
-        self.assertFalse(eligibility(old_year, today=jan_2027, policy=POLICY)["pass"])
-        self.assertIn("not_current_year", eligibility(old_year, today=jan_2027, policy=POLICY)["reasons"])
+        self.assertTrue(eligibility(previous_day, today=jan_2027, policy=POLICY)["pass"])
+        self.assertFalse(eligibility(too_old, today=jan_2027, policy=POLICY)["pass"])
+        self.assertIn("older_than_max_age", eligibility(too_old, today=jan_2027, policy=POLICY)["reasons"])
 
     def test_age_boundary(self):
         at_limit = vacancy(posted_date=(TODAY - timedelta(days=120)).isoformat())

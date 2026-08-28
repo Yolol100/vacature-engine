@@ -14,6 +14,10 @@ De Skill doet discovery, semantische beoordeling, bewijscontrole, cross-run dedu
 
 De repo bevat daarom bewust geen vaste jobboardlijst, landenlijst, bronprioriteiten of veranderlijke vacaturedrempels. De vaste score-ankers en actualiteitsbanden zijn onderdeel van het engine-algoritme; alle veranderlijke output- en gate-drempels komen uit `Config`.
 
+## Worldwide remote contract
+
+Discovery is wereldwijd en wordt door de Skill uitgevoerd. De engine gebruikt alleen `geography_compatible=true` wanneer de vacature daadwerkelijk uitvoerbaar is vanaf de huidige locatie van de kandidaat. Een expliciete Worldwide/Global/Anywhere-rol kan dus door; een country-only, payroll-, legal- of timezonebeperking die de kandidaat uitsluit niet. De engine zelf bevat geen vaste landenlijst.
+
 ## Runtime-policy
 
 De aanroeper moet per run expliciet deze Config-waarden doorgeven:
@@ -26,7 +30,9 @@ De aanroeper moet per run expliciet deze Config-waarden doorgeven:
 
 Ontbreekt een vereiste sleutel of is een waarde ongeldig, dan faalt de engine gesloten in plaats van een ingebouwde fallback te gebruiken.
 
-Alleen `salary_monthly_eur=null` betekent aantoonbaar onbekend salaris. Een string, boolean, `NaN`, `+/-inf` of ander ongeldig salarisformaat wordt afgewezen als `salary_invalid`; corrupte data mag nooit stil de onbekend-salarisfallback activeren. Publicatiedatums accepteren een ISO-datum of ISO-datetime, maar geen willekeurige suffix na de datum.
+Publicatiedatums accepteren een ISO-datum of ISO-datetime. Leeftijd is leidend; een vacature wordt niet afgewezen alleen omdat zij uit het vorige kalenderjaar komt zolang zij binnen `max_posting_age_days` valt.
+
+Salaris kan als exact maandbedrag via `salary_monthly_eur` of als geverifieerde range via `salary_min_monthly_eur` en `salary_max_monthly_eur` worden aangeleverd. Gebruik nooit exact bedrag en range tegelijk. Alleen een expliciet onbekend salaris zonder deze numerieke velden activeert de onbekend-salarisfallback. Ongeldige, conflicterende of niet-eindige waarden worden `salary_invalid`. Een bekende range faalt de minimumgrens alleen wanneer de geverifieerde bovengrens volledig onder `min_monthly_salary_eur` ligt; een range die de grens bereikt of overlapt blijft eligible.
 
 ## Scorecontract
 
@@ -38,7 +44,7 @@ Score-input gebruikt alleen vaste ankers:
 
 Bekend salaris komt vóór onbekend salaris. Bij gelijke score: hogere eisenmatch -> hoger bewijs -> nieuwere vacature. Exact gelijke kandidaten krijgen canonieke URL en titel als stabiele technische tie-break.
 
-De aanroeper moet `today` altijd expliciet meegeven, bepaald met de canonieke timezone uit `Config`. De engine gebruikt nooit stil de host- of serverdatum en gebruikt `today.year` voor de kalenderjaarcontrole.
+De aanroeper moet `today` altijd expliciet meegeven, bepaald met de canonieke timezone uit `Config`. De engine gebruikt nooit stil de host- of serverdatum.
 
 ```python
 from vacature_engine import top_vacancies
@@ -50,7 +56,7 @@ CLI-input is één JSON-object met dezelfde expliciete context:
 
 ```json
 {
-  "today": "2026-08-26",
+  "today": "2026-08-28",
   "policy": {
     "min_monthly_salary_eur": 3500,
     "max_posting_age_days": 120,
