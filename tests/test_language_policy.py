@@ -57,6 +57,18 @@ class LanguagePolicyTests(unittest.TestCase):
         self.assertFalse(gate["pass"])
         self.assertIn("required_language_not_allowed", gate["reasons"])
 
+    def test_required_language_evidence_must_be_explicit(self):
+        missing = vacancy()
+        missing.pop("required_languages")
+        cases = [missing, vacancy(required_languages=None), vacancy(required_languages="")]
+        for item in cases:
+            with self.subTest(required_languages=item.get("required_languages", "<missing>")):
+                gate = eligibility(item, today=TODAY, policy=POLICY)
+                self.assertFalse(gate["pass"])
+                self.assertIn("required_languages_invalid", gate["reasons"])
+
+        self.assertTrue(eligibility(vacancy(required_languages=[]), today=TODAY, policy=POLICY)["pass"])
+
     def test_missing_language_evidence_fails_closed_when_gate_enabled(self):
         missing_listing = eligibility(vacancy(listing_language=None), today=TODAY, policy=POLICY)
         missing_application = eligibility(vacancy(application_language=None), today=TODAY, policy=POLICY)
