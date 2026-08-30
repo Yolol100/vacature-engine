@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.3.0 - 2026-08-30
+- Runtime-taalpoort toegevoegd via `allowed_listing_languages`; de huidige `vacature-search`-flow geeft `nl,en` door vanuit live Config.
+- Wanneer de taalpoort actief is, moeten vacaturetekst en sollicitatieflow in een toegestane taal zijn en mogen verplichte functie-/werktalen geen derde taal bevatten.
+- Ontbrekende taalbewijzen falen gesloten zodra de taalpoort actief is; bestaande directe callers zonder taalconfig blijven backward compatible.
+- Regressietests toegevoegd voor Nederlands/Engels, anderstalige listings/flows en verplichte derde talen.
+
 ## 5.2.0 - 2026-08-28
 - Discoverycontract verduidelijkt voor wereldwijd remote werk: de Skill zoekt wereldwijd; de engine accepteert alleen vacatures die voor de kandidaat geografisch, juridisch, payroll- en timezone-technisch uitvoerbaar zijn.
 - De kalenderjaarpoort is verwijderd. Alleen de echte leeftijd ten opzichte van `max_posting_age_days` bepaalt nu of een publicatiedatum te oud is.
