@@ -16,7 +16,11 @@ De repo bevat daarom bewust geen vaste jobboardlijst, landenlijst, bronprioritei
 
 ## Worldwide remote contract
 
-Discovery is wereldwijd en wordt door de Skill uitgevoerd. De engine gebruikt alleen `geography_compatible=true` wanneer de vacature daadwerkelijk uitvoerbaar is vanaf de huidige locatie van de kandidaat. Een expliciete Worldwide/Global/Anywhere-rol kan dus door; een country-only, payroll-, legal- of timezonebeperking die de kandidaat uitsluit niet. De engine zelf bevat geen vaste landenlijst.
+Discovery is wereldwijd en wordt door de Skill uitgevoerd. Nederland is uitsluitend de huidige uitvoeringslocatie van de kandidaat voor de compatibiliteitscheck; het is nooit een filter op werkgever, vacatureland, jobboard, ATS of discoveryquery. Een werkgever in de VS, VK, EU, Azië of elders mag dus gewoon door wanneer de concrete functie juridisch, contractueel en praktisch vanuit Nederland kan worden uitgevoerd.
+
+De engine gebruikt alleen `geography_compatible=true` wanneer de vacature daadwerkelijk uitvoerbaar is vanaf de huidige locatie van de kandidaat. Een expliciete Worldwide/Global/Anywhere-rol, internationale contractor/B2B-constructie of andere grensoverschrijdende remote rol kan dus door zonder dat `Netherlands` in de vacature staat. Een landnaam in werkgever- of vacaturemetadata is op zichzelf geen gate. Alleen een concrete country-only, payroll-, work-authorization-, legal-, security-, aanwezigheid- of onhaalbare timezonebeperking maakt de geografie incompatibel. De engine zelf bevat geen vaste landenlijst en negeert niet-gating metadata zoals `employer_country` of `listing_country` voor eligibility.
+
+Lokale discoverybronnen, bijvoorbeeld een landspecifiek Indeed-domein, zijn alleen vindkanalen en mogen de wereldwijde scope niet vernauwen. Als een externe jobwidget een geografie niet ondersteunt, is dat een toolbeperking en geen bewijs dat er geen geschikte vacatures bestaan; de Skill moet dan doorgaan via werkgever-, ATS- en web-discovery.
 
 De taal van het jobboard zelf is geen gate. De concrete vacaturetekst, de sollicitatieflow en verplichte functie-/werktalen worden gecontroleerd wanneer `allowed_listing_languages` uit Config wordt meegegeven. De huidige `vacature-search` Skill vereist `nl,en`: de vacature en sollicitatie moeten dus volledig in Nederlands of Engels beschikbaar zijn en een derde taal mag niet verplicht zijn.
 
@@ -36,8 +40,10 @@ De zes numerieke sleutels blijven verplicht voor iedere engine-aanroep. De taalp
 Wanneer de taalpoort actief is:
 - `listing_language` moet in `allowed_listing_languages` staan;
 - `application_language` moet in `allowed_listing_languages` staan;
-- `required_languages` mag geen taal buiten de toegestane set bevatten;
-- ontbrekende of ongeldige taalbewijzen falen gesloten.
+- `required_languages` moet expliciet zijn geverifieerd;
+- alleen een expliciete lege collectie voor `required_languages` betekent bewezen dat geen extra taal verplicht is;
+- ontbrekend, `null`, lege tekst of ongeldig `required_languages`-bewijs faalt gesloten;
+- een geverifieerde verplichte taal buiten de toegestane set faalt gesloten.
 
 Publicatiedatums accepteren een ISO-datum of ISO-datetime. Leeftijd is leidend; een vacature wordt niet afgewezen alleen omdat zij uit het vorige kalenderjaar komt zolang zij binnen `max_posting_age_days` valt.
 
@@ -65,7 +71,7 @@ CLI-input is één JSON-object met dezelfde expliciete context:
 
 ```json
 {
-  "today": "2026-08-30",
+  "today": "2026-08-31",
   "policy": {
     "min_monthly_salary_eur": 3500,
     "max_posting_age_days": 120,
@@ -82,7 +88,7 @@ CLI-input is één JSON-object met dezelfde expliciete context:
 ## Assurance
 
 - CI test Python 3.11 t/m 3.14.
-- Boundary-, golden-, property/metamorphic-, adversarial- en taalpoorttests bewaken het enginecontract.
+- Boundary-, golden-, property/metamorphic-, adversarial-, wereldwijde-geografie- en taalpoorttests bewaken het enginecontract.
 - `scripts/mutation_smoke.py` moet alle gecontroleerde kernmutaties doden.
 - CodeQL controleert coderisico; `tests/test_dependency_policy.py` blokkeert runtime-dependencies en ongepinde build-backends. Dependabot bewaakt toekomstige dependency-updates.
 - `scripts/build_release_bundle.py` bouwt tweemaal byte-reproduceerbare source-evidence met SPDX 2.3 SBOM, package-verification-code, SHA-256 checksums en een lokale provenance receipt.
