@@ -9,7 +9,7 @@ from typing import Any
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-30-language-gate-v10"
+LOGIC_VERSION = "2026-08-31-worldwide-geography-v11"
 
 _LANGUAGE_ALIASES = {
     "dutch": "nl",
@@ -183,9 +183,13 @@ def _salary_status(vacancy: Mapping[str, Any], minimum: float) -> tuple[bool, st
 
 def _required_languages(value: Any) -> tuple[bool, set[str]]:
     if value is None:
-        return True, set()
+        return False, set()
     if isinstance(value, str):
+        if not value.strip():
+            return False, set()
         raw_items = [part for part in value.split(",") if part.strip()]
+        if not raw_items:
+            return False, set()
     elif isinstance(value, (list, tuple, set, frozenset)):
         raw_items = list(value)
     else:
