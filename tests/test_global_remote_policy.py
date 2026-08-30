@@ -37,6 +37,26 @@ class GlobalRemotePolicyTests(unittest.TestCase):
     def test_cross_year_vacancy_within_age_limit_passes(self):
         self.assertTrue(eligibility(vacancy(), today=TODAY, policy=POLICY)["pass"])
 
+    def test_foreign_employer_does_not_require_netherlands_wording(self):
+        item = vacancy(
+            employer_country="United States",
+            listing_country="United Kingdom",
+            country_allowed="Worldwide",
+            remote_terms="Global remote / work from anywhere",
+        )
+        gate = eligibility(item, today=TODAY, policy=POLICY)
+        self.assertTrue(gate["pass"])
+        self.assertNotIn("country_restriction", gate["reasons"])
+
+    def test_country_label_alone_does_not_override_execution_compatibility(self):
+        item = vacancy(
+            employer_country="Japan",
+            listing_country="Germany",
+            candidate_execution_country="Netherlands",
+            geography_compatible=True,
+        )
+        self.assertTrue(eligibility(item, today=TODAY, policy=POLICY)["pass"])
+
     def test_global_discovery_still_rejects_incompatible_geography(self):
         gate = eligibility(vacancy(geography_compatible=False), today=TODAY, policy=POLICY)
         self.assertFalse(gate["pass"])
