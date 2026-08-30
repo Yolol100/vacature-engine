@@ -29,7 +29,7 @@ class VacancyPolicy:
     min_output_score: float
     min_core_fit: float
     min_evidence_fit: float
-    allowed_listing_languages: frozenset[str]
+    allowed_listing_languages: frozenset[str] | None = None
 
 
 def _number(value: Any) -> float | None:
@@ -80,8 +80,6 @@ def _normalize_language(value: Any) -> str | None:
 
 
 def _policy_languages(config: Mapping[str, Any], key: str) -> frozenset[str]:
-    if key not in config:
-        raise ValueError(f"policy missing required Config key: {key}")
     value = config[key]
     if isinstance(value, str):
         raw_items = value.split(",")
@@ -109,7 +107,11 @@ def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
         min_output_score=float(_policy_number(config, "min_output_score")),
         min_core_fit=float(_policy_number(config, "min_core_fit")),
         min_evidence_fit=float(_policy_number(config, "min_evidence_fit")),
-        allowed_listing_languages=_policy_languages(config, "allowed_listing_languages"),
+        allowed_listing_languages=(
+            _policy_languages(config, "allowed_listing_languages")
+            if "allowed_listing_languages" in config
+            else None
+        ),
     )
     if policy.min_monthly_salary_eur < 0:
         raise ValueError("min_monthly_salary_eur must be >= 0")
@@ -239,23 +241,24 @@ def eligibility(
     if vacancy.get("central_hard_mismatch") is True:
         reasons.append("central_hard_mismatch")
 
-    listing_language = _normalize_language(vacancy.get("listing_language"))
-    if listing_language is None:
-        reasons.append("listing_language_missing")
-    elif listing_language not in runtime_policy.allowed_listing_languages:
-        reasons.append("listing_language_not_allowed")
+    if runtime_policy.allowed_listing_languages is not None:
+        listing_language = _normalize_language(vacancy.get("listing_language"))
+        if listing_language is None:
+            reasons.append("listing_language_missing")
+        elif listing_language not in runtime_policy.allowed_listing_languages:
+            reasons.append("listing_language_not_allowed")
 
-    application_language = _normalize_language(vacancy.get("application_language"))
-    if application_language is None:
-        reasons.append("application_language_missing")
-    elif application_language not in runtime_policy.allowed_listing_languages:
-        reasons.append("application_language_not_allowed")
+        application_language = _normalize_language(vacancy.get("application_language"))
+        if application_language is None:
+            reasons.append("application_language_missing")
+        elif application_language not in runtime_policy.allowed_listing_languages:
+            reasons.append("application_language_not_allowed")
 
-    required_languages_valid, required_languages = _required_languages(vacancy.get("required_languages"))
-    if not required_languages_valid:
-        reasons.append("required_languages_invalid")
-    elif required_languages - runtime_policy.allowed_listing_languages:
-        reasons.append("required_language_not_allowed")
+        required_languages_valid, required_languages = _required_languages(vacancy.get("required_languages"))
+        if not required_languages_valid:
+            reasons.append("required_languages_invalid")
+        elif required_languages - runtime_policy.allowed_listing_languages:
+            reasons.append("required_language_not_allowed")
 
     salary_known, salary_reason = _salary_status(vacancy, runtime_policy.min_monthly_salary_eur)
     if salary_reason is not None:
