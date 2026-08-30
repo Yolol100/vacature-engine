@@ -9,7 +9,16 @@ from typing import Any
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-28-global-remote-v9"
+LOGIC_VERSION = "2026-08-30-language-gate-v10"
+
+_LANGUAGE_ALIASES = {
+    "dutch": "nl",
+    "nederlands": "nl",
+    "nl": "nl",
+    "english": "en",
+    "engels": "en",
+    "en": "en",
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,6 +29,7 @@ class VacancyPolicy:
     min_output_score: float
     min_core_fit: float
     min_evidence_fit: float
+    allowed_listing_languages: frozenset[str]
 
 
 def _number(value: Any) -> float | None:
@@ -55,6 +65,42 @@ def _policy_number(config: Mapping[str, Any], key: str, *, integer: bool = False
     return number
 
 
+def _normalize_language(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    normalized = value.strip().lower().replace("_", "-")
+    if not normalized:
+        return None
+    normalized = _LANGUAGE_ALIASES.get(normalized, normalized)
+    if normalized.startswith("nl-"):
+        return "nl"
+    if normalized.startswith("en-"):
+        return "en"
+    return normalized
+
+
+def _policy_languages(config: Mapping[str, Any], key: str) -> frozenset[str]:
+    if key not in config:
+        raise ValueError(f"policy missing required Config key: {key}")
+    value = config[key]
+    if isinstance(value, str):
+        raw_items = value.split(",")
+    elif isinstance(value, (list, tuple, set, frozenset)):
+        raw_items = list(value)
+    else:
+        raise ValueError(f"policy key {key} must be CSV text or a language list")
+
+    languages: set[str] = set()
+    for item in raw_items:
+        normalized = _normalize_language(item)
+        if normalized is None or len(normalized) != 2 or not normalized.isalpha():
+            raise ValueError(f"policy key {key} contains an invalid language")
+        languages.add(normalized)
+    if not languages:
+        raise ValueError(f"policy key {key} must contain at least one language")
+    return frozenset(languages)
+
+
 def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
     policy = VacancyPolicy(
         min_monthly_salary_eur=float(_policy_number(config, "min_monthly_salary_eur")),
@@ -63,6 +109,7 @@ def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
         min_output_score=float(_policy_number(config, "min_output_score")),
         min_core_fit=float(_policy_number(config, "min_core_fit")),
         min_evidence_fit=float(_policy_number(config, "min_evidence_fit")),
+        allowed_listing_languages=_policy_languages(config, "allowed_listing_languages"),
     )
     if policy.min_monthly_salary_eur < 0:
         raise ValueError("min_monthly_salary_eur must be >= 0")
@@ -132,6 +179,25 @@ def _salary_status(vacancy: Mapping[str, Any], minimum: float) -> tuple[bool, st
     return False, None
 
 
+def _required_languages(value: Any) -> tuple[bool, set[str]]:
+    if value is None:
+        return True, set()
+    if isinstance(value, str):
+        raw_items = [part for part in value.split(",") if part.strip()]
+    elif isinstance(value, (list, tuple, set, frozenset)):
+        raw_items = list(value)
+    else:
+        return False, set()
+
+    languages: set[str] = set()
+    for item in raw_items:
+        normalized = _normalize_language(item)
+        if normalized is None:
+            return False, set()
+        languages.add(normalized)
+    return True, languages
+
+
 def _recency_points(age_days: int) -> float:
     if age_days <= 14:
         return 10.0
@@ -172,6 +238,24 @@ def eligibility(
         reasons.append("not_wordpress_related")
     if vacancy.get("central_hard_mismatch") is True:
         reasons.append("central_hard_mismatch")
+
+    listing_language = _normalize_language(vacancy.get("listing_language"))
+    if listing_language is None:
+        reasons.append("listing_language_missing")
+    elif listing_language not in runtime_policy.allowed_listing_languages:
+        reasons.append("listing_language_not_allowed")
+
+    application_language = _normalize_language(vacancy.get("application_language"))
+    if application_language is None:
+        reasons.append("application_language_missing")
+    elif application_language not in runtime_policy.allowed_listing_languages:
+        reasons.append("application_language_not_allowed")
+
+    required_languages_valid, required_languages = _required_languages(vacancy.get("required_languages"))
+    if not required_languages_valid:
+        reasons.append("required_languages_invalid")
+    elif required_languages - runtime_policy.allowed_listing_languages:
+        reasons.append("required_language_not_allowed")
 
     salary_known, salary_reason = _salary_status(vacancy, runtime_policy.min_monthly_salary_eur)
     if salary_reason is not None:
@@ -254,13 +338,4 @@ def choose_language(
     vacancy_language: str | None = None,
 ) -> str:
     value = explicit_language or form_language or vacancy_language or "English"
-    normalized = value.strip().lower()
-    aliases = {
-        "dutch": "nl",
-        "nederlands": "nl",
-        "nl": "nl",
-        "english": "en",
-        "engels": "en",
-        "en": "en",
-    }
-    return aliases.get(normalized, normalized)
+    return _normalize_language(value) or "en"
