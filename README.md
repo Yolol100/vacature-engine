@@ -18,17 +18,26 @@ De repo bevat daarom bewust geen vaste jobboardlijst, landenlijst, bronprioritei
 
 Discovery is wereldwijd en wordt door de Skill uitgevoerd. De engine gebruikt alleen `geography_compatible=true` wanneer de vacature daadwerkelijk uitvoerbaar is vanaf de huidige locatie van de kandidaat. Een expliciete Worldwide/Global/Anywhere-rol kan dus door; een country-only, payroll-, legal- of timezonebeperking die de kandidaat uitsluit niet. De engine zelf bevat geen vaste landenlijst.
 
+De taal van het jobboard zelf is geen gate. De concrete vacaturetekst, de sollicitatieflow en verplichte functie-/werktalen worden gecontroleerd wanneer `allowed_listing_languages` uit Config wordt meegegeven. De huidige `vacature-search` Skill vereist `nl,en`: de vacature en sollicitatie moeten dus volledig in Nederlands of Engels beschikbaar zijn en een derde taal mag niet verplicht zijn.
+
 ## Runtime-policy
 
-De aanroeper moet per run expliciet deze Config-waarden doorgeven:
+De normale `vacature-search`-aanroeper geeft per run expliciet deze Config-waarden door:
 - `min_monthly_salary_eur`
 - `max_posting_age_days`
 - `max_output_roles`
 - `min_output_score`
 - `min_core_fit`
 - `min_evidence_fit`
+- `allowed_listing_languages`
 
-Ontbreekt een vereiste sleutel of is een waarde ongeldig, dan faalt de engine gesloten in plaats van een ingebouwde fallback te gebruiken.
+De zes numerieke sleutels blijven verplicht voor iedere engine-aanroep. De taalpoort wordt actief zodra `allowed_listing_languages` aanwezig is; de normale Skill-flow vereist deze sleutel en stopt vóór de engine-aanroep als hij ontbreekt. Directe oudere callers zonder deze sleutel houden alleen voor backward compatibility het eerdere gedrag zonder taalpoort.
+
+Wanneer de taalpoort actief is:
+- `listing_language` moet in `allowed_listing_languages` staan;
+- `application_language` moet in `allowed_listing_languages` staan;
+- `required_languages` mag geen taal buiten de toegestane set bevatten;
+- ontbrekende of ongeldige taalbewijzen falen gesloten.
 
 Publicatiedatums accepteren een ISO-datum of ISO-datetime. Leeftijd is leidend; een vacature wordt niet afgewezen alleen omdat zij uit het vorige kalenderjaar komt zolang zij binnen `max_posting_age_days` valt.
 
@@ -56,14 +65,15 @@ CLI-input is één JSON-object met dezelfde expliciete context:
 
 ```json
 {
-  "today": "2026-08-28",
+  "today": "2026-08-30",
   "policy": {
     "min_monthly_salary_eur": 3500,
     "max_posting_age_days": 120,
     "max_output_roles": 10,
     "min_output_score": 75,
     "min_core_fit": 40,
-    "min_evidence_fit": 10
+    "min_evidence_fit": 10,
+    "allowed_listing_languages": "nl,en"
   },
   "vacancies": []
 }
@@ -72,7 +82,7 @@ CLI-input is één JSON-object met dezelfde expliciete context:
 ## Assurance
 
 - CI test Python 3.11 t/m 3.14.
-- Boundary-, golden-, property/metamorphic- en adversarial-tests bewaken het enginecontract.
+- Boundary-, golden-, property/metamorphic-, adversarial- en taalpoorttests bewaken het enginecontract.
 - `scripts/mutation_smoke.py` moet alle gecontroleerde kernmutaties doden.
 - CodeQL controleert coderisico; `tests/test_dependency_policy.py` blokkeert runtime-dependencies en ongepinde build-backends. Dependabot bewaakt toekomstige dependency-updates.
 - `scripts/build_release_bundle.py` bouwt tweemaal byte-reproduceerbare source-evidence met SPDX 2.3 SBOM, package-verification-code, SHA-256 checksums en een lokale provenance receipt.
