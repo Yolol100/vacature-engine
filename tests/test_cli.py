@@ -8,7 +8,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = {
     "min_monthly_salary_eur": 3500,
-    "max_posting_age_days": 120,
+    "max_posting_age_days": 0,
     "max_output_roles": 10,
     "min_output_score": 75,
     "min_core_fit": 40,
@@ -46,16 +46,13 @@ class CliTests(unittest.TestCase):
         self.assertNotEqual(0, result.returncode)
         self.assertIn("today, policy and vacancies", result.stderr)
 
-    def test_cli_uses_config_policy(self):
-        result = self.run_cli({"today": "2026-08-26", "policy": POLICY, "vacancies": [VACANCY]})
-        self.assertEqual(0, result.returncode, result.stderr)
-        rows = json.loads(result.stdout)
-        self.assertEqual(["Senior WordPress Developer"], [row["title"] for row in rows])
-
+    def test_cli_salary_threshold_is_advisory(self):
         stricter = {**POLICY, "min_monthly_salary_eur": 5000}
         result = self.run_cli({"today": "2026-08-26", "policy": stricter, "vacancies": [VACANCY]})
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertEqual([], json.loads(result.stdout))
+        rows = json.loads(result.stdout)
+        self.assertEqual(["Senior WordPress Developer"], [row["title"] for row in rows])
+        self.assertIn("salary_below_preference", rows[0]["warnings"])
 
     def test_cli_rejects_malformed_salary(self):
         bad = {**VACANCY, "salary_monthly_eur": "4500"}
