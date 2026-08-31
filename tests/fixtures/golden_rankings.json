@@ -2,7 +2,7 @@
   "today": "2026-08-26",
   "policy": {
     "min_monthly_salary_eur": 3500,
-    "max_posting_age_days": 120,
+    "max_posting_age_days": 0,
     "max_output_roles": 10,
     "min_output_score": 75,
     "min_core_fit": 40,
@@ -17,5 +17,5 @@
     {"title":"Bad core","url":"https://example.com/f","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":5000,"core_fit":25,"evidence_fit":25,"workstyle_fit":15},
     {"title":"Malformed salary","url":"https://example.com/g","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":"5000","core_fit":50,"evidence_fit":25,"workstyle_fit":15}
   ],
-  "expected_titles": ["Known excellent", "Known older tie", "Known strong", "Unknown excellent"]
+  "expected_titles": ["Below salary", "Known excellent", "Known older tie", "Known strong", "Unknown excellent"]
 }

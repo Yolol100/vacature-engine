@@ -66,7 +66,7 @@ class AdversarialTests(unittest.TestCase):
             with self.subTest(value=value):
                 gate = eligibility(vacancy(posted_date=value), today=TODAY, policy=POLICY)
                 self.assertFalse(gate["pass"])
-                self.assertIn("date_missing", gate["reasons"])
+                self.assertIn("date_invalid", gate["reasons"])
 
     def test_iso_datetime_date_prefix_is_allowed(self):
         for value in ["2026-08-20T12:30:00+02:00", "2026-08-20 12:30:00"]:
