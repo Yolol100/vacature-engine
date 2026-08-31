@@ -11,14 +11,51 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = Path("src/vacature_engine/simple.py")
 MUTANTS = [
-    ("age-boundary", 'age_days > runtime_policy.max_posting_age_days', 'age_days >= runtime_policy.max_posting_age_days'),
-    ("score-boundary", 'ranked["score"] < runtime_policy.min_output_score', 'ranked["score"] <= runtime_policy.min_output_score'),
-    ("core-boundary", 'core_fit < runtime_policy.min_core_fit', 'core_fit <= runtime_policy.min_core_fit'),
-    ("evidence-boundary", 'evidence_fit < runtime_policy.min_evidence_fit', 'evidence_fit <= runtime_policy.min_evidence_fit'),
-    ("salary-boundary", 'if exact < minimum:', 'if exact <= minimum:'),
-    ("salary-order", 'return (known_salary + unknown_salary)[: runtime_policy.max_output_roles]', 'return (unknown_salary + known_salary)[: runtime_policy.max_output_roles]'),
-    ("ranking-direction", '\n    known_salary.sort(key=key, reverse=True)', '\n    known_salary.sort(key=key, reverse=False)'),
-    ("recency-14", 'if age_days <= 14:', 'if age_days < 14:'),
+    (
+        "unlimited-age-zero",
+        "elif runtime_policy.max_posting_age_days > 0 and age_days > runtime_policy.max_posting_age_days:",
+        "elif age_days > runtime_policy.max_posting_age_days:",
+    ),
+    (
+        "remote-hard-gate",
+        'if vacancy.get("fully_remote") is not True:',
+        'if vacancy.get("fully_remote") is True:',
+    ),
+    (
+        "geography-hard-gate",
+        'if vacancy.get("geography_compatible") is not True:',
+        'if vacancy.get("geography_compatible") is True:',
+    ),
+    (
+        "wordpress-hard-gate",
+        'if vacancy.get("wordpress_related") is not True:',
+        'if vacancy.get("wordpress_related") is True:',
+    ),
+    (
+        "score-boundary",
+        'ranked["score"] < runtime_policy.min_output_score',
+        'ranked["score"] <= runtime_policy.min_output_score',
+    ),
+    (
+        "core-boundary",
+        "core_fit < runtime_policy.min_core_fit",
+        "core_fit <= runtime_policy.min_core_fit",
+    ),
+    (
+        "evidence-boundary",
+        "evidence_fit < runtime_policy.min_evidence_fit",
+        "evidence_fit <= runtime_policy.min_evidence_fit",
+    ),
+    (
+        "salary-advisory",
+        'return True, "salary_below_preference" if exact < minimum else None',
+        'return True, "salary_below_preference" if exact > minimum else None',
+    ),
+    (
+        "salary-order",
+        'return (known_salary + unknown_salary)[: runtime_policy.max_output_roles]',
+        'return (unknown_salary + known_salary)[: runtime_policy.max_output_roles]',
+    ),
 ]
 
 
