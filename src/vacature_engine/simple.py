@@ -9,7 +9,7 @@ from typing import Any
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-31-worldwide-geography-v11"
+LOGIC_VERSION = "2026-08-31-unbounded-vacancy-age-v12"
 
 _LANGUAGE_ALIASES = {
     "dutch": "nl",
@@ -116,7 +116,7 @@ def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
     if policy.min_monthly_salary_eur < 0:
         raise ValueError("min_monthly_salary_eur must be >= 0")
     if policy.max_posting_age_days < 0:
-        raise ValueError("max_posting_age_days must be >= 0")
+        raise ValueError("max_posting_age_days must be >= 0; use 0 for no age limit")
     if policy.max_output_roles < 1:
         raise ValueError("max_output_roles must be >= 1")
     if not 0 <= policy.min_output_score <= 100:
@@ -233,7 +233,7 @@ def eligibility(
         age_days = (today - posted).days
         if age_days < 0:
             reasons.append("future_date")
-        elif age_days > runtime_policy.max_posting_age_days:
+        elif runtime_policy.max_posting_age_days > 0 and age_days > runtime_policy.max_posting_age_days:
             reasons.append("older_than_max_age")
 
     if vacancy.get("fully_remote") is not True:
