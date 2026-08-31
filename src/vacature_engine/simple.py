@@ -218,10 +218,13 @@ def eligibility(
     reasons: list[str] = []
     warnings: list[str] = []
 
-    posted = _posted_date(vacancy.get("posted_date"))
+    posted_raw = vacancy.get("posted_date")
+    posted = _posted_date(posted_raw)
     age_days: int | None = None
-    if posted is None:
+    if posted_raw is None:
         warnings.append("date_missing")
+    elif posted is None:
+        reasons.append("date_invalid")
     else:
         age_days = (today - posted).days
         if age_days < 0:
@@ -255,9 +258,11 @@ def eligibility(
         elif required_languages - runtime_policy.allowed_listing_languages:
             reasons.append("required_language_not_allowed")
 
-    salary_known, salary_warning = _salary_status(vacancy, runtime_policy.min_monthly_salary_eur)
-    if salary_warning is not None:
-        warnings.append(salary_warning)
+    salary_known, salary_status = _salary_status(vacancy, runtime_policy.min_monthly_salary_eur)
+    if salary_status == "salary_invalid":
+        reasons.append(salary_status)
+    elif salary_status is not None:
+        warnings.append(salary_status)
 
     return {
         "pass": not reasons,
@@ -289,7 +294,8 @@ def top_vacancies(
     policy: VacancyPolicy | Mapping[str, Any],
 ) -> list[dict[str, Any]]:
     runtime_policy = _coerce_policy(policy)
-    ranked_rows: list[dict[str, Any]] = []
+    known_salary: list[dict[str, Any]] = []
+    unknown_salary: list[dict[str, Any]] = []
     for item in vacancies:
         if not isinstance(item, dict):
             continue
@@ -313,7 +319,7 @@ def top_vacancies(
             continue
         if evidence_fit < runtime_policy.min_evidence_fit:
             continue
-        ranked_rows.append(ranked)
+        (known_salary if gate["salary_known"] else unknown_salary).append(ranked)
 
     def key(row: dict[str, Any]) -> tuple[float, float, float, int, str, str]:
         age = row["age_days"] if row["age_days"] is not None else 9999
@@ -326,8 +332,9 @@ def top_vacancies(
             str(row.get("title") or ""),
         )
 
-    ranked_rows.sort(key=key, reverse=True)
-    return ranked_rows[: runtime_policy.max_output_roles]
+    known_salary.sort(key=key, reverse=True)
+    unknown_salary.sort(key=key, reverse=True)
+    return (known_salary + unknown_salary)[: runtime_policy.max_output_roles]
 
 
 def choose_language(
