@@ -102,6 +102,39 @@ class RemoteFirstPolicyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             score(vacancy(core_fit=45), age_days=0)
 
+    def test_output_threshold_boundaries_pass(self):
+        item = vacancy(
+            core_fit=40,
+            evidence_fit=10,
+            workstyle_fit=15,
+            posted_date=TODAY.isoformat(),
+        )
+        ranked = top_vacancies([item], today=TODAY, policy=POLICY)
+        self.assertEqual(1, len(ranked))
+        self.assertEqual(75, ranked[0]["score"])
+
+    def test_known_salary_precedes_unknown_salary(self):
+        known = vacancy(
+            title="Known",
+            url="https://example.com/known",
+            salary_monthly_eur=4000,
+            core_fit=40,
+            evidence_fit=10,
+            workstyle_fit=15,
+            posted_date=TODAY.isoformat(),
+        )
+        unknown = vacancy(
+            title="Unknown",
+            url="https://example.com/unknown",
+            salary_monthly_eur=None,
+            core_fit=50,
+            evidence_fit=25,
+            workstyle_fit=15,
+            posted_date=TODAY.isoformat(),
+        )
+        ranked = top_vacancies([unknown, known], today=TODAY, policy=POLICY)
+        self.assertEqual(["Known", "Unknown"], [row["title"] for row in ranked])
+
     def test_output_thresholds_remain(self):
         weak_core = vacancy(core_fit=25, evidence_fit=25, workstyle_fit=15)
         weak_evidence = vacancy(core_fit=50, evidence_fit=0, workstyle_fit=15)
