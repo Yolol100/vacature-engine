@@ -100,3 +100,7 @@ Voorbeeld met de huidige remote-first leeftijdsinstelling:
 - Release-evidence blijft byte-reproduceerbaar met SPDX 2.3 SBOM, checksums en provenance receipt.
 
 Geen scraping, discovery, bronprioritering, e-mail of sollicitatieformulieren in deze repo.
+
+## Licentie
+
+Deze repository bevat momenteel geen open-sourcelicentie. Hergebruik, distributie of afgeleide werken zijn niet toegestaan zonder expliciete toestemming van de rechthebbende.
