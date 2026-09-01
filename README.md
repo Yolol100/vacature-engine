@@ -1,5 +1,9 @@
 # vacature-engine
 
+> **Portfoliostatus:** Actief ondersteunend · deterministische vacatureselectiehelper
+
+**Rol in het portfolio:** vacature-engine ondersteunt `vacature-search` met harde filters, een vaste score en uitlegbare output. De helper beslist niet zelfstandig welke vacature wordt gekozen en bewaart geen kandidaat- of sollicitatiegegevens op de publieke default branch.
+
 Kleine deterministische helper voor `vacature-search`.
 
 Doet alleen:
