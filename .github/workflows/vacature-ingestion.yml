@@ -68,32 +68,23 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: python -m vacature_ingestion sync-register --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 --summary .runtime/latest.json --health .runtime/source-health.json
-      - name: Persist technical state on isolated branch
+      - name: Persist technical state as single snapshot
         shell: bash
         run: |
           set -euo pipefail
           rm -rf /tmp/vacature-ingestion-state
-          git fetch origin ingestion-state || true
-          if git show-ref --verify --quiet refs/remotes/origin/ingestion-state; then
-            git worktree add -B ingestion-state /tmp/vacature-ingestion-state origin/ingestion-state
-          else
-            git worktree add --detach /tmp/vacature-ingestion-state
-            cd /tmp/vacature-ingestion-state
-            git switch --orphan ingestion-state
-            git rm -rf . >/dev/null 2>&1 || true
-            cd "$GITHUB_WORKSPACE"
-          fi
-          cp .runtime/state.sqlite3 /tmp/vacature-ingestion-state/state.sqlite3
-          cp .runtime/latest.json /tmp/vacature-ingestion-state/latest.json
-          cp .runtime/source-health.json /tmp/vacature-ingestion-state/source-health.json
+          git worktree add --detach /tmp/vacature-ingestion-state HEAD
           cd /tmp/vacature-ingestion-state
+          git switch --orphan ingestion-state-snapshot
+          git rm -rf . >/dev/null 2>&1 || true
+          cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
+          cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
+          cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add state.sqlite3 latest.json source-health.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: persist vacancy ingestion state"
-            git push origin HEAD:ingestion-state
-          fi
+          git commit -m "chore: persist vacancy ingestion snapshot"
+          git push --force origin HEAD:ingestion-state
       - name: Enforce live-ingestion success threshold
         if: always()
         run: test "${{ steps.ingest.outputs.exit_code }}" = "0"
