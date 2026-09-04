@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.4.0 - 2026-09-04
+- Observation contract verhoogd naar v1.1: alleen canonieke URL en `source_id + source_job_id` zijn nog automatische identiteitssleutels.
+- `employer + title + location` blijft beschikbaar als duplicate-candidate fingerprint, maar mag verschillende sterke identiteiten niet meer automatisch samenvoegen.
+- Canonicalisatie exposeert nu `published_at_candidates`, `published_at_conflict`, bronsoorten en duplicate-candidate metadata voor semantische verificatie door de Skill.
+- Corrupte URL-poorten falen gesloten in plaats van een run te laten crashen.
+- Nieuwe dependency-vrije `jobposting_signals()` normaliseert conservatieve Schema.org `JobPosting`-evidence zoals `datePosted`, `validThrough`, TELECOMMUTE, applicant locations, employment type, direct apply en ruwe salarisvelden.
+- Structured data neemt nooit open-status-, remote-, geografie-, salarisnormalisatie- of fitbeleid over van de Skill/Config.
+- Nieuwe regressietests dekken false-mergepreventie, URL-corruptie, publicatiedatumconflicten en structured-data-grenzen.
+
 ## 5.3.0 - 2026-08-30
 - Runtime-taalpoort toegevoegd via `allowed_listing_languages`; de huidige `vacature-search`-flow geeft `nl,en` door vanuit live Config.
 - Wanneer de taalpoort actief is, moeten vacaturetekst en sollicitatieflow in een toegestane taal zijn en mogen verplichte functie-/werktalen geen derde taal bevatten.
