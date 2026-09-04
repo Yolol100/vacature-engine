@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vacature-engine"
-version = "5.3.1"
-description = "Small deterministic filter and ranking helper for remote WordPress vacancies"
+version = "5.4.0"
+description = "Small deterministic filter, canonicalization and ranking helper for remote WordPress vacancies"
 requires-python = ">=3.11"
 
 [tool.setuptools]
