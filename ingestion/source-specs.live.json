@@ -1,0 +1,36 @@
+[
+  {
+    "source_id": "greenhouse",
+    "source_type": "ats",
+    "adapter": "greenhouse",
+    "account": "clickhouse",
+    "employer": "ClickHouse",
+    "max_jobs": 20000
+  },
+  {
+    "source_id": "lever",
+    "source_type": "ats",
+    "adapter": "lever",
+    "account": "teamsnap",
+    "employer": "TeamSnap",
+    "max_jobs": 20000,
+    "options": {"page_size": 100}
+  },
+  {
+    "source_id": "ashby",
+    "source_type": "ats",
+    "adapter": "ashby",
+    "account": "elevenlabs",
+    "employer": "ElevenLabs",
+    "max_jobs": 20000
+  },
+  {
+    "source_id": "smartrecruiters",
+    "source_type": "ats",
+    "adapter": "smartrecruiters",
+    "account": "NewVariableInc",
+    "employer": "New Variable",
+    "max_jobs": 20000,
+    "options": {"page_size": 100}
+  }
+]

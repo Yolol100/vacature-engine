@@ -1,0 +1,6 @@
+[
+  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"stripe","employer":"Stripe","max_jobs":20000},
+  {"source_id":"lever","source_type":"ats","adapter":"lever","account":"palantir","employer":"Palantir Technologies","max_jobs":20000},
+  {"source_id":"ashby","source_type":"ats","adapter":"ashby","account":"Ashby","employer":"Ashby","max_jobs":20000},
+  {"source_id":"smartrecruiters","source_type":"ats","adapter":"smartrecruiters","account":"smartrecruiters","employer":"SmartRecruiters","max_jobs":20000}
+]
