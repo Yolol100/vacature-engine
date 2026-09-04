@@ -1,0 +1,90 @@
+name: Vacature Ingestion
+
+on:
+  push:
+    branches: [main]
+    paths: ['ingestion/**', '.github/workflows/vacature-ingestion.yml']
+  pull_request:
+    paths: ['ingestion/**', '.github/workflows/vacature-ingestion.yml']
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: vacature-ingestion
+  cancel-in-progress: false
+
+jobs:
+  ingestion-tests:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e ingestion
+      - run: python -m unittest discover -s ingestion/tests -v
+      - run: python -m compileall -q ingestion/src
+      - run: python -m vacature_ingestion benchmark --count 10000
+
+  live-ingestion:
+    if: github.event_name != 'pull_request'
+    needs: ingestion-tests
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e ingestion
+      - name: Restore technical state
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .runtime
+          git fetch origin ingestion-state || true
+          if git show-ref --verify --quiet refs/remotes/origin/ingestion-state; then
+            git show origin/ingestion-state:state.sqlite3 > .runtime/state.sqlite3 || true
+          fi
+      - name: Ingest live public ATS sources
+        id: ingest
+        shell: bash
+        run: |
+          set +e
+          python -m vacature_ingestion ingest-many --specs ingestion/source-specs.live.json --state .runtime/state.sqlite3 --out .runtime/latest.json --allow-partial > .runtime/ingest-console.json
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          cat .runtime/ingest-console.json
+      - name: Export source health
+        run: python -m vacature_ingestion export-state --state .runtime/state.sqlite3 --health-out .runtime/source-health.json
+      - name: Sync compact health to Vacature Register when configured
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python -m vacature_ingestion sync-register --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 --summary .runtime/latest.json --health .runtime/source-health.json
+      - name: Persist technical state as single snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/vacature-ingestion-state
+          git worktree add --detach /tmp/vacature-ingestion-state HEAD
+          cd /tmp/vacature-ingestion-state
+          git switch --orphan ingestion-state-snapshot
+          git rm -rf . >/dev/null 2>&1 || true
+          cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
+          cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
+          cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state.sqlite3 latest.json source-health.json
+          git commit -m "chore: persist vacancy ingestion snapshot"
+          git push --force origin HEAD:ingestion-state
+      - name: Enforce live-ingestion success threshold
+        if: always()
+        run: test "${{ steps.ingest.outputs.exit_code }}" = "0"

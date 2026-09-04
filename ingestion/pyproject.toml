@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vacature-ingestion"
+version = "0.2.0"
+description = "Policy-free bulk ingestion runner producing JobObservation 1.1 compatible vacancy observations"
+requires-python = ">=3.11"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

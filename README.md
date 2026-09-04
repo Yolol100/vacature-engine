@@ -1,17 +1,21 @@
 # vacature-engine
 
-> **Portfoliostatus:** Actief ondersteunend · deterministische vacatureselectiehelper
+> **Portfoliostatus:** Actief ondersteunend · deterministische vacatureselectiehelper + geïsoleerde ingestielaag
 
 `vacature-engine` ondersteunt `vacature-search`. De repo bezit geen discoverybeleid, kandidaatprofiel, bronprioriteiten of sollicitatiestatus. Veranderlijke runtimewaarheid blijft in het `Vacature Register`.
 
-De engine doet alleen:
+Het `vacature_engine`-pakket doet alleen:
 1. deterministische same-run observatiecanonicalisatie;
 2. harde vacaturefilters;
 3. vaste 100-puntsscore;
 4. sterke matches selecteren en sorteren;
 5. conservatieve normalisatie van Schema.org `JobPosting`-signalen.
 
-Geen scraping, netwerkdiscovery, jobboardlijst, bronprioritering, e-mail of sollicitatieformulieren in deze repo.
+Het `vacature_engine`-pakket bevat geen scraping, netwerkdiscovery, jobboardlijst, bronprioritering, e-mail of sollicitatieformulieren. De repository bevat daarnaast een strikt gescheiden sibling-component onder `ingestion/` voor publieke read-acquisitie, technische cross-run state en source-health. Die component is geen onderdeel van het `vacature_engine` runtimepakket en bezit geen kandidaat-, score-, bronprioriteits- of sollicitatiebeleid.
+
+## Ingestion component
+
+`ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. GitHub Actions kan deze component periodiek uitvoeren; source-health kan optioneel compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
 
 ## Observatiecontract v1.1
 
@@ -37,7 +41,7 @@ De canonicalisatielaag:
 - exposeert `duplicate_candidate`, `duplicate_candidate_count` en de fingerprint voor semantische adjudicatie;
 - exposeert alle gevonden `published_at_candidates` en `published_at_conflict`;
 - promoveert `first_seen_at` nooit naar `published_at`;
-- laat cross-run deduplicatie bij `Vacature Register:Vacatures`.
+- laat kandidaatgerichte cross-run deduplicatie bij `Vacature Register:Vacatures`; technische ingestie-lifecycle blijft in de geïsoleerde ingestiestate.
 
 ## Structured JobPosting contract v1.0
 
@@ -118,11 +122,12 @@ best = top_vacancies(vacancies, today=today_from_config, policy=config_values)
 
 ## Assurance
 
-- Python 3.11 t/m 3.14 in CI.
-- Runtime-dependencies blijven leeg.
+- Python 3.11 t/m 3.14 in engine-CI.
+- Het `vacature_engine` runtimepakket houdt runtime-dependencies leeg.
 - Boundary-, golden-, property/metamorphic-, adversarial-, wereldwijde-geografie- en taalpoorttests.
 - Observatietests bewaken sterke identiteit, false-mergepreventie, URL-fail-closed en publication-conflictprovenance.
 - Structured-data-tests bewaken dat Schema.org-signalen nooit remote/geografie/open-statusbeleid overnemen.
+- De ingestiecomponent heeft eigen regressietests, 10.000-record benchmark en live GitHub Actions-netwerkgate.
 - CodeQL en dependency-policygates blijven actief.
 - Release-evidence blijft reproduceerbaar met SBOM, checksums en provenance receipt.
 

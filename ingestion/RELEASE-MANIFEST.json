@@ -1,0 +1,27 @@
+{
+  "artifact": "vacature-ingestion",
+  "version": "0.2.0",
+  "created_date": "2026-09-05",
+  "python": ">=3.11",
+  "runtime_dependencies": [],
+  "job_observation_contract": "1.1",
+  "vacature_engine_reference": {
+    "version": "5.4.0",
+    "commit": "03f06c15f1af21774d53adcb74e75f49511dacbb",
+    "modified": false
+  },
+  "adapters": [
+    "greenhouse",
+    "lever",
+    "ashby",
+    "smartrecruiters",
+    "jsonld"
+  ],
+  "policy_ownership": false,
+  "scheduler_included": true,
+  "scheduler": "GitHub Actions every 6 hours plus workflow_dispatch",
+  "technical_state": "GitHub ingestion-state branch + SQLite",
+  "queue_workers_included": false,
+  "register_sync": "optional; Bronnen source-health + compact Runs row only",
+  "live_network_gate": "to be proven by GitHub Actions after merge"
+}
