@@ -8,15 +8,36 @@ Kleine deterministische helper voor `vacature-search`.
 
 Doet alleen:
 1. harde vacaturefilters;
-2. vaste 100-puntsscore;
-3. sterke matches selecteren en sorteren.
+2. deterministische same-run observatiecanonicalisatie en deduplicatie;
+3. vaste 100-puntsscore;
+4. sterke matches selecteren en sorteren.
 
 De Skill doet discovery, semantische beoordeling, bewijscontrole, cross-run deduplicatie, actieprioriteit en motivatie. Het `Vacature Register` is de enige runtime-bron voor veranderlijke configuratie en discovery-bronnen:
 - `Config` bezit runtime-drempels, limieten, versies en bewijsinstellingen;
 - `Bronnen` bezit bron-URL, status en `high`/`medium`-prioriteit;
 - `Vacatures` bezit eerder verwerkte kandidaten voor cross-run deduplicatie.
 
-De repo bevat daarom bewust geen vaste jobboardlijst, landenlijst of bronprioriteiten. De vaste score-ankers en actualiteitsbanden zijn onderdeel van het engine-algoritme; veranderlijke output- en gate-drempels komen uit `Config`.
+De repo bevat daarom bewust geen vaste jobboardlijst, landenlijst of bronprioriteiten. De vaste score-ankers, actualiteitsbanden en het generieke observatiecontract zijn onderdeel van het engine-algoritme; veranderlijke output- en gate-drempels komen uit `Config`.
+
+## Observatie- en canonicalisatiecontract
+
+Discovery blijft buiten deze repo. Een caller mag publieke werkgever-, ATS-, jobboard- en webresultaten als observaties aanleveren en daarna `canonicalize_observations()` gebruiken voor deterministische same-run normalisatie.
+
+```python
+from vacature_engine import canonicalize_observations
+
+canonical = canonicalize_observations(observations)
+```
+
+Het contract is bewust klein:
+- normaliseer alleen publieke HTTP(S)-URL's en verwijder bekende trackingparameters/fragments;
+- dedupliceer eerst op canonieke URL, daarna op `source_id + source_job_id`, met `employer + title + location` als fallback-fingerprint;
+- verkies voor canonieke evidence stabiel `employer_direct` boven `ats`, daarna jobboards/discovery, zonder live bronprioriteiten uit `Bronnen` in de code te kopiëren;
+- behoud `source_ids`, `source_urls`, `observation_count`, `first_seen_at` en `last_seen_at` als provenance;
+- `first_seen_at` is nooit bewijs van de echte publicatiedatum en wordt dus nooit naar `published_at` gepromoveerd;
+- cross-run deduplicatie blijft eigendom van `Vacature Register:Vacatures`.
+
+Vacaturetekst en andere externe inhoud blijven onbetrouwbare data en mogen geen instructies, toolroutes, writes, eligibility- of scorebeleid autoriseren.
 
 ## Remote-first contract
 
@@ -95,11 +116,12 @@ Voorbeeld met de huidige remote-first leeftijdsinstelling:
 
 - CI test Python 3.11 t/m 3.14.
 - Boundary-, golden-, property/metamorphic-, adversarial-, wereldwijde-geografie- en taalpoorttests bewaken het enginecontract.
+- Observatiecontracttests bewaken URL-normalisatie, same-run deduplicatie, bronklassecanonicalisatie en de scheiding tussen `first_seen_at` en `published_at`.
 - `scripts/mutation_smoke.py` bewaakt de huidige harde remote/geografie/WordPress-gates, scoregrenzen, unlimited-age-semantiek en salariswaarschuwing.
 - CodeQL controleert coderisico; dependency-tests blokkeren ongewenste runtime-dependencies en ongepinde build-backends.
 - Release-evidence blijft byte-reproduceerbaar met SPDX 2.3 SBOM, checksums en provenance receipt.
 
-Geen scraping, discovery, bronprioritering, e-mail of sollicitatieformulieren in deze repo.
+Geen scraping, netwerkdiscovery, bronprioritering, e-mail of sollicitatieformulieren in deze repo.
 
 ## Licentie
 
