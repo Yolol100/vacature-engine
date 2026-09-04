@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from datetime import date
+import math
 from typing import Any
 
 STRUCTURED_JOBPOSTING_CONTRACT_VERSION = "1.0"
@@ -20,7 +21,7 @@ def _iso_date(value: Any) -> tuple[str | None, bool | None]:
     if not isinstance(value, str):
         return None, False
     raw = value.strip()
-    if len(raw) < 10 or (len(raw) > 10 and raw[10] not in {"T", " ", "Z", "+", "-"}):
+    if len(raw) < 10 or (len(raw) > 10 and raw[10] not in {"T", " "}):
         return None, False
     try:
         parsed = date.fromisoformat(raw[:10])
@@ -98,7 +99,11 @@ def _salary_signals(value: Any) -> dict[str, Any]:
             ("maxValue", "base_salary_max_value"),
         ):
             number = salary_value.get(source_key)
-            if isinstance(number, (int, float)) and not isinstance(number, bool):
+            if (
+                isinstance(number, (int, float))
+                and not isinstance(number, bool)
+                and math.isfinite(float(number))
+            ):
                 result[target_key] = number
     return result
 
