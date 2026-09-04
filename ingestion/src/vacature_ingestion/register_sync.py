@@ -73,12 +73,19 @@ def _request_json(url: str, token: str, *, method: str = "GET", body: Any | None
     return json.loads(raw.decode("utf-8")) if raw else {}
 
 
-def _aggregate_health(health: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def _aggregate_health(
+    health: dict[str, Any],
+    *,
+    allowed_instances: set[str] | None = None,
+) -> dict[str, dict[str, Any]]:
     grouped: dict[str, list[dict[str, Any]]] = {}
     for instance, value in health.items():
+        instance = str(instance)
+        if allowed_instances is not None and instance not in allowed_instances:
+            continue
         if not isinstance(value, dict):
             continue
-        source_id = str(instance).split(":", 1)[0]
+        source_id = instance.split(":", 1)[0]
         grouped.setdefault(source_id, []).append(value)
     out: dict[str, dict[str, Any]] = {}
     for source_id, rows in grouped.items():
@@ -108,8 +115,17 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
     token = _service_account_token(credentials)
     summary_doc = json.loads(Path(summary_path).read_text(encoding="utf-8"))
     health_doc = json.loads(Path(health_path).read_text(encoding="utf-8"))
+    runs = summary_doc.get("runs", []) if isinstance(summary_doc, dict) else []
+    current_instances = {
+        str(run.get("source_instance"))
+        for run in runs
+        if isinstance(run, dict) and run.get("source_instance")
+    }
     health = health_doc.get("source_health", health_doc) if isinstance(health_doc, dict) else {}
-    aggregated = _aggregate_health(health if isinstance(health, dict) else {})
+    aggregated = _aggregate_health(
+        health if isinstance(health, dict) else {},
+        allowed_instances=current_instances,
+    )
 
     base = f"https://sheets.googleapis.com/v4/spreadsheets/{quote(spreadsheet_id)}"
     values_url = f"{base}/values/{quote('Bronnen!A1:O1000', safe='!')}"
@@ -144,7 +160,6 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
             body={"valueInputOption": "RAW", "data": data},
         )
 
-    runs = summary_doc.get("runs", []) if isinstance(summary_doc, dict) else []
     now = datetime.now(timezone.utc).isoformat()
     started = str(summary_doc.get("started_at") or now)
     completed = str(summary_doc.get("completed_at") or now)
