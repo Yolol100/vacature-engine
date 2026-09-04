@@ -56,3 +56,24 @@ def test_applicant_location_is_not_geography_decision():
     result = jobposting_signals({"@type": "JobPosting", "applicantLocationRequirements": {"@type": "Country", "name": "European Union"}}, today=date(2026, 9, 4))
     assert result["applicant_locations"] == ["European Union"]
     assert "geography_compatible" not in result
+
+
+def test_nonfinite_salary_signals_are_dropped():
+    result = jobposting_signals(
+        {
+            "@type": "JobPosting",
+            "baseSalary": {
+                "currency": "EUR",
+                "value": {"value": float("nan"), "minValue": float("inf"), "maxValue": True},
+            },
+        },
+        today=date(2026, 9, 4),
+    )
+    assert result["base_salary_value"] is None
+    assert result["base_salary_min_value"] is None
+    assert result["base_salary_max_value"] is None
+
+
+def test_date_suffix_smuggling_is_rejected():
+    result = jobposting_signals({"@type": "JobPosting", "datePosted": "2026-09-04-garbage"}, today=date(2026, 9, 4))
+    assert result["date_posted_valid"] is False
