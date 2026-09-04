@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Mapping, Sequence
 from hashlib import sha256
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-OBSERVATION_CONTRACT_VERSION = "1.0"
+OBSERVATION_CONTRACT_VERSION = "1.1"
 
 # Stable evidence-class preference only. Mutable source IDs/priorities stay in the Vacature Register.
 _SOURCE_CLASS_RANK = {
@@ -19,11 +19,7 @@ _SOURCE_CLASS_RANK = {
     "search": 5,
 }
 
-_TRACKING_QUERY_KEYS = {
-    "fbclid",
-    "gclid",
-    "msclkid",
-}
+_TRACKING_QUERY_KEYS = {"fbclid", "gclid", "msclkid"}
 
 
 def _clean_text(value: Any) -> str | None:
@@ -39,10 +35,11 @@ def _fold_text(value: Any) -> str | None:
 
 
 def normalize_canonical_url(value: Any) -> str | None:
-    """Normalize a public HTTP(S) vacancy URL without performing network I/O.
+    """Normalize a public HTTP(S) vacancy URL without network I/O.
 
     Only known tracking parameters and fragments are removed. Semantic query
     parameters are preserved because some ATS/job-board URLs use them as identity.
+    Malformed ports/URLs fail closed instead of raising.
     """
     if not isinstance(value, str):
         return None
@@ -51,14 +48,14 @@ def normalize_canonical_url(value: Any) -> str | None:
         return None
     try:
         parts = urlsplit(raw)
+        scheme = parts.scheme.lower()
+        host = (parts.hostname or "").lower()
+        port = parts.port
     except ValueError:
         return None
-    scheme = parts.scheme.lower()
-    host = (parts.hostname or "").lower()
     if scheme not in {"http", "https"} or not host:
         return None
 
-    port = parts.port
     default_port = (scheme == "http" and port == 80) or (scheme == "https" and port == 443)
     netloc = host if port is None or default_port else f"{host}:{port}"
 
@@ -73,7 +70,6 @@ def normalize_canonical_url(value: Any) -> str | None:
             continue
         query_items.append((key, val))
     query_items.sort()
-
     return urlunsplit((scheme, netloc, path, urlencode(query_items, doseq=True), ""))
 
 
@@ -85,7 +81,8 @@ def _source_job_key(row: Mapping[str, Any]) -> str | None:
     return None
 
 
-def _fallback_fingerprint(row: Mapping[str, Any]) -> str | None:
+def observation_candidate_fingerprint(row: Mapping[str, Any]) -> str | None:
+    """Return a weak duplicate-candidate signal, never a merge authorization."""
     employer = _fold_text(row.get("employer"))
     title = _fold_text(row.get("title"))
     location = _fold_text(row.get("location")) or ""
@@ -96,6 +93,7 @@ def _fallback_fingerprint(row: Mapping[str, Any]) -> str | None:
 
 
 def observation_identity_keys(row: Mapping[str, Any]) -> tuple[str, ...]:
+    """Return strong deterministic identity keys only."""
     keys: list[str] = []
     url = normalize_canonical_url(row.get("canonical_url") or row.get("url"))
     if url:
@@ -103,9 +101,6 @@ def observation_identity_keys(row: Mapping[str, Any]) -> tuple[str, ...]:
     source_key = _source_job_key(row)
     if source_key:
         keys.append(source_key)
-    fingerprint = _fallback_fingerprint(row)
-    if fingerprint:
-        keys.append(fingerprint)
     return tuple(keys)
 
 
@@ -124,9 +119,11 @@ def _authority_key(row: Mapping[str, Any]) -> tuple[int, int, int, int, str, str
 
 
 def _time_value(value: Any) -> str | None:
-    # Observation timestamps are transport/provenance values. Keep them opaque;
-    # callers that need strict timestamp validation should do that before this layer.
     return _clean_text(value)
+
+
+def _published_candidates(cluster: Sequence[Mapping[str, Any]]) -> list[str]:
+    return sorted({value for row in cluster if (value := _clean_text(row.get("published_at")))})
 
 
 def _choose_published_at(cluster: Sequence[Mapping[str, Any]]) -> str | None:
@@ -144,9 +141,10 @@ def _merge_cluster(cluster: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     if chosen_url:
         chosen["canonical_url"] = chosen_url
 
-    published_at = _choose_published_at(cluster)
-    # Critical invariant: first_seen_at is never promoted to publication evidence.
-    chosen["published_at"] = published_at
+    published_candidates = _published_candidates(cluster)
+    chosen["published_at"] = _choose_published_at(cluster)
+    chosen["published_at_candidates"] = published_candidates
+    chosen["published_at_conflict"] = len(published_candidates) > 1
 
     first_seen_values = sorted(v for row in cluster if (v := _time_value(row.get("first_seen_at"))))
     last_seen_values = sorted(v for row in cluster if (v := _time_value(row.get("last_seen_at"))))
@@ -154,6 +152,7 @@ def _merge_cluster(cluster: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     chosen["last_seen_at"] = last_seen_values[-1] if last_seen_values else None
 
     source_ids = sorted({v for row in cluster if (v := _clean_text(row.get("source_id")))})
+    source_types = sorted({v for row in cluster if (v := _clean_text(row.get("source_type")))})
     source_urls = sorted(
         {
             v
@@ -162,17 +161,20 @@ def _merge_cluster(cluster: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         }
     )
     chosen["source_ids"] = source_ids
+    chosen["source_types"] = source_types
     chosen["source_urls"] = source_urls
     chosen["observation_count"] = len(cluster)
+    chosen["duplicate_candidate_fingerprint"] = observation_candidate_fingerprint(chosen)
     chosen["observation_contract_version"] = OBSERVATION_CONTRACT_VERSION
     return chosen
 
 
 def canonicalize_observations(observations: Sequence[Any]) -> list[dict[str, Any]]:
-    """Cluster same-run observations deterministically and select a canonical record.
+    """Cluster same-run observations on strong keys and select canonical evidence.
 
-    This function performs no crawling, no semantic fit assessment, no cross-run
-    persistence, and no source-priority lookup. External vacancy text remains data.
+    Weak employer/title/location fingerprints are surfaced only as duplicate-candidate
+    signals. They never auto-merge distinct strong identities. This function performs
+    no crawling, semantic fit assessment, cross-run persistence, or source-priority lookup.
     """
     rows: list[Mapping[str, Any]] = [row for row in observations if isinstance(row, Mapping)]
     if not rows:
@@ -208,6 +210,17 @@ def canonicalize_observations(observations: Sequence[Any]) -> list[dict[str, Any
         groups[find(index)].append(row)
 
     merged = [_merge_cluster(cluster) for cluster in groups.values()]
+    fingerprint_counts = Counter(
+        row["duplicate_candidate_fingerprint"]
+        for row in merged
+        if row.get("duplicate_candidate_fingerprint")
+    )
+    for row in merged:
+        fingerprint = row.get("duplicate_candidate_fingerprint")
+        count = fingerprint_counts.get(fingerprint, 0) if fingerprint else 0
+        row["duplicate_candidate_count"] = count
+        row["duplicate_candidate"] = count > 1
+
     merged.sort(
         key=lambda row: (
             _fold_text(row.get("employer")) or "",
