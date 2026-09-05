@@ -140,6 +140,23 @@ def build_review_queue(
     }
 
 
+def _queue_telemetry(items: list[dict[str, Any]]) -> dict[str, Any]:
+    timestamps = sorted({
+        str(item.get("origin_completed_at") or "").strip()
+        for item in items
+        if str(item.get("origin_completed_at") or "").strip()
+    })
+    origin_counts: dict[str, int] = {}
+    for item in items:
+        origin = str(item.get("origin_run_id") or "unknown")
+        origin_counts[origin] = origin_counts.get(origin, 0) + 1
+    return {
+        "oldest_origin_completed_at": timestamps[0] if timestamps else None,
+        "newest_origin_completed_at": timestamps[-1] if timestamps else None,
+        "origin_run_counts": dict(sorted(origin_counts.items())),
+    }
+
+
 def write_review_queue_pages(
     document: dict[str, Any],
     *,
@@ -194,6 +211,7 @@ def write_review_queue_pages(
         "page_size": page_size,
         "total_pages": total_pages,
         "pages": pages,
+        **_queue_telemetry(items),
     }
     Path(index_path).write_text(
         json.dumps(index, ensure_ascii=False, indent=2, sort_keys=True),
