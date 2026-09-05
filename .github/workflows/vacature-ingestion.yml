@@ -225,58 +225,15 @@ jobs:
             cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
             cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
             cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
-
-            python - <<'PY'
-            import json
-            import os
-            from pathlib import Path
-
-            workspace = Path(os.environ['GITHUB_WORKSPACE'])
-
-            def load(path, fallback):
-                try:
-                    value = json.loads(Path(path).read_text(encoding='utf-8'))
-                    return value if isinstance(value, dict) else dict(fallback)
-                except (OSError, ValueError, json.JSONDecodeError):
-                    return dict(fallback)
-
-            fallback = {'schema_version': 1, 'acked_keys': [], 'migrations': []}
-            remote_ack = load('review-ack.json', fallback)
-            runtime_ack = load(workspace / '.runtime/review-ack.json', fallback)
-            merged = dict(remote_ack)
-            for key, value in runtime_ack.items():
-                merged.setdefault(key, value)
-            merged['schema_version'] = max(int(remote_ack.get('schema_version') or 1), int(runtime_ack.get('schema_version') or 1))
-            merged['acked_keys'] = sorted({
-                str(value)
-                for source in (remote_ack.get('acked_keys', []), runtime_ack.get('acked_keys', []))
-                if isinstance(source, list)
-                for value in source
-                if value
-            })
-            merged['migrations'] = sorted({
-                str(value)
-                for source in (remote_ack.get('migrations', []), runtime_ack.get('migrations', []))
-                if isinstance(source, list)
-                for value in source
-                if value
-            })
-            Path('review-ack.json').write_text(json.dumps(merged, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
-
-            queue = load(workspace / '.runtime/review-queue.json', {'schema_version': 1, 'review_queue': []})
-            acked = set(merged['acked_keys'])
-            items = [
-                item for item in queue.get('review_queue', [])
-                if isinstance(item, dict) and str(item.get('review_key') or '') not in acked
-            ]
-            queue['review_queue'] = items
-            queue['review_queue_count'] = len(items)
-            Path('review-queue.json').write_text(json.dumps(queue, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
-            PY
+            python -m vacature_ingestion.snapshot_merge --state-dir . --runtime-dir "$GITHUB_WORKSPACE/.runtime"
 
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add state.sqlite3 latest.json review-queue.json review-ack.json source-health.json
+            if git diff --cached --quiet; then
+              success=1
+              break
+            fi
             git commit -m "chore: persist vacancy ingestion snapshot"
             if git push origin HEAD:ingestion-state; then
               success=1
