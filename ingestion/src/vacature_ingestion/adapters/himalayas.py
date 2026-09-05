@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from typing import Any
 from urllib.parse import urlencode
 
@@ -12,26 +13,55 @@ class HimalayasAdapter(Adapter):
     name = "himalayas"
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
-        base = spec.endpoint or "https://himalayas.app/jobs/api"
-        offset = 0
-        limit = 20
+        query = clean_text(spec.options.get("query")) if isinstance(spec.options, dict) else None
+        sort = clean_text(spec.options.get("sort")) if isinstance(spec.options, dict) else None
         jobs: list[dict[str, Any]] = []
+
+        if query:
+            base = spec.endpoint or "https://himalayas.app/jobs/api/search"
+            page = 1
+            seen_ids: set[str] = set()
+            while len(jobs) < spec.max_jobs:
+                params = {"q": query, "sort": sort or "recent", "page": page}
+                sep = "&" if "?" in base else "?"
+                payload = client.get_json(f"{base}{sep}{urlencode(params)}")
+                batch = payload.get("jobs", []) if isinstance(payload, dict) else []
+                if not isinstance(batch, list):
+                    raise ValueError("Himalayas search payload jobs must be a list")
+                fresh: list[dict[str, Any]] = []
+                for item in batch:
+                    if not isinstance(item, dict):
+                        continue
+                    identity = clean_text(item.get("guid")) or clean_text(item.get("applicationLink"))
+                    if identity and identity in seen_ids:
+                        continue
+                    if identity:
+                        seen_ids.add(identity)
+                    fresh.append(item)
+                jobs.extend(fresh)
+                if not batch or not fresh:
+                    break
+                page += 1
+                if len(jobs) < spec.max_jobs:
+                    time.sleep(0.5)
+            return jobs[: spec.max_jobs]
+
+        base = spec.endpoint or "https://himalayas.app/jobs/api"
+        cursor: str | None = None
         while len(jobs) < spec.max_jobs:
-            params = {"offset": offset, "limit": limit}
+            params: dict[str, object] = {"limit": 20}
+            if cursor:
+                params["cursor"] = cursor
             sep = "&" if "?" in base else "?"
             payload = client.get_json(f"{base}{sep}{urlencode(params)}")
             batch = payload.get("jobs", []) if isinstance(payload, dict) else []
             if not isinstance(batch, list):
                 raise ValueError("Himalayas payload jobs must be a list")
             jobs.extend(item for item in batch if isinstance(item, dict))
-            if not batch:
+            cursor = clean_text(payload.get("nextCursor")) if isinstance(payload, dict) else None
+            if not cursor or not batch:
                 break
-            total_count = payload.get("totalCount") if isinstance(payload, dict) else None
-            offset += len(batch)
-            if isinstance(total_count, int) and offset >= total_count:
-                break
-            if len(batch) < limit and total_count is None:
-                break
+            time.sleep(0.5)
         return jobs[: spec.max_jobs]
 
     def normalize_record(self, record: dict[str, Any], spec: SourceSpec, now: str) -> dict[str, Any] | None:
@@ -56,7 +86,7 @@ class HimalayasAdapter(Adapter):
             "source_type": spec.source_type,
             "source_job_id": source_job_id(spec, record.get("guid")),
             "source_instance": spec.instance_id,
-            "source_url": spec.endpoint or "https://himalayas.app/jobs/api",
+            "source_url": spec.endpoint or ("https://himalayas.app/jobs/api/search" if query else "https://himalayas.app/jobs/api"),
             "canonical_url": url,
             "url": url,
             "employer": clean_text(record.get("companyName")),
@@ -79,5 +109,6 @@ class HimalayasAdapter(Adapter):
                 "location_restrictions": restrictions,
                 "timezone_restrictions": record.get("timezoneRestrictions"),
                 "categories": record.get("categories"),
+                "discovery_query": query,
             },
         }
