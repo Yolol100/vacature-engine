@@ -50,7 +50,7 @@ def _service_account_token(credentials: dict[str, Any]) -> str:
             pass
     assertion = f"{header}.{payload}.{_b64url(signature)}"
     body = urlencode({
-        "grant_type": "urn:ietf:params:oauth-grant-type:jwt-bearer",
+        "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
         "assertion": assertion,
     }).encode()
     request = Request(TOKEN_URL, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}, method="POST")
