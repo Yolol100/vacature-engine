@@ -81,6 +81,7 @@ class HimalayasAdapter(Adapter):
                 "currency": clean_text(record.get("currency")),
                 "period": clean_text(record.get("salaryPeriod")),
             }
+        query = clean_text(spec.options.get("query")) if isinstance(spec.options, dict) else None
         return {
             "source_id": spec.source_id,
             "source_type": spec.source_type,
