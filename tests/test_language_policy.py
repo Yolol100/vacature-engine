@@ -75,6 +75,12 @@ class LanguagePolicyTests(unittest.TestCase):
         self.assertIn("listing_language_missing", missing_listing["reasons"])
         self.assertIn("application_language_missing", missing_application["reasons"])
 
+    def test_missing_language_policy_fails_closed(self):
+        config = dict(POLICY)
+        config.pop("allowed_listing_languages")
+        with self.assertRaisesRegex(ValueError, "allowed_listing_languages"):
+            policy_from_config(config)
+
     def test_invalid_language_policy_fails_closed(self):
         with self.assertRaises(ValueError):
             policy_from_config({**POLICY, "allowed_listing_languages": "nl,english-only"})
