@@ -59,7 +59,9 @@ jobs:
         run: |
           set -euo pipefail
           specs="ingestion/source-specs.live.json"
-          if [[ "${{ github.event_name }}" == "schedule" && "${{ github.event.schedule }}" == "41 3 * * *" ]]; then
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            specs="ingestion/source-specs.deploy.json"
+          elif [[ "${{ github.event_name }}" == "schedule" && "${{ github.event.schedule }}" == "41 3 * * *" ]]; then
             specs="ingestion/source-specs.daily.json"
           fi
           echo "specs=$specs" >> "$GITHUB_OUTPUT"
@@ -74,6 +76,27 @@ jobs:
           set -e
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           cat .runtime/ingest-console.json
+      - name: Export compact review queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source = json.loads(Path('.runtime/latest.json').read_text(encoding='utf-8'))
+          queue = source.get('review_queue', []) if isinstance(source, dict) else []
+          compact = {
+              'run_id': source.get('run_id') if isinstance(source, dict) else None,
+              'completed_at': source.get('completed_at') if isinstance(source, dict) else None,
+              'review_queue_count': len(queue) if isinstance(queue, list) else 0,
+              'review_queue': queue if isinstance(queue, list) else [],
+          }
+          Path('.runtime/review-queue.json').write_text(
+              json.dumps(compact, ensure_ascii=False, indent=2, sort_keys=True),
+              encoding='utf-8',
+          )
+          PY
       - name: Export source health
         run: python -m vacature_ingestion export-state --state .runtime/state.sqlite3 --health-out .runtime/source-health.json
       - name: Sync compact health to Vacature Register when configured
@@ -91,10 +114,11 @@ jobs:
           git rm -rf . >/dev/null 2>&1 || true
           cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
           cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
+          cp "$GITHUB_WORKSPACE/.runtime/review-queue.json" review-queue.json
           cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add state.sqlite3 latest.json source-health.json
+          git add state.sqlite3 latest.json review-queue.json source-health.json
           git commit -m "chore: persist vacancy ingestion snapshot"
           git push --force origin HEAD:ingestion-state
       - name: Enforce ingestion success threshold
