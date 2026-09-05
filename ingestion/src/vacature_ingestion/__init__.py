@@ -4,4 +4,4 @@ from .models import OBSERVATION_CONTRACT_VERSION, SourceSpec
 from .runner import IngestionRunner
 
 __all__ = ["OBSERVATION_CONTRACT_VERSION", "SourceSpec", "IngestionRunner"]
-__version__ = "0.4.0"
+__version__ = "0.5.0"
