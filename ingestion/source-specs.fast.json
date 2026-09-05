@@ -1,0 +1,22 @@
+[
+  {
+    "source_id": "we-work-remotely",
+    "source_type": "job_board",
+    "adapter": "weworkremotely",
+    "account": "programming",
+    "endpoint": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+    "listing_language": "en",
+    "max_jobs": 200,
+    "options": {"feed_scope": "programming", "attribution_required": true}
+  },
+  {
+    "source_id": "remote-ok",
+    "source_type": "job_board",
+    "adapter": "remoteok",
+    "account": "global",
+    "endpoint": "https://remoteok.com/api",
+    "listing_language": "en",
+    "max_jobs": 200,
+    "options": {"attribution_required": true, "canonical_verification_required": true}
+  }
+]
