@@ -7,6 +7,7 @@ from .lever import LeverAdapter
 from .personio import PersonioAdapter
 from .remotive import RemotiveAdapter
 from .smartrecruiters import SmartRecruitersAdapter
+from .workable import WorkableAdapter
 
 ADAPTERS = {
     "ashby": AshbyAdapter(),
@@ -18,6 +19,7 @@ ADAPTERS = {
     "personio": PersonioAdapter(),
     "remotive": RemotiveAdapter(),
     "smartrecruiters": SmartRecruitersAdapter(),
+    "workable": WorkableAdapter(),
 }
 
 __all__ = ["ADAPTERS"]
