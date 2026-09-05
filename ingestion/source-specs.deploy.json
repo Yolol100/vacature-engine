@@ -11,6 +11,32 @@
     "source_id": "lever",
     "source_type": "ats",
     "adapter": "lever",
+    "account": "kinsta",
+    "employer": "Kinsta",
+    "max_jobs": 20000,
+    "options": {"page_size": 100}
+  },
+  {
+    "source_id": "lever",
+    "source_type": "ats",
+    "adapter": "lever",
+    "account": "siteground",
+    "employer": "SiteGround",
+    "max_jobs": 20000,
+    "options": {"page_size": 100}
+  },
+  {
+    "source_id": "greenhouse",
+    "source_type": "ats",
+    "adapter": "greenhouse",
+    "account": "acquia",
+    "employer": "Acquia",
+    "max_jobs": 20000
+  },
+  {
+    "source_id": "lever",
+    "source_type": "ats",
+    "adapter": "lever",
     "account": "teamsnap",
     "employer": "TeamSnap",
     "max_jobs": 20000,
