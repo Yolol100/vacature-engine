@@ -11,6 +11,7 @@ POLICY = {
     "min_output_score": 75,
     "min_core_fit": 40,
     "min_evidence_fit": 10,
+    "allowed_listing_languages": "nl,en",
 }
 TODAY = date(2027, 1, 1)
 
@@ -24,6 +25,9 @@ def vacancy(**overrides):
         "geography_compatible": True,
         "wordpress_related": True,
         "central_hard_mismatch": False,
+        "listing_language": "en",
+        "application_language": "en",
+        "required_languages": [],
         "salary_monthly_eur": 4500,
         "core_fit": 50,
         "evidence_fit": 18,
