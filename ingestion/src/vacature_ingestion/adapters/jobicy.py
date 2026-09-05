@@ -14,8 +14,19 @@ class JobicyAdapter(Adapter):
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         base = spec.endpoint or "https://jobicy.com/api/v2/remote-jobs"
         count = min(max(1, spec.max_jobs), 200)
+        params: dict[str, object] = {"count": count}
+        if isinstance(spec.options, dict):
+            tag = clean_text(spec.options.get("tag"))
+            industry = clean_text(spec.options.get("industry"))
+            geo = clean_text(spec.options.get("geo"))
+            if tag:
+                params["tag"] = tag
+            if industry:
+                params["industry"] = industry
+            if geo:
+                params["geo"] = geo
         sep = "&" if "?" in base else "?"
-        payload = client.get_json(f"{base}{sep}{urlencode({'count': count})}")
+        payload = client.get_json(f"{base}{sep}{urlencode(params)}")
         jobs = payload.get("jobs", []) if isinstance(payload, dict) else []
         if not isinstance(jobs, list):
             raise ValueError("Jobicy payload jobs must be a list")
@@ -32,13 +43,14 @@ class JobicyAdapter(Adapter):
                 "min": record.get("salaryMin"),
                 "max": record.get("salaryMax"),
                 "currency": clean_text(record.get("salaryCurrency")),
-                "period": None,
+                "period": clean_text(record.get("salaryPeriod")),
             }
         job_type = record.get("jobType")
         if isinstance(job_type, list):
             employment_type = ", ".join(clean_text(x) for x in job_type if clean_text(x)) or None
         else:
             employment_type = clean_text(job_type)
+        tag = clean_text(spec.options.get("tag")) if isinstance(spec.options, dict) else None
         return {
             "source_id": spec.source_id,
             "source_type": spec.source_type,
@@ -65,5 +77,6 @@ class JobicyAdapter(Adapter):
                 "provider_job_id": record.get("id"),
                 "industry": record.get("jobIndustry"),
                 "level": record.get("jobLevel"),
+                "discovery_tag": tag,
             },
         }
