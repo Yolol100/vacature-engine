@@ -1,5 +1,7 @@
 {
-  "acked_keys": [],
+  "acked_keys": [
+    "review:c31f4ee042e0ca84fb6c2e190ae1fc1d49452f7f3ce3eda971a0462e89a85efb"
+  ],
   "migrations": [
     "recover-pre-ack-review-20260905-1334z"
   ],
