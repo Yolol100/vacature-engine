@@ -1,11 +1,11 @@
 {
-  "schema_version": 1,
-  "generated_at": "2026-09-05T21:55:30+00:00",
-  "source_run_id": "repair-first-seen-post-run-20260905",
-  "source_completed_at": "2026-09-05T21:55:30+00:00",
   "bootstrap": false,
-  "ttl_hours": 72,
+  "generated_at": "2026-09-05T21:59:08.779657+00:00",
+  "items": [],
   "new_item_count": 0,
   "pending_count": 0,
-  "items": []
+  "schema_version": 1,
+  "source_completed_at": "2026-09-05T21:59:08.537620+00:00",
+  "source_run_id": "ingestion-1788645548",
+  "ttl_hours": 72
 }
