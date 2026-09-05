@@ -14,6 +14,8 @@ Fast/targeted public sources:
 - Ashby public Job Postings API
 - SmartRecruiters public postings API
 - Generic public HTML pages exposing Schema.org `JobPosting` JSON-LD
+- Workable public account jobs endpoint
+- Personio public XML jobs feed
 
 Daily secondary discovery feeds:
 - Himalayas public JSON API with cursor pagination
@@ -24,13 +26,15 @@ Secondary feeds remain discovery evidence. `vacature-search` must verify a promi
 
 ## Review queue
 
-Every `ingest-many` output contains `review_queue`. Only observations classified against the persisted technical state as `new` or `updated` are included. `unchanged` observations remain in the run evidence but are not queued for semantic re-review.
+Every `ingest-many` output contains the observations that changed in that ingestion. Only observations classified against persisted technical state as `new` or `updated` are nominated for semantic review; unchanged observations remain in run evidence without forcing semantic re-review.
 
-GitHub Actions also persists a compact `review-queue.json` on the `ingestion-state` branch. This small handoff file is the preferred input for ChatGPT/`vacature-search`; it avoids reading the much larger full `latest.json` snapshot.
+GitHub Actions persists a compact `review-queue.json` plus `review-ack.json` on the `ingestion-state` branch. The compact queue is **at-least-once**: unacknowledged items from the previous snapshot are merged into the next queue, so a later ingestion cannot silently replace pending review work. Every queue item gets a stable `review_key` derived from strong vacancy identity plus its content hash. A content change therefore produces a new review key and requires a fresh semantic review.
+
+`review-ack.json` contains only technical acknowledgement keys. It does not contain candidate policy or scoring. The ChatGPT review workflow should acknowledge every handled queue item, including cheap obvious non-relevant rejects, only after its intended review action has completed. A technical row already existing in `Runs` must never be treated as semantic acknowledgement.
 
 The intended handoff is:
 
-`GitHub ingestion -> review-queue.json -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output`
+`GitHub ingestion -> persistent review-queue.json -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output -> review-ack.json`
 
 No candidate scoring happens inside ingestion.
 
@@ -52,7 +56,7 @@ Closure is conservative: a globally deduplicated vacancy closes only after every
 
 The runner can update only source-health columns in `Bronnen` and append one compact technical row to `Runs`. It never bulk-writes raw jobs into `Vacatures`.
 
-For GitHub Actions, configure repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` with a Google service account that has editor access to the Vacature Register. If the secret is absent, the sync step exits successfully as `skipped`; ingest and GitHub technical state continue to work. The personal ChatGPT review workflow can still write candidate/run state through the existing Google Drive connection, so this secret is an optional technical-health mirror rather than a prerequisite for vacancy matching.
+For GitHub Actions, configure repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` with a Google service account that has editor access to the Vacature Register and enable the Google Sheets API for that service-account project. If the secret is absent, the sync step exits successfully as `skipped`; ingest and GitHub technical state continue to work.
 
 ## Commands
 
