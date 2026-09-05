@@ -44,14 +44,17 @@ jobs:
         with:
           python-version: '3.13'
       - run: python -m pip install -e ingestion
-      - name: Restore technical state
+      - name: Restore technical state and review handoff
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p .runtime
+          printf '%s\n' '{"schema_version":1,"acked_keys":[]}' > .runtime/review-ack.json
           git fetch origin ingestion-state || true
           if git show-ref --verify --quiet refs/remotes/origin/ingestion-state; then
             git show origin/ingestion-state:state.sqlite3 > .runtime/state.sqlite3 || true
+            git show origin/ingestion-state:review-queue.json > .runtime/previous-review-queue.json || true
+            git show origin/ingestion-state:review-ack.json > .runtime/review-ack.json || true
           fi
       - name: Select source class
         id: source_class
@@ -76,26 +79,37 @@ jobs:
           set -e
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           cat .runtime/ingest-console.json
-      - name: Export compact review queue
+      - name: Export persistent compact review queue
         shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
           import json
           from pathlib import Path
+          from vacature_ingestion.review_queue import build_review_queue
 
-          source = json.loads(Path('.runtime/latest.json').read_text(encoding='utf-8'))
-          queue = source.get('review_queue', []) if isinstance(source, dict) else []
-          compact = {
-              'run_id': source.get('run_id') if isinstance(source, dict) else None,
-              'completed_at': source.get('completed_at') if isinstance(source, dict) else None,
-              'review_queue_count': len(queue) if isinstance(queue, list) else 0,
-              'review_queue': queue if isinstance(queue, list) else [],
-          }
+          def load(path):
+              p = Path(path)
+              if not p.exists() or not p.read_text(encoding='utf-8').strip():
+                  return None
+              try:
+                  value = json.loads(p.read_text(encoding='utf-8'))
+              except json.JSONDecodeError:
+                  return None
+              return value if isinstance(value, dict) else None
+
+          current = load('.runtime/latest.json') or {}
+          previous = load('.runtime/previous-review-queue.json')
+          ack = load('.runtime/review-ack.json')
+          compact = build_review_queue(current, previous_doc=previous, ack_doc=ack)
           Path('.runtime/review-queue.json').write_text(
               json.dumps(compact, ensure_ascii=False, indent=2, sort_keys=True),
               encoding='utf-8',
           )
+          print(json.dumps({
+              'run_id': compact.get('run_id'),
+              'review_queue_count': compact.get('review_queue_count', 0),
+          }, sort_keys=True))
           PY
       - name: Export source health
         run: python -m vacature_ingestion export-state --state .runtime/state.sqlite3 --health-out .runtime/source-health.json
@@ -115,10 +129,11 @@ jobs:
           cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
           cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
           cp "$GITHUB_WORKSPACE/.runtime/review-queue.json" review-queue.json
+          cp "$GITHUB_WORKSPACE/.runtime/review-ack.json" review-ack.json
           cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add state.sqlite3 latest.json review-queue.json source-health.json
+          git add state.sqlite3 latest.json review-queue.json review-ack.json source-health.json
           git commit -m "chore: persist vacancy ingestion snapshot"
           git push --force origin HEAD:ingestion-state
       - name: Enforce ingestion success threshold
