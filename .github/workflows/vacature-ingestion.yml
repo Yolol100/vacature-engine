@@ -153,7 +153,7 @@ jobs:
           python - <<'PY'
           import json
           from pathlib import Path
-          from vacature_ingestion.review_queue import build_review_queue
+          from vacature_ingestion.review_queue import build_review_queue, write_review_queue_pages
 
           def load(path):
               p = Path(path)
@@ -177,9 +177,15 @@ jobs:
               json.dumps(compact, ensure_ascii=False, indent=2, sort_keys=True),
               encoding='utf-8',
           )
+          index = write_review_queue_pages(
+              compact,
+              directory='.runtime/review-queue-pages',
+              index_path='.runtime/review-queue-index.json',
+          )
           print(json.dumps({
               'run_id': compact.get('run_id'),
               'review_queue_count': compact.get('review_queue_count', 0),
+              'review_queue_pages': index.get('total_pages', 0),
           }, sort_keys=True))
           PY
       - name: Export source health
@@ -203,11 +209,13 @@ jobs:
             cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
             cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
             cp "$GITHUB_WORKSPACE/.runtime/review-queue.json" review-queue.json
+            cp "$GITHUB_WORKSPACE/.runtime/review-queue-index.json" review-queue-index.json
+            cp -R "$GITHUB_WORKSPACE/.runtime/review-queue-pages" review-queue-pages
             cp "$GITHUB_WORKSPACE/.runtime/review-ack.json" review-ack.json
             cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add state.sqlite3 latest.json review-queue.json review-ack.json source-health.json
+            git add state.sqlite3 latest.json review-queue.json review-queue-index.json review-queue-pages review-ack.json source-health.json
             git commit -m "chore: persist vacancy ingestion snapshot"
             git push origin HEAD:ingestion-state
             exit 0
@@ -229,7 +237,7 @@ jobs:
 
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add state.sqlite3 latest.json review-queue.json review-ack.json source-health.json
+            git add state.sqlite3 latest.json review-queue.json review-queue-index.json review-queue-pages review-ack.json source-health.json
             if git diff --cached --quiet; then
               success=1
               break
