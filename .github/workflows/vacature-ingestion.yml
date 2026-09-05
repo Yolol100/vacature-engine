@@ -52,10 +52,31 @@ jobs:
           printf '%s\n' '{"schema_version":1,"acked_keys":[],"migrations":[]}' > .runtime/review-ack.json
           git fetch origin ingestion-state || true
           if git show-ref --verify --quiet refs/remotes/origin/ingestion-state; then
-            git show origin/ingestion-state:state.sqlite3 > .runtime/state.sqlite3 || true
-            git show origin/ingestion-state:review-queue.json > .runtime/previous-review-queue.json || true
-            git show origin/ingestion-state:review-ack.json > .runtime/review-ack.json || true
+            git show origin/ingestion-state:state.sqlite3 > .runtime/state.sqlite3
+            if git cat-file -e origin/ingestion-state:review-queue.json 2>/dev/null; then
+              git show origin/ingestion-state:review-queue.json > .runtime/previous-review-queue.json
+            fi
+            if git cat-file -e origin/ingestion-state:review-ack.json 2>/dev/null; then
+              git show origin/ingestion-state:review-ack.json > .runtime/review-ack.json
+            fi
           fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('.runtime/review-ack.json')
+          fallback = {'schema_version': 1, 'acked_keys': [], 'migrations': []}
+          try:
+              value = json.loads(path.read_text(encoding='utf-8'))
+              if not isinstance(value, dict):
+                  raise ValueError('ack document must be an object')
+          except (OSError, ValueError, json.JSONDecodeError):
+              value = fallback
+          value.setdefault('schema_version', 1)
+          value.setdefault('acked_keys', [])
+          value.setdefault('migrations', [])
+          path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
+          PY
       - name: Select source class
         id: source_class
         shell: bash
