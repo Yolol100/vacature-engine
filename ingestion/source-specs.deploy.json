@@ -12,6 +12,8 @@
   {"source_id":"ashby","source_type":"ats","adapter":"ashby","account":"zapier","employer":"Zapier","max_jobs":20000,"options":{"registry_source_id":"company-zapier"}},
   {"source_id":"personio","source_type":"ats","adapter":"personio","account":"syde","employer":"Syde","listing_language":"en","max_jobs":20000,"options":{"language":"en","registry_source_id":"company-syde"}},
   {"source_id":"workable","source_type":"ats","adapter":"workable","account":"awesomemotive","employer":"Awesome Motive","listing_language":"en","max_jobs":20000,"options":{"registry_source_id":"company-awesome-motive"}},
+  {"source_id":"we-work-remotely","source_type":"job_board","adapter":"weworkremotely","account":"programming","endpoint":"https://weworkremotely.com/categories/remote-programming-jobs.rss","listing_language":"en","max_jobs":200,"options":{"feed_scope":"programming","attribution_required":true}},
+  {"source_id":"remote-ok","source_type":"job_board","adapter":"remoteok","account":"global","endpoint":"https://remoteok.com/api","listing_language":"en","max_jobs":200,"options":{"attribution_required":true,"canonical_verification_required":true}},
   {"source_id":"himalayas","source_type":"discovery_api","adapter":"himalayas","account":"global","max_jobs":100,"options":{"query":"wordpress","sort":"recent","refresh_semantics":"provider data refreshes every 24h"}},
   {"source_id":"jobicy-api","source_type":"discovery_api","adapter":"jobicy","account":"global","max_jobs":200,"options":{"tag":"wordpress","attribution_required":true}},
   {"source_id":"remotive","source_type":"discovery_api","adapter":"remotive","account":"global","max_jobs":20000,"options":{"attribution_required":true,"feed_delay_hours":24}}
