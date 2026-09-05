@@ -1,6 +1,6 @@
 {
   "artifact": "vacature-ingestion",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "created_date": "2026-09-05",
   "python": ">=3.11",
   "runtime_dependencies": [],
@@ -29,7 +29,7 @@
   "scheduler_included": true,
   "scheduler": "GitHub Actions direct-source first-seen radar every 5 minutes, high-priority public feeds hourly, ATS every 6 hours, slower public feeds daily, plus workflow_dispatch",
   "technical_state": "separate GitHub radar-state and ingestion-state branches + SQLite",
-  "first_seen_radar": "isolated 5-minute direct employer/ATS polling + bootstrap-safe 72-hour ACK queue",
+  "first_seen_radar": "isolated 5-minute direct employer/ATS polling + persistent ingestion_change=new semantics + bootstrap-safe 72-hour ACK queue",
   "vacancy_snapshot_history": "SQLite job_snapshots keyed by job_id + content_hash",
   "semantic_review_handoff": "at-least-once persistent ACK queue + bounded 25-item pages + backlog telemetry",
   "queue_workers_included": false,
