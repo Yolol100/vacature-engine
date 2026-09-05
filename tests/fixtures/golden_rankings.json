@@ -6,16 +6,17 @@
     "max_output_roles": 10,
     "min_output_score": 75,
     "min_core_fit": 40,
-    "min_evidence_fit": 10
+    "min_evidence_fit": 10,
+    "allowed_listing_languages": "nl,en"
   },
   "vacancies": [
-    {"title":"Known excellent","url":"https://example.com/a","posted_date":"2026-08-25","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":5000,"core_fit":50,"evidence_fit":25,"workstyle_fit":15},
-    {"title":"Known strong","url":"https://example.com/b","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":4000,"core_fit":40,"evidence_fit":18,"workstyle_fit":15},
-    {"title":"Known older tie","url":"https://example.com/c","posted_date":"2026-08-10","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":4000,"core_fit":40,"evidence_fit":25,"workstyle_fit":15},
-    {"title":"Unknown excellent","url":"https://example.com/d","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":null,"core_fit":50,"evidence_fit":25,"workstyle_fit":15},
-    {"title":"Below salary","url":"https://example.com/e","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":3499,"core_fit":50,"evidence_fit":25,"workstyle_fit":15},
-    {"title":"Bad core","url":"https://example.com/f","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":5000,"core_fit":25,"evidence_fit":25,"workstyle_fit":15},
-    {"title":"Malformed salary","url":"https://example.com/g","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"salary_monthly_eur":"5000","core_fit":50,"evidence_fit":25,"workstyle_fit":15}
+    {"title":"Known excellent","url":"https://example.com/a","posted_date":"2026-08-25","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":5000,"core_fit":50,"evidence_fit":25,"workstyle_fit":15},
+    {"title":"Known strong","url":"https://example.com/b","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":4000,"core_fit":40,"evidence_fit":18,"workstyle_fit":15},
+    {"title":"Known older tie","url":"https://example.com/c","posted_date":"2026-08-10","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":4000,"core_fit":40,"evidence_fit":25,"workstyle_fit":15},
+    {"title":"Unknown excellent","url":"https://example.com/d","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":null,"core_fit":50,"evidence_fit":25,"workstyle_fit":15},
+    {"title":"Below salary","url":"https://example.com/e","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":3499,"core_fit":50,"evidence_fit":25,"workstyle_fit":15},
+    {"title":"Bad core","url":"https://example.com/f","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":5000,"core_fit":25,"evidence_fit":25,"workstyle_fit":15},
+    {"title":"Malformed salary","url":"https://example.com/g","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":"5000","core_fit":50,"evidence_fit":25,"workstyle_fit":15}
   ],
   "expected_titles": ["Below salary", "Known excellent", "Known older tie", "Known strong", "Unknown excellent"]
 }
