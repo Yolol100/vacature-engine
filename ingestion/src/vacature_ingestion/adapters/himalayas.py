@@ -9,6 +9,12 @@ from ..models import SourceSpec
 from ..normalize import clean_text, html_to_text
 
 
+def _restriction_name(value: Any) -> str | None:
+    if isinstance(value, dict):
+        return clean_text(value.get("name") or value.get("label") or value.get("value"))
+    return clean_text(value)
+
+
 class HimalayasAdapter(Adapter):
     name = "himalayas"
 
@@ -70,9 +76,8 @@ class HimalayasAdapter(Adapter):
         if not title or not url:
             return None
         restrictions = record.get("locationRestrictions") if isinstance(record.get("locationRestrictions"), list) else []
-        location = ", ".join(
-            clean_text(item.get("name")) for item in restrictions if isinstance(item, dict) and clean_text(item.get("name"))
-        ) or "Worldwide"
+        restriction_names = [name for name in (_restriction_name(item) for item in restrictions) if name]
+        location = ", ".join(restriction_names) or "Worldwide"
         salary = None
         if record.get("minSalary") is not None or record.get("maxSalary") is not None:
             salary = {
@@ -108,6 +113,7 @@ class HimalayasAdapter(Adapter):
                 "provider_job_id": record.get("guid"),
                 "company_slug": record.get("companySlug"),
                 "location_restrictions": restrictions,
+                "location_restriction_names": restriction_names,
                 "timezone_restrictions": record.get("timezoneRestrictions"),
                 "categories": record.get("categories"),
                 "discovery_query": query,
