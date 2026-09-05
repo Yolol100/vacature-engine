@@ -49,6 +49,14 @@ class StateStore:
               identity_key TEXT PRIMARY KEY,
               job_id TEXT NOT NULL REFERENCES jobs(job_id)
             );
+            CREATE TABLE IF NOT EXISTS job_snapshots (
+              job_id TEXT NOT NULL REFERENCES jobs(job_id),
+              content_hash TEXT NOT NULL,
+              payload_json TEXT NOT NULL,
+              first_seen_at TEXT NOT NULL,
+              last_seen_at TEXT NOT NULL,
+              PRIMARY KEY (job_id, content_hash)
+            );
             CREATE TABLE IF NOT EXISTS source_membership (
               source_instance TEXT NOT NULL,
               job_id TEXT NOT NULL,
@@ -144,6 +152,27 @@ class StateStore:
         for identity_row in identity_rows:
             self.db.execute("INSERT OR REPLACE INTO identities(identity_key,job_id) VALUES (?,?)", (identity_row["identity_key"], target))
         self.db.execute("DELETE FROM identities WHERE job_id=?", (source,))
+
+        snapshots = self.db.execute("SELECT * FROM job_snapshots WHERE job_id=?", (source,)).fetchall()
+        for snapshot in snapshots:
+            existing_snapshot = self.db.execute(
+                "SELECT * FROM job_snapshots WHERE job_id=? AND content_hash=?",
+                (target, snapshot["content_hash"]),
+            ).fetchone()
+            if existing_snapshot:
+                snap_first = min(existing_snapshot["first_seen_at"], snapshot["first_seen_at"])
+                snap_last = max(existing_snapshot["last_seen_at"], snapshot["last_seen_at"])
+                self.db.execute(
+                    "UPDATE job_snapshots SET first_seen_at=?,last_seen_at=? WHERE job_id=? AND content_hash=?",
+                    (snap_first, snap_last, target, snapshot["content_hash"]),
+                )
+            else:
+                self.db.execute(
+                    "INSERT INTO job_snapshots(job_id,content_hash,payload_json,first_seen_at,last_seen_at) VALUES (?,?,?,?,?)",
+                    (target, snapshot["content_hash"], snapshot["payload_json"], snapshot["first_seen_at"], snapshot["last_seen_at"]),
+                )
+        self.db.execute("DELETE FROM job_snapshots WHERE job_id=?", (source,))
+
         memberships = self.db.execute("SELECT * FROM source_membership WHERE job_id=?", (source,)).fetchall()
         for member in memberships:
             existing = self.db.execute(
@@ -165,6 +194,25 @@ class StateStore:
                 )
         self.db.execute("DELETE FROM source_membership WHERE job_id=?", (source,))
         self.db.execute("DELETE FROM jobs WHERE job_id=?", (source,))
+
+    def _record_snapshot(self, job_id: str, row_hash: str, payload_json: str,
+                         first_seen: str, last_seen: str) -> None:
+        if not row_hash:
+            return
+        existing = self.db.execute(
+            "SELECT first_seen_at,last_seen_at FROM job_snapshots WHERE job_id=? AND content_hash=?",
+            (job_id, row_hash),
+        ).fetchone()
+        if existing:
+            self.db.execute(
+                "UPDATE job_snapshots SET first_seen_at=?,last_seen_at=? WHERE job_id=? AND content_hash=?",
+                (min(existing["first_seen_at"], first_seen), max(existing["last_seen_at"], last_seen), job_id, row_hash),
+            )
+        else:
+            self.db.execute(
+                "INSERT INTO job_snapshots(job_id,content_hash,payload_json,first_seen_at,last_seen_at) VALUES (?,?,?,?,?)",
+                (job_id, row_hash, payload_json, first_seen, last_seen),
+            )
 
     def upsert_observations(self, observations: list[dict[str, Any]], *, source_instance: str,
                             run_id: str, missing_close_threshold: int = 2,
@@ -191,8 +239,8 @@ class StateStore:
                     job_id = str(uuid.uuid4())
                     existing = None
 
-                first_seen = row.get("first_seen_at") or now
-                last_seen = row.get("last_seen_at") or now
+                first_seen = str(row.get("first_seen_at") or now)
+                last_seen = str(row.get("last_seen_at") or now)
                 payload_json = json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
                 row_hash = str(row.get("content_hash") or "")
                 canonical_url = row.get("canonical_url")
@@ -211,6 +259,7 @@ class StateStore:
                         "UPDATE jobs SET canonical_url=?,content_hash=?,payload_json=?,status='active',last_seen_at=?,closed_at=NULL WHERE job_id=?",
                         (canonical_url, row_hash, payload_json, last_seen, job_id),
                     )
+                self._record_snapshot(job_id, row_hash, payload_json, first_seen, last_seen)
                 for key in keys:
                     self.db.execute("INSERT OR REPLACE INTO identities(identity_key,job_id) VALUES (?,?)", (key, job_id))
                 self.db.execute(
@@ -253,6 +302,16 @@ class StateStore:
 
     def list_jobs(self) -> list[dict[str, Any]]:
         rows = self.db.execute("SELECT * FROM jobs ORDER BY first_seen_at, job_id").fetchall()
+        return [dict(row) for row in rows]
+
+    def snapshot_count(self) -> int:
+        row = self.db.execute("SELECT COUNT(*) FROM job_snapshots").fetchone()
+        return int(row[0] if row else 0)
+
+    def snapshots_for_job(self, job_id: str) -> list[dict[str, Any]]:
+        rows = self.db.execute(
+            "SELECT * FROM job_snapshots WHERE job_id=? ORDER BY first_seen_at,content_hash", (job_id,)
+        ).fetchall()
         return [dict(row) for row in rows]
 
     def run_rows(self) -> list[dict[str, Any]]:
@@ -301,6 +360,7 @@ class StateStore:
         health = {instance: self.source_health(instance) for instance in self.source_instances()}
         return {
             "jobs": self.list_jobs(),
+            "job_snapshot_count": self.snapshot_count(),
             "source_runs": self.run_rows(),
             "source_health": health,
         }
