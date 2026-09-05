@@ -49,7 +49,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p .runtime
-          printf '%s\n' '{"schema_version":1,"acked_keys":[]}' > .runtime/review-ack.json
+          printf '%s\n' '{"schema_version":1,"acked_keys":[],"migrations":[]}' > .runtime/review-ack.json
           git fetch origin ingestion-state || true
           if git show-ref --verify --quiet refs/remotes/origin/ingestion-state; then
             git show origin/ingestion-state:state.sqlite3 > .runtime/state.sqlite3 || true
@@ -79,6 +79,52 @@ jobs:
           set -e
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           cat .runtime/ingest-console.json
+      - name: Recover requested pending review backlog
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from vacature_ingestion.review_backlog import load_review_backlog
+
+          request_path = Path('ingestion/review-backlog-recovery.json')
+          ack_path = Path('.runtime/review-ack.json')
+          recovery_path = Path('.runtime/recovery-review-queue.json')
+          recovery_path.write_text('{}\n', encoding='utf-8')
+          if not request_path.exists():
+              print(json.dumps({'recovery': 'not_requested'}))
+              raise SystemExit(0)
+
+          request = json.loads(request_path.read_text(encoding='utf-8'))
+          ack = json.loads(ack_path.read_text(encoding='utf-8'))
+          migration_id = str(request.get('migration_id') or '').strip()
+          since = str(request.get('since') or '').strip()
+          origin_run_id = str(request.get('origin_run_id') or f'recovery:{migration_id}')
+          if not migration_id or not since:
+              raise SystemExit('review backlog recovery request requires migration_id and since')
+
+          migrations = [str(value) for value in ack.get('migrations', []) if value]
+          if migration_id in migrations:
+              print(json.dumps({'recovery': 'already_applied', 'migration_id': migration_id}, sort_keys=True))
+              raise SystemExit(0)
+
+          rows = load_review_backlog('.runtime/state.sqlite3', since=since, active_only=True)
+          recovery = {
+              'run_id': origin_run_id,
+              'completed_at': datetime.now(timezone.utc).isoformat(),
+              'review_queue_count': len(rows),
+              'review_queue': rows,
+          }
+          recovery_path.write_text(json.dumps(recovery, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
+          migrations.append(migration_id)
+          ack['migrations'] = sorted(set(migrations))
+          ack.setdefault('schema_version', 1)
+          ack.setdefault('acked_keys', [])
+          ack_path.write_text(json.dumps(ack, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
+          print(json.dumps({'recovery': 'prepared', 'migration_id': migration_id, 'recovered': len(rows)}, sort_keys=True))
+          PY
       - name: Export persistent compact review queue
         shell: bash
         run: |
@@ -100,8 +146,12 @@ jobs:
 
           current = load('.runtime/latest.json') or {}
           previous = load('.runtime/previous-review-queue.json')
+          recovery = load('.runtime/recovery-review-queue.json')
           ack = load('.runtime/review-ack.json')
-          compact = build_review_queue(current, previous_doc=previous, ack_doc=ack)
+          seed = previous
+          if recovery and isinstance(recovery.get('review_queue'), list):
+              seed = build_review_queue(recovery, previous_doc=seed, ack_doc=ack)
+          compact = build_review_queue(current, previous_doc=seed, ack_doc=ack)
           Path('.runtime/review-queue.json').write_text(
               json.dumps(compact, ensure_ascii=False, indent=2, sort_keys=True),
               encoding='utf-8',
