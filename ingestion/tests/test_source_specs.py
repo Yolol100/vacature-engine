@@ -32,6 +32,7 @@ class SourceSpecTests(unittest.TestCase):
             "source-specs.live.json",
             "source-specs.fast.json",
             "source-specs.daily.json",
+            "source-specs.radar.json",
             "source-specs.deploy.json",
         ):
             specs = _load(filename)
@@ -45,6 +46,23 @@ class SourceSpecTests(unittest.TestCase):
             [str(spec.get("source_id")) for spec in fast],
         )
         self.assertTrue(all(spec.get("listing_language") == "en" for spec in fast))
+
+    def test_radar_lane_is_direct_registered_ats_only(self):
+        radar = _load("source-specs.radar.json")
+        self.assertGreaterEqual(len(radar), 10)
+        self.assertTrue(all(spec.get("source_type") == "ats" for spec in radar))
+        for spec in radar:
+            options = spec.get("options")
+            self.assertIsInstance(options, dict)
+            self.assertTrue(str(options.get("registry_source_id") or "").startswith("company-"))
+
+    def test_human_made_uses_public_workable_adapter_in_live_and_radar(self):
+        for filename in ("source-specs.live.json", "source-specs.radar.json"):
+            specs = _load(filename)
+            matches = [spec for spec in specs if spec.get("employer") == "Human Made"]
+            self.assertEqual(1, len(matches), filename)
+            self.assertEqual("workable", matches[0].get("adapter"))
+            self.assertEqual("humanmade", matches[0].get("account"))
 
 
 if __name__ == "__main__":
