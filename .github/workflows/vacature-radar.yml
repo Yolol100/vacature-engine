@@ -29,7 +29,8 @@ jobs:
         with:
           python-version: '3.13'
       - run: python -m pip install -e ingestion
-      - run: python -m unittest ingestion.tests.test_radar_queue ingestion.tests.test_source_specs -v
+      - run: python -m unittest discover -s ingestion/tests -p 'test_radar_queue.py' -v
+      - run: python -m unittest discover -s ingestion/tests -p 'test_source_specs.py' -v
       - run: python -m compileall -q ingestion/src
 
   live-radar:
@@ -85,15 +86,9 @@ jobs:
         shell: bash
         run: |
           set +e
-          state_args=()
-          if [[ -f .runtime/state.sqlite3 ]]; then
-            state_args=(--state .runtime/state.sqlite3)
-          else
-            state_args=(--state .runtime/state.sqlite3)
-          fi
           python -m vacature_ingestion ingest-many \
             --specs .runtime/active-radar-specs.json \
-            "${state_args[@]}" \
+            --state .runtime/state.sqlite3 \
             --out .runtime/latest.json \
             --allow-partial > .runtime/ingest-console.json
           code=$?
