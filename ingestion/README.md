@@ -26,11 +26,21 @@ Secondary feeds remain discovery evidence. `vacature-search` must verify a promi
 
 Every `ingest-many` output contains `review_queue`. Only observations classified against the persisted technical state as `new` or `updated` are included. `unchanged` observations remain in the run evidence but are not queued for semantic re-review.
 
+GitHub Actions also persists a compact `review-queue.json` on the `ingestion-state` branch. This small handoff file is the preferred input for ChatGPT/`vacature-search`; it avoids reading the much larger full `latest.json` snapshot.
+
 The intended handoff is:
 
-`GitHub ingestion -> review_queue -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output`
+`GitHub ingestion -> review-queue.json -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output`
 
 No candidate scoring happens inside ingestion.
+
+## Source cadence
+
+- `source-specs.live.json`: targeted ATS smoke/near-real-time sources, scheduled every six hours.
+- `source-specs.daily.json`: slower public discovery feeds, scheduled once per day.
+- `source-specs.deploy.json`: both classes together, used on ingestion-code deployments as an end-to-end smoke test.
+
+This keeps slower/delayed feeds from being polled at the same cadence as targeted ATS sources while still proving all configured adapter classes on deployment.
 
 ## State
 
@@ -42,7 +52,7 @@ Closure is conservative: a globally deduplicated vacancy closes only after every
 
 The runner can update only source-health columns in `Bronnen` and append one compact technical row to `Runs`. It never bulk-writes raw jobs into `Vacatures`.
 
-For GitHub Actions, configure repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` with a Google service account that has editor access to the Vacature Register. If the secret is absent, the sync step exits successfully as `skipped`; ingest and GitHub technical state continue to work.
+For GitHub Actions, configure repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` with a Google service account that has editor access to the Vacature Register. If the secret is absent, the sync step exits successfully as `skipped`; ingest and GitHub technical state continue to work. The personal ChatGPT review workflow can still write candidate/run state through the existing Google Drive connection, so this secret is an optional technical-health mirror rather than a prerequisite for vacancy matching.
 
 ## Commands
 
