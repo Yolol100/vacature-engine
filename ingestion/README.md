@@ -1,10 +1,12 @@
 # Vacature Ingestion
 
-Policy-free bulk ingestion component for the Webactueel vacature system. It converts public ATS/API/JobPosting data into `JobObservation 1.1` compatible observations and owns only technical ingest state.
+Policy-free bulk ingestion component for the Webactueel vacancy system. It converts public ATS/API/JobPosting data into `JobObservation 1.1` compatible observations and owns only technical ingest state.
 
 ## Boundaries
 
 This component does **not** own candidate fit, WordPress relevance, salary/language/remote policy, application state, scoring or outreach. Those remain with `vacature-search`, the live Vacature Register and the deterministic `vacature_engine` package.
+
+The live `Vacature Register` also owns source activation. The repository may contain provider/account specifications as technical acquisition targets, but GitHub Actions filters every selected source class against `Bronnen.status=active` before any network ingestion. A concrete company source can additionally bind to its employer row through `options.registry_source_id`. Missing Register access fails closed rather than silently running stale source policy.
 
 ## Adapters
 
@@ -30,7 +32,7 @@ Every `ingest-many` output contains the observations that changed in that ingest
 
 GitHub Actions persists a compact `review-queue.json` plus `review-ack.json` on the `ingestion-state` branch. The compact queue is **at-least-once**: unacknowledged items from the previous snapshot are merged into the next queue, so a later ingestion cannot silently replace pending review work. Every queue item gets a stable `review_key` derived from strong vacancy identity plus its content hash. A content change therefore produces a new review key and requires a fresh semantic review.
 
-To keep large queues connector-readable, the handoff stores an allowlisted technical summary plus a bounded plain-text description excerpt instead of the complete provider description. It also writes `review-queue-index.json` and bounded pages under `review-queue-pages/`, currently 25 items per page. Review consumers should read the index first and then only the page(s) they can safely process in that run. The full `review-queue.json` remains the canonical technical snapshot for ingestion merging; pages are a bounded read surface derived from it.
+To keep large queues connector-readable, the handoff stores an allowlisted technical summary plus a bounded plain-text description excerpt instead of the complete provider description. It also writes `review-queue-index.json` and bounded pages under `review-queue-pages/`, currently 25 items per page. The index exposes pending count, page count, oldest/newest pending origin time and per-origin-run counts for backlog observability. Review consumers should read the index first and then only the page(s) they can safely process in that run.
 
 Full semantic eligibility still requires canonical employer/ATS verification; the queue excerpt is only discovery/triage evidence.
 
@@ -48,30 +50,34 @@ No candidate scoring happens inside ingestion.
 
 ## Source cadence
 
-- `source-specs.live.json`: targeted ATS smoke/near-real-time sources, scheduled every six hours.
+- `source-specs.live.json`: targeted ATS sources, scheduled every six hours.
 - `source-specs.daily.json`: slower public discovery feeds, scheduled once per day.
 - `source-specs.deploy.json`: both classes together, used on ingestion-code deployments as an end-to-end smoke test.
 
-This keeps slower/delayed feeds from being polled at the same cadence as targeted ATS sources while still proving all configured adapter classes on deployment.
+Before ingestion, the selected class is reduced to the sources that are currently `active` in live `Bronnen`.
 
-## State
+## State and history
 
 The runner keeps technical cross-run state in SQLite (`new`, `updated`, `unchanged`, `missing`, `closed`). In GitHub Actions this database is persisted on the dedicated `ingestion-state` branch, separate from code and policy.
 
+For each strong technical vacancy identity, every distinct `content_hash` is retained in `job_snapshots`. Repeated unchanged observations update the snapshot's last-seen time without duplicating it. This preserves an auditable historical copy when a posting changes or later disappears, while the current `jobs` row remains optimized for live state.
+
 Closure is conservative: a globally deduplicated vacancy closes only after every known source membership has met its own consecutive-missing threshold. A failed or partial source run never advances missing state.
 
-## Google Sheet sync
+## Google Sheet integration
 
-The runner can update only source-health columns in `Bronnen` and append one compact technical row to `Runs`. It never bulk-writes raw jobs into `Vacatures`.
+GitHub Actions uses `GOOGLE_SERVICE_ACCOUNT_JSON` to read active source status from `Bronnen` before acquisition and to write compact source-health/run evidence after acquisition. The service account therefore needs editor access to the Vacature Register and the Google Sheets API enabled.
 
-For GitHub Actions, configure repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` with a Google service account that has editor access to the Vacature Register and enable the Google Sheets API for that service-account project. If the secret is absent, the sync step exits successfully as `skipped`; ingest and GitHub technical state continue to work.
+The write side updates only source-health columns in `Bronnen` and appends one compact technical row to `Runs`. It never bulk-writes raw jobs into `Vacatures`. The Runs note includes current-run review candidates plus persistent pending-review count/page/age telemetry.
+
+Because `Bronnen` is the source-policy authority, missing or unreadable Google credentials now block live ingestion instead of falling back to repository source activation.
 
 ## Commands
 
 ```bash
-python -m vacature_ingestion ingest-many --specs source-specs.live.json --state state.sqlite3 --out latest.json --allow-partial
-python -m vacature_ingestion ingest-many --specs source-specs.daily.json --state state.sqlite3 --out latest.json --allow-partial
+python -m vacature_ingestion filter-specs --specs source-specs.live.json --spreadsheet-id <ID> --out active.json
+python -m vacature_ingestion ingest-many --specs active.json --state state.sqlite3 --out latest.json --allow-partial
 python -m vacature_ingestion export-state --state state.sqlite3 --health-out source-health.json
-python -m vacature_ingestion sync-register --spreadsheet-id <ID> --summary latest.json --health source-health.json
+python -m vacature_ingestion sync-register --spreadsheet-id <ID> --summary latest.json --health source-health.json --queue review-queue-index.json
 python -m vacature_ingestion benchmark --count 10000
 ```
