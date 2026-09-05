@@ -188,25 +188,102 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: python -m vacature_ingestion sync-register --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 --summary .runtime/latest.json --health .runtime/source-health.json
-      - name: Persist technical state and review queue as single snapshot
+      - name: Persist technical state without clobbering review acknowledgements
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf /tmp/vacature-ingestion-state
-          git worktree add --detach /tmp/vacature-ingestion-state HEAD
-          cd /tmp/vacature-ingestion-state
-          git switch --orphan ingestion-state-snapshot
-          git rm -rf . >/dev/null 2>&1 || true
-          cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
-          cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
-          cp "$GITHUB_WORKSPACE/.runtime/review-queue.json" review-queue.json
-          cp "$GITHUB_WORKSPACE/.runtime/review-ack.json" review-ack.json
-          cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add state.sqlite3 latest.json review-queue.json review-ack.json source-health.json
-          git commit -m "chore: persist vacancy ingestion snapshot"
-          git push --force origin HEAD:ingestion-state
+          git fetch origin ingestion-state || true
+
+          if ! git show-ref --verify --quiet refs/remotes/origin/ingestion-state; then
+            rm -rf /tmp/vacature-ingestion-state
+            git worktree add --detach /tmp/vacature-ingestion-state HEAD
+            cd /tmp/vacature-ingestion-state
+            git switch --orphan ingestion-state-snapshot
+            git rm -rf . >/dev/null 2>&1 || true
+            cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
+            cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
+            cp "$GITHUB_WORKSPACE/.runtime/review-queue.json" review-queue.json
+            cp "$GITHUB_WORKSPACE/.runtime/review-ack.json" review-ack.json
+            cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add state.sqlite3 latest.json review-queue.json review-ack.json source-health.json
+            git commit -m "chore: persist vacancy ingestion snapshot"
+            git push origin HEAD:ingestion-state
+            exit 0
+          fi
+
+          success=0
+          for attempt in 1 2; do
+            cd "$GITHUB_WORKSPACE"
+            git worktree remove --force /tmp/vacature-ingestion-state >/dev/null 2>&1 || true
+            rm -rf /tmp/vacature-ingestion-state
+            git fetch origin ingestion-state
+            git worktree add --detach /tmp/vacature-ingestion-state origin/ingestion-state
+            cd /tmp/vacature-ingestion-state
+            git switch -c "ingestion-state-update-${GITHUB_RUN_ID}-${attempt}"
+            cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
+            cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
+            cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
+
+            python - <<'PY'
+            import json
+            import os
+            from pathlib import Path
+
+            workspace = Path(os.environ['GITHUB_WORKSPACE'])
+
+            def load(path, fallback):
+                try:
+                    value = json.loads(Path(path).read_text(encoding='utf-8'))
+                    return value if isinstance(value, dict) else dict(fallback)
+                except (OSError, ValueError, json.JSONDecodeError):
+                    return dict(fallback)
+
+            fallback = {'schema_version': 1, 'acked_keys': [], 'migrations': []}
+            remote_ack = load('review-ack.json', fallback)
+            runtime_ack = load(workspace / '.runtime/review-ack.json', fallback)
+            merged = dict(remote_ack)
+            for key, value in runtime_ack.items():
+                merged.setdefault(key, value)
+            merged['schema_version'] = max(int(remote_ack.get('schema_version') or 1), int(runtime_ack.get('schema_version') or 1))
+            merged['acked_keys'] = sorted({
+                str(value)
+                for source in (remote_ack.get('acked_keys', []), runtime_ack.get('acked_keys', []))
+                if isinstance(source, list)
+                for value in source
+                if value
+            })
+            merged['migrations'] = sorted({
+                str(value)
+                for source in (remote_ack.get('migrations', []), runtime_ack.get('migrations', []))
+                if isinstance(source, list)
+                for value in source
+                if value
+            })
+            Path('review-ack.json').write_text(json.dumps(merged, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
+
+            queue = load(workspace / '.runtime/review-queue.json', {'schema_version': 1, 'review_queue': []})
+            acked = set(merged['acked_keys'])
+            items = [
+                item for item in queue.get('review_queue', [])
+                if isinstance(item, dict) and str(item.get('review_key') or '') not in acked
+            ]
+            queue['review_queue'] = items
+            queue['review_queue_count'] = len(items)
+            Path('review-queue.json').write_text(json.dumps(queue, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
+            PY
+
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add state.sqlite3 latest.json review-queue.json review-ack.json source-health.json
+            git commit -m "chore: persist vacancy ingestion snapshot"
+            if git push origin HEAD:ingestion-state; then
+              success=1
+              break
+            fi
+          done
+          test "$success" = "1"
       - name: Enforce ingestion success threshold
         if: always()
         run: test "${{ steps.ingest.outputs.exit_code }}" = "0"
