@@ -4,11 +4,13 @@ import hashlib
 import html
 import json
 import re
+from pathlib import Path
 from typing import Any
 
 
 SCHEMA_VERSION = 1
 DESCRIPTION_EXCERPT_CHARS = 1200
+REVIEW_QUEUE_PAGE_SIZE = 25
 _COMPACT_FIELDS = (
     "source_id",
     "source_type",
@@ -136,6 +138,68 @@ def build_review_queue(
         "review_queue_count": len(queue),
         "review_queue": queue,
     }
+
+
+def write_review_queue_pages(
+    document: dict[str, Any],
+    *,
+    directory: str | Path,
+    index_path: str | Path,
+    page_size: int = REVIEW_QUEUE_PAGE_SIZE,
+    path_prefix: str = "review-queue-pages",
+) -> dict[str, Any]:
+    if page_size < 1:
+        raise ValueError("page_size must be >= 1")
+    page_dir = Path(directory)
+    page_dir.mkdir(parents=True, exist_ok=True)
+    for stale in page_dir.glob("page-*.json"):
+        stale.unlink()
+
+    raw = document.get("review_queue", []) if isinstance(document, dict) else []
+    items = [item for item in raw if isinstance(item, dict)] if isinstance(raw, list) else []
+    total_pages = (len(items) + page_size - 1) // page_size
+    pages: list[dict[str, Any]] = []
+
+    for page_index in range(total_pages):
+        start = page_index * page_size
+        page_items = items[start:start + page_size]
+        filename = f"page-{page_index + 1:04d}.json"
+        payload = {
+            "schema_version": SCHEMA_VERSION,
+            "run_id": document.get("run_id"),
+            "completed_at": document.get("completed_at"),
+            "page": page_index + 1,
+            "total_pages": total_pages,
+            "review_queue_count": len(items),
+            "page_item_count": len(page_items),
+            "review_queue": page_items,
+        }
+        (page_dir / filename).write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+        pages.append({
+            "page": page_index + 1,
+            "path": f"{path_prefix}/{filename}",
+            "count": len(page_items),
+            "first_review_key": str(page_items[0].get("review_key") or "") if page_items else "",
+            "last_review_key": str(page_items[-1].get("review_key") or "") if page_items else "",
+        })
+
+    index = {
+        "schema_version": SCHEMA_VERSION,
+        "run_id": document.get("run_id"),
+        "completed_at": document.get("completed_at"),
+        "review_queue_count": len(items),
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "pages": pages,
+    }
+    Path(index_path).write_text(
+        json.dumps(index, ensure_ascii=False, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    return index
 
 
 def empty_ack_document() -> dict[str, Any]:
