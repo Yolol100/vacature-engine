@@ -13,20 +13,24 @@ class HimalayasAdapter(Adapter):
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         base = spec.endpoint or "https://himalayas.app/jobs/api"
-        cursor: str | None = None
+        offset = 0
+        limit = 20
         jobs: list[dict[str, Any]] = []
         while len(jobs) < spec.max_jobs:
-            params = {"limit": 20}
-            if cursor:
-                params["cursor"] = cursor
+            params = {"offset": offset, "limit": limit}
             sep = "&" if "?" in base else "?"
             payload = client.get_json(f"{base}{sep}{urlencode(params)}")
             batch = payload.get("jobs", []) if isinstance(payload, dict) else []
             if not isinstance(batch, list):
                 raise ValueError("Himalayas payload jobs must be a list")
             jobs.extend(item for item in batch if isinstance(item, dict))
-            cursor = clean_text(payload.get("nextCursor")) if isinstance(payload, dict) else None
-            if not cursor or not batch:
+            if not batch:
+                break
+            total_count = payload.get("totalCount") if isinstance(payload, dict) else None
+            offset += len(batch)
+            if isinstance(total_count, int) and offset >= total_count:
+                break
+            if len(batch) < limit and total_count is None:
                 break
         return jobs[: spec.max_jobs]
 
