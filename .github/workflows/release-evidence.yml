@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          gh run download "$GITHUB_RUN_ID" -n "release-evidence-${GITHUB_SHA}" -D verified-release
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" -n "release-evidence-${GITHUB_SHA}" -D verified-release
       - name: Verify release checksums
         shell: bash
         run: |
