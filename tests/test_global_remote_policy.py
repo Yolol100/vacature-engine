@@ -50,17 +50,23 @@ class GlobalRemotePolicyTests(unittest.TestCase):
         self.assertFalse(gate["pass"])
         self.assertIn("country_restriction", gate["reasons"])
 
-    def test_salary_range_that_reaches_preference_passes(self):
+    def test_salary_range_that_reaches_minimum_passes(self):
         item = vacancy(salary_monthly_eur=None, salary_min_monthly_eur=3000, salary_max_monthly_eur=5500)
         gate = eligibility(item, today=TODAY, policy=POLICY)
         self.assertTrue(gate["pass"])
         self.assertTrue(gate["salary_known"])
 
-    def test_salary_range_entirely_below_preference_warns(self):
+    def test_salary_range_entirely_below_minimum_is_rejected(self):
         item = vacancy(salary_monthly_eur=None, salary_min_monthly_eur=2500, salary_max_monthly_eur=3499)
         gate = eligibility(item, today=TODAY, policy=POLICY)
+        self.assertFalse(gate["pass"])
+        self.assertIn("salary_below_minimum", gate["reasons"])
+
+    def test_salary_range_upper_bound_at_minimum_passes(self):
+        item = vacancy(salary_monthly_eur=None, salary_min_monthly_eur=2500, salary_max_monthly_eur=3500)
+        gate = eligibility(item, today=TODAY, policy=POLICY)
         self.assertTrue(gate["pass"])
-        self.assertIn("salary_below_preference", gate["warnings"])
+        self.assertTrue(gate["salary_known"])
 
     def test_invalid_or_conflicting_ranges_fail_closed(self):
         cases = [

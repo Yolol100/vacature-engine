@@ -47,9 +47,9 @@ MUTANTS = [
         "evidence_fit <= runtime_policy.min_evidence_fit",
     ),
     (
-        "salary-advisory",
-        'return True, "salary_below_preference" if exact < minimum else None',
-        'return True, "salary_below_preference" if exact > minimum else None',
+        "salary-hard-gate",
+        'if exact < minimum:\n            return True, "salary_below_minimum"',
+        'if exact > minimum:\n            return True, "salary_below_minimum"',
     ),
     (
         "salary-order",
