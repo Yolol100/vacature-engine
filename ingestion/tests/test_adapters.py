@@ -46,4 +46,27 @@ class AdapterTests(unittest.TestCase):
         self.assertTrue(out["remote"])
         self.assertEqual(out["salary"]["currency"],"EUR")
 
+    def test_himalayas_maps_remote_restrictions_and_salary(self):
+        spec=SourceSpec("himalayas","discovery_api","himalayas","global")
+        row={"guid":"h1","title":"WordPress Engineer","companyName":"Acme","applicationLink":"https://himalayas.app/jobs/acme-wordpress","description":"<p>Build WordPress</p>","pubDate":"2026-09-04T00:00:00Z","expiryDate":"2026-10-04T00:00:00Z","employmentType":"Full Time","minSalary":60000,"maxSalary":80000,"currency":"EUR","salaryPeriod":"annual","locationRestrictions":[]}
+        out=ADAPTERS["himalayas"].normalize_records([row],spec)[0]
+        self.assertEqual(out["source_job_id"],"global:h1")
+        self.assertTrue(out["remote"])
+        self.assertEqual(out["location"],"Worldwide")
+        self.assertEqual(out["salary"]["currency"],"EUR")
+
+    def test_jobicy_maps_public_job(self):
+        spec=SourceSpec("jobicy-api","discovery_api","jobicy","global")
+        row={"id":9,"url":"https://jobicy.com/jobs/9","jobTitle":"WP Developer","companyName":"Acme","jobGeo":"Anywhere","jobDescription":"<p>WordPress</p>","pubDate":"2026-09-04T00:00:00Z","jobType":["full-time"]}
+        out=ADAPTERS["jobicy"].normalize_records([row],spec)[0]
+        self.assertEqual(out["source_job_id"],"global:9")
+        self.assertEqual(out["employment_type"],"full-time")
+
+    def test_remotive_marks_delayed_attributed_feed(self):
+        spec=SourceSpec("remotive","discovery_api","remotive","global")
+        row={"id":5,"url":"https://remotive.com/remote-jobs/5","title":"WP Developer","company_name":"Acme","candidate_required_location":"Worldwide","description":"<p>WordPress</p>","publication_date":"2026-09-04T00:00:00Z"}
+        out=ADAPTERS["remotive"].normalize_records([row],spec)[0]
+        self.assertTrue(out["source_metadata"]["attribution_required"])
+        self.assertTrue(out["source_metadata"]["delayed_feed"])
+
 if __name__ == "__main__": unittest.main()

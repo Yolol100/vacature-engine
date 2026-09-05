@@ -8,11 +8,29 @@ This component does **not** own candidate fit, WordPress relevance, salary/langu
 
 ## Adapters
 
+Fast/targeted public sources:
 - Greenhouse public Job Board API
 - Lever public Postings API
 - Ashby public Job Postings API
 - SmartRecruiters public postings API
 - Generic public HTML pages exposing Schema.org `JobPosting` JSON-LD
+
+Daily secondary discovery feeds:
+- Himalayas public JSON API with cursor pagination
+- Jobicy public Remote Jobs API
+- Remotive public API (24h-delayed; attribution metadata retained)
+
+Secondary feeds remain discovery evidence. `vacature-search` must verify a promising role on the canonical employer/ATS page before eligibility and ranking.
+
+## Review queue
+
+Every `ingest-many` output contains `review_queue`. Only observations classified against the persisted technical state as `new` or `updated` are included. `unchanged` observations remain in the run evidence but are not queued for semantic re-review.
+
+The intended handoff is:
+
+`GitHub ingestion -> review_queue -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output`
+
+No candidate scoring happens inside ingestion.
 
 ## State
 
@@ -30,6 +48,7 @@ For GitHub Actions, configure repository secret `GOOGLE_SERVICE_ACCOUNT_JSON` wi
 
 ```bash
 python -m vacature_ingestion ingest-many --specs source-specs.live.json --state state.sqlite3 --out latest.json --allow-partial
+python -m vacature_ingestion ingest-many --specs source-specs.daily.json --state state.sqlite3 --out latest.json --allow-partial
 python -m vacature_ingestion export-state --state state.sqlite3 --health-out source-health.json
 python -m vacature_ingestion sync-register --spreadsheet-id <ID> --summary latest.json --health source-health.json
 python -m vacature_ingestion benchmark --count 10000

@@ -41,6 +41,7 @@ def cmd_ingest_many(args: argparse.Namespace) -> int:
     try:
         results = runner.run_many(specs)
         summaries = [result.summary() for result in results]
+        review_queue = [row for result in results for row in (result.review_observations or [])]
         document = {
             "run_id": f"ingestion-{int(time.time())}",
             "started_at": started_at,
@@ -48,11 +49,14 @@ def cmd_ingest_many(args: argparse.Namespace) -> int:
             "sources": len(results),
             "successes": sum(r.success for r in results),
             "runs": summaries,
+            "review_queue_count": len(review_queue),
+            "review_queue": review_queue,
             "observations": [row for result in results for row in (result.observations or [])],
         }
         if args.out:
             _write_json(args.out, document)
-        print(json.dumps({key: value for key, value in document.items() if key != "observations"}, sort_keys=True))
+        console = {key: value for key, value in document.items() if key not in {"observations", "review_queue"}}
+        print(json.dumps(console, sort_keys=True))
         successes = sum(r.success for r in results)
         if args.allow_partial:
             return 0 if successes > 0 else 2
