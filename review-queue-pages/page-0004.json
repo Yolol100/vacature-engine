@@ -1,123 +1,12 @@
 {
-  "completed_at": "2026-09-05T15:54:54.102926+00:00",
+  "completed_at": "2026-09-05T20:16:27.352387+00:00",
   "page": 4,
   "page_item_count": 25,
   "review_queue": [
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8738225002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8738225002",
-      "content_hash": "c00d525fb56b3125ccc3ff60c46a8c741704f92735179fa9cf0f2a3abbae4e26",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, Israel; Remote, United Kingdom; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:33d6c99bdde7e99db98820e8d7c802a720eb683604fd3d2937d3a268db7aa794",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8738225002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4061741002,
-            "name": "Sec Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6494023002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4040901002,
-            "location": null,
-            "name": "Canada",
-            "parent_id": 4019551002
-          },
-          {
-            "child_ids": [],
-            "id": 4112147002,
-            "location": null,
-            "name": "Israel",
-            "parent_id": 4019553002
-          },
-          {
-            "child_ids": [],
-            "id": 4040908002,
-            "location": null,
-            "name": "United Kingdom",
-            "parent_id": 4019553002
-          },
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8738225002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Software Engineer (Ruby), Security Platform: Authorization",
-      "updated_at": "2026-09-02T19:42:29-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8738225002"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8017166",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8017166",
-      "content_hash": "1772aebc343ededa3916cc147072b1393061d7a3f9c8c0c6deef2b4cbbda276f",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Are you passionate about building the infrastructure that will power the next generation of AI applications? Are you ready to own the GPU strategy behind one of DigitalOcean’s fastest-growing product categories? DigitalOcean is entering a pivotal moment as we build infrastructure for AI-native companies and the future 100 million developers. Inference is becoming one of the most important layers of the AI stack. Developers need access to the right models, on the right GPUs, with the right latency, pricing, reliability, and scale. At the same time, cloud providers must manage scarce GPU capacity with discipline: maximizing utilization, improving gross margin, selecting the right model mix, and ensuring",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3570fa784ec1d5d7979c7c19b2364f2b71248ca67c60b749b0d901151a696029",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8017166",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 365098,
-            "name": "Agentic AI",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3475816,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 396968,
-            "location": null,
-            "name": "DigitalOcean Seattle Office",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8017166
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Principal Product Manager, Inference Engine",
-      "updated_at": "2026-07-23T14:50:58-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8017166"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8616308002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8616308002",
-      "content_hash": "0760b6a0feabbea9ce0e2d406b927cc569f66ffd54776d4a1eb902ad3dcf6807",
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8564957002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8564957002",
+      "content_hash": "664078ffca0c7c18a3f958d6d21643ef561dfa01fdebdec63d9dd04a21cf0c0a",
       "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
       "employer": "GitLab",
       "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
@@ -126,651 +15,56 @@
       "location": "Remote, Canada; Remote, US",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:35976f61b5d857b93fa9e19d70d61c95b032b8d13f9de3609aea87aba27bbf07",
+      "review_key": "review:42fb02486ac38069d8e35381acf152cc7bfbac6ad39d377f0ece59f5333c0dfe",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8616308002",
+      "source_job_id": "gitlab:8564957002",
       "source_metadata": {
         "departments": [
-          {
-            "child_ids": [
-              4109795002
-            ],
-            "id": 4021652002,
-            "name": "Field Operations",
-            "parent_id": 4011049002
-          }
-        ],
-        "internal_job_id": 6441244002,
-        "offices": [
           {
             "child_ids": [],
-            "id": 4040901002,
-            "location": null,
-            "name": "Canada",
-            "parent_id": 4019551002
-          },
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
+            "id": 4115236002,
+            "name": "AI",
+            "parent_id": 4043190002
           }
         ],
-        "provider": "greenhouse",
-        "provider_job_id": 8616308002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Revenue Analytics Analyst",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8616308002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8621204002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8621204002",
-      "content_hash": "17cf0586211cf410340731a89c63ddf3ab028cbae1a7b090fefb5f3599f2d97f",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:35afffe567d3649a72919ee8bb95c330fbea828a5fff58c76d500cfc67abbe13",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8621204002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4069216002,
-              4011062002,
-              4070572002,
-              4043187002,
-              4110750002,
-              4110751002,
-              4078331002
-            ],
-            "id": 4011063002,
-            "name": "FP&A",
-            "parent_id": 4021661002
-          }
-        ],
-        "internal_job_id": 6442918002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4040901002,
-            "location": null,
-            "name": "Canada",
-            "parent_id": 4019551002
-          },
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8621204002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior FP&A Analyst, Corporate Finance",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8621204002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8685082002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8685082002",
-      "content_hash": "d74504849fb32814a42d5c4052f990e78c16436fc5427fcbe431af761f094a78",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:35f4354a081069a5db080ea12dd7daaf8766c74858e23e50e4dbac9ab7c6549d",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8685082002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4109795002
-            ],
-            "id": 4021652002,
-            "name": "Field Operations",
-            "parent_id": 4011049002
-          }
-        ],
-        "internal_job_id": 6469792002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4040901002,
-            "location": null,
-            "name": "Canada",
-            "parent_id": 4019551002
-          },
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8685082002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Revenue Technology Analyst",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8685082002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8716143002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8716143002",
-      "content_hash": "6245b8f9fc4c51fde246fe6e99ae7f1e773d0591f916a79b08f18e3c17a2b0d7",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Bangalore, India",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:375ffede277e777666787f42920efffda9683c527d00759e06940a2df31d7840",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8716143002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4012212002,
-              4118841002,
-              4096122002,
-              4115238002,
-              4011053002,
-              4135581002,
-              4135580002,
-              4115239002,
-              4115240002,
-              4034706002,
-              4061741002,
-              4016843002,
-              4099701002,
-              4099700002
-            ],
-            "id": 4011044002,
-            "name": "Engineering",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 6483848002,
+        "internal_job_id": 6421148002,
         "offices": [],
         "provider": "greenhouse",
-        "provider_job_id": 8716143002
+        "provider_job_id": 8564957002
       },
       "source_type": "ats",
       "source_url": "greenhouse://gitlab",
-      "title": "Senior Backend Engineer, India",
-      "updated_at": "2026-09-04T00:59:18-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8716143002"
+      "title": "Principal Product Manager, AI Custom Models",
+      "updated_at": "2026-09-01T00:02:12-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8564957002"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7530090",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7530090",
-      "content_hash": "6e901def3fe70928fc9300183b5c62dad7de3bad92b8fc112fd70d6c98952627",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Manager, Growth Account Management to lead and scale a high-performing team of Growth Account Managers based in India. This role is accountable for team performance across expansion, retention, and pipeline creation, while building strong operating discipline and durable cross-functional partnerships. This is a senior people leadership role for an experienced manager who can balance strategy, execution, and talent development in a high-growth SaaS environment. What You'll Do: Team Leadership & Talent Development Lead, coach, and develop a team of Growth Account Managers to consistently deliver strong customer outcomes and revenue growth Set a high bar for account strategy, opportunity",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Hyderabad",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:377c0e493dbd45222e4afe44a6fa6285c13ed8236558472abe52a5f7f187b394",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7530090",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 236103,
-            "name": "Sales & Partnerships",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3335144,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 276693,
-            "location": null,
-            "name": "DigitalOcean Hyderabad Office",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7530090
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Manager, Sales",
-      "updated_at": "2026-09-01T23:48:53-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7530090"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8157265",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8157265",
-      "content_hash": "a101a053425e41abad63b99c926e17a940f519d69a89ee26d67cecdde2525f2d",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking to add a Senior Corporate Counsel, Datacenters and Infrastructure, who is passionate about solving complex legal challenges at the leading edge of artificial intelligence and cloud computing. As a Senior Corporate Counsel, Datacenters and Infrastructure, reporting to the Associate General Counsel at DigitalOcean, you will join a small and dynamic team dedicated to revolutionizing cloud computing and AI. DigitalOcean's mission is to simplify cloud computing and AI so that builders and businesses can spend more time creating software that changes the world. In this role, you will focus on high-value transactions to procure, build, and operate the physical infrastructure that enables Digit",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Denver",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:37ef1e40139f502923ec29eaee763130264e69310cae7fbbe262a3cd877be781",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8157265",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 35130,
-            "name": "Legal",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3530543,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 215167,
-            "location": "All Other Locations",
-            "name": "All Other Locations",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8157265
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Corporate Counsel, Datacenters and Infrastructure",
-      "updated_at": "2026-09-01T11:07:38-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8157265"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7904380",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7904380",
-      "content_hash": "93025f815901009e897e68ba83e1cb9fb8731747332328b843a2f6b207fed99d",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Staff Forward Deployed Engineer (FDE) who is passionate about operationalizing production AI-native and agentic workloads at scale. This is a high-impact role designed to serve as the “technical tip of the spear” for DigitalOcean’s most strategic AI-native customers and platform initiatives. As an FDE, you will operate at the intersection of Product Engineering, AI Infrastructure, and Customer Implementation. You will partner deeply with strategic AI-native enterprises (ANEs), startups, infrastructure vendors, and internal engineering teams to deploy, optimize, and scale production AI systems on DigitalOcean’s AI-Native Cloud. This role extends beyond traditional GPU infrastructur",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:395a8f2c6a4cefbd428fe6542b786f041f7939bf5fe16c669f80ea6de5c6906b",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7904380",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 296559,
-            "name": "IaaS & Data Centers",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3436123,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213034,
-            "location": "Bay Area Metro",
-            "name": "Bay Area Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7904380
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Staff Forward Deployed Engineer, AI/ML",
-      "updated_at": "2026-07-23T14:48:44-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7904380"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8682749002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8682749002",
-      "content_hash": "f80fce9ac7fb9326fa5a3782857b8f17b59c7d3300910bab8902232c025d880e",
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8609979002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8609979002",
+      "content_hash": "70f61436a5b6a8d156523501fb4ccc54511b067b5a718853442f9d3202d3403b",
       "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
       "employer": "GitLab",
       "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
       "ingestion_change": "recovered_pending_review",
       "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, United States",
+      "location": "Remote, Turkey",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:39fc68ce746191c9e7555b4e61710a81fa3fbb6f65e5c49831a2df13e866f054",
+      "review_key": "review:430f51054a650d595d818bd6eb52718a537f6fd64513a0d697ab3a9c0095866a",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8682749002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4109794002
-            ],
-            "id": 4095419002,
-            "name": "Renewals",
-            "parent_id": 4011043002
-          }
-        ],
-        "internal_job_id": 6468772002,
-        "offices": [
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8682749002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Renewals Manager - West",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8682749002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8512432002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8512432002",
-      "content_hash": "d6efd5eac6221c8de2c6f473575b01b67d8b52654c76ce3d41c4fcf05a44d51d",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, US",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3a1a9c0928e0e9d281f42490b0a186df2d3d4f9e88bf0d668518c3b9bee4a09e",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8512432002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4011052002,
-              4095419002,
-              4114812002,
-              4109796002,
-              4016437002,
-              4109797002,
-              4109794002
-            ],
-            "id": 4011043002,
-            "name": "Customer Experience",
-            "parent_id": 4011049002
-          }
-        ],
-        "internal_job_id": 6400301002,
-        "offices": [
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8512432002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Staff Forward Deployed Engineer",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8512432002"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8099104",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8099104",
-      "content_hash": "775f47db55f039fc9107a9e0cc04a3d46a24dfa169e7004e8d3422f8a9541299",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking to add a Senior Corporate Counsel, Product, who is passionate about solving complex legal challenges at the leading edge of artificial intelligence and cloud computing. As a Senior Corporate Counsel, Product, reporting to the Associate General Counsel at DigitalOcean, you will join a small and dynamic team dedicated to revolutionizing cloud computing and AI. DigitalOcean's mission is to simplify cloud computing and AI so that builders and businesses can spend more time creating software that changes the world. In this role, you will act as a versatile, full-stack product counsel who advises product, engineering, and go-to-market teams across the entire product lifecycle from first conce",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Austin",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3abfda9471e31227e33f722b4ca9de6238a5bd06d40648d5eefeae13a275b448",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8099104",
+      "source_job_id": "gitlab:8609979002",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 35130,
-            "name": "Legal",
-            "parent_id": null
+            "id": 4096747002,
+            "name": "EMEA - Enterprise",
+            "parent_id": 4096735002
           }
         ],
-        "internal_job_id": 3508705,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 215167,
-            "location": "All Other Locations",
-            "name": "All Other Locations",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8099104
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Corporate Counsel, Product",
-      "updated_at": "2026-08-06T17:40:05-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8099104"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8638232002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8638232002",
-      "content_hash": "980a11e9e237dd30a89aea931c403636a44c11def563457c79162e7a202df379",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3b35d65c66480a8731abd7133afe4872a3be827d0b2e9b1835949505a45aad26",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8638232002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4114891002,
-            "name": "Enablement",
-            "parent_id": 4011049002
-          }
-        ],
-        "internal_job_id": 6449994002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8638232002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "AI Transformation Owner, CRO",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8638232002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8773006002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8773006002",
-      "content_hash": "51772bcf926e2a5f30ddbf71750f5dac89b4544bd2daaad9a76a40248beff288",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3cb060715027d61b34f338109ad146e5ed77ac902b90259bed368f16481eb644",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8773006002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4012212002,
-              4118841002,
-              4096122002,
-              4115238002,
-              4011053002,
-              4135581002,
-              4135580002,
-              4115239002,
-              4115240002,
-              4034706002,
-              4061741002,
-              4016843002,
-              4099701002,
-              4099700002
-            ],
-            "id": 4011044002,
-            "name": "Engineering",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 6510230002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8773006002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Intermediate Backend Engineer, AMER",
-      "updated_at": "2026-09-02T14:45:41-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8773006002"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975145",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7975145",
-      "content_hash": "d68257402dc9426578321ffbe678b958e5b51780710bd9013f02dea302cb2f5a",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Drive the future of our physical infrastructure footprint, from Air Cooling through to 800VDC Liquid Rack Scale systems. This role is a Principal Datacenter Architect on our Design team, this role owns the forward looking Data Center architecture. Keeping a focus on where the industry is going, from Air to Liquid to 800VDC rack scale systems. Working with peers on the Design team who own the architectures for the Server, Network and Storage services. What You’ll Be Doing: Defining and owning DigitalOcean's reference architectures for next-generation Data Center environments, navigating shifts in technology, networking topologies, and AI/ML hardware roadmaps to keep facility designs future-proofed. Ser",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "San Francisco",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3ced81216c6361bfbc781ebd5252a866053a1408a03393f49dfaa1b0135aceef",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7975145",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 365101,
-            "name": "Physical Infrastructure",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3461445,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 215167,
-            "location": "All Other Locations",
-            "name": "All Other Locations",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7975145
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Principal Engineer, Data Center Architect",
-      "updated_at": "2026-08-25T13:47:22-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975145"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8623389002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8623389002",
-      "content_hash": "1e1bee8c6a74ad072d1c8fa18d3523e48870633cf62343bda920a5d3766ac3c0",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, US",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3e559a6be023b4ee6964a31ddac35995a480267529a4628c90f24d177eb6bdab",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8623389002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4016843002,
-            "name": "Platforms Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6443842002,
+        "internal_job_id": 6438746002,
         "offices": [
           {
             "child_ids": [
@@ -794,80 +88,356 @@
             "location": null,
             "name": "EMEA",
             "parent_id": null
-          },
-          {
-            "child_ids": [
-              4040901002,
-              4040904002,
-              4040902002
-            ],
-            "id": 4019551002,
-            "location": null,
-            "name": "NA",
-            "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 8623389002
+        "provider_job_id": 8609979002
       },
       "source_type": "ats",
       "source_url": "greenhouse://gitlab",
-      "title": "Site Reliability Engineer, Infrastructure Platforms — AMER (Intermediate to Senior Staff)",
-      "updated_at": "2026-09-03T01:08:50-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8623389002"
+      "title": "Strategic Account Executive - Turkey",
+      "updated_at": "2026-08-31T17:56:36-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8609979002"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8749952002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8749952002",
-      "content_hash": "2c4c3210eaef92519b65677976f024d1645f669963adc654dcb91a3833c45ef2",
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8597826002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8597826002",
+      "content_hash": "a80822eb7b62be5743c93ee772cd6346e5a4a2102ea936a0ab98266d2b318c68",
       "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
       "employer": "GitLab",
       "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
       "ingestion_change": "recovered_pending_review",
       "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Poland",
+      "location": "Remote, Canada; Remote, US",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3ee3eb8c7936ac681957e83e9a6a580568494f4a056ad8616c2cae4d63176476",
+      "review_key": "review:4566b7ef83b3cb1436de890231b3782c8452f361b143a7e6122a1fc2f4e06e9c",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8749952002",
+      "source_job_id": "gitlab:8597826002",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 4115238002,
-            "name": "AI Engineering",
-            "parent_id": 4011044002
+            "id": 4115237002,
+            "name": "Core DevOps",
+            "parent_id": 4043190002
           }
         ],
-        "internal_job_id": 6473315002,
+        "internal_job_id": 6433915002,
         "offices": [],
         "provider": "greenhouse",
-        "provider_job_id": 8749952002
+        "provider_job_id": 8597826002
       },
       "source_type": "ats",
       "source_url": "greenhouse://gitlab",
-      "title": "Senior Software Engineer (Typescript), AI Clients: Duo CLI",
+      "title": "Senior Manager, Product Management: Agentic Software Delivery",
       "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8749952002"
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8597826002"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8611700002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8611700002",
-      "content_hash": "977d4117be749b5deb29c3893d1aacc8db40dffdb6b33a2b82c37542881ec3b9",
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8604630002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8604630002",
+      "content_hash": "e90209776aa7a3816b0442f9a0a20758f7a99af3df85fc6dc319679e0235584a",
       "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
       "employer": "GitLab",
       "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
       "ingestion_change": "recovered_pending_review",
       "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, KSA; Remote, UAE",
+      "location": "Remote, US",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:3ff1bbd8760fe9ba3cff252fed7e685aeebecc73438f58685aa6ab8044ae9f0d",
+      "review_key": "review:4722882b6bc640c32b768e654a4141312a819fdc628c3f4a664642887cae79a0",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8611700002",
+      "source_job_id": "gitlab:8604630002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4096743002,
+            "name": "AMER - Enterprise",
+            "parent_id": 4096733002
+          }
+        ],
+        "internal_job_id": 6436802002,
+        "offices": [
+          {
+            "child_ids": [
+              4040902002
+            ],
+            "id": 4040904002,
+            "location": null,
+            "name": "United States of America",
+            "parent_id": 4019551002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8604630002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Strategic Account Executive, AI - San Francisco",
+      "updated_at": "2026-08-31T17:56:36-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8604630002"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8075768",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8075768",
+      "content_hash": "88bf9e923609d058dfc722a8a6f1ae34ad1420d2f1374fea39d9bd7848437e9c",
+      "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations including Clorox and the United Nations drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. The Role We're seeking a Senior Revenue Operations Manager to drive efficiency, optimization, and growth across the top-of-funnel motion. This role will primarily support the Marketing organization, including the BDR team, acting as a strategic thought partner — not just a reporting function — to help shape how the org plans and scales pipeline generation, while Marketing leadership retains ownership of strategy. This role blends analytical rigor, operational excellence, and cross-functional collaboration to ensure Marketing and BDR have the data, insight, and processes",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (Remote)",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:48e935a3cee7db99b9664dd80b2b5deb7c117c6d41f73cc4c742436f75e4b4cc",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8075768",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 81563,
+            "name": "Finance & Accounting",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3498892,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8075768
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Sr. Manager of RevOps - Marketing",
+      "updated_at": "2026-08-13T16:37:15-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8075768"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987090",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7987090",
+      "content_hash": "3c35939a8c853a81beddf53585177d6cbe4b05b15f5bb0fa4911ec962222e862",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Position Overview We are looking for a Senior Forward Deployed Engineer I (FDE) who is passionate about operationalizing and collaborating closely with strategic AI enterprises and high-growth startups to architect, implement, and fine-tune production infrastructure across DigitalOcean’s AI-Native Cloud. As an AI Infrastructure Engineer within the Forward Deployed Engineering team, you sit at the intersection of deep systems engineering and high-impact customer architecture. You won't just build infrastructure in a vacuum; you will embed directly with customer engineering teams to solve complex infrastructure bottlenecks, optimize heterogeneous GPU cluster performance, and engineer mission-critical in",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Bengaluru",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:4a95359737d257a80ad6724142a686570635277074f05082d9bb3a7d95320c52",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7987090",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 365098,
+            "name": "Agentic AI",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3465599,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 276737,
+            "location": null,
+            "name": "Bangalore Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7987090
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Forward Deployed Engineer I (AI Infra)",
+      "updated_at": "2026-09-01T23:51:58-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987090"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7823426",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7823426",
+      "content_hash": "673ab5efc5194986bf48edd1379d80479102544c7fb14533ad538a596002070a",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. DigitalOcean is expanding in Hyderabad, India. We are looking for a People Generalist/ Talent Success Partner to join our People team.This is a contract position for 8 months (maternity backfill) with potential to convert into full time as well. As a Talent Success Business Partner, you will be reporting to the PBP Director. In this role, you will be responsible for performing a wide range of HR related duties including, supporting effective execution of HR processes including employee relations, supporting managers and senior managers on people related cases, performance management and employee engagement. This role will assist in providing coaching and guidance to managers and senior managers to hel",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Hyderabad",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:4aad55d40d9cf56db2989f4e4157992998340c24b66a9e521e92c83f484559ad",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7823426",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 7723,
+            "name": "People",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3415080,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 10179,
+            "location": "India",
+            "name": "India",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7823426
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Talent Success Business Partner (8 Months Contract)",
+      "updated_at": "2026-06-25T13:02:24-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7823426"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8744318002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8744318002",
+      "content_hash": "3c09e593ddbc39008f569b4d0682df76bde2d00e33a4925bdc14ad7c0ff3181e",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Remote, India",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:4c6dbfa6ca42900b70d356eacd69871c7266f524387b94574ca34dbf95f928dd",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8744318002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4043191002,
+            "name": "Alliances and Channel",
+            "parent_id": 4011049002
+          }
+        ],
+        "internal_job_id": 6496890002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4112140002,
+            "location": null,
+            "name": "India",
+            "parent_id": 4019590002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8744318002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Ecosystem Sales Manager",
+      "updated_at": "2026-09-02T23:45:01-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8744318002"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8687381002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8687381002",
+      "content_hash": "651a68839239fed840bf64dfd257df9b442d49c1df7ce707b6c9a406f1dafc21",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Remote Ireland; Remote, Germany; Remote, Netherlands; Remote, United Kingdom",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:4ddb2f009bafaf9995341d1be8426a492da1f1cd5b17502d2b322274bc3a3052",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8687381002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4011059002,
+            "name": "Sales Development",
+            "parent_id": 4011049002
+          }
+        ],
+        "internal_job_id": 6470815002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4040903002,
+            "location": null,
+            "name": "Germany",
+            "parent_id": 4019553002
+          },
+          {
+            "child_ids": [],
+            "id": 4040905002,
+            "location": null,
+            "name": "Ireland",
+            "parent_id": 4019553002
+          },
+          {
+            "child_ids": [],
+            "id": 4040907002,
+            "location": null,
+            "name": "Netherlands",
+            "parent_id": 4019553002
+          },
+          {
+            "child_ids": [],
+            "id": 4040908002,
+            "location": null,
+            "name": "United Kingdom",
+            "parent_id": 4019553002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8687381002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Business Development Representative - Nordics",
+      "updated_at": "2026-08-31T17:56:36-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8687381002"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8641849002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8641849002",
+      "content_hash": "83db8ccd880e7c0260d07cddd05d7fca698fdfb7952b3203253d010f26a4aebb",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Remote, United States",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:4dfb20e10dd981365bad2c09257f69cfe65ad51bed1b2e525f56600f020fd35f",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8641849002",
       "source_metadata": {
         "departments": [
           {
@@ -879,7 +449,97 @@
             "parent_id": 4011043002
           }
         ],
-        "internal_job_id": 6439466002,
+        "internal_job_id": 6451267002,
+        "offices": [
+          {
+            "child_ids": [
+              4040902002
+            ],
+            "id": 4040904002,
+            "location": null,
+            "name": "United States of America",
+            "parent_id": 4019551002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8641849002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Manager, Solutions Architecture - East",
+      "updated_at": "2026-08-31T17:56:36-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8641849002"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987515",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7987515",
+      "content_hash": "bd48b5ced35f53e4daadbaab5fe764d46a217e80e527c394df285146c093becd",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Senior Software Engineer II to join our Security Products team working on Key Management Systems (KMS). Our KMS platform is foundational to DigitalOcean's security posture — managing the full lifecycle of cryptographic keys that protect customer data across the platform, from envelope encryption for block storage and databases to API credential management and secrets handling. In this role, you will own significant technical workstreams within our KMS platform — not just implementing features, but shaping how cryptographic systems are designed, hardened, and operated. You will go deep on HSM integration, key lifecycle management, and compliance engineering, and will actively raise the",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Bengaluru",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:4eb9f4ae31d1bddab2bfe4d28c66336949da7cbf2d81188bd87f256a67f1cd4b",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7987515",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 45958,
+            "name": "Security",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3465636,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 276737,
+            "location": null,
+            "name": "Bangalore Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7987515
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Software Engineer II - Key Management Systems",
+      "updated_at": "2026-09-01T23:52:35-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987515"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8641816002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8641816002",
+      "content_hash": "8219a9a756383026ad2a9ddc71915e86c4021e8f03f9c523d982ba169d4e2e64",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Remote Ireland; Remote, Poland; Remote, United Kingdom",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:4fa1a32f21cf31483ce76b1750be1cbb96905e42270c19f9bce757c0d0e98d18",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8641816002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4070223002,
+            "name": "Total Rewards",
+            "parent_id": 4111246002
+          }
+        ],
+        "internal_job_id": 6451263002,
         "offices": [
           {
             "child_ids": [
@@ -906,91 +566,252 @@
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 8611700002
+        "provider_job_id": 8641816002
       },
       "source_type": "ats",
       "source_url": "greenhouse://gitlab",
-      "title": "Solutions Architect - MENA",
+      "title": "Senior Benefits Analyst",
       "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8611700002"
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8641816002"
     },
     {
-      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8017939",
-      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8017939",
-      "content_hash": "3df0eb1eeaa494dc6825985e8bb8b50bcfbfde408125945b962d300e603dda0a",
-      "description_excerpt": "About Pantheon Pantheon brings together exceptional builders who take ownership, drive meaningful impact, and shape what's next for the web. We power more than 300,000 websites globally for organizations including Google, Princeton, Salesloft, Clorox, and the United Nations. Every day, thousands of developers and marketers use our WebOps platform to build, iterate, and scale WordPress, Drupal, and Next.js sites that reach billions of people worldwide. As an employer, we operate with the same philosophy that drives our product: foundation and freedom. Pantheon is a vibrant, remote-forward team of experts who care deeply about their craft and results. Here, you take ownership of work that matters, contribute alongside exceptional people, and see the impact you create. The Opportunity This is a rare chance to be at the ground floor of something genuinely new. Pantheon is building the next generation of web content infrastructure: a real-time, collaborative platform that redefines how teams create, publish, and manage content on the modern web. This is a zero-to-one role. The product is early, the architecture is being defined, and the decisions you make will shape how thousands of dev",
-      "employer": "Pantheon",
-      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8162594",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8162594",
+      "content_hash": "06de640427f00472a86f9bb7f9c7c74feebc96ac1a63cfc97711571ffce00422",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Senior Capacity Planner who is passionate about building the programs and playbooks that let internal teams get the physical infrastructure they need, reliably and predictably. As a Capacity Planner at DigitalOcean, you will join a dynamic team dedicated to revolutionizing cloud computing and AI. Reporting to the Capacity Planning Lead, you'll partner directly with internal teams who deploy bare metal servers, building the playbooks, processes, and tracking mechanisms that let Cloud Operations provision and maintain that infrastructure smoothly. You'll also own coordination of budget requests, procurement, and deployment for new hardware supporting these internal customers, becomi",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
-      "location": "Canada (Remote)",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Seattle",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:401361fec618e47253b5fdcd0c3a78913aa6610b1b8ef45705f2393bb287805f",
+      "review_key": "review:5017cfd9c54d984fef2fbc39363a9d3d7b00e7ce301e629d523bc7f20051ce38",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:pantheon",
-      "source_job_id": "pantheon:8017939",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8162594",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 2645,
-            "name": "Engineering",
+            "id": 365101,
+            "name": "Physical Infrastructure",
             "parent_id": null
           }
         ],
-        "internal_job_id": 3416481,
+        "internal_job_id": 3532612,
         "offices": [
           {
             "child_ids": [],
-            "id": 398388,
-            "location": "Canada (Remote)",
-            "name": "Canada (Remote)",
-            "parent_id": null
-          },
-          {
-            "child_ids": [],
-            "id": 398387,
-            "location": "United States (Remote)",
-            "name": "United States (Remote)",
+            "id": 396968,
+            "location": null,
+            "name": "DigitalOcean Seattle Office",
             "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 8017939
+        "provider_job_id": 8162594
       },
       "source_type": "ats",
-      "source_url": "greenhouse://pantheon",
-      "title": "Staff Software Engineer - Collaborative Web Platform",
-      "updated_at": "2026-07-30T12:20:45-04:00",
-      "url": "https://pantheon.io/about/careers/detail?gh_jid=8017939"
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Capacity Planner",
+      "updated_at": "2026-08-31T15:12:59-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8162594"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8616005002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8616005002",
-      "content_hash": "d9afacead4e43ebdf9a33d734e6720d37657a64a15aa37e022b453c93d90fb0c",
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8775039002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8775039002",
+      "content_hash": "438b6e9ac2b0e365aad0504af9dbf4ba986ec67b36cb22fd72b307a40df8d2ab",
       "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
       "employer": "GitLab",
       "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
       "ingestion_change": "recovered_pending_review",
       "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, US",
+      "location": "Remote, United Kingdom",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:4150771c8448622e72a6a124867cf1ae79d8fc192e0ba0f2d7d856749ec92bcd",
+      "review_key": "review:5026f306744e30e14c429f36e963c51da567ef79193c23e3c02750aa1d919c54",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8616005002",
+      "source_job_id": "gitlab:8775039002",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 4109796002,
-            "name": "Customer Success - PubSec",
+            "id": 4011664002,
+            "name": "Templates",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 6510673002,
+        "offices": [],
+        "provider": "greenhouse",
+        "provider_job_id": 8775039002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Staff Backend Engineer, EMEA",
+      "updated_at": "2026-09-02T14:48:43-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8775039002"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8648304002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8648304002",
+      "content_hash": "7dcf3fd924d9cc12d1f6a4e5c8f0c788b13cffe58dd34524d1e300a29e310533",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Remote, Singapore",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:50701df125f72d6f6debdb8f149cbea6b694e75fae6ef716c6d29dd26c263c7c",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8648304002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4016437002,
+            "name": "Customer Success",
             "parent_id": 4011043002
           }
         ],
-        "internal_job_id": 6441132002,
+        "internal_job_id": 6453816002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4042805002,
+            "location": "Singapore",
+            "name": "Singapore",
+            "parent_id": 4019590002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8648304002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Customer Success Architect - Singapore",
+      "updated_at": "2026-08-31T17:56:36-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8648304002"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986802",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7986802",
+      "content_hash": "74c50ce569b3974508ab3f2f969e8b90d75d299f9d7e5829f1c2f712e58b2466",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Senior Product Manager to own the roadmap, development, and execution of DigitalOcean's Managed Databases (MySQL) product. This is a high-impact, high-ownership role: you will define what we build, shape how we go to market, and drive the roadmap for one of the most widely used products in our database portfolio. You will work at the intersection of customer needs, market realities, and complex technical execution — bridging engineering, infrastructure, go-to-market, and customer success teams to ship products customers rely on. Increasingly, databases are becoming the persistence layer for AI agents, and a first-class participant in agentic workflows through protocols like MCP (M",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Bengaluru",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:50942aa663519f80d3b0600630571fee1828aa0a7ea1714405fecdd85707d349",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7986802",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 89359,
+            "name": "PaaS",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3465575,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 276737,
+            "location": null,
+            "name": "Bangalore Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7986802
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Product Manager II, Managed Databases (MySQL)",
+      "updated_at": "2026-09-01T23:51:38-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986802"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7722839",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7722839",
+      "content_hash": "81ee5390bb7b7fc79e13fd982ea00ab60306a15332d1f3f8d89183931e467ead",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. DigitalOcean is seeking a Senior Engineer 2 to play a key technical role in our AI Inference Optimization team. DigitalOcean aims to be the Inference Cloud of choice for digitally native companies and you will help ensure we can offer the industry-leading performance for our inference services. You will be responsible for the architectural decisions that maximize throughput and minimize latency for the world’s most advanced large models. As an IC leader, you will act as a force multiplier for the engineering organization, solving the most complex bottlenecks in memory bandwidth and compute utilization while guiding the technical roadmap for our high-performance inference fleet. What You’ll Do: Perform",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Seattle",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:509f4a8a0ef9b7c408fc49403b6936b48d8a0b6013078d3476b9aa0e3c6f76fd",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7722839",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 365098,
+            "name": "Agentic AI",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3390995,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 213281,
+            "location": "Seattle Metro",
+            "name": "Seattle Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7722839
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Staff Engineer, Inference Optimizations",
+      "updated_at": "2026-09-01T16:32:25-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7722839"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8684201002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8684201002",
+      "content_hash": "fc752ed1e10ccddab504bef52db5541ed4cd131de0daff61adab633e3c8c7838",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Remote, United States",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:51a86822bc9c65d9e070b07adbb284d11e2a40edbc2f084f8a1012b587a59285",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8684201002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4043191002,
+            "name": "Alliances and Channel",
+            "parent_id": 4011049002
+          }
+        ],
+        "internal_job_id": 6469426002,
         "offices": [
           {
             "child_ids": [
@@ -1003,30 +824,202 @@
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 8616005002
+        "provider_job_id": 8684201002
       },
       "source_type": "ats",
       "source_url": "greenhouse://gitlab",
-      "title": "Senior Customer Success Manager- Public Sector",
+      "title": "Ecosystem Sales Manager",
       "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8616005002"
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8684201002"
     },
     {
-      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8056205",
-      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8056205",
-      "content_hash": "90f8cef8e75df92b6202f315bc4511424c261bbd9edb41aa97138d6bba3b80fa",
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7761097",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7761097",
+      "content_hash": "9ce73701be24a7edce475d2d54a89155d8c935e942889890a7f9ec9604948722",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Senior Customer Success Engineer I – Kubernetes who is passionate about cloud infrastructure, container orchestration, and delivering exceptional customer experiences, while providing high-touch, white-glove support to strategic accounts. As a Senior Customer Success Engineer I at DigitalOcean, you will play a critical role in supporting and empowering customers to successfully run production workloads on Kubernetes. You will work closely with customers to troubleshoot complex issues, optimize cluster performance, and guide them in adopting best practices across Kubernetes and cloud-native architectures. In this role, you will bring deep technical expertise in Kubernetes and act a",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Hyderabad",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:51f3cbee73c33b41099274f576fbdca7599fc595f614e04a008d982f9c6d7ca8",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7761097",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 229653,
+            "name": "Customer Support",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3400285,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 213283,
+            "location": "Hyderabad Metro",
+            "name": "Hyderabad Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7761097
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Customer Success Engineer I - Kubernetes",
+      "updated_at": "2026-09-03T20:17:07-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7761097"
+    },
+    {
+      "apply_url": "https://syde.jobs.personio.com/job/245868",
+      "canonical_url": "https://syde.jobs.personio.com/job/245868",
+      "content_hash": "bcb7e2e8e168f314e6986af09c4dcad44cadf90074c24d237bec3f5660cb9c7e",
+      "description_excerpt": "Syde You can imagine being a part of our team? If so, we’ll be happy about your unsolicited application! What we offer Working from home (we are 100% remote) Flexible working hours Annual hardware budget Exciting global enterprise clients like SAP or PayPal Working at the heart of WordPress as a partner of WordPress VIP and WooCommerce Possibility to attend local team events Many opportunities to visit WordCamps with the chance to hold sessions Multicultural, globally distributed team Lifelong learning and growth with many career advancements A dynamic work environment with the encouragement of entrepreneurial thinking and acting And a supportive Syde culture that appreciates YOU Become a Syder At Syde, a respectful and inclusive way of working together isn’t just a principle — it’s a core part of our culture. This also shapes how we hire: we focus on experience, qualifications, and the best possible fit for the role. Factors such as gender, age, disability, religion, ethnicity, origin, sexual orientation, or any other personal characteristics do not influence our decisions. What truly matters to us is creating an environment where diversity is valued and everyone has the chance to",
+      "employer": "Syde",
+      "employment_type": "full-time",
+      "first_seen_at": "2026-09-05T13:34:12.690587+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:31.100544+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "published_at": "2020-08-20T09:35:58+00:00",
+      "remote": true,
+      "review_key": "review:530a628c4d85d367e07ff206d2364a82eab8d47202b9aa27454a2e2cc2de2056",
+      "source_id": "personio",
+      "source_instance": "personio:syde",
+      "source_job_id": "syde:245868",
+      "source_metadata": {
+        "department": "Operations",
+        "employment_type": "permanent",
+        "keywords": "100% Remote,Flexible Hours,Warm Inpsyde Culture,International Projects,Hardware Budget,B2B,WordPress VIP Partner,Woo Gold Expert,Remote,Home Office,HomeOffice,Home-Office,IT,WordPress,Flexible working hours,International,International projects,WordPress V",
+        "occupation": "general_and_other_it_software",
+        "occupation_category": "it_software",
+        "provider": "personio",
+        "provider_job_id": "245868",
+        "recruiting_category": "Your other possibilities at Syde",
+        "schedule": "full-time",
+        "seniority": "experienced",
+        "subcompany": null,
+        "years_of_experience": null
+      },
+      "source_type": "ats",
+      "source_url": "https://syde.jobs.personio.com/xml?language=en",
+      "title": "Unsolicited Application (m/f/d) - 100% Remote",
+      "url": "https://syde.jobs.personio.com/job/245868",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8143084",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8143084",
+      "content_hash": "c9ceeead28dc440f521411591810afa17b22f1deacfb1d2f981f0afb3d0612b7",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. DigitalOcean is looking for a Facilities Manager to own the day-to-day operations, upkeep, and workplace experience of our global offices. This is a hands-on, execution-focused role: you'll be the go-to person making sure our spaces are safe, well-maintained, and set up for people to do their best work, while managing the vendors and budgets that keep everything running smoothly. Strategically, you will be very involved in the selection of future office sites, expansion of existing offices and facilitation of DO’s approach to hybrid work. You will be a key part of the People team under the Chief Legal & Administrative Office and work closely with People, IT, Security, and Finance teams on the ground i",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Seattle",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:53a8a5c97d371197c28945b4b229aa777954e0f6531c6a3842206793fc2d3adb",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8143084",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 7723,
+            "name": "People",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3524052,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 396968,
+            "location": null,
+            "name": "DigitalOcean Seattle Office",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8143084
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Facilities Manager",
+      "updated_at": "2026-08-20T19:54:15-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8143084"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8642850002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8642850002",
+      "content_hash": "54e6683462ddc3e23dcfcd4593a9b863b618b34ef131f6cdb7d42086745ede6a",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Bangalore, India",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:54533520f554ea20a0286451d636fbd29d8e0fb0e2d1ca2492e2e3780cb258da",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8642850002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4070572002,
+            "name": "Internal Audit",
+            "parent_id": 4011063002
+          }
+        ],
+        "internal_job_id": 6451733002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4112140002,
+            "location": null,
+            "name": "India",
+            "parent_id": 4019590002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8642850002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Manager, Internal Audit - Audit Automation & Technology Risk",
+      "updated_at": "2026-08-31T17:56:36-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8642850002"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8056238",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8056238",
+      "content_hash": "ce3686ad06c8263d9871708093054b59a0669a2d4f20827cf41bd194e2fdc27d",
       "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations including Clorox and the United Nations drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. The Role Senior Analytics Engineer The Analytics Engineering team owns how Pantheon's data becomes trusted, self-serve insight — from the data models built on our raw source tables to the semantic layer the whole company consumes. Sitting close to the business (under Finance), you'll own a domain end-to-end and act as a partner who turns business questions into the right data models. What You Need to Succeed Own the analytics modeling lifecycle for a business domain (GTM / Lead-to-Customer or Post-Sales) — build and maintain dbt models and business marts on top of our s",
       "employer": "Pantheon",
       "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
       "ingestion_change": "recovered_pending_review",
       "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
-      "location": "United States (Remote)",
+      "location": "Canada",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:41559728722d21d625eada942cd278771aa43fed61b13abf3b154c70e398f5eb",
+      "review_key": "review:5460d2b281bd956cd30ee5e0792595a9db00aeef7ad3a58213264afa1c8a075d",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:pantheon",
-      "source_job_id": "pantheon:8056205",
+      "source_job_id": "pantheon:8056238",
       "source_metadata": {
         "departments": [
           {
@@ -1047,193 +1040,97 @@
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 8056205
+        "provider_job_id": 8056238
       },
       "source_type": "ats",
       "source_url": "greenhouse://pantheon",
       "title": "Senior Analytics Engineer",
       "updated_at": "2026-09-04T22:57:55-04:00",
-      "url": "https://pantheon.io/about/careers/detail?gh_jid=8056205"
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8056238"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975173",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7975173",
-      "content_hash": "2c4dcfa39ca550e8ee92b5fd92ecd4a0231c7c584dc2c3d32d288495a5a971e4",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Come build the datacenter footprint that powers the AI-Native Cloud. This role is a Principal Datacenter Sourcer on the Strategic Sourcing team that will lead the sourcing, selection, and procurement of datacenter space and power across the globe. You will be the primary commercial owner of our global colocation footprint, driving complex, multi-million dollar negotiations and ensuring our physical infrastructure scales seamlessly to meet customer demand. What You’ll Do: Drive Global Strategy : Develop and execute DigitalOcean's global datacenter site selection and acquisition strategy in alignment with business goals. End-to-End Deal Execution : Lead the entire lifecycle of datacenter acquisition, fr",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8017621",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8017621",
+      "content_hash": "4ce6e9d9ed292107eff517e2a9235994ba95aa2d4ada74f00ffb4a6d35db80c5",
+      "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations including Clorox and the United Nations drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. About the Role Are you a strategic operator who thrives at the intersection of systems thinking, data integrity, and organizational scale? Join us as a Operations Manager and serve as the operational backbone and strategic partner to the Sr. Director of Product Operations across Pantheon's Product, Design, and Engineering organization. As a Operations Manager, you will own operational excellence and governance across the full PDE SDLC, from ideation through post-launch review ,ensuring data is consistent, tools are integrated, and workflows are scalable. You will lead t",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "Canada, remote",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:4167fda2f6fd230e324c060c634d4a43e8aac8eca33de068219293f2033a4fb1",
+      "review_key": "review:55c9c55439b9d1fc17a7698219bc44e6daa0c5d029f8f80a2f8f5a2ef6cb6674",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7975173",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8017621",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 365101,
-            "name": "Physical Infrastructure",
+            "id": 3528,
+            "name": "Product",
             "parent_id": null
           }
         ],
-        "internal_job_id": 3461447,
+        "internal_job_id": 3468957,
         "offices": [
           {
             "child_ids": [],
-            "id": 213281,
-            "location": "Seattle Metro",
-            "name": "Seattle Metro",
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
             "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 7975173
+        "provider_job_id": 8017621
       },
       "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Principal Sourcer, Data Center",
-      "updated_at": "2026-08-25T13:47:25-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975173"
+      "source_url": "greenhouse://pantheon",
+      "title": "Technical Operations Manager",
+      "updated_at": "2026-08-12T12:52:57-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8017621"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987672",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7987672",
-      "content_hash": "01483f072363f2c4f59b0b4b25cad97da5787f0e0756c1d41e28d1fcfd88d6e4",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We want people who are passionate about building features that you and your peers will love.DigitalOcean is welcoming a new technical engineering manager to support our engineers, grow our culture, and lead the team developing our customer and platform engineering product offerings. This person will be responsible for guiding the development of a mixed-skill engineering team, facilitating communications, providing clarity of vision and priority, and empowering the team to create creative solutions for our DigitalOcean customers. The teams mission is to simplify the customer and developer experience so they can focus on building and operating their applications to Get Growing.We are excited to meet can",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8759577002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8759577002",
+      "content_hash": "5f26d3809715d475756d04bf2e7b5c50dbe5486611cdc89e0dcc262402c412b9",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Bengaluru",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Remote, United Kingdom",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:423cd46672d89374bc1aeb77e21e583bd4eb0eb4d14076e5ecf208da0047642f",
+      "review_key": "review:5618c16cbde1053564158bc0fb60cafc66707f945da9efa5d60354fae3b3b1f6",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7987672",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8759577002",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 365161,
-            "name": "Data & Learning",
-            "parent_id": null
+            "id": 4115238002,
+            "name": "AI Engineering",
+            "parent_id": 4011044002
           }
         ],
-        "internal_job_id": 3465650,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 276737,
-            "location": null,
-            "name": "Bangalore Metro",
-            "parent_id": null
-          }
-        ],
+        "internal_job_id": 6503956002,
+        "offices": [],
         "provider": "greenhouse",
-        "provider_job_id": 7987672
+        "provider_job_id": 8759577002
       },
       "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Software Engineer I - Mongo/Aiven KTLO",
-      "updated_at": "2026-09-01T23:52:53-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987672"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8162756",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8162756",
-      "content_hash": "45bcb36c4b457eadc9618ac1bb2ddb8ef947174e7ff9f696876e6ee347e5b57b",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are working on solving some of the most challenging and interesting technology projects around, on a scale unmatched by most. We want people who are passionate about optimizing and troubleshooting data center hardware at mega-scale so our customers don’t have to worry! Reporting to the Manager of Infra::Machines::Design, you will support sustaining engineering efforts for the hardware infrastructure of the DigitalOcean server fleet. The ideal candidate will be eager to face new challenges as DigitalOcean continues to scale its data center footprint and infrastructure cloud capacity and explore new technologies and capabilities to bring to our customers, providing top-tier support for our hardware a",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:4243755c7d8a05cfbc8eaa78e3fc26dff0bbf22379827a011260020a2c193966",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8162756",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 7731,
-            "name": "Infrastructure",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3532636,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213281,
-            "location": "Seattle Metro",
-            "name": "Seattle Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8162756
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Systems Engineer I",
-      "updated_at": "2026-08-27T17:47:51-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8162756"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8164809",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8164809",
-      "content_hash": "b5a05d68428fe30bef85881dfb6bec98b948e6ea9f42d77a7f40d60613517320",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Compensation Partner who is a high performing team player, who can take on new challenges, and go the extra mile. As a Compensation Partner reporting to the Head of Total Rewards at DigitalOcean, you will join a dynamic team dedicated to revolutionizing cloud computing and AI. You will serve as a compensation advisor for Talent Acquisition and People Business Partners, maintaining core compensation structures and modeling range refreshes. In this role, you will evolve into a key driver of our annual and mid-year performance compensation cycles, ensuring internal equity and market competitiveness across our global organization. What You’ll Do: Partner with Talent Acquisition and People",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "San Francisco",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:42a2bd67d6dd4add94d79dac33bb8fa9cc48566224f65a1cf53a3b3af5b605dd",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8164809",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 8052,
-            "name": "Finance",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3533462,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213280,
-            "location": "Denver Metro",
-            "name": "Denver Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8164809
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Compensation Partner",
-      "updated_at": "2026-08-31T15:59:10-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8164809"
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Backend Engineer (Ruby), AI Catalog: External Agents",
+      "updated_at": "2026-08-31T17:56:36-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8759577002"
     }
   ],
-  "review_queue_count": 424,
-  "run_id": "ingestion-1788623694",
+  "review_queue_count": 526,
+  "run_id": "ingestion-1788639387",
   "schema_version": 1,
-  "total_pages": 17
+  "total_pages": 22
 }

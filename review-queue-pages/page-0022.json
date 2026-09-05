@@ -1,0 +1,56 @@
+{
+  "completed_at": "2026-09-05T20:16:27.352387+00:00",
+  "page": 22,
+  "page_item_count": 1,
+  "review_queue": [
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-janitor-buffalo-wild-wings-fralich-inc-1137266",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-janitor-buffalo-wild-wings-fralich-inc-1137266",
+      "content_hash": "c591fc8c08798be2b6ee7250ee97811487d25c479e4708428e99f23570bfeb22",
+      "description_excerpt": "If youâre a high-energy leader who thrives in hospitality and enjoys working in a fast-paced sports environment, apply today! Please mention the word **RESOURCEFUL** and tag RNTIuMTYxLjQ1LjIzMw== when applying to show you read the job post completely (#RNTIuMTYxLjQ1LjIzMw==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "Buffalo Wild Wings - Fralich, Inc.",
+      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "listing_language": "en",
+      "location": "Georgetown,",
+      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
+      "origin_run_id": "ingestion-1788639387",
+      "published_at": "2026-09-01T16:49:47+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ff94697f77a9538d19a562d12a025d0bcce01205c111292e365c89919b2e849a",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137266",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788281387,
+        "provider": "remoteok",
+        "provider_job_id": "1137266",
+        "slug": "remote-janitor-buffalo-wild-wings-fralich-inc-1137266",
+        "tags": [
+          "payroll",
+          "vfx",
+          "customer support",
+          "dev",
+          "non tech",
+          "digital nomad",
+          "exec",
+          "legal",
+          "engineer"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "JANITOR",
+      "url": "https://remoteOK.com/remote-jobs/remote-janitor-buffalo-wild-wings-fralich-inc-1137266",
+      "workplace_type": "remote"
+    }
+  ],
+  "review_queue_count": 526,
+  "run_id": "ingestion-1788639387",
+  "schema_version": 1,
+  "total_pages": 22
+}

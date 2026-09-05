@@ -5,9 +5,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 252,
-      "last_success_at": "2026-09-05T15:54:48.716139+00:00",
+      "last_success_at": "2026-09-05T20:16:18.844418+00:00",
       "next_retry_at": null,
-      "run_count": 21,
+      "run_count": 22,
       "source_instance": "ashby:elevenlabs"
     },
     "ashby:zapier": {
@@ -15,9 +15,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 7,
-      "last_success_at": "2026-09-05T15:54:49.742264+00:00",
+      "last_success_at": "2026-09-05T20:16:20.831697+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "ashby:zapier"
     },
     "greenhouse:acquia": {
@@ -25,9 +25,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 11,
-      "last_success_at": "2026-09-05T15:54:47.865121+00:00",
+      "last_success_at": "2026-09-05T20:16:18.065949+00:00",
       "next_retry_at": null,
-      "run_count": 11,
+      "run_count": 12,
       "source_instance": "greenhouse:acquia"
     },
     "greenhouse:automatticcareers": {
@@ -35,9 +35,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 18,
-      "last_success_at": "2026-09-05T15:54:47.101398+00:00",
+      "last_success_at": "2026-09-05T20:16:17.509350+00:00",
       "next_retry_at": null,
-      "run_count": 20,
+      "run_count": 21,
       "source_instance": "greenhouse:automatticcareers"
     },
     "greenhouse:clickhouse": {
@@ -55,19 +55,19 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 150,
-      "last_success_at": "2026-09-05T15:54:49.649882+00:00",
+      "last_success_at": "2026-09-05T20:16:20.452351+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "greenhouse:digitalocean98"
     },
     "greenhouse:gitlab": {
       "consecutive_failures": 0,
       "failure_category": null,
       "last_failure_at": null,
-      "last_result_count": 227,
-      "last_success_at": "2026-09-05T15:54:49.421780+00:00",
+      "last_result_count": 229,
+      "last_success_at": "2026-09-05T20:16:20.064161+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "greenhouse:gitlab"
     },
     "greenhouse:pantheon": {
@@ -75,9 +75,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 29,
-      "last_success_at": "2026-09-05T15:54:49.710739+00:00",
+      "last_success_at": "2026-09-05T20:16:20.670275+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "greenhouse:pantheon"
     },
     "himalayas:global": {
@@ -85,9 +85,9 @@
       "failure_category": null,
       "last_failure_at": "2026-09-05T00:46:08.372115+00:00",
       "last_result_count": 100,
-      "last_success_at": "2026-09-05T15:54:53.389006+00:00",
+      "last_success_at": "2026-09-05T20:16:26.253381+00:00",
       "next_retry_at": null,
-      "run_count": 15,
+      "run_count": 16,
       "source_instance": "himalayas:global"
     },
     "jobicy-api:global": {
@@ -95,9 +95,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 10,
-      "last_success_at": "2026-09-05T15:54:54.045820+00:00",
+      "last_success_at": "2026-09-05T20:16:27.156535+00:00",
       "next_retry_at": null,
-      "run_count": 15,
+      "run_count": 16,
       "source_instance": "jobicy-api:global"
     },
     "lever:kinsta": {
@@ -105,9 +105,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 1,
-      "last_success_at": "2026-09-05T15:54:47.476113+00:00",
+      "last_success_at": "2026-09-05T20:16:17.698873+00:00",
       "next_retry_at": null,
-      "run_count": 11,
+      "run_count": 12,
       "source_instance": "lever:kinsta"
     },
     "lever:siteground": {
@@ -115,9 +115,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 1,
-      "last_success_at": "2026-09-05T15:54:47.821353+00:00",
+      "last_success_at": "2026-09-05T20:16:17.905755+00:00",
       "next_retry_at": null,
-      "run_count": 11,
+      "run_count": 12,
       "source_instance": "lever:siteground"
     },
     "lever:teamsnap": {
@@ -125,9 +125,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 7,
-      "last_success_at": "2026-09-05T15:54:48.487813+00:00",
+      "last_success_at": "2026-09-05T20:16:18.353407+00:00",
       "next_retry_at": null,
-      "run_count": 21,
+      "run_count": 22,
       "source_instance": "lever:teamsnap"
     },
     "personio:syde": {
@@ -135,19 +135,29 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 3,
-      "last_success_at": "2026-09-05T15:54:50.387718+00:00",
+      "last_success_at": "2026-09-05T20:16:21.594793+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "personio:syde"
+    },
+    "remote-ok:global": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 100,
+      "last_success_at": "2026-09-05T20:16:22.913938+00:00",
+      "next_retry_at": null,
+      "run_count": 1,
+      "source_instance": "remote-ok:global"
     },
     "remotive:global": {
       "consecutive_failures": 0,
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 15,
-      "last_success_at": "2026-09-05T15:54:54.090320+00:00",
+      "last_success_at": "2026-09-05T20:16:27.336056+00:00",
       "next_retry_at": null,
-      "run_count": 15,
+      "run_count": 16,
       "source_instance": "remotive:global"
     },
     "smartrecruiters:NewVariableInc": {
@@ -155,19 +165,29 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 1,
-      "last_success_at": "2026-09-05T15:54:49.086437+00:00",
+      "last_success_at": "2026-09-05T20:16:19.477685+00:00",
       "next_retry_at": null,
-      "run_count": 21,
+      "run_count": 22,
       "source_instance": "smartrecruiters:NewVariableInc"
+    },
+    "we-work-remotely:programming": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 25,
+      "last_success_at": "2026-09-05T20:16:22.282953+00:00",
+      "next_retry_at": null,
+      "run_count": 1,
+      "source_instance": "we-work-remotely:programming"
     },
     "workable:awesomemotive": {
       "consecutive_failures": 0,
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 5,
-      "last_success_at": "2026-09-05T15:54:50.559565+00:00",
+      "last_success_at": "2026-09-05T20:16:21.946011+00:00",
       "next_retry_at": null,
-      "run_count": 8,
+      "run_count": 9,
       "source_instance": "workable:awesomemotive"
     }
   }
