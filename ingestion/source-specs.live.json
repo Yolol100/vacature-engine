@@ -1,15 +1,15 @@
 [
-  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"automatticcareers","employer":"Automattic","max_jobs":20000},
-  {"source_id":"lever","source_type":"ats","adapter":"lever","account":"kinsta","employer":"Kinsta","max_jobs":20000,"options":{"page_size":100}},
-  {"source_id":"lever","source_type":"ats","adapter":"lever","account":"siteground","employer":"SiteGround","max_jobs":20000,"options":{"page_size":100}},
-  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"acquia","employer":"Acquia","max_jobs":20000},
+  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"automatticcareers","employer":"Automattic","max_jobs":20000,"options":{"registry_source_id":"company-automattic"}},
+  {"source_id":"lever","source_type":"ats","adapter":"lever","account":"kinsta","employer":"Kinsta","max_jobs":20000,"options":{"page_size":100,"registry_source_id":"company-kinsta"}},
+  {"source_id":"lever","source_type":"ats","adapter":"lever","account":"siteground","employer":"SiteGround","max_jobs":20000,"options":{"page_size":100,"registry_source_id":"company-siteground"}},
+  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"acquia","employer":"Acquia","max_jobs":20000,"options":{"registry_source_id":"company-acquia"}},
   {"source_id":"lever","source_type":"ats","adapter":"lever","account":"teamsnap","employer":"TeamSnap","max_jobs":20000,"options":{"page_size":100}},
   {"source_id":"ashby","source_type":"ats","adapter":"ashby","account":"elevenlabs","employer":"ElevenLabs","max_jobs":20000},
   {"source_id":"smartrecruiters","source_type":"ats","adapter":"smartrecruiters","account":"NewVariableInc","employer":"New Variable","max_jobs":20000,"options":{"page_size":100}},
-  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"gitlab","employer":"GitLab","max_jobs":20000},
-  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"digitalocean98","employer":"DigitalOcean","max_jobs":20000},
-  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"pantheon","employer":"Pantheon","max_jobs":20000},
-  {"source_id":"ashby","source_type":"ats","adapter":"ashby","account":"zapier","employer":"Zapier","max_jobs":20000},
-  {"source_id":"personio","source_type":"ats","adapter":"personio","account":"syde","employer":"Syde","listing_language":"en","max_jobs":20000,"options":{"language":"en"}},
-  {"source_id":"workable","source_type":"ats","adapter":"workable","account":"awesomemotive","employer":"Awesome Motive","listing_language":"en","max_jobs":20000}
+  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"gitlab","employer":"GitLab","max_jobs":20000,"options":{"registry_source_id":"company-gitlab"}},
+  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"digitalocean98","employer":"DigitalOcean","max_jobs":20000,"options":{"registry_source_id":"company-digitalocean"}},
+  {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"pantheon","employer":"Pantheon","max_jobs":20000,"options":{"registry_source_id":"company-pantheon"}},
+  {"source_id":"ashby","source_type":"ats","adapter":"ashby","account":"zapier","employer":"Zapier","max_jobs":20000,"options":{"registry_source_id":"company-zapier"}},
+  {"source_id":"personio","source_type":"ats","adapter":"personio","account":"syde","employer":"Syde","listing_language":"en","max_jobs":20000,"options":{"language":"en","registry_source_id":"company-syde"}},
+  {"source_id":"workable","source_type":"ats","adapter":"workable","account":"awesomemotive","employer":"Awesome Motive","listing_language":"en","max_jobs":20000,"options":{"registry_source_id":"company-awesome-motive"}}
 ]
