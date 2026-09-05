@@ -11,5 +11,6 @@
   {"source_id":"greenhouse","source_type":"ats","adapter":"greenhouse","account":"pantheon","employer":"Pantheon","max_jobs":20000,"options":{"registry_source_id":"company-pantheon"}},
   {"source_id":"ashby","source_type":"ats","adapter":"ashby","account":"zapier","employer":"Zapier","max_jobs":20000,"options":{"registry_source_id":"company-zapier"}},
   {"source_id":"personio","source_type":"ats","adapter":"personio","account":"syde","employer":"Syde","listing_language":"en","max_jobs":20000,"options":{"language":"en","registry_source_id":"company-syde"}},
-  {"source_id":"workable","source_type":"ats","adapter":"workable","account":"awesomemotive","employer":"Awesome Motive","listing_language":"en","max_jobs":20000,"options":{"registry_source_id":"company-awesome-motive"}}
+  {"source_id":"workable","source_type":"ats","adapter":"workable","account":"awesomemotive","employer":"Awesome Motive","listing_language":"en","max_jobs":20000,"options":{"registry_source_id":"company-awesome-motive"}},
+  {"source_id":"workable","source_type":"ats","adapter":"workable","account":"humanmade","employer":"Human Made","listing_language":"en","max_jobs":20000,"options":{"registry_source_id":"company-human-made"}}
 ]
