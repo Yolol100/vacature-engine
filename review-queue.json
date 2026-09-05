@@ -1,5 +1,5 @@
 {
-  "completed_at": "2026-09-05T15:19:58.184404+00:00",
+  "completed_at": "2026-09-05T15:54:54.102926+00:00",
   "review_queue": [
     {
       "apply_url": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-5446279700",
@@ -19146,50 +19146,9 @@
       "title": "Compensation Partner",
       "updated_at": "2026-08-31T15:59:51-04:00",
       "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8164810"
-    },
-    {
-      "apply_url": "https://apply.workable.com/j/426BC71356/apply",
-      "canonical_url": "https://apply.workable.com/j/426BC71356",
-      "content_hash": "1a6ed322081c24300b0cb2c27251d4cd0562443e4a044b5a848c95cfb81d936f",
-      "description_excerpt": "As a Growth Manager, you're responsible for owning the growth motion for one of our brands end to end. You will set the strategy, ship the work, measure the outcomes, and decide what to build next. This is a hands-on operator role, not a manager-of-managers role. You will not be briefing agencies or waiting for tickets. You will be doing the work, with AI as your leverage. The brand you join is an established product with a real audience and channels already in place, so this is not a launch. Email and lifecycle marketing sits at the center of the work, with conversion rate optimization alongside it, and content, social, and automation around both. 💡 Interested in applying? 🔍 Please read/follow the next steps outlined in \"How to Apply\" at the bottom of this listing. Attention to detail is one of our core values ! This is your chance to stand out :) To love this role, here’s the type of person you are: Hands-on operator. You enjoy doing the work yourself rather than briefing it out. AI-first workflow is your bar. A campaign that used to take a small team a week should ship in a day or two through your AI workflow, without the output looking generic. Velocity matters to you. Success ",
-      "employer": "Awesome Motive",
-      "employment_type": "Full-time",
-      "first_seen_at": "2026-09-05T15:19:57.979430+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-05T15:19:57.979430+00:00",
-      "listing_language": "en",
-      "location": "West Palm Beach",
-      "origin_completed_at": "2026-09-05T15:19:58.184404+00:00",
-      "origin_run_id": "ingestion-1788621598",
-      "published_at": "2026-08-05",
-      "queue_seen_in_current_run": true,
-      "review_key": "review:c31f4ee042e0ca84fb6c2e190ae1fc1d49452f7f3ce3eda971a0462e89a85efb",
-      "source_id": "workable",
-      "source_instance": "workable:awesomemotive",
-      "source_job_id": "awesomemotive:426BC71356",
-      "source_metadata": {
-        "department": "Growth",
-        "experience": "Mid-Senior level",
-        "locations": [
-          {
-            "city": "West Palm Beach",
-            "country": "United States",
-            "countryCode": "US",
-            "hidden": false,
-            "region": "Florida"
-          }
-        ],
-        "provider": "workable",
-        "provider_job_id": "426BC71356",
-        "shortcode": "426BC71356"
-      },
-      "source_type": "ats",
-      "source_url": "https://www.workable.com/api/accounts/awesomemotive?details=true",
-      "title": "Growth Manager",
-      "url": "https://apply.workable.com/j/426BC71356"
     }
   ],
-  "review_queue_count": 425,
-  "run_id": "ingestion-1788621598",
+  "review_queue_count": 424,
+  "run_id": "ingestion-1788623694",
   "schema_version": 1
 }

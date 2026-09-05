@@ -1,5 +1,11 @@
 {
-  "completed_at": "2026-09-05T15:19:58.184404+00:00",
+  "completed_at": "2026-09-05T15:54:54.102926+00:00",
+  "newest_origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+  "oldest_origin_completed_at": "2026-09-05T15:07:36.942158+00:00",
+  "origin_run_counts": {
+    "ingestion-1788620856": 1,
+    "recovery:ingestion-1788615257": 423
+  },
   "page_size": 25,
   "pages": [
     {
@@ -115,15 +121,15 @@
       "path": "review-queue-pages/page-0016.json"
     },
     {
-      "count": 25,
+      "count": 24,
       "first_review_key": "review:f217ac2be5ac969c3439b77677f388c7ea2be169c452c6e06d4586c8139e0296",
-      "last_review_key": "review:c31f4ee042e0ca84fb6c2e190ae1fc1d49452f7f3ce3eda971a0462e89a85efb",
+      "last_review_key": "review:ff8ff741d4214b93aad339dfeb2d8e29f9009de216e24c5be141135505c172ca",
       "page": 17,
       "path": "review-queue-pages/page-0017.json"
     }
   ],
-  "review_queue_count": 425,
-  "run_id": "ingestion-1788621598",
+  "review_queue_count": 424,
+  "run_id": "ingestion-1788623694",
   "schema_version": 1,
   "total_pages": 17
 }
