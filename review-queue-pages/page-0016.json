@@ -1,176 +1,8 @@
 {
-  "completed_at": "2026-09-05T21:08:20.457140+00:00",
+  "completed_at": "2026-09-05T21:54:03.472777+00:00",
   "page": 16,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8597805002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8597805002",
-      "content_hash": "c0d96633934cb832cb14eefc775fd10b6ffe558dc331b0de5b4acb4ee905eada",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, US",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:f217ac2be5ac969c3439b77677f388c7ea2be169c452c6e06d4586c8139e0296",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8597805002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4115237002,
-            "name": "Core DevOps",
-            "parent_id": 4043190002
-          }
-        ],
-        "internal_job_id": 6433904002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8597805002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Product Manager, Source Code",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8597805002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8701290002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8701290002",
-      "content_hash": "681539034612a9a53d47bc01d7fa5429ba538dfc6bcf01775d4be0937361e6bc",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, United Kingdom",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:f21b2df1215649b01f3e019e7881daa2117cf789ec119a31b5048cc94cdf1d14",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8701290002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4099701002,
-            "name": "ASE",
-            "parent_id": 4011053002
-          }
-        ],
-        "internal_job_id": 6476976002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4040908002,
-            "location": null,
-            "name": "United Kingdom",
-            "parent_id": 4019553002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8701290002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Assigned Support Engineer (EMEA)",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8701290002"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986436",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7986436",
-      "content_hash": "0478fa72e25fc0862667e2225710cbb894e6974895b374464dd734dd5d0eea16",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We want people who are passionate about optimizing and troubleshooting data center hardware at mega-scale so our customers don’t have to worry! We are looking for a well-rounded hardware technologist who lives and breathes data center metal. Reporting to the Manager of Infra::Machines::Design, the Senior Design Infrastructure Engineer will build and scale hardware automation across DigitalOcean products and components and join a team of engineers who have already paved the way for the many tens of thousands of servers in our infrastructure. The ideal candidate will be eager to face new challenges as DigitalOcean continues to scale its data center footprint and explore new technologies to bring to our",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:f25051d088126a07942df765e9f37d1ed880b73a6dd0a8471e7715018301350b",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7986436",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 365101,
-            "name": "Physical Infrastructure",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3465545,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 396968,
-            "location": null,
-            "name": "DigitalOcean Seattle Office",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7986436
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Staff Hardware Engineer",
-      "updated_at": "2026-07-23T14:49:15-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986436"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975185",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7975185",
-      "content_hash": "d6f29edd97abf90eee32b1edc7834372592184168b405db004a7e7fb44659bc9",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. The Senior Director of Data Center On-Site Operations is a senior operational leader responsible for driving consistent, scalable, and high-performing execution across DigitalOcean’s global data center footprint. This role leads the on-site operations strategy for existing regional data centers and supports rapid expansion into new locations by building the operating model, leadership structure, processes, standards, and performance systems required to scale effectively. This leader is accountable for improving operational excellence across data center sites, including execution quality, service reliability, staffing readiness, vendor performance, incident response, maintenance discipline, change exec",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:f2ced40b946e047b467da616d20aea35351cbf7fea54ea2692bea5d9635958f2",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7975185",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 365101,
-            "name": "Physical Infrastructure",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3461448,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 396968,
-            "location": null,
-            "name": "DigitalOcean Seattle Office",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7975185
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Director, Data Center Facilities",
-      "updated_at": "2026-08-18T19:34:28-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975185"
-    },
     {
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8476375002",
       "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8476375002",
@@ -1098,10 +930,170 @@
       "title": "Member of the Technical Staff, Internal Agent",
       "url": "https://weworkremotely.com/remote-jobs/vercel-member-of-the-technical-staff-internal-agent",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/lattice-engineering-manager-ai-1",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/lattice-engineering-manager-ai-1",
+      "content_hash": "a064990761a29bc22474dff479bdade3374e26782db389bc825130f3be74a179",
+      "description_excerpt": "Headquarters: Remote - Canada Location Requirement: This role is open to candidates located in British Columbia or Ontario, Canada. At this time, we are only able to hire employees residing in these provinces. This is Engineering at Lattice Lattice's Engineering team is dedicated to building cutting-edge solutions that empower people and organizations to thrive. As AI becomes fundamental to every product experience, ensuring those systems are trustworthy, measurable, and continuously improving is one of the company's most important engineering challenges. The AI Intelligence Quality (IQ) team owns that challenge. We build the AI Platform that enables every AI team at Lattice to measure quality, detect regressions, run experiments, and continuously improve AI performance with confidence. The platform you lead won't power a single product—it will shape the quality of every AI experience we deliver, becoming a foundational capability for how AI is built at Lattice. What You Will Do Lead, coach, and grow a high-performing team of AI and software engineers, developing them into strong technical leaders while fostering a culture of ownership, technical excellence, experimentation, and co",
+      "employer": "Lattice",
+      "first_seen_at": "2026-09-05T20:16:21.946199+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-05T20:16:21.946199+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
+      "origin_run_id": "ingestion-1788639387",
+      "published_at": "2026-08-08T07:30:54+00:00",
+      "remote": true,
+      "review_key": "review:060a134a930991ea933e0aee8a238e219c0eb6f598f06044d1bf600ef2d77cf3",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/lattice-engineering-manager-ai-1",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "Engineering Manager, AI",
+      "url": "https://weworkremotely.com/remote-jobs/lattice-engineering-manager-ai-1",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
+      "content_hash": "efbad8935e570fff3a337803b5d63eaeb826c0f0093c922f49da1887beb91324",
+      "description_excerpt": "Job Title: Customer Service Agent Location: Exeter Head Office - Full Time Hours: 40 hours Monday-Friday + Saturday shift rota Benefits: 22 days holiday, increasing to 27 plus bank holidays Free onsite parking Free onsite gym Company pension scheme Employee discount scheme Funded Summer and Christmas events Cycle to Work Scheme Discounted car hire rates The Role: You will be a valued member of a team, providing support through a variety of communications, accurate recording of data and various tasks that impact on our services, taking inbound and outbound calls from our branches and customers. You will be creating an exceptional experience for customers, whilst building trusting relationships and handling queries with confidence to provide all National Account customers with a dedicated vehicle hire reservation service. No prior experience is necessary, full training will be given. This is an office-based role. The candidate will be required to work 40 hours per week as well as Saturdays on a rota basis. Responsibilities: To provide outstanding customer service and exhibit excellent communications skills when interacting with clients Regularly monitor personal and team inboxes and",
+      "employer": "Thrifty Car and Van Rental",
+      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "listing_language": "en",
+      "location": "Exeter,",
+      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
+      "origin_run_id": "ingestion-1788639387",
+      "published_at": "2026-08-30T03:31:01+00:00",
+      "remote": true,
+      "review_key": "review:0a1d3c01cd2f68a8713dd8ddb7245f89a855f37a89e8c3fa7e1848b8f1adafb4",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137219",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788060661,
+        "provider": "remoteok",
+        "provider_job_id": "1137219",
+        "slug": "remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
+        "tags": [
+          "testing",
+          "sys admin",
+          "education",
+          "finance",
+          "scheme",
+          "non tech",
+          "customer support",
+          "marketing",
+          "admin",
+          "ops"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Customer Service Agent",
+      "url": "https://remoteOK.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-delivery-driver-the-drinks-llab-1137242",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-delivery-driver-the-drinks-llab-1137242",
+      "content_hash": "006ea2515ad97caf3a509dc75da2801a704abc6380da6814ca7fb00f3444c771",
+      "description_excerpt": "Delivery Rider (Motorcycle) â Port of Spain, Trinidad A new business in Trinidad is hiring. We're building something new in delivery â and we're looking for reliable Class 1 Motorcycle License holders to join us as we get started in Port of Spain. The Role Flexible shift-based work. Based in Port of Spain. What You Need Class 1 Motorcycle License â Required (Min 2 years preferred) Older than 21yrs A working smartphone with data Reliable, professional , and safety-conscious on the road. What We Offer Company-provided motorcycle â no need to own or maintain your own bike Weekly pay with minimum guarantee's Great opportunity to grow with a new team from day one. How to Apply Interested? Tell us by submitting your details into this form - https://forms.gle/5aaRioqD9JtvPDfY8 Please mention the word **LED** and tag RNTIuMTYxLjQ1LjIzMw== when applying to show you read the job post completely (#RNTIuMTYxLjQ1LjIzMw==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "The Drinks LLAB",
+      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "listing_language": "en",
+      "location": "Port of Spain,",
+      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
+      "origin_run_id": "ingestion-1788639387",
+      "published_at": "2026-08-31T15:24:30+00:00",
+      "remote": true,
+      "review_key": "review:0b145d90793b74a4523b645c6e7961a3213127a913ddd357df5e01a2820619db",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137242",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788189870,
+        "provider": "remoteok",
+        "provider_job_id": "1137242",
+        "slug": "remote-delivery-driver-the-drinks-llab-1137242",
+        "tags": []
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Delivery Driver",
+      "url": "https://remoteOK.com/remote-jobs/remote-delivery-driver-the-drinks-llab-1137242",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-hampm-visual-merchandiser-plaza-del-sol-hampm-1137270",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-hampm-visual-merchandiser-plaza-del-sol-hampm-1137270",
+      "content_hash": "c5c14d4386410d124dc1faba6f9acca03f69db8e77624774d284240ee8e0b0db",
+      "description_excerpt": "Job Description About the Role As a Visual Merchandiser, you contribute to an inspiring, elevated, and consistent customer experience by implementing visual standards and commercial excellence. You will be responsible for executing the visual, commercial, and styling curation according to visual & commercial guidelines for the store. You will also use your trend and competitor awareness to provide colleagues with the correct information, coach, upskill and develop the store team to contribute to a great customer experience. A Day in the Life Working at H&M means no two days are ever the same, but a typical day will include the following responsibilities* Customer Sales & Profit Contribute to the total OMNI customer experience in your store by ensuring visual and commercial curation according to guidelines (In-direct) Representing yourself and the H&M Brand positively during customer interactions (Direct) Organize and plan your workload according to store activation plan and adapt based on business needs in collaboration with your Store Management team and Area Visual Manager Launch and maintain the latest global campaigns and sale activities on time according to H&M Brand Standards",
+      "employer": "H&amp;M",
+      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "listing_language": "en",
+      "location": "BayamÃ³n,",
+      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
+      "origin_run_id": "ingestion-1788639387",
+      "published_at": "2026-09-01T16:51:16+00:00",
+      "remote": true,
+      "review_key": "review:0c555fc59b2b38d4a879a4da556a740e494bd63bb0d2b0d9165d2edc5a98a252",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137270",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788281476,
+        "provider": "remoteok",
+        "provider_job_id": "1137270",
+        "slug": "remote-hampm-visual-merchandiser-plaza-del-sol-hampm-1137270",
+        "tags": [
+          "infosec",
+          "education",
+          "designer",
+          "customer support",
+          "marketing",
+          "dev",
+          "exec",
+          "ops",
+          "legal",
+          "sales",
+          "medical",
+          "recruiter",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "H&amp;M Visual Merchandiser Plaza del Sol",
+      "url": "https://remoteOK.com/remote-jobs/remote-hampm-visual-merchandiser-plaza-del-sol-hampm-1137270",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 632,
-  "run_id": "ingestion-1788642500",
+  "review_queue_count": 728,
+  "run_id": "ingestion-1788645243",
   "schema_version": 1,
-  "total_pages": 26
+  "total_pages": 30
 }
