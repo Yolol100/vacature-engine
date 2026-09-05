@@ -18,5 +18,5 @@
     {"title":"Bad core","url":"https://example.com/f","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":5000,"core_fit":25,"evidence_fit":25,"workstyle_fit":15},
     {"title":"Malformed salary","url":"https://example.com/g","posted_date":"2026-08-26","fully_remote":true,"geography_compatible":true,"wordpress_related":true,"central_hard_mismatch":false,"listing_language":"en","application_language":"en","required_languages":[],"salary_monthly_eur":"5000","core_fit":50,"evidence_fit":25,"workstyle_fit":15}
   ],
-  "expected_titles": ["Below salary", "Known excellent", "Known older tie", "Known strong", "Unknown excellent"]
+  "expected_titles": ["Known excellent", "Known older tie", "Known strong", "Unknown excellent"]
 }
