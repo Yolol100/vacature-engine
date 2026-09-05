@@ -116,6 +116,20 @@ class StateStore:
         ).fetchall()
         return {row[0] for row in rows}
 
+    def observation_change_state(self, row: dict[str, Any]) -> str:
+        keys = strong_identity_keys(row)
+        job_ids = self._find_job_ids(keys)
+        if not job_ids:
+            return "new"
+        row_hash = str(row.get("content_hash") or "")
+        placeholders = ",".join("?" for _ in job_ids)
+        rows = self.db.execute(
+            f"SELECT content_hash FROM jobs WHERE job_id IN ({placeholders})", list(job_ids)
+        ).fetchall()
+        if any(str(existing["content_hash"] or "") == row_hash for existing in rows):
+            return "unchanged"
+        return "updated"
+
     def _merge_jobs(self, target: str, source: str) -> None:
         if target == source:
             return
@@ -131,23 +145,23 @@ class StateStore:
             self.db.execute("INSERT OR REPLACE INTO identities(identity_key,job_id) VALUES (?,?)", (identity_row["identity_key"], target))
         self.db.execute("DELETE FROM identities WHERE job_id=?", (source,))
         memberships = self.db.execute("SELECT * FROM source_membership WHERE job_id=?", (source,)).fetchall()
-        for row in memberships:
+        for member in memberships:
             existing = self.db.execute(
                 "SELECT * FROM source_membership WHERE source_instance=? AND job_id=?",
-                (row["source_instance"], target),
+                (member["source_instance"], target),
             ).fetchone()
             if existing:
-                missing = min(existing["missing_runs"], row["missing_runs"])
-                last_run = max(existing["last_seen_run"] or "", row["last_seen_run"] or "") or None
-                threshold = max(int(existing["close_threshold"] or 2), int(row["close_threshold"] or 2), 2)
+                missing = min(existing["missing_runs"], member["missing_runs"])
+                last_run = max(existing["last_seen_run"] or "", member["last_seen_run"] or "") or None
+                threshold = max(int(existing["close_threshold"] or 2), int(member["close_threshold"] or 2), 2)
                 self.db.execute(
                     "UPDATE source_membership SET missing_runs=?, last_seen_run=?, close_threshold=? WHERE source_instance=? AND job_id=?",
-                    (missing, last_run, threshold, row["source_instance"], target),
+                    (missing, last_run, threshold, member["source_instance"], target),
                 )
             else:
                 self.db.execute(
                     "INSERT INTO source_membership(source_instance,job_id,missing_runs,last_seen_run,close_threshold) VALUES (?,?,?,?,?)",
-                    (row["source_instance"], target, row["missing_runs"], row["last_seen_run"], row["close_threshold"]),
+                    (member["source_instance"], target, member["missing_runs"], member["last_seen_run"], member["close_threshold"]),
                 )
         self.db.execute("DELETE FROM source_membership WHERE job_id=?", (source,))
         self.db.execute("DELETE FROM jobs WHERE job_id=?", (source,))
@@ -231,8 +245,8 @@ class StateStore:
                             for item in memberships
                         )
                         if globally_missing:
-                            row = self.db.execute("SELECT status FROM jobs WHERE job_id=?", (job_id,)).fetchone()
-                            if row and row["status"] != "closed":
+                            existing_status = self.db.execute("SELECT status FROM jobs WHERE job_id=?", (job_id,)).fetchone()
+                            if existing_status and existing_status["status"] != "closed":
                                 self.db.execute("UPDATE jobs SET status='closed',closed_at=? WHERE job_id=?", (now, job_id))
                                 counts.closed += 1
         return counts

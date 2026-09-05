@@ -8,6 +8,7 @@ on:
     paths: ['ingestion/**', '.github/workflows/vacature-ingestion.yml']
   schedule:
     - cron: '17 */6 * * *'
+    - cron: '41 3 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -52,12 +53,23 @@ jobs:
           if git show-ref --verify --quiet refs/remotes/origin/ingestion-state; then
             git show origin/ingestion-state:state.sqlite3 > .runtime/state.sqlite3 || true
           fi
-      - name: Ingest live public ATS sources
+      - name: Select source class
+        id: source_class
+        shell: bash
+        run: |
+          set -euo pipefail
+          specs="ingestion/source-specs.live.json"
+          if [[ "${{ github.event_name }}" == "schedule" && "${{ github.event.schedule }}" == "41 3 * * *" ]]; then
+            specs="ingestion/source-specs.daily.json"
+          fi
+          echo "specs=$specs" >> "$GITHUB_OUTPUT"
+          echo "Using $specs"
+      - name: Ingest public sources
         id: ingest
         shell: bash
         run: |
           set +e
-          python -m vacature_ingestion ingest-many --specs ingestion/source-specs.live.json --state .runtime/state.sqlite3 --out .runtime/latest.json --allow-partial > .runtime/ingest-console.json
+          python -m vacature_ingestion ingest-many --specs "${{ steps.source_class.outputs.specs }}" --state .runtime/state.sqlite3 --out .runtime/latest.json --allow-partial > .runtime/ingest-console.json
           code=$?
           set -e
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
@@ -68,7 +80,7 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: python -m vacature_ingestion sync-register --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 --summary .runtime/latest.json --health .runtime/source-health.json
-      - name: Persist technical state as single snapshot
+      - name: Persist technical state and review queue as single snapshot
         shell: bash
         run: |
           set -euo pipefail
@@ -85,6 +97,6 @@ jobs:
           git add state.sqlite3 latest.json source-health.json
           git commit -m "chore: persist vacancy ingestion snapshot"
           git push --force origin HEAD:ingestion-state
-      - name: Enforce live-ingestion success threshold
+      - name: Enforce ingestion success threshold
         if: always()
         run: test "${{ steps.ingest.outputs.exit_code }}" = "0"

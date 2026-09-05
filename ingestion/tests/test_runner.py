@@ -26,5 +26,21 @@ class RunnerTests(unittest.TestCase):
     def test_corrupt_shape_isolated(self):
         spec=SourceSpec("greenhouse","ats","greenhouse","bad"); r=self.runner.run_source(spec,client=FakeClient([{"jobs":"bad"}]))
         self.assertFalse(r.success)
+    def test_review_queue_only_new_or_updated(self):
+        spec=SourceSpec("greenhouse","ats","greenhouse","acme")
+        first={"id":1,"title":"Dev","absolute_url":"https://example.com/1","content":"A"}
+        r1=self.runner.run_source(spec,client=FakeClient([{"jobs":[first]}]))
+        self.assertEqual([x["ingestion_change"] for x in r1.review_observations],["new"])
+        r2=self.runner.run_source(spec,client=FakeClient([{"jobs":[first]}]))
+        self.assertEqual(r2.review_observations,[])
+        changed={**first,"content":"B"}
+        r3=self.runner.run_source(spec,client=FakeClient([{"jobs":[changed]}]))
+        self.assertEqual([x["ingestion_change"] for x in r3.review_observations],["updated"])
+    def test_himalayas_cursor_pagination(self):
+        spec=SourceSpec("himalayas","discovery_api","himalayas","global",max_jobs=2)
+        p1={"jobs":[{"guid":"1","title":"A","applicationLink":"https://himalayas.app/jobs/1"}],"nextCursor":"next"}
+        p2={"jobs":[{"guid":"2","title":"B","applicationLink":"https://himalayas.app/jobs/2"}]}
+        c=FakeClient([p1,p2]); r=self.runner.run_source(spec,client=c)
+        self.assertEqual((r.fetched,c.calls),(2,2))
 
 if __name__ == "__main__": unittest.main()
