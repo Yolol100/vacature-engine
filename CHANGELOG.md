@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.4.1 - 2026-09-06
+- Herstelt de harde live salarispoort: een geverifieerd exact maandsalaris onder `min_monthly_salary_eur` wordt afgewezen.
+- Een geverifieerde salarisrange wordt afgewezen wanneer de bovengrens volledig onder `min_monthly_salary_eur` ligt; een range die de grens bereikt of overlapt blijft geldig.
+- Onbekend salaris blijft een warning/fallback en corrupte of conflicterende salarisdata blijft fail-closed.
+- Golden- en boundary-regressietests zijn aangepast zonder score-ankers, minimumscore of tie-breaks te wijzigen.
+
 ## 5.4.0 - 2026-09-04
 - Observation contract verhoogd naar v1.1: alleen canonieke URL en `source_id + source_job_id` zijn nog automatische identiteitssleutels.
 - `employer + title + location` blijft beschikbaar als duplicate-candidate fingerprint, maar mag verschillende sterke identiteiten niet meer automatisch samenvoegen.
