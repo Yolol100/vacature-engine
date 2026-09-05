@@ -99,6 +99,8 @@ def _policy_languages(config: Mapping[str, Any], key: str) -> frozenset[str]:
 
 
 def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
+    if "allowed_listing_languages" not in config:
+        raise ValueError("policy missing required Config key: allowed_listing_languages")
     policy = VacancyPolicy(
         min_monthly_salary_eur=float(_policy_number(config, "min_monthly_salary_eur")),
         max_posting_age_days=int(_policy_number(config, "max_posting_age_days", integer=True)),
@@ -106,11 +108,7 @@ def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
         min_output_score=float(_policy_number(config, "min_output_score")),
         min_core_fit=float(_policy_number(config, "min_core_fit")),
         min_evidence_fit=float(_policy_number(config, "min_evidence_fit")),
-        allowed_listing_languages=(
-            _policy_languages(config, "allowed_listing_languages")
-            if "allowed_listing_languages" in config
-            else None
-        ),
+        allowed_listing_languages=_policy_languages(config, "allowed_listing_languages"),
     )
     if policy.min_monthly_salary_eur < 0:
         raise ValueError("min_monthly_salary_eur must be >= 0")
