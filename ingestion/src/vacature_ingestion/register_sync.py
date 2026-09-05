@@ -50,7 +50,7 @@ def _service_account_token(credentials: dict[str, Any]) -> str:
             pass
     assertion = f"{header}.{payload}.{_b64url(signature)}"
     body = urlencode({
-        "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        "grant_type": "urn:ietf:params:oauth-grant-type:jwt-bearer",
         "assertion": assertion,
     }).encode()
     request = Request(TOKEN_URL, data=body, headers={"Content-Type": "application/x-www-form-urlencoded"}, method="POST")
@@ -168,10 +168,12 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
     duplicates = sum(int(run.get("duplicate_observations") or run.get("duplicate_count") or 0) for run in runs)
     failures = [str(run.get("source_instance")) for run in runs if not run.get("success")]
     run_id = str(summary_doc.get("run_id") or f"ingestion-{int(time.time())}")
+    review_queue_count = int(summary_doc.get("review_queue_count") or 0)
     notes = (
         f"Bulk ingestion: normalized={normalized}; new={sum(int(r.get('new') or 0) for r in runs)}; "
         f"updated={sum(int(r.get('updated') or 0) for r in runs)}; unchanged={sum(int(r.get('unchanged') or 0) for r in runs)}; "
-        f"missing={sum(int(r.get('missing') or 0) for r in runs)}; closed={sum(int(r.get('closed') or 0) for r in runs)}. "
+        f"missing={sum(int(r.get('missing') or 0) for r in runs)}; closed={sum(int(r.get('closed') or 0) for r in runs)}; "
+        f"review_queue_count={review_queue_count}; review_queue_processed=false. "
         "Raw technical state remains in GitHub ingestion-state; no candidate fit/scoring performed."
     )
     append_range = quote("Runs!A:M", safe="!")
@@ -180,8 +182,13 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
         token,
         method="POST",
         body={"values": [[
-            run_id, started, completed, "bulk ingestion", checked, 0, 0, duplicates, 0, 0,
+            run_id, started, completed, "bulk ingestion", checked, review_queue_count, 0, duplicates, 0, 0,
             ",".join(failures) if failures else "none", "success" if not failures else "partial", notes,
         ]]},
     )
-    return {"status": "synced", "sources_updated": len(data), "run_id": run_id}
+    return {
+        "status": "synced",
+        "sources_updated": len(data),
+        "run_id": run_id,
+        "review_queue_count": review_queue_count,
+    }
