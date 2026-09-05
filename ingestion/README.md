@@ -30,13 +30,15 @@ Every `ingest-many` output contains the observations that changed in that ingest
 
 GitHub Actions persists a compact `review-queue.json` plus `review-ack.json` on the `ingestion-state` branch. The compact queue is **at-least-once**: unacknowledged items from the previous snapshot are merged into the next queue, so a later ingestion cannot silently replace pending review work. Every queue item gets a stable `review_key` derived from strong vacancy identity plus its content hash. A content change therefore produces a new review key and requires a fresh semantic review.
 
-To keep large queues connector-readable, the handoff stores an allowlisted technical summary plus a bounded plain-text description excerpt instead of the complete provider description. Full semantic eligibility still requires canonical employer/ATS verification; the queue excerpt is only discovery/triage evidence.
+To keep large queues connector-readable, the handoff stores an allowlisted technical summary plus a bounded plain-text description excerpt instead of the complete provider description. It also writes `review-queue-index.json` and bounded pages under `review-queue-pages/`, currently 25 items per page. Review consumers should read the index first and then only the page(s) they can safely process in that run. The full `review-queue.json` remains the canonical technical snapshot for ingestion merging; pages are a bounded read surface derived from it.
+
+Full semantic eligibility still requires canonical employer/ATS verification; the queue excerpt is only discovery/triage evidence.
 
 `review-ack.json` contains only technical acknowledgement keys and migration markers. It does not contain candidate policy or scoring. The ChatGPT review workflow should acknowledge every handled queue item, including cheap obvious non-relevant rejects, only after its intended review action has completed. A technical row already existing in `Runs` must never be treated as semantic acknowledgement.
 
 The intended handoff is:
 
-`GitHub ingestion -> persistent review-queue.json -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output -> review-ack.json`
+`GitHub ingestion -> review-queue-index.json -> bounded review-queue-pages/* -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output -> review-ack.json`
 
 No candidate scoring happens inside ingestion.
 
