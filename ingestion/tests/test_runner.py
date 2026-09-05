@@ -36,13 +36,18 @@ class RunnerTests(unittest.TestCase):
         changed={**first,"content":"B"}
         r3=self.runner.run_source(spec,client=FakeClient([{"jobs":[changed]}]))
         self.assertEqual([x["ingestion_change"] for x in r3.review_observations],["updated"])
-    def test_himalayas_offset_pagination(self):
-        spec=SourceSpec("himalayas","discovery_api","himalayas","global",max_jobs=2)
-        p1={"jobs":[{"guid":"1","title":"A","applicationLink":"https://himalayas.app/jobs/1"}],"totalCount":2}
-        p2={"jobs":[{"guid":"2","title":"B","applicationLink":"https://himalayas.app/jobs/2"}],"totalCount":2}
+    def test_himalayas_filtered_search_pages(self):
+        spec=SourceSpec("himalayas","discovery_api","himalayas","global",max_jobs=2,options={"query":"wordpress","sort":"recent"})
+        p1={"jobs":[{"guid":"1","title":"A","applicationLink":"https://himalayas.app/jobs/1"}]}
+        p2={"jobs":[{"guid":"2","title":"B","applicationLink":"https://himalayas.app/jobs/2"}]}
         c=FakeClient([p1,p2]); r=self.runner.run_source(spec,client=c)
         self.assertEqual((r.fetched,c.calls),(2,2))
-        self.assertIn("offset=0",c.urls[0]); self.assertIn("offset=1",c.urls[1])
-        self.assertNotIn("cursor=",c.urls[0]+c.urls[1])
+        self.assertIn("/search?",c.urls[0]); self.assertIn("q=wordpress",c.urls[0]); self.assertIn("page=1",c.urls[0]); self.assertIn("page=2",c.urls[1])
+    def test_himalayas_browse_uses_cursor(self):
+        spec=SourceSpec("himalayas","discovery_api","himalayas","global",max_jobs=2)
+        p1={"jobs":[{"guid":"1","title":"A","applicationLink":"https://himalayas.app/jobs/1"}],"nextCursor":"opaque"}
+        p2={"jobs":[{"guid":"2","title":"B","applicationLink":"https://himalayas.app/jobs/2"}]}
+        c=FakeClient([p1,p2]); r=self.runner.run_source(spec,client=c)
+        self.assertEqual((r.fetched,c.calls),(2,2)); self.assertIn("cursor=opaque",c.urls[1]); self.assertNotIn("offset=",c.urls[0]+c.urls[1])
 
 if __name__ == "__main__": unittest.main()
