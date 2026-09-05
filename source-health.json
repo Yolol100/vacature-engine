@@ -1,0 +1,174 @@
+{
+  "source_health": {
+    "ashby:elevenlabs": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 252,
+      "last_success_at": "2026-09-05T14:55:57.158336+00:00",
+      "next_retry_at": null,
+      "run_count": 16,
+      "source_instance": "ashby:elevenlabs"
+    },
+    "ashby:zapier": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 7,
+      "last_success_at": "2026-09-05T14:55:58.360545+00:00",
+      "next_retry_at": null,
+      "run_count": 4,
+      "source_instance": "ashby:zapier"
+    },
+    "greenhouse:acquia": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 11,
+      "last_success_at": "2026-09-05T14:55:56.763443+00:00",
+      "next_retry_at": null,
+      "run_count": 6,
+      "source_instance": "greenhouse:acquia"
+    },
+    "greenhouse:automatticcareers": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 18,
+      "last_success_at": "2026-09-05T14:55:56.489058+00:00",
+      "next_retry_at": null,
+      "run_count": 15,
+      "source_instance": "greenhouse:automatticcareers"
+    },
+    "greenhouse:clickhouse": {
+      "consecutive_failures": 1,
+      "failure_category": "http_error",
+      "last_failure_at": "2026-09-04T23:29:27.787681+00:00",
+      "last_result_count": null,
+      "last_success_at": null,
+      "next_retry_at": "2026-09-04T23:30:27.787681+00:00",
+      "run_count": 1,
+      "source_instance": "greenhouse:clickhouse"
+    },
+    "greenhouse:digitalocean98": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 150,
+      "last_success_at": "2026-09-05T14:55:58.234307+00:00",
+      "next_retry_at": null,
+      "run_count": 4,
+      "source_instance": "greenhouse:digitalocean98"
+    },
+    "greenhouse:gitlab": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 227,
+      "last_success_at": "2026-09-05T14:55:57.957245+00:00",
+      "next_retry_at": null,
+      "run_count": 4,
+      "source_instance": "greenhouse:gitlab"
+    },
+    "greenhouse:pantheon": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 29,
+      "last_success_at": "2026-09-05T14:55:58.331019+00:00",
+      "next_retry_at": null,
+      "run_count": 4,
+      "source_instance": "greenhouse:pantheon"
+    },
+    "himalayas:global": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": "2026-09-05T00:46:08.372115+00:00",
+      "last_result_count": 100,
+      "last_success_at": "2026-09-05T14:56:02.675284+00:00",
+      "next_retry_at": null,
+      "run_count": 11,
+      "source_instance": "himalayas:global"
+    },
+    "jobicy-api:global": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 10,
+      "last_success_at": "2026-09-05T14:56:03.569417+00:00",
+      "next_retry_at": null,
+      "run_count": 11,
+      "source_instance": "jobicy-api:global"
+    },
+    "lever:kinsta": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 1,
+      "last_success_at": "2026-09-05T14:55:56.599260+00:00",
+      "next_retry_at": null,
+      "run_count": 6,
+      "source_instance": "lever:kinsta"
+    },
+    "lever:siteground": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 1,
+      "last_success_at": "2026-09-05T14:55:56.697503+00:00",
+      "next_retry_at": null,
+      "run_count": 6,
+      "source_instance": "lever:siteground"
+    },
+    "lever:teamsnap": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 7,
+      "last_success_at": "2026-09-05T14:55:56.937251+00:00",
+      "next_retry_at": null,
+      "run_count": 16,
+      "source_instance": "lever:teamsnap"
+    },
+    "personio:syde": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 3,
+      "last_success_at": "2026-09-05T14:55:59.280799+00:00",
+      "next_retry_at": null,
+      "run_count": 4,
+      "source_instance": "personio:syde"
+    },
+    "remotive:global": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 15,
+      "last_success_at": "2026-09-05T14:56:03.624334+00:00",
+      "next_retry_at": null,
+      "run_count": 11,
+      "source_instance": "remotive:global"
+    },
+    "smartrecruiters:NewVariableInc": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 1,
+      "last_success_at": "2026-09-05T14:55:57.585569+00:00",
+      "next_retry_at": null,
+      "run_count": 16,
+      "source_instance": "smartrecruiters:NewVariableInc"
+    },
+    "workable:awesomemotive": {
+      "consecutive_failures": 0,
+      "failure_category": null,
+      "last_failure_at": null,
+      "last_result_count": 5,
+      "last_success_at": "2026-09-05T14:55:59.527477+00:00",
+      "next_retry_at": null,
+      "run_count": 3,
+      "source_instance": "workable:awesomemotive"
+    }
+  }
+}
