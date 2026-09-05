@@ -73,6 +73,16 @@ def _request_json(url: str, token: str, *, method: str = "GET", body: Any | None
     return json.loads(raw.decode("utf-8")) if raw else {}
 
 
+def _load_optional_json(path: str | Path | None) -> dict[str, Any]:
+    if not path:
+        return {}
+    try:
+        value = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError, json.JSONDecodeError):
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
 def _aggregate_health(
     health: dict[str, Any],
     *,
@@ -107,7 +117,8 @@ def _aggregate_health(
     return out
 
 
-def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path: str | Path) -> dict[str, Any]:
+def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path: str | Path,
+                  queue_path: str | Path | None = None) -> dict[str, Any]:
     raw_credentials = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
     if not raw_credentials:
         return {"status": "skipped", "reason": "GOOGLE_SERVICE_ACCOUNT_JSON not configured"}
@@ -115,6 +126,7 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
     token = _service_account_token(credentials)
     summary_doc = json.loads(Path(summary_path).read_text(encoding="utf-8"))
     health_doc = json.loads(Path(health_path).read_text(encoding="utf-8"))
+    queue_doc = _load_optional_json(queue_path)
     runs = summary_doc.get("runs", []) if isinstance(summary_doc, dict) else []
     current_instances = {
         str(run.get("source_instance"))
@@ -168,12 +180,16 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
     duplicates = sum(int(run.get("duplicate_observations") or run.get("duplicate_count") or 0) for run in runs)
     failures = [str(run.get("source_instance")) for run in runs if not run.get("success")]
     run_id = str(summary_doc.get("run_id") or f"ingestion-{int(time.time())}")
-    review_queue_count = int(summary_doc.get("review_queue_count") or 0)
+    current_review_count = int(summary_doc.get("review_queue_count") or 0)
+    pending_review_count = int(queue_doc.get("review_queue_count") or current_review_count)
+    pending_pages = int(queue_doc.get("total_pages") or 0)
+    oldest_pending = str(queue_doc.get("oldest_origin_completed_at") or "none")
     notes = (
         f"Bulk ingestion: normalized={normalized}; new={sum(int(r.get('new') or 0) for r in runs)}; "
         f"updated={sum(int(r.get('updated') or 0) for r in runs)}; unchanged={sum(int(r.get('unchanged') or 0) for r in runs)}; "
         f"missing={sum(int(r.get('missing') or 0) for r in runs)}; closed={sum(int(r.get('closed') or 0) for r in runs)}; "
-        f"review_queue_count={review_queue_count}; review_queue_processed=false. "
+        f"current_review_queue_count={current_review_count}; persistent_pending_review={pending_review_count}; "
+        f"pending_pages={pending_pages}; oldest_pending_at={oldest_pending}; review_queue_processed=false. "
         "Raw technical state remains in GitHub ingestion-state; no candidate fit/scoring performed."
     )
     append_range = quote("Runs!A:M", safe="!")
@@ -182,7 +198,7 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
         token,
         method="POST",
         body={"values": [[
-            run_id, started, completed, "bulk ingestion", checked, review_queue_count, 0, duplicates, 0, 0,
+            run_id, started, completed, "bulk ingestion", checked, current_review_count, 0, duplicates, 0, 0,
             ",".join(failures) if failures else "none", "success" if not failures else "partial", notes,
         ]]},
     )
@@ -190,5 +206,8 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
         "status": "synced",
         "sources_updated": len(data),
         "run_id": run_id,
-        "review_queue_count": review_queue_count,
+        "review_queue_count": current_review_count,
+        "persistent_pending_review": pending_review_count,
+        "pending_pages": pending_pages,
+        "oldest_pending_at": oldest_pending,
     }

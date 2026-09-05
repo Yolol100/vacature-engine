@@ -90,12 +90,20 @@ jobs:
           fi
           echo "specs=$specs" >> "$GITHUB_OUTPUT"
           echo "Using $specs"
+      - name: Resolve active sources from Vacature Register
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: >-
+          python -m vacature_ingestion filter-specs
+          --specs "${{ steps.source_class.outputs.specs }}"
+          --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0
+          --out .runtime/active-source-specs.json
       - name: Ingest public sources
         id: ingest
         shell: bash
         run: |
           set +e
-          python -m vacature_ingestion ingest-many --specs "${{ steps.source_class.outputs.specs }}" --state .runtime/state.sqlite3 --out .runtime/latest.json --allow-partial > .runtime/ingest-console.json
+          python -m vacature_ingestion ingest-many --specs .runtime/active-source-specs.json --state .runtime/state.sqlite3 --out .runtime/latest.json --allow-partial > .runtime/ingest-console.json
           code=$?
           set -e
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
@@ -186,6 +194,7 @@ jobs:
               'run_id': compact.get('run_id'),
               'review_queue_count': compact.get('review_queue_count', 0),
               'review_queue_pages': index.get('total_pages', 0),
+              'oldest_pending_at': index.get('oldest_origin_completed_at'),
           }, sort_keys=True))
           PY
       - name: Export source health
@@ -193,7 +202,12 @@ jobs:
       - name: Sync compact health to Vacature Register when configured
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-        run: python -m vacature_ingestion sync-register --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 --summary .runtime/latest.json --health .runtime/source-health.json
+        run: >-
+          python -m vacature_ingestion sync-register
+          --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0
+          --summary .runtime/latest.json
+          --health .runtime/source-health.json
+          --queue .runtime/review-queue-index.json
       - name: Persist technical state without clobbering review acknowledgements
         shell: bash
         run: |

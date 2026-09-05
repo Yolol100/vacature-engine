@@ -11,6 +11,16 @@ class StateTests(unittest.TestCase):
     def tearDown(self): self.r.close(); self.td.cleanup()
     def test_new_unchanged_updated(self):
         a=self.r.ingest_records(self.spec,[gh(1)]); b=self.r.ingest_records(self.spec,[gh(1)]); c=self.r.ingest_records(self.spec,[gh(1,"Senior")]); self.assertEqual((a.new,b.unchanged,c.updated),(1,1,1))
+    def test_snapshot_history_retains_content_versions(self):
+        self.r.ingest_records(self.spec,[gh(1)])
+        job_id=self.r.state.list_jobs()[0]["job_id"]
+        self.r.ingest_records(self.spec,[gh(1)])
+        self.r.ingest_records(self.spec,[gh(1,"Senior")])
+        snapshots=self.r.state.snapshots_for_job(job_id)
+        self.assertEqual(len(snapshots),2)
+        self.assertEqual(self.r.state.snapshot_count(),2)
+        payloads=[__import__("json").loads(row["payload_json"])["title"] for row in snapshots]
+        self.assertEqual(set(payloads),{"Developer","Senior"})
     def test_job_id_survives_url_change(self):
         self.r.ingest_records(self.spec,[gh(1,url="https://old.example/1")]); self.r.ingest_records(self.spec,[gh(1,url="https://new.example/1")]); self.assertEqual(len(self.r.state.list_jobs()),1)
     def test_weak_fingerprint_does_not_merge(self):
