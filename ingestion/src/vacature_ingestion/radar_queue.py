@@ -58,12 +58,22 @@ def radar_key(observation: dict[str, Any]) -> str:
     return "radar:" + hashlib.sha256(identity.encode("utf-8")).hexdigest()
 
 
-def _is_new_this_run(observation: dict[str, Any]) -> bool:
-    first_seen = _dt(observation.get("first_seen_at"))
-    ingested = _dt(observation.get("ingestion_timestamp"))
-    if first_seen is None or ingested is None:
-        return False
-    return abs((first_seen - ingested).total_seconds()) <= 5
+def _new_review_observations(current_doc: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return only observations the persistent ingestion state explicitly classified as new.
+
+    The bulk ingestion runner computes review_queue before mutating SQLite, so its
+    ``ingestion_change`` value is the state-backed new/updated decision for this run.
+    Fail closed when the field or review queue is absent; timestamps alone are not a
+    reliable new-job signal because adapters stamp each fetch with a fresh observation time.
+    """
+    review_queue = current_doc.get("review_queue", [])
+    if not isinstance(review_queue, list):
+        return []
+    return [
+        item
+        for item in review_queue
+        if isinstance(item, dict) and str(item.get("ingestion_change") or "").casefold() == "new"
+    ]
 
 
 def _excerpt(value: Any, limit: int = 1200) -> str:
@@ -131,11 +141,8 @@ def build_first_seen_queue(
             pending[key] = dict(item)
 
     new_count = 0
-    observations = current_doc.get("observations", [])
-    if not bootstrap and isinstance(observations, list):
-        for observation in observations:
-            if not isinstance(observation, dict) or not _is_new_this_run(observation):
-                continue
+    if not bootstrap:
+        for observation in _new_review_observations(current_doc):
             item = _compact_item(observation)
             key = item["radar_key"]
             if key in acked or key in pending:
