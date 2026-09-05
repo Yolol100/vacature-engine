@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import unittest
 
-from vacature_ingestion.review_queue import build_review_queue, review_key
+from vacature_ingestion.review_queue import (
+    DESCRIPTION_EXCERPT_CHARS,
+    build_review_queue,
+    review_key,
+)
 
 
 class ReviewQueueTests(unittest.TestCase):
@@ -43,6 +47,26 @@ class ReviewQueueTests(unittest.TestCase):
         result = build_review_queue(current, previous_doc=previous)
         self.assertEqual(result["review_queue_count"], 1)
         self.assertTrue(result["review_queue"][0]["queue_seen_in_current_run"])
+
+    def test_large_description_is_compacted(self):
+        item = self._job("1", "aaa")
+        item["description"] = "<p>" + ("WordPress developer work " * 200) + "</p>"
+        current = {"run_id": "new", "completed_at": "2026-09-05T11:00:00Z", "review_queue": [item]}
+        result = build_review_queue(current)
+        queued = result["review_queue"][0]
+        self.assertNotIn("description", queued)
+        self.assertLessEqual(len(queued["description_excerpt"]), DESCRIPTION_EXCERPT_CHARS)
+        self.assertIn("WordPress developer work", queued["description_excerpt"])
+
+    def test_existing_review_key_survives_compaction(self):
+        item = self._job("1", "aaa")
+        item["review_key"] = "review:precomputed"
+        previous = {"run_id": "old", "completed_at": "2026-09-05T10:00:00Z", "review_queue": [item]}
+        result = build_review_queue(
+            {"run_id": "new", "completed_at": "2026-09-05T11:00:00Z", "review_queue": []},
+            previous_doc=previous,
+        )
+        self.assertEqual(result["review_queue"][0]["review_key"], "review:precomputed")
 
 
 if __name__ == "__main__":
