@@ -72,15 +72,14 @@ class ReviewQueueTests(unittest.TestCase):
         )
         self.assertEqual(result["review_queue"][0]["review_key"], "review:precomputed")
 
-    def test_paginated_handoff_is_bounded_and_indexed(self):
-        queue = {
-            "run_id": "run-1",
-            "completed_at": "2026-09-05T11:00:00Z",
-            "review_queue": [
-                {**self._job(str(i), f"hash-{i}"), "review_key": f"review:{i:03d}"}
-                for i in range(53)
-            ],
-        }
+    def test_paginated_handoff_is_bounded_indexed_and_observable(self):
+        items = []
+        for i in range(53):
+            item = {**self._job(str(i), f"hash-{i}"), "review_key": f"review:{i:03d}"}
+            item["origin_run_id"] = "old" if i < 25 else "new"
+            item["origin_completed_at"] = "2026-09-05T10:00:00Z" if i < 25 else "2026-09-05T11:00:00Z"
+            items.append(item)
+        queue = {"run_id": "run-1", "completed_at": "2026-09-05T11:00:00Z", "review_queue": items}
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             index = write_review_queue_pages(
@@ -92,6 +91,9 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertEqual(index["review_queue_count"], 53)
             self.assertEqual(index["total_pages"], 3)
             self.assertEqual([page["count"] for page in index["pages"]], [25, 25, 3])
+            self.assertEqual(index["oldest_origin_completed_at"], "2026-09-05T10:00:00Z")
+            self.assertEqual(index["newest_origin_completed_at"], "2026-09-05T11:00:00Z")
+            self.assertEqual(index["origin_run_counts"], {"new": 28, "old": 25})
             first = json.loads((root / "review-queue-pages" / "page-0001.json").read_text(encoding="utf-8"))
             last = json.loads((root / "review-queue-pages" / "page-0003.json").read_text(encoding="utf-8"))
             self.assertEqual(first["page_item_count"], 25)
@@ -112,6 +114,7 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertFalse((pages / "page-9999.json").exists())
             index = json.loads((root / "review-queue-index.json").read_text(encoding="utf-8"))
             self.assertEqual(index["total_pages"], 0)
+            self.assertIsNone(index["oldest_origin_completed_at"])
 
 
 if __name__ == "__main__":
