@@ -55,6 +55,20 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(out["location"],"Worldwide")
         self.assertEqual(out["salary"]["currency"],"EUR")
 
+    def test_himalayas_keeps_string_location_restrictions(self):
+        spec=SourceSpec("himalayas","discovery_api","himalayas","global")
+        row={"guid":"h2","title":"WordPress Developer","companyName":"Acme","applicationLink":"https://himalayas.app/jobs/acme-wp","description":"WordPress","locationRestrictions":["Philippines"]}
+        out=ADAPTERS["himalayas"].normalize_records([row],spec)[0]
+        self.assertEqual(out["location"],"Philippines")
+        self.assertEqual(out["source_metadata"]["location_restriction_names"],["Philippines"])
+
+    def test_himalayas_keeps_object_location_restrictions(self):
+        spec=SourceSpec("himalayas","discovery_api","himalayas","global")
+        row={"guid":"h3","title":"WordPress Developer","companyName":"Acme","applicationLink":"https://himalayas.app/jobs/acme-wp-eu","description":"WordPress","locationRestrictions":[{"name":"Europe"}]}
+        out=ADAPTERS["himalayas"].normalize_records([row],spec)[0]
+        self.assertEqual(out["location"],"Europe")
+        self.assertEqual(out["source_metadata"]["location_restriction_names"],["Europe"])
+
     def test_jobicy_maps_public_job(self):
         spec=SourceSpec("jobicy-api","discovery_api","jobicy","global")
         row={"id":9,"url":"https://jobicy.com/jobs/9","jobTitle":"WP Developer","companyName":"Acme","jobGeo":"Anywhere","jobDescription":"<p>WordPress</p>","pubDate":"2026-09-04T00:00:00Z","jobType":["full-time"]}
