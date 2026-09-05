@@ -46,6 +46,32 @@ class AdapterTests(unittest.TestCase):
         self.assertTrue(out["remote"])
         self.assertEqual(out["salary"]["currency"],"EUR")
 
+    def test_personio_public_xml_and_normalization(self):
+        class Client:
+            def get_text(self, url, *, headers=None):
+                self.url = url
+                self.headers = headers
+                return """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+                <workzag-jobs><position>
+                  <id>12345</id><subcompany>Syde</subcompany><office>100% Remote</office>
+                  <department>Engineering</department><name>Senior WordPress Engineer</name>
+                  <employmentType>permanent</employmentType><schedule>full-time</schedule>
+                  <createdAt>2026-09-01</createdAt>
+                  <jobDescriptions><jobDescription><name>About the role</name><value><![CDATA[<p>Build WordPress products.</p>]]></value></jobDescription></jobDescriptions>
+                </position></workzag-jobs>"""
+
+        spec=SourceSpec("personio","ats","personio","syde","Syde",listing_language="en",options={"language":"en"})
+        client=Client()
+        rows=ADAPTERS["personio"].fetch(client,spec)
+        self.assertEqual(len(rows),1)
+        self.assertEqual(client.url,"https://syde.jobs.personio.com/xml?language=en")
+        out=ADAPTERS["personio"].normalize_records(rows,spec)[0]
+        self.assertEqual(out["canonical_url"],"https://syde.jobs.personio.com/job/12345")
+        self.assertEqual(out["source_job_id"],"syde:12345")
+        self.assertTrue(out["remote"])
+        self.assertEqual(out["listing_language"],"en")
+        self.assertIn("Build WordPress products.",out["description"])
+
     def test_himalayas_maps_remote_restrictions_and_salary(self):
         spec=SourceSpec("himalayas","discovery_api","himalayas","global")
         row={"guid":"h1","title":"WordPress Engineer","companyName":"Acme","applicationLink":"https://himalayas.app/jobs/acme-wordpress","description":"<p>Build WordPress</p>","pubDate":"2026-09-04T00:00:00Z","expiryDate":"2026-10-04T00:00:00Z","employmentType":"Full Time","minSalary":60000,"maxSalary":80000,"currency":"EUR","salaryPeriod":"annual","locationRestrictions":[]}
