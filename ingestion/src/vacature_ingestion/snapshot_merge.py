@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .review_queue import write_review_queue_pages
+
 
 ACK_FALLBACK: dict[str, Any] = {
     "schema_version": 1,
@@ -80,6 +82,11 @@ def merge_snapshot_files(*, state_dir: str | Path, runtime_dir: str | Path) -> d
     (state / "review-queue.json").write_text(
         json.dumps(queue, ensure_ascii=False, indent=2, sort_keys=True),
         encoding="utf-8",
+    )
+    write_review_queue_pages(
+        queue,
+        directory=state / "review-queue-pages",
+        index_path=state / "review-queue-index.json",
     )
 
     return {
