@@ -4,8 +4,8 @@
     "source_type": "discovery_api",
     "adapter": "himalayas",
     "account": "global",
-    "max_jobs": 20000,
-    "options": {"refresh_semantics": "provider data refreshes every 24h"}
+    "max_jobs": 100,
+    "options": {"query": "wordpress", "sort": "recent", "refresh_semantics": "provider data refreshes every 24h"}
   },
   {
     "source_id": "jobicy-api",
@@ -13,7 +13,7 @@
     "adapter": "jobicy",
     "account": "global",
     "max_jobs": 200,
-    "options": {"attribution_required": true}
+    "options": {"tag": "wordpress", "attribution_required": true}
   },
   {
     "source_id": "remotive",
