@@ -1,5 +1,5 @@
 {
-  "completed_at": "2026-09-05T20:16:27.352387+00:00",
+  "completed_at": "2026-09-05T20:28:48.578721+00:00",
   "page": 16,
   "page_item_count": 25,
   "review_queue": [
@@ -1070,7 +1070,7 @@
       "apply_url": "https://weworkremotely.com/remote-jobs/vercel-member-of-the-technical-staff-internal-agent",
       "canonical_url": "https://weworkremotely.com/remote-jobs/vercel-member-of-the-technical-staff-internal-agent",
       "content_hash": "cb01e8396ca07efaf0770d6155c6364c7f6e956d7939f205941f65118f0494eb",
-      "description_excerpt": "Headquarters: Remote - United States About Vercel: Vercel is the agentic infrastructure company. We free people and agents to ship what’s next. For more than a decade, Vercel has shaped how the web is built. As the team behind Next.js, v0, and AI SDK, we create products that help builders move from idea to production with speed, security, and exceptional developer experience. Now, software is entering a new era, and the next generation of products will not just be used by people. They will be built, extended, and operated by agents. We are building the platform for that future, trusted by companies like OpenAI, PayPal, Ramp, Supreme, and millions of developers worldwide . Whether you’re building our products, supporting our customers, growing our community, or shaping our story, you’ll help define what comes next. About Vercel: Vercel is the agentic infrastructure company. We free people and agents to ship what’s next. For more than a decade, Vercel has shaped how the web is built. As the team behind Next.js, v0, and AI SDK, we create products that help builders move from idea to production with speed, security, and exceptional developer experience. Now, software is entering a new ",
+      "description_excerpt": "Headquarters: Remote - United States About Vercel: Vercel is the agentic infrastructure company. We free people and agents to ship what’s next. For more than a decade, Vercel has shaped how the web is built. As the team behind Next.js, v0, and AI SDK, we create products that help builders move from idea to production with speed, security, and exceptional developer experience. Now, software is entering a new era, and the next generation of products will not just be used by people. They will be built, extended, and operated by agents. We are building the platform for that future, trusted by companies like OpenAI, PayPal, Ramp, Supreme, and millions of developers worldwide . Whether you’re building our products, supporting our customers, growing our community, or shaping our story, you’ll help define what comes next. About Vercel: Vercel is the agentic infrastructure company. We free people and agents to ship what’s next. For more than a decade, Vercel has shaped how the web is built. As the team behind Next.js, v0, and AI SDK, we create products that help builders move from idea to production with speed, security, and exceptional developer experience. Now, software is entering a new",
       "employer": "Vercel",
       "first_seen_at": "2026-09-05T20:16:21.946199+00:00",
       "ingestion_change": "new",
@@ -1080,7 +1080,6 @@
       "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
       "origin_run_id": "ingestion-1788639387",
       "published_at": "2026-08-16T07:30:41+00:00",
-      "queue_seen_in_current_run": true,
       "remote": true,
       "review_key": "review:05d883ddc988358b195eacbd7a0d4b66ff91a80b9f4d9d8e7efc628705413328",
       "source_id": "we-work-remotely",
@@ -1102,7 +1101,7 @@
     }
   ],
   "review_queue_count": 526,
-  "run_id": "ingestion-1788639387",
+  "run_id": "ingestion-1788640128",
   "schema_version": 1,
   "total_pages": 22
 }
