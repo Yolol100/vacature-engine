@@ -1,0 +1,197 @@
+name: Vacature First-Seen Radar
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ingestion/**'
+      - '.github/workflows/vacature-radar.yml'
+  pull_request:
+    paths:
+      - 'ingestion/**'
+      - '.github/workflows/vacature-radar.yml'
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: vacature-first-seen-radar
+  cancel-in-progress: true
+
+jobs:
+  radar-tests:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e ingestion
+      - run: python -m unittest ingestion.tests.test_radar_queue ingestion.tests.test_source_specs -v
+      - run: python -m compileall -q ingestion/src
+
+  live-radar:
+    if: github.event_name != 'pull_request'
+    needs: radar-tests
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e ingestion
+
+      - name: Restore isolated radar state
+        id: restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .runtime
+          printf '%s\n' '{"schema_version":1,"acked_keys":[],"migrations":[]}' > .runtime/radar-ack.json
+          printf '%s\n' '{"schema_version":1,"items":[],"pending_count":0}' > .runtime/previous-first-seen-queue.json
+          bootstrap=true
+          git fetch origin radar-state || true
+          if git show-ref --verify --quiet refs/remotes/origin/radar-state; then
+            bootstrap=false
+            if git cat-file -e origin/radar-state:state.sqlite3 2>/dev/null; then
+              git show origin/radar-state:state.sqlite3 > .runtime/state.sqlite3
+            fi
+            if git cat-file -e origin/radar-state:first-seen-queue.json 2>/dev/null; then
+              git show origin/radar-state:first-seen-queue.json > .runtime/previous-first-seen-queue.json
+            fi
+            if git cat-file -e origin/radar-state:radar-ack.json 2>/dev/null; then
+              git show origin/radar-state:radar-ack.json > .runtime/radar-ack.json
+            fi
+          fi
+          echo "bootstrap=$bootstrap" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve active direct sources from Vacature Register
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: >-
+          python -m vacature_ingestion filter-specs
+          --specs ingestion/source-specs.radar.json
+          --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0
+          --out .runtime/active-radar-specs.json
+
+      - name: Poll direct employer and ATS sources
+        id: ingest
+        shell: bash
+        run: |
+          set +e
+          state_args=()
+          if [[ -f .runtime/state.sqlite3 ]]; then
+            state_args=(--state .runtime/state.sqlite3)
+          else
+            state_args=(--state .runtime/state.sqlite3)
+          fi
+          python -m vacature_ingestion ingest-many \
+            --specs .runtime/active-radar-specs.json \
+            "${state_args[@]}" \
+            --out .runtime/latest.json \
+            --allow-partial > .runtime/ingest-console.json
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          cat .runtime/ingest-console.json
+
+      - name: Build first-seen alert queue
+        shell: bash
+        run: |
+          set -euo pipefail
+          bootstrap_arg=()
+          if [[ "${{ steps.restore.outputs.bootstrap }}" == "true" ]]; then
+            bootstrap_arg=(--bootstrap)
+          fi
+          python -m vacature_ingestion.radar_queue \
+            --current .runtime/latest.json \
+            --previous .runtime/previous-first-seen-queue.json \
+            --ack .runtime/radar-ack.json \
+            --out .runtime/first-seen-queue.json \
+            --ttl-hours 72 \
+            "${bootstrap_arg[@]}"
+
+      - name: Export radar source health
+        run: python -m vacature_ingestion export-state --state .runtime/state.sqlite3 --health-out .runtime/source-health.json
+
+      - name: Persist isolated radar state without clobbering alert acknowledgements
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          merge_remote_ack() {
+            printf '%s\n' '{"schema_version":1,"acked_keys":[],"migrations":[]}' > .runtime/remote-radar-ack.json
+            if git show-ref --verify --quiet refs/remotes/origin/radar-state && \
+               git cat-file -e origin/radar-state:radar-ack.json 2>/dev/null; then
+              git show origin/radar-state:radar-ack.json > .runtime/remote-radar-ack.json
+            fi
+            python - <<'PY'
+          import json
+          from pathlib import Path
+
+          local_path = Path('.runtime/radar-ack.json')
+          remote_path = Path('.runtime/remote-radar-ack.json')
+          local = json.loads(local_path.read_text(encoding='utf-8'))
+          remote = json.loads(remote_path.read_text(encoding='utf-8'))
+          if not isinstance(local, dict) or not isinstance(remote, dict):
+              raise SystemExit('radar ack documents must be objects')
+          merged = dict(remote)
+          for key, value in local.items():
+              if key not in {'acked_keys', 'migrations'} and key not in merged:
+                  merged[key] = value
+          merged['schema_version'] = max(int(local.get('schema_version', 1)), int(remote.get('schema_version', 1)))
+          merged['acked_keys'] = sorted({str(v) for v in local.get('acked_keys', []) if v} | {str(v) for v in remote.get('acked_keys', []) if v})
+          merged['migrations'] = sorted({str(v) for v in local.get('migrations', []) if v} | {str(v) for v in remote.get('migrations', []) if v})
+          local_path.write_text(json.dumps(merged, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          PY
+          }
+
+          success=0
+          for attempt in 1 2; do
+            cd "$GITHUB_WORKSPACE"
+            git worktree remove --force /tmp/vacature-radar-state >/dev/null 2>&1 || true
+            rm -rf /tmp/vacature-radar-state
+            git fetch origin radar-state || true
+            merge_remote_ack
+
+            if git show-ref --verify --quiet refs/remotes/origin/radar-state; then
+              git worktree add --detach /tmp/vacature-radar-state origin/radar-state
+              cd /tmp/vacature-radar-state
+              git switch -c "radar-state-update-${GITHUB_RUN_ID}-${attempt}"
+            else
+              git worktree add --detach /tmp/vacature-radar-state HEAD
+              cd /tmp/vacature-radar-state
+              git switch --orphan "radar-state-update-${GITHUB_RUN_ID}-${attempt}"
+              git rm -rf . >/dev/null 2>&1 || true
+            fi
+
+            cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
+            cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
+            cp "$GITHUB_WORKSPACE/.runtime/first-seen-queue.json" first-seen-queue.json
+            cp "$GITHUB_WORKSPACE/.runtime/radar-ack.json" radar-ack.json
+            cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
+
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add state.sqlite3 latest.json first-seen-queue.json radar-ack.json source-health.json
+            if git diff --cached --quiet; then
+              success=1
+              break
+            fi
+            git commit -m "chore: persist first-seen vacancy radar snapshot"
+            if git push origin HEAD:radar-state; then
+              success=1
+              break
+            fi
+          done
+          test "$success" = "1"
+
+      - name: Enforce radar ingestion success threshold
+        if: always()
+        run: test "${{ steps.ingest.outputs.exit_code }}" = "0"
