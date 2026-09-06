@@ -59,6 +59,47 @@ def test_identity_keys_exclude_weak_fingerprint():
     assert observation_candidate_fingerprint(row).startswith("fingerprint:")
 
 
+def test_generic_careers_url_is_provenance_not_strong_identity():
+    row = {"source_id": "employer", "canonical_url": "https://example.com/careers", "employer": "Acme", "title": "Developer"}
+    assert observation_identity_keys(row) == ()
+
+
+def test_generic_careers_page_does_not_merge_distinct_roles():
+    rows = [
+        {"source_id": "acme-careers", "source_type": "employer_direct", "canonical_url": "https://acme.example/careers", "employer": "Acme", "title": "WordPress Developer"},
+        {"source_id": "acme-careers", "source_type": "employer_direct", "canonical_url": "https://acme.example/careers", "employer": "Acme", "title": "UX Designer"},
+    ]
+    result = canonicalize_observations(rows)
+    assert len(result) == 2
+    assert {row["title"] for row in result} == {"WordPress Developer", "UX Designer"}
+
+
+def test_generic_directory_category_and_pagination_urls_are_not_strong():
+    urls = [
+        "https://thewp.world/get-hired/",
+        "https://wpremotework.com/remote-jobs/tag/eu/",
+        "https://www.starapple.nl/vacatures/page/10",
+        "https://example.com/jobs",
+        "https://example.com/",
+    ]
+    for url in urls:
+        assert observation_identity_keys({"canonical_url": url}) == ()
+
+
+def test_role_specific_careers_url_remains_strong_identity():
+    row = {"canonical_url": "https://example.com/careers/wordpress-developer"}
+    assert observation_identity_keys(row) == ("url:https://example.com/careers/wordpress-developer",)
+
+
+def test_source_job_id_can_merge_generic_and_exact_url_but_exact_url_wins():
+    result = canonicalize_observations([
+        {"source_id": "acme", "source_type": "employer_direct", "source_job_id": "123", "canonical_url": "https://acme.example/careers", "employer": "Acme", "title": "Developer"},
+        {"source_id": "acme", "source_type": "ats", "source_job_id": "123", "canonical_url": "https://jobs.example.com/jobs/123", "employer": "Acme", "title": "Developer"},
+    ])
+    assert len(result) == 1
+    assert result[0]["canonical_url"] == "https://jobs.example.com/jobs/123"
+
+
 def test_published_conflict_is_exposed():
     result = canonicalize_observations([
         {"source_id": "board", "source_type": "job_board", "canonical_url": "https://example.com/jobs/1", "employer": "Acme", "title": "Developer", "published_at": "2026-09-01"},
