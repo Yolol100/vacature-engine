@@ -50,11 +50,13 @@ class CliTests(unittest.TestCase):
         self.assertNotEqual(0, result.returncode)
         self.assertIn("today, policy and vacancies", result.stderr)
 
-    def test_cli_salary_threshold_is_hard_gate(self):
+    def test_cli_salary_threshold_is_advisory(self):
         stricter = {**POLICY, "min_monthly_salary_eur": 5000}
         result = self.run_cli({"today": "2026-08-26", "policy": stricter, "vacancies": [VACANCY]})
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertEqual([], json.loads(result.stdout))
+        rows = json.loads(result.stdout)
+        self.assertEqual(1, len(rows))
+        self.assertIn("salary_below_preference", rows[0]["warnings"])
 
     def test_cli_rejects_malformed_salary(self):
         bad = {**VACANCY, "salary_monthly_eur": "4500"}
