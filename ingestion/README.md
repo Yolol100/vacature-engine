@@ -19,7 +19,7 @@ Fast/targeted public sources:
 - Workable public account jobs endpoint
 - Personio public XML jobs feed
 
-Daily secondary discovery feeds:
+Secondary discovery feeds:
 - Himalayas public JSON API with cursor pagination
 - Jobicy public Remote Jobs API
 - Remotive public API (24h-delayed; attribution metadata retained)
@@ -48,13 +48,13 @@ No candidate scoring happens inside ingestion.
 
 `review_backlog.load_review_backlog()` can rebuild pending review candidates from persisted SQLite first-seen state after a handoff failure. GitHub Actions only runs such a recovery when an explicit `ingestion/review-backlog-recovery.json` request is present and its migration ID is not already recorded in `review-ack.json`. Recovery is technical transport repair only; it does not decide vacancy relevance or candidate fit.
 
-## Source cadence
+## Source classes
 
-- `source-specs.live.json`: targeted ATS sources, scheduled every six hours.
-- `source-specs.daily.json`: slower public discovery feeds, scheduled once per day.
+- `source-specs.live.json`: targeted ATS sources for an explicit/manual ingestion run.
+- `source-specs.daily.json`: slower public discovery feeds retained for deliberate maintenance or backfill runs.
 - `source-specs.deploy.json`: both classes together, used on ingestion-code deployments as an end-to-end smoke test.
 
-Before ingestion, the selected class is reduced to the sources that are currently `active` in live `Bronnen`.
+The simplified production mode has no repository cron scheduler. Periodic vacancy discovery belongs to the caller/automation. Before any explicit ingestion run, the selected class is reduced to the sources that are currently `active` in live `Bronnen`.
 
 ## State and history
 
