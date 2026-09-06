@@ -5,9 +5,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 7,
-      "last_success_at": "2026-09-06T06:04:16.883360+00:00",
+      "last_success_at": "2026-09-06T10:48:40.960010+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "ashby:zapier"
     },
     "greenhouse:acquia": {
@@ -15,9 +15,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 11,
-      "last_success_at": "2026-09-06T06:04:15.564392+00:00",
+      "last_success_at": "2026-09-06T10:48:39.611019+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "greenhouse:acquia"
     },
     "greenhouse:automatticcareers": {
@@ -25,9 +25,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 18,
-      "last_success_at": "2026-09-06T06:04:14.997757+00:00",
+      "last_success_at": "2026-09-06T10:48:38.721836+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "greenhouse:automatticcareers"
     },
     "greenhouse:digitalocean98": {
@@ -35,9 +35,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 150,
-      "last_success_at": "2026-09-06T06:04:16.504648+00:00",
+      "last_success_at": "2026-09-06T10:48:40.455547+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "greenhouse:digitalocean98"
     },
     "greenhouse:gitlab": {
@@ -45,9 +45,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 229,
-      "last_success_at": "2026-09-06T06:04:16.103349+00:00",
+      "last_success_at": "2026-09-06T10:48:39.971456+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "greenhouse:gitlab"
     },
     "greenhouse:pantheon": {
@@ -55,9 +55,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 29,
-      "last_success_at": "2026-09-06T06:04:16.698785+00:00",
+      "last_success_at": "2026-09-06T10:48:40.808045+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "greenhouse:pantheon"
     },
     "lever:kinsta": {
@@ -65,9 +65,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 1,
-      "last_success_at": "2026-09-06T06:04:15.214553+00:00",
+      "last_success_at": "2026-09-06T10:48:39.085663+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "lever:kinsta"
     },
     "lever:siteground": {
@@ -75,9 +75,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 1,
-      "last_success_at": "2026-09-06T06:04:15.401369+00:00",
+      "last_success_at": "2026-09-06T10:48:39.494283+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "lever:siteground"
     },
     "personio:syde": {
@@ -85,9 +85,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 3,
-      "last_success_at": "2026-09-06T06:04:17.672676+00:00",
+      "last_success_at": "2026-09-06T10:48:41.811201+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "personio:syde"
     },
     "workable:awesomemotive": {
@@ -95,9 +95,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 5,
-      "last_success_at": "2026-09-06T06:04:17.990982+00:00",
+      "last_success_at": "2026-09-06T10:48:41.976919+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "workable:awesomemotive"
     },
     "workable:humanmade": {
@@ -105,9 +105,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 13,
-      "last_success_at": "2026-09-06T06:04:18.215314+00:00",
+      "last_success_at": "2026-09-06T10:48:42.090662+00:00",
       "next_retry_at": null,
-      "run_count": 9,
+      "run_count": 10,
       "source_instance": "workable:humanmade"
     }
   }
