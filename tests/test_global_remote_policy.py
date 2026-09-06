@@ -56,11 +56,11 @@ class GlobalRemotePolicyTests(unittest.TestCase):
         self.assertTrue(gate["pass"])
         self.assertTrue(gate["salary_known"])
 
-    def test_salary_range_entirely_below_minimum_is_rejected(self):
+    def test_salary_range_entirely_below_minimum_is_warning(self):
         item = vacancy(salary_monthly_eur=None, salary_min_monthly_eur=2500, salary_max_monthly_eur=3499)
         gate = eligibility(item, today=TODAY, policy=POLICY)
-        self.assertFalse(gate["pass"])
-        self.assertIn("salary_below_minimum", gate["reasons"])
+        self.assertTrue(gate["pass"])
+        self.assertIn("salary_below_preference", gate["warnings"])
 
     def test_salary_range_upper_bound_at_minimum_passes(self):
         item = vacancy(salary_monthly_eur=None, salary_min_monthly_eur=2500, salary_max_monthly_eur=3500)
