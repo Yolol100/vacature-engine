@@ -61,23 +61,7 @@ jobs:
               git show origin/ingestion-state:review-ack.json > .runtime/review-ack.json
             fi
           fi
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          path = Path('.runtime/review-ack.json')
-          fallback = {'schema_version': 1, 'acked_keys': [], 'migrations': []}
-          try:
-              value = json.loads(path.read_text(encoding='utf-8'))
-              if not isinstance(value, dict):
-                  raise ValueError('ack document must be an object')
-          except (OSError, ValueError, json.JSONDecodeError):
-              value = fallback
-          value.setdefault('schema_version', 1)
-          value.setdefault('acked_keys', [])
-          value.setdefault('migrations', [])
-          path.write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
-          PY
+          python -m vacature_ingestion.workflow_state normalize-ack --path .runtime/review-ack.json
       - name: Select source class
         id: source_class
         shell: bash
@@ -112,94 +96,22 @@ jobs:
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           cat .runtime/ingest-console.json
       - name: Recover requested pending review backlog
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import json
-          from datetime import datetime, timezone
-          from pathlib import Path
-          from vacature_ingestion.review_backlog import load_review_backlog
-
-          request_path = Path('ingestion/review-backlog-recovery.json')
-          ack_path = Path('.runtime/review-ack.json')
-          recovery_path = Path('.runtime/recovery-review-queue.json')
-          recovery_path.write_text('{}\n', encoding='utf-8')
-          if not request_path.exists():
-              print(json.dumps({'recovery': 'not_requested'}))
-              raise SystemExit(0)
-
-          request = json.loads(request_path.read_text(encoding='utf-8'))
-          ack = json.loads(ack_path.read_text(encoding='utf-8'))
-          migration_id = str(request.get('migration_id') or '').strip()
-          since = str(request.get('since') or '').strip()
-          origin_run_id = str(request.get('origin_run_id') or f'recovery:{migration_id}')
-          if not migration_id or not since:
-              raise SystemExit('review backlog recovery request requires migration_id and since')
-
-          migrations = [str(value) for value in ack.get('migrations', []) if value]
-          if migration_id in migrations:
-              print(json.dumps({'recovery': 'already_applied', 'migration_id': migration_id}, sort_keys=True))
-              raise SystemExit(0)
-
-          rows = load_review_backlog('.runtime/state.sqlite3', since=since, active_only=True)
-          recovery = {
-              'run_id': origin_run_id,
-              'completed_at': datetime.now(timezone.utc).isoformat(),
-              'review_queue_count': len(rows),
-              'review_queue': rows,
-          }
-          recovery_path.write_text(json.dumps(recovery, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
-          migrations.append(migration_id)
-          ack['migrations'] = sorted(set(migrations))
-          ack.setdefault('schema_version', 1)
-          ack.setdefault('acked_keys', [])
-          ack_path.write_text(json.dumps(ack, ensure_ascii=False, indent=2, sort_keys=True), encoding='utf-8')
-          print(json.dumps({'recovery': 'prepared', 'migration_id': migration_id, 'recovered': len(rows)}, sort_keys=True))
-          PY
+        run: >-
+          python -m vacature_ingestion.workflow_state recover-review
+          --request ingestion/review-backlog-recovery.json
+          --ack .runtime/review-ack.json
+          --state .runtime/state.sqlite3
+          --out .runtime/recovery-review-queue.json
       - name: Export persistent compact review queue
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from vacature_ingestion.review_queue import build_review_queue, write_review_queue_pages
-
-          def load(path):
-              p = Path(path)
-              if not p.exists() or not p.read_text(encoding='utf-8').strip():
-                  return None
-              try:
-                  value = json.loads(p.read_text(encoding='utf-8'))
-              except json.JSONDecodeError:
-                  return None
-              return value if isinstance(value, dict) else None
-
-          current = load('.runtime/latest.json') or {}
-          previous = load('.runtime/previous-review-queue.json')
-          recovery = load('.runtime/recovery-review-queue.json')
-          ack = load('.runtime/review-ack.json')
-          seed = previous
-          if recovery and isinstance(recovery.get('review_queue'), list):
-              seed = build_review_queue(recovery, previous_doc=seed, ack_doc=ack)
-          compact = build_review_queue(current, previous_doc=seed, ack_doc=ack)
-          Path('.runtime/review-queue.json').write_text(
-              json.dumps(compact, ensure_ascii=False, indent=2, sort_keys=True),
-              encoding='utf-8',
-          )
-          index = write_review_queue_pages(
-              compact,
-              directory='.runtime/review-queue-pages',
-              index_path='.runtime/review-queue-index.json',
-          )
-          print(json.dumps({
-              'run_id': compact.get('run_id'),
-              'review_queue_count': compact.get('review_queue_count', 0),
-              'review_queue_pages': index.get('total_pages', 0),
-              'oldest_pending_at': index.get('oldest_origin_completed_at'),
-          }, sort_keys=True))
-          PY
+        run: >-
+          python -m vacature_ingestion.workflow_state build-review-queue
+          --current .runtime/latest.json
+          --previous .runtime/previous-review-queue.json
+          --recovery .runtime/recovery-review-queue.json
+          --ack .runtime/review-ack.json
+          --out .runtime/review-queue.json
+          --pages-dir .runtime/review-queue-pages
+          --index-out .runtime/review-queue-index.json
       - name: Export source health
         run: python -m vacature_ingestion export-state --state .runtime/state.sqlite3 --health-out .runtime/source-health.json
       - name: Sync compact health to Vacature Register when configured

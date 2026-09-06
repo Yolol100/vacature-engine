@@ -70,6 +70,7 @@ jobs:
               git show origin/radar-state:radar-ack.json > .runtime/radar-ack.json
             fi
           fi
+          python -m vacature_ingestion.workflow_state normalize-ack --path .runtime/radar-ack.json
           echo "bootstrap=$bootstrap" >> "$GITHUB_OUTPUT"
 
       - name: Resolve active direct sources from Vacature Register
@@ -126,25 +127,9 @@ jobs:
                git cat-file -e origin/radar-state:radar-ack.json 2>/dev/null; then
               git show origin/radar-state:radar-ack.json > .runtime/remote-radar-ack.json
             fi
-            python - <<'PY'
-          import json
-          from pathlib import Path
-
-          local_path = Path('.runtime/radar-ack.json')
-          remote_path = Path('.runtime/remote-radar-ack.json')
-          local = json.loads(local_path.read_text(encoding='utf-8'))
-          remote = json.loads(remote_path.read_text(encoding='utf-8'))
-          if not isinstance(local, dict) or not isinstance(remote, dict):
-              raise SystemExit('radar ack documents must be objects')
-          merged = dict(remote)
-          for key, value in local.items():
-              if key not in {'acked_keys', 'migrations'} and key not in merged:
-                  merged[key] = value
-          merged['schema_version'] = max(int(local.get('schema_version', 1)), int(remote.get('schema_version', 1)))
-          merged['acked_keys'] = sorted({str(v) for v in local.get('acked_keys', []) if v} | {str(v) for v in remote.get('acked_keys', []) if v})
-          merged['migrations'] = sorted({str(v) for v in local.get('migrations', []) if v} | {str(v) for v in remote.get('migrations', []) if v})
-          local_path.write_text(json.dumps(merged, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-          PY
+            python -m vacature_ingestion.workflow_state merge-ack \
+              --local .runtime/radar-ack.json \
+              --remote .runtime/remote-radar-ack.json
           }
 
           success=0
