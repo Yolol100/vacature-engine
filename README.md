@@ -15,7 +15,7 @@ Het `vacature_engine`-pakket bevat geen scraping, netwerkdiscovery, jobboardlijs
 
 ## Ingestion component
 
-`ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. GitHub Actions kan deze component periodiek uitvoeren; source-health kan optioneel compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
+`ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. GitHub Actions voert deze component alleen handmatig of bij relevante codewijzigingen uit; periodieke vacaturediscovery blijft caller-owned. In de eenvoudige modus is de ChatGPT-automation de enige scheduler. Source-health kan bij zo'n expliciete run compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
 
 ## Observatiecontract v1.1
 

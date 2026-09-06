@@ -6,10 +6,6 @@ on:
     paths: ['ingestion/**', '.github/workflows/vacature-ingestion.yml']
   pull_request:
     paths: ['ingestion/**', '.github/workflows/vacature-ingestion.yml']
-  schedule:
-    - cron: '7 * * * *'
-    - cron: '17 */6 * * *'
-    - cron: '41 3 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -70,10 +66,6 @@ jobs:
           specs="ingestion/source-specs.live.json"
           if [[ "${{ github.event_name }}" == "push" ]]; then
             specs="ingestion/source-specs.deploy.json"
-          elif [[ "${{ github.event_name }}" == "schedule" && "${{ github.event.schedule }}" == "7 * * * *" ]]; then
-            specs="ingestion/source-specs.fast.json"
-          elif [[ "${{ github.event_name }}" == "schedule" && "${{ github.event.schedule }}" == "41 3 * * *" ]]; then
-            specs="ingestion/source-specs.daily.json"
           fi
           echo "specs=$specs" >> "$GITHUB_OUTPUT"
           echo "Using $specs"
