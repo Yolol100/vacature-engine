@@ -1,10 +1,10 @@
 # Changelog
 
 ## 5.4.1 - 2026-09-06
-- Herstelt de harde live salarispoort: een geverifieerd exact maandsalaris onder `min_monthly_salary_eur` wordt afgewezen.
-- Een geverifieerde salarisrange wordt afgewezen wanneer de bovengrens volledig onder `min_monthly_salary_eur` ligt; een range die de grens bereikt of overlapt blijft geldig.
-- Onbekend salaris blijft een warning/fallback en corrupte of conflicterende salarisdata blijft fail-closed.
-- Golden- en boundary-regressietests zijn aangepast zonder score-ankers, minimumscore of tie-breaks te wijzigen.
+- Herstelt de live salarisregel uit Vacature Register: een geverifieerd bedrag onder `min_monthly_salary_eur` blijft een `salary_below_preference`-waarschuwing en is geen harde afwijzing.
+- Ook een geverifieerde salarisrange die volledig onder de voorkeur ligt blijft advisory; onbekend salaris blijft warning/fallback.
+- Corrupte, niet-eindige, conflicterende of omgekeerde salarisdata blijft fail-closed als `salary_invalid`.
+- De rankingbenchmark bevat minimaal 30 vooraf gelabelde cases en bewaakt de advisory salarisgrens naast de bestaande score-ankers en harde gates.
 
 ## 5.4.0 - 2026-09-04
 - Observation contract verhoogd naar v1.1: alleen canonieke URL en `source_id + source_job_id` zijn nog automatische identiteitssleutels.
