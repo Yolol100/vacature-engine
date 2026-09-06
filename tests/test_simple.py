@@ -66,15 +66,10 @@ class RemoteFirstPolicyTests(unittest.TestCase):
     def test_broader_wordpress_title_is_allowed(self):
         self.assertTrue(eligibility(vacancy(title="Ecommerce Web Developer"), today=TODAY, policy=POLICY)["pass"])
 
-    def test_salary_below_minimum_is_rejected(self):
-        gate = eligibility(vacancy(salary_monthly_eur=3499), today=TODAY, policy=POLICY)
-        self.assertFalse(gate["pass"])
-        self.assertIn("salary_below_minimum", gate["reasons"])
-        self.assertNotIn("salary_below_minimum", gate["warnings"])
-
-    def test_salary_at_minimum_passes(self):
-        gate = eligibility(vacancy(salary_monthly_eur=3500), today=TODAY, policy=POLICY)
+    def test_salary_below_preference_is_warning_not_rejection(self):
+        gate = eligibility(vacancy(salary_monthly_eur=2500), today=TODAY, policy=POLICY)
         self.assertTrue(gate["pass"])
+        self.assertIn("salary_below_preference", gate["warnings"])
 
     def test_unknown_salary_is_warning_not_rejection(self):
         gate = eligibility(vacancy(salary_monthly_eur=None), today=TODAY, policy=POLICY)
