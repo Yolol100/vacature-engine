@@ -85,9 +85,9 @@
       "failure_category": null,
       "last_failure_at": "2026-09-05T00:46:08.372115+00:00",
       "last_result_count": 100,
-      "last_success_at": "2026-09-05T21:54:02.248411+00:00",
+      "last_success_at": "2026-09-06T08:07:34.367470+00:00",
       "next_retry_at": null,
-      "run_count": 18,
+      "run_count": 19,
       "source_instance": "himalayas:global"
     },
     "jobicy-api:global": {
@@ -95,9 +95,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 10,
-      "last_success_at": "2026-09-05T21:54:03.226504+00:00",
+      "last_success_at": "2026-09-06T08:07:35.204081+00:00",
       "next_retry_at": null,
-      "run_count": 18,
+      "run_count": 19,
       "source_instance": "jobicy-api:global"
     },
     "lever:kinsta": {
@@ -155,9 +155,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 15,
-      "last_success_at": "2026-09-05T21:54:03.462190+00:00",
+      "last_success_at": "2026-09-06T08:07:35.404287+00:00",
       "next_retry_at": null,
-      "run_count": 18,
+      "run_count": 19,
       "source_instance": "remotive:global"
     },
     "smartrecruiters:NewVariableInc": {
