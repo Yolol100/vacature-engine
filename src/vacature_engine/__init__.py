@@ -5,6 +5,11 @@ from .observations import (
     observation_candidate_fingerprint,
     observation_identity_keys,
 )
+from .opportunity import (
+    OPPORTUNITY_CONTRACT_VERSION,
+    OpportunityAssessment,
+    assess_opportunity,
+)
 from .simple import (
     LOGIC_VERSION,
     VacancyPolicy,
@@ -19,8 +24,11 @@ from .structured import STRUCTURED_JOBPOSTING_CONTRACT_VERSION, jobposting_signa
 __all__ = [
     "LOGIC_VERSION",
     "OBSERVATION_CONTRACT_VERSION",
+    "OPPORTUNITY_CONTRACT_VERSION",
     "STRUCTURED_JOBPOSTING_CONTRACT_VERSION",
+    "OpportunityAssessment",
     "VacancyPolicy",
+    "assess_opportunity",
     "canonicalize_observations",
     "choose_language",
     "eligibility",
