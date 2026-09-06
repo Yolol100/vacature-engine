@@ -1,0 +1,55 @@
+{
+  "completed_at": "2026-09-06T16:11:47.811646+00:00",
+  "page": 53,
+  "page_item_count": 1,
+  "review_queue": [
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "content_hash": "cf29a153227e0d92527a746644e6a0d2a90aefc667119059b07ab2fc28e22bf0",
+      "description_excerpt": "The MRO Buyer manages procurement activities across various departments, ensuring optimal cost-effectiveness, timely delivery, and compliance with quality standards and procurement policies. This role requires effective collaboration with cross-functional teams, internal stakeholders, customers, and external suppliers, as well as a proactive approach to continuous improvement and cost savings. Primary Responsibilities: Procurement Planning Collaborate with cross-functional teams, including Engineering and Logistics, to understand procurement requirements, specifications, inventory needs, and priorities. Ensure planning covers MRO materials and office supplies needs. Order Management Place purchase orders and ensure timely delivery of materials and services, coordinating with suppliers and internal stakeholders to resolve any issues, delays, or supply risks. Supplier Management Monitor and manage supplier performance, including delivery performance, quality and responsiveness, and compliance with contractual obligations. Conduct regular supplier reviews and evaluations. Seek opportunities for supplier development, improved commercial terms, and long-term supplier relationships. Reco",
+      "employer": "U.P.PRO",
+      "first_seen_at": "2026-09-06T16:11:41.684927+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T16:11:41.684927+00:00",
+      "listing_language": "en",
+      "location": "Visakhapatnam Rural mandal,",
+      "origin_completed_at": "2026-09-06T16:11:47.811646+00:00",
+      "origin_run_id": "ingestion-1788711107",
+      "published_at": "2026-09-03T12:18:27+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:fee34c7ef1095447fd5e2f8540c8fd6f5ccfeb7667ba910e21ed433c0d7daf88",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137303",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788437907,
+        "provider": "remoteok",
+        "provider_job_id": "1137303",
+        "slug": "remote-mro-buyer-u-p-pro-1137303",
+        "tags": [
+          "customer support",
+          "dev",
+          "microsoft",
+          "exec",
+          "ops",
+          "excel",
+          "engineer",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "MRO Buyer",
+      "url": "https://remoteOK.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "workplace_type": "remote"
+    }
+  ],
+  "review_queue_count": 1301,
+  "run_id": "ingestion-1788711107",
+  "schema_version": 1,
+  "total_pages": 53
+}
