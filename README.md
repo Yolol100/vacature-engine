@@ -96,6 +96,8 @@ De caller geeft per run expliciet deze live Config-waarden door:
 - `min_evidence_fit`
 - `allowed_listing_languages`
 
+Voor de eenvoudige standaardzoekmodus staat `max_output_roles` live op `5`. De Skill blijft actieve bronlagen doorzoeken totdat vijf echte, geverifieerde, nog niet eerder getoonde kandidaten beschikbaar zijn of de toegestane zoekruimte is uitgeput. `vacature-engine` beperkt alleen de uiteindelijke geldige set tot `max_output_roles`; de engine verzint nooit filler en bezit geen bronlijst.
+
 `min_monthly_salary_eur` is een voorkeur. Geldig lager salaris krijgt `salary_below_preference`; onbekend salaris `salary_unknown`. Beide mogen verder. Corrupte salarisdata faalt gesloten als `salary_invalid`.
 
 `max_posting_age_days=0` betekent geen harde leeftijdslimiet. Ontbrekende datum geeft `date_missing`; een ongeldige of toekomstige datum faalt gesloten.

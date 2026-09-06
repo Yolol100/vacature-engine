@@ -144,6 +144,36 @@ class RemoteFirstPolicyTests(unittest.TestCase):
         weak_evidence = vacancy(core_fit=50, evidence_fit=0, workstyle_fit=15)
         self.assertEqual([], top_vacancies([weak_core, weak_evidence], today=TODAY, policy=POLICY))
 
+    def test_simple_five_contract_caps_real_results_at_five(self):
+        simple_five_policy = {**POLICY, "max_output_roles": 5}
+        candidates = [
+            vacancy(
+                title=f"WordPress Developer {index}",
+                url=f"https://example.com/job-{index}",
+                posted_date=TODAY.isoformat(),
+            )
+            for index in range(7)
+        ]
+        ranked = top_vacancies(candidates, today=TODAY, policy=simple_five_policy)
+        self.assertEqual(5, len(ranked))
+
+    def test_simple_five_contract_never_invents_filler(self):
+        simple_five_policy = {**POLICY, "max_output_roles": 5}
+        candidates = [
+            vacancy(
+                title=f"WordPress Developer {index}",
+                url=f"https://example.com/job-{index}",
+                posted_date=TODAY.isoformat(),
+            )
+            for index in range(3)
+        ]
+        ranked = top_vacancies(candidates, today=TODAY, policy=simple_five_policy)
+        self.assertEqual(3, len(ranked))
+        self.assertEqual(
+            {"WordPress Developer 0", "WordPress Developer 1", "WordPress Developer 2"},
+            {row["title"] for row in ranked},
+        )
+
     def test_policy_validation(self):
         parsed = policy_from_config({key: str(value) for key, value in POLICY.items()})
         self.assertEqual(0, parsed.max_posting_age_days)
