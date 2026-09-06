@@ -6,7 +6,7 @@ from hashlib import sha256
 from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-OBSERVATION_CONTRACT_VERSION = "1.1"
+OBSERVATION_CONTRACT_VERSION = "1.2"
 
 # Stable evidence-class preference only. Mutable source IDs/priorities stay in the Vacature Register.
 _SOURCE_CLASS_RANK = {
@@ -20,6 +20,26 @@ _SOURCE_CLASS_RANK = {
 }
 
 _TRACKING_QUERY_KEYS = {"fbclid", "gclid", "msclkid"}
+_GENERIC_TERMINAL_SEGMENTS = {
+    "career",
+    "careers",
+    "get-hired",
+    "job",
+    "jobs",
+    "open-positions",
+    "openings",
+    "opportunities",
+    "remote-jobs",
+    "search",
+    "vacancies",
+    "vacature",
+    "vacatures",
+    "werken-bij",
+    "work-with-us",
+}
+_GENERIC_PATH_MARKERS = {"categories", "category", "search", "tag"}
+_APPLY_SEGMENTS = {"apply", "application"}
+_APPLY_ID_QUERY_KEYS = {"gh_jid", "id", "job", "job_id", "jobid", "position", "posting"}
 
 
 def _clean_text(value: Any) -> str | None:
@@ -73,6 +93,46 @@ def normalize_canonical_url(value: Any) -> str | None:
     return urlunsplit((scheme, netloc, path, urlencode(query_items, doseq=True), ""))
 
 
+def is_role_specific_vacancy_url(value: Any) -> bool:
+    """Return whether a URL is specific enough to be a strong vacancy identity.
+
+    Generic careers, job-list, search, category, tag and pagination pages remain
+    useful provenance but must never merge unrelated vacancies merely because the
+    same landing page was reused. Direct role/detail URLs stay strong. A generic
+    apply path is strong only when its query carries an explicit job identifier.
+    """
+    normalized = normalize_canonical_url(value)
+    if not normalized:
+        return False
+
+    try:
+        parts = urlsplit(normalized)
+    except ValueError:
+        return False
+
+    segments = [segment.casefold() for segment in parts.path.split("/") if segment]
+    if not segments:
+        return False
+
+    if any(marker in segments for marker in _GENERIC_PATH_MARKERS):
+        return False
+
+    if "page" in segments:
+        page_index = max(index for index, segment in enumerate(segments) if segment == "page")
+        if page_index == len(segments) - 2 and segments[-1].isdigit():
+            return False
+
+    last = segments[-1]
+    if last in _GENERIC_TERMINAL_SEGMENTS:
+        return False
+
+    if last in _APPLY_SEGMENTS:
+        query = {key.casefold(): val for key, val in parse_qsl(parts.query, keep_blank_values=True)}
+        return any(query.get(key) for key in _APPLY_ID_QUERY_KEYS)
+
+    return True
+
+
 def _source_job_key(row: Mapping[str, Any]) -> str | None:
     source_id = _fold_text(row.get("source_id"))
     source_job_id = _fold_text(row.get("source_job_id"))
@@ -95,8 +155,9 @@ def observation_candidate_fingerprint(row: Mapping[str, Any]) -> str | None:
 def observation_identity_keys(row: Mapping[str, Any]) -> tuple[str, ...]:
     """Return strong deterministic identity keys only."""
     keys: list[str] = []
-    url = normalize_canonical_url(row.get("canonical_url") or row.get("url"))
-    if url:
+    raw_url = row.get("canonical_url") or row.get("url")
+    url = normalize_canonical_url(raw_url)
+    if url and is_role_specific_vacancy_url(url):
         keys.append(f"url:{url}")
     source_key = _source_job_key(row)
     if source_key:
@@ -108,13 +169,14 @@ def _authority_key(row: Mapping[str, Any]) -> tuple[int, int, int, int, str, str
     source_type = _fold_text(row.get("source_type")) or ""
     rank = _SOURCE_CLASS_RANK.get(source_type, 99)
     canonical_url = normalize_canonical_url(row.get("canonical_url") or row.get("url"))
+    strong_url = canonical_url if canonical_url and is_role_specific_vacancy_url(canonical_url) else None
     return (
+        0 if strong_url else 1,
         rank,
-        0 if canonical_url else 1,
         0 if _clean_text(row.get("source_job_id")) else 1,
         0 if _clean_text(row.get("published_at")) else 1,
         _fold_text(row.get("source_id")) or "",
-        canonical_url or "",
+        strong_url or canonical_url or "",
     )
 
 
@@ -173,8 +235,9 @@ def canonicalize_observations(observations: Sequence[Any]) -> list[dict[str, Any
     """Cluster same-run observations on strong keys and select canonical evidence.
 
     Weak employer/title/location fingerprints are surfaced only as duplicate-candidate
-    signals. They never auto-merge distinct strong identities. This function performs
-    no crawling, semantic fit assessment, cross-run persistence, or source-priority lookup.
+    signals. Generic careers/listing URLs are provenance only and do not authorize a
+    merge. This function performs no crawling, semantic fit assessment, cross-run
+    persistence, or source-priority lookup.
     """
     rows: list[Mapping[str, Any]] = [row for row in observations if isinstance(row, Mapping)]
     if not rows:
