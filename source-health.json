@@ -145,9 +145,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 100,
-      "last_success_at": "2026-09-06T10:49:48.958593+00:00",
+      "last_success_at": "2026-09-06T14:07:23.725051+00:00",
       "next_retry_at": null,
-      "run_count": 7,
+      "run_count": 8,
       "source_instance": "remote-ok:global"
     },
     "remotive:global": {
@@ -175,9 +175,9 @@
       "failure_category": null,
       "last_failure_at": null,
       "last_result_count": 25,
-      "last_success_at": "2026-09-06T10:49:48.528163+00:00",
+      "last_success_at": "2026-09-06T14:07:23.315006+00:00",
       "next_retry_at": null,
-      "run_count": 7,
+      "run_count": 8,
       "source_instance": "we-work-remotely:programming"
     },
     "workable:awesomemotive": {

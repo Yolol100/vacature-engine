@@ -1,7 +1,7 @@
 {
-  "completed_at": "2026-09-06T11:05:46.035915+00:00",
+  "completed_at": "2026-09-06T14:07:23.728138+00:00",
   "page": 40,
-  "page_item_count": 24,
+  "page_item_count": 25,
   "review_queue": [
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-shunter-stobart-1137216",
@@ -982,10 +982,58 @@
       "title": "Journeyman I P",
       "url": "https://remoteOK.com/remote-jobs/remote-journeyman-i-p-wood-1137197",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-gardener-w-hotels-1137164",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-gardener-w-hotels-1137164",
+      "content_hash": "855c46b35a74985ecfc568ead1ab93b9a8b70c2194f3c82c0b75893c5a4e3ba4",
+      "description_excerpt": "Additional Information Job Number 26108538 Job Category Landscaping & Grounds Location Estrada da Gale, Sesmarias, Albufeira, Portugal, Portugal, 8200-385VIEW ON MAP Schedule Full Time Located Remotely? N Position Type Non-Management Position Summary Monitor property grounds to ensure a pleasant appearance. Maintain the appearance of fountains, planters, or other grounds features by cleaning, replacing or making repairs. Install new flowers, bulbs, grass, trees, and shrubs. Maintain flower beds, baskets, and boxes by watering, removing weeds, trimming, and performing other maintenance. Replace and transplant trees, flowers, and shrubs. Maintain trees and shrubs by trimming and pruning. Trim and edge grass in areas that mowers cannot reach. Maintain lawns by mowing, edging, raking leaves, and performing other lawn maintenance. Install, maintain, and operate irrigation systems. Remove and bag trash from all exterior trash cans. Operate dump trucks, tractors, trucks, or utility vehicles to transport equipment, supplies, materials, and debris. Wash, clean, and re-fuel all equipment after use. Follow all company and safety and security policies and procedures; report defective equipment",
+      "employer": "W Hotels",
+      "first_seen_at": "2026-09-06T14:07:23.316114+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T14:07:23.316114+00:00",
+      "listing_language": "en",
+      "location": "Albufeira,",
+      "origin_completed_at": "2026-09-06T14:07:23.728138+00:00",
+      "origin_run_id": "ingestion-1788703643",
+      "published_at": "2026-08-27T03:19:36+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:02f71859395b324f8c04ad2cb0a8fe07b677841341eb992ba554a8624073986c",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137164",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787800776,
+        "provider": "remoteok",
+        "provider_job_id": "1137164",
+        "slug": "remote-gardener-w-hotels-1137164",
+        "tags": [
+          "design",
+          "education",
+          "marketing",
+          "travel",
+          "scheme",
+          "ops",
+          "medical",
+          "engineer",
+          "digital nomad",
+          "infosec",
+          "customer support",
+          "exec"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Gardener",
+      "url": "https://remoteOK.com/remote-jobs/remote-gardener-w-hotels-1137164",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 999,
-  "run_id": "ingestion-1788692746",
+  "review_queue_count": 1099,
+  "run_id": "ingestion-1788703643",
   "schema_version": 1,
-  "total_pages": 40
+  "total_pages": 44
 }
