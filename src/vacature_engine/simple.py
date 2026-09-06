@@ -9,7 +9,7 @@ from typing import Any
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-09-06-salary-hard-gate-v13"
+LOGIC_VERSION = "2026-08-31-remote-first-relaxed-v12"
 
 _LANGUAGE_ALIASES = {
     "dutch": "nl",
@@ -156,9 +156,7 @@ def _salary_status(vacancy: Mapping[str, Any], minimum: float) -> tuple[bool, st
         exact = _number(exact_raw)
         if exact is None or exact < 0:
             return False, "salary_invalid"
-        if exact < minimum:
-            return True, "salary_below_minimum"
-        return True, None
+        return True, "salary_below_preference" if exact < minimum else None
     if range_present:
         low = _number(minimum_raw) if minimum_raw is not None else None
         high = _number(maximum_raw) if maximum_raw is not None else None
@@ -169,7 +167,7 @@ def _salary_status(vacancy: Mapping[str, Any], minimum: float) -> tuple[bool, st
         if low is not None and high is not None and low > high:
             return False, "salary_invalid"
         if high is not None and high < minimum:
-            return True, "salary_below_minimum"
+            return True, "salary_below_preference"
         return True, None
     return False, "salary_unknown"
 
@@ -259,7 +257,7 @@ def eligibility(
             reasons.append("required_language_not_allowed")
 
     salary_known, salary_status = _salary_status(vacancy, runtime_policy.min_monthly_salary_eur)
-    if salary_status in {"salary_invalid", "salary_below_minimum"}:
+    if salary_status == "salary_invalid":
         reasons.append(salary_status)
     elif salary_status is not None:
         warnings.append(salary_status)
