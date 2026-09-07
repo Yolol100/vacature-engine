@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.6.0 - 2026-09-07
+- Voegt CV Artifact Contract v1.0 toe voor deterministische vacaturegebonden DOCX-bestandsnamen, bron-CV/vacature-snapshot SHA-256-provenance en stabiele artifact identity.
+- De helper blijft policy-free: geen CV-proza, kandidaatclaiminferentie, documentgeneratie, discovery of auto-apply.
+- Nieuwe regressietests bewaken stabiele filenames, vacancy-isolatie, URL/hash-validatie en fail-closed manifestreadback.
+- Bestaande remote-first v12 gates, scoreankers, salarisbeleid, opportunity en ranking blijven ongewijzigd.
+
 ## 5.4.1 - 2026-09-06
 - Herstelt de live salarisregel uit Vacature Register: een geverifieerd bedrag onder `min_monthly_salary_eur` blijft een `salary_below_preference`-waarschuwing en is geen harde afwijzing.
 - Ook een geverifieerde salarisrange die volledig onder de voorkeur ligt blijft advisory; onbekend salaris blijft warning/fallback.

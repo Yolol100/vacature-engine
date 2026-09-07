@@ -9,13 +9,40 @@ Het `vacature_engine`-pakket doet alleen:
 2. harde vacaturefilters;
 3. vaste 100-puntsscore;
 4. sterke matches selecteren en sorteren;
-5. conservatieve normalisatie van Schema.org `JobPosting`-signalen.
+5. conservatieve normalisatie van Schema.org `JobPosting`-signalen;
+6. deterministische metadata-validatie voor vacature-specifieke CV-artifacts.
 
-Het `vacature_engine`-pakket bevat geen scraping, netwerkdiscovery, jobboardlijst, bronprioritering, e-mail of sollicitatieformulieren. De repository bevat daarnaast een strikt gescheiden sibling-component onder `ingestion/` voor publieke read-acquisitie, technische cross-run state en source-health. Die component is geen onderdeel van het `vacature_engine` runtimepakket en bezit geen kandidaat-, score-, bronprioriteits- of sollicitatiebeleid.
+Het `vacature_engine`-pakket bevat geen scraping, netwerkdiscovery, jobboardlijst, bronprioritering, e-mail of sollicitatieformulieren. Het schrijft ook geen CV-proza en leidt geen kandidaatervaring af. De repository bevat daarnaast een strikt gescheiden sibling-component onder `ingestion/` voor publieke read-acquisitie, technische cross-run state en source-health. Die component is geen onderdeel van het `vacature_engine` runtimepakket en bezit geen kandidaat-, score-, bronprioriteits- of sollicitatiebeleid.
 
 ## Ingestion component
 
 `ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. GitHub Actions voert deze component alleen handmatig of bij relevante codewijzigingen uit; periodieke vacaturediscovery blijft caller-owned. In de eenvoudige modus is de ChatGPT-automation de enige scheduler. Source-health kan bij zo'n expliciete run compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
+
+## CV artifact contract v1.0
+
+Vacature-specifieke CV-tailoring blijft volledig bij `vacature-search`. De helper mag alleen reproduceerbare artifactmetadata valideren:
+
+- een veilige, stabiele `.docx`-bestandsnaam die aan `vacancy_id`, werkgever en titel is gekoppeld;
+- SHA-256-provenance voor de canonieke bron-CV en vacature-snapshot;
+- de canonieke vacature-URL;
+- een deterministische artifact identity voor readback/dedupe.
+
+```python
+from vacature_engine import build_cv_artifact_manifest, cv_artifact_identity
+
+manifest = build_cv_artifact_manifest(
+    candidate_name="Andrew Baeten",
+    vacancy_id="vacancy-123",
+    employer="Example",
+    title="WordPress Developer",
+    canonical_url="https://jobs.example.com/123",
+    source_cv_sha256="a" * 64,
+    job_snapshot_sha256="b" * 64,
+)
+artifact_id = cv_artifact_identity(manifest)
+```
+
+Dit contract beslist nooit welke ervaring relevant is, schrijft nooit CV-tekst, verandert geen vacaturegates en voert geen sollicitatie uit.
 
 ## Observatiecontract v1.1
 
@@ -127,6 +154,7 @@ best = top_vacancies(vacancies, today=today_from_config, policy=config_values)
 - Python 3.11 t/m 3.14 in engine-CI.
 - Het `vacature_engine` runtimepakket houdt runtime-dependencies leeg.
 - Boundary-, golden-, property/metamorphic-, adversarial-, wereldwijde-geografie- en taalpoorttests.
+- CV-artifacttests bewaken stabiele vacancy-bound bestandsnamen, provenance-hashes en fail-closed manifestvalidatie; semantische CV-tailoring blijft expliciet buiten de helper.
 - Observatietests bewaken sterke identiteit, false-mergepreventie, URL-fail-closed en publication-conflictprovenance.
 - Structured-data-tests bewaken dat Schema.org-signalen nooit remote/geografie/open-statusbeleid overnemen.
 - De ingestiecomponent heeft eigen regressietests, 10.000-record benchmark en live GitHub Actions-netwerkgate.
