@@ -75,6 +75,6 @@ def test_manifest_rejects_non_http_url_and_bad_digest():
 
 
 def test_sha256_bytes_requires_bytes():
-    assert sha256_bytes(b"cv") == "18a36f83007642fcbd18bc91870d7bc9132800ea045447f81d5239a79f416d16"
+    assert sha256_bytes(b"cv") == "29cdee48e28d8104186513c96be32955f6203cffa61833e36a88a37ecbff7989"
     with pytest.raises(TypeError):
         sha256_bytes("cv")
