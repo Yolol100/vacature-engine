@@ -29,6 +29,14 @@ class JsonLdTests(unittest.TestCase):
         self.assertEqual(row["location"],"USA")
         self.assertTrue(row["remote"])
 
+    def test_remote_administrative_area_requirement_uses_name(self):
+        url="https://example.test/jobs/remote-eu"
+        html='''<script type="application/ld+json">{"@type":"JobPosting","title":"Remote WordPress Engineer","jobLocationType":"TELECOMMUTE","applicantLocationRequirements":{"@type":"AdministrativeArea","name":"European Union"},"identifier":{"value":"wp-eu"},"url":"https://example.test/jobs/remote-eu"}</script>'''
+        spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
+        adapter=ADAPTERS["jsonld"]
+        row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
+        self.assertEqual(row["location"],"European Union")
+
     def test_remote_state_requirements_join_names(self):
         url="https://example.test/jobs/remote-states"
         html='''<script type="application/ld+json">{"@type":"JobPosting","title":"Remote WordPress Engineer","jobLocationType":"TELECOMMUTE","applicantLocationRequirements":[{"@type":"State","name":"Michigan, USA"},{"@type":"State","name":"Texas, USA"}],"identifier":{"value":"wp-states"},"url":"https://example.test/jobs/remote-states"}</script>'''
