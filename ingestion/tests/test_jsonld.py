@@ -16,6 +16,26 @@ class JsonLdTests(unittest.TestCase):
         self.assertEqual(row["canonical_url"],"https://example.test/jobs/wp")
         self.assertTrue(row["remote"])
         self.assertEqual(row["source_job_id"],"acme:wp-1")
+        self.assertEqual(row["description"],"Build WP")
+        self.assertEqual(row["source_metadata"]["structured_extractor"],"extruct")
+        self.assertEqual(row["source_metadata"]["text_extractor"],"trafilatura")
+
+    def test_page_text_fallback_when_description_missing(self):
+        url="https://example.test/jobs/wp"
+        html='''<html><body><main><h1>WordPress Engineer</h1><p>Build accessible WordPress sites for clients.</p></main><script type="application/ld+json">{"@type":"JobPosting","title":"WordPress Engineer","identifier":{"value":"wp-2"},"hiringOrganization":{"name":"Acme"},"url":"https://example.test/jobs/wp"}</script></body></html>'''
+        spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
+        adapter=ADAPTERS["jsonld"]
+        row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
+        self.assertIn("Build accessible WordPress sites",row["description"])
+
+    def test_fallback_can_be_disabled(self):
+        url="https://example.test/jobs/wp"
+        html='''<html><body><main><p>Page-only text</p></main><script type="application/ld+json">{"@type":"JobPosting","title":"WordPress Engineer","identifier":{"value":"wp-3"},"url":"https://example.test/jobs/wp"}</script></body></html>'''
+        spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url],"allow_page_text_fallback":False})
+        adapter=ADAPTERS["jsonld"]
+        row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
+        self.assertIsNone(row["description"])
+
     def test_empty_page(self):
         url="https://example.test/careers"; spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
         self.assertEqual(ADAPTERS["jsonld"].fetch(FakeClient({url:"<html/>"}),spec),[])
