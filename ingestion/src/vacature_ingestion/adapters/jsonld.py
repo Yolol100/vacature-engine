@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-import json
-import re
 from typing import Any, Iterable
+
+import extruct
+from trafilatura import extract as extract_main_text
 
 from .base import Adapter, source_job_id
 from ..models import SourceSpec
 from ..normalize import clean_text, html_to_text
-
-_SCRIPT_RE = re.compile(
-    r"<script[^>]+type=[\"']application/ld\+json[\"'][^>]*>(.*?)</script>",
-    re.IGNORECASE | re.DOTALL,
-)
 
 
 def _iter_objects(value: Any) -> Iterable[dict[str, Any]]:
@@ -60,6 +56,30 @@ def _identifier(value: Any) -> str | None:
     return clean_text(value)
 
 
+def _structured_payloads(html: str, url: str) -> Iterable[dict[str, Any]]:
+    try:
+        payload = extruct.extract(html, base_url=url, syntaxes=["json-ld"])
+    except (TypeError, ValueError):
+        return []
+    raw_items = payload.get("json-ld", []) if isinstance(payload, dict) else []
+    return [item for item in raw_items if isinstance(item, dict)]
+
+
+def _fallback_page_text(html: str) -> str | None:
+    try:
+        return clean_text(
+            extract_main_text(
+                html,
+                output_format="txt",
+                include_comments=False,
+                include_tables=False,
+                favor_precision=True,
+            )
+        )
+    except (TypeError, ValueError):
+        return None
+
+
 class JsonLdAdapter(Adapter):
     name = "jsonld"
 
@@ -74,19 +94,15 @@ class JsonLdAdapter(Adapter):
         jobs: list[dict[str, Any]] = []
         for url in urls[: spec.max_jobs]:
             html = client.get_text(url, headers={"Accept": "text/html,application/xhtml+xml"})
+            fallback_text = _fallback_page_text(html) if spec.options.get("allow_page_text_fallback", True) else None
             found = False
-            for match in _SCRIPT_RE.finditer(html):
-                raw = match.group(1).strip()
-                if not raw:
-                    continue
-                try:
-                    payload = json.loads(raw)
-                except json.JSONDecodeError:
-                    continue
+            for payload in _structured_payloads(html, url):
                 for item in _iter_objects(payload):
                     if _is_job_posting(item):
                         copy = dict(item)
                         copy["__source_page_url"] = url
+                        if fallback_text:
+                            copy["__page_text_fallback"] = fallback_text
                         jobs.append(copy)
                         found = True
                         if len(jobs) >= spec.max_jobs:
@@ -104,6 +120,7 @@ class JsonLdAdapter(Adapter):
         organization = record.get("hiringOrganization") if isinstance(record.get("hiringOrganization"), dict) else {}
         job_location_type = clean_text(record.get("jobLocationType"))
         remote = True if job_location_type and "telecommute" in job_location_type.casefold() else None
+        description = html_to_text(record.get("description")) or clean_text(record.get("__page_text_fallback"))
         return {
             "source_id": spec.source_id,
             "source_type": spec.source_type,
@@ -115,7 +132,7 @@ class JsonLdAdapter(Adapter):
             "employer": spec.employer or clean_text(organization.get("name")) or spec.account,
             "title": title,
             "location": _location_text(record.get("jobLocation")) or clean_text(record.get("applicantLocationRequirements")),
-            "description": html_to_text(record.get("description")),
+            "description": description,
             "published_at": clean_text(record.get("datePosted")),
             "updated_at": None,
             "valid_through": clean_text(record.get("validThrough")),
@@ -127,6 +144,8 @@ class JsonLdAdapter(Adapter):
             "workplace_type": job_location_type,
             "source_metadata": {
                 "provider": "jsonld",
+                "structured_extractor": "extruct",
+                "text_extractor": "trafilatura",
                 "identifier": record.get("identifier"),
                 "applicant_location_requirements": record.get("applicantLocationRequirements"),
                 "direct_apply": record.get("directApply"),
