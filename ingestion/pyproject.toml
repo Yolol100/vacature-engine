@@ -7,6 +7,10 @@ name = "vacature-ingestion"
 version = "0.10.2"
 description = "Policy-free bulk ingestion runner producing JobObservation 1.1 compatible vacancy observations"
 requires-python = ">=3.11"
+dependencies = [
+  "extruct==0.18.0",
+  "trafilatura==2.2.0",
+]
 
 [tool.setuptools]
 package-dir = {"" = "src"}

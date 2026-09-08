@@ -4,6 +4,9 @@ import json
 import re
 from typing import Any, Iterable
 
+import extruct
+from trafilatura import extract as extract_main_text
+
 from .base import Adapter, source_job_id
 from ..models import SourceSpec
 from ..normalize import clean_text, html_to_text
@@ -33,6 +36,40 @@ def _is_job_posting(value: dict[str, Any]) -> bool:
     if isinstance(raw, list):
         return any(isinstance(item, str) and item.casefold() == "jobposting" for item in raw)
     return False
+
+
+def _jsonld_payloads(html: str, page_url: str) -> Iterable[Any]:
+    """Prefer extruct, then retain the previous conservative regex fallback."""
+    try:
+        extracted = extruct.extract(html, base_url=page_url, syntaxes=["json-ld"])
+        payloads = extracted.get("json-ld") if isinstance(extracted, dict) else None
+        if isinstance(payloads, list):
+            yield from payloads
+            return
+    except (ValueError, TypeError, KeyError):
+        pass
+
+    for match in _SCRIPT_RE.finditer(html):
+        raw = match.group(1).strip()
+        if not raw:
+            continue
+        try:
+            yield json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+
+
+def _page_text(html: str) -> str | None:
+    try:
+        text = extract_main_text(
+            html,
+            include_comments=False,
+            include_tables=True,
+            output_format="txt",
+        )
+    except (ValueError, TypeError):
+        return None
+    return clean_text(text)
 
 
 def _address_text(value: Any) -> str | None:
@@ -74,19 +111,17 @@ class JsonLdAdapter(Adapter):
         jobs: list[dict[str, Any]] = []
         for url in urls[: spec.max_jobs]:
             html = client.get_text(url, headers={"Accept": "text/html,application/xhtml+xml"})
+            page_text: str | None = None
             found = False
-            for match in _SCRIPT_RE.finditer(html):
-                raw = match.group(1).strip()
-                if not raw:
-                    continue
-                try:
-                    payload = json.loads(raw)
-                except json.JSONDecodeError:
-                    continue
+            for payload in _jsonld_payloads(html, url):
                 for item in _iter_objects(payload):
                     if _is_job_posting(item):
                         copy = dict(item)
                         copy["__source_page_url"] = url
+                        if not clean_text(copy.get("description")):
+                            if page_text is None:
+                                page_text = _page_text(html)
+                            copy["__source_page_text"] = page_text
                         jobs.append(copy)
                         found = True
                         if len(jobs) >= spec.max_jobs:
@@ -104,6 +139,7 @@ class JsonLdAdapter(Adapter):
         organization = record.get("hiringOrganization") if isinstance(record.get("hiringOrganization"), dict) else {}
         job_location_type = clean_text(record.get("jobLocationType"))
         remote = True if job_location_type and "telecommute" in job_location_type.casefold() else None
+        description = html_to_text(record.get("description")) or clean_text(record.get("__source_page_text"))
         return {
             "source_id": spec.source_id,
             "source_type": spec.source_type,
@@ -115,7 +151,7 @@ class JsonLdAdapter(Adapter):
             "employer": spec.employer or clean_text(organization.get("name")) or spec.account,
             "title": title,
             "location": _location_text(record.get("jobLocation")) or clean_text(record.get("applicantLocationRequirements")),
-            "description": html_to_text(record.get("description")),
+            "description": description,
             "published_at": clean_text(record.get("datePosted")),
             "updated_at": None,
             "valid_through": clean_text(record.get("validThrough")),
@@ -127,6 +163,8 @@ class JsonLdAdapter(Adapter):
             "workplace_type": job_location_type,
             "source_metadata": {
                 "provider": "jsonld",
+                "metadata_extractor": "extruct-0.18.0",
+                "main_text_fallback": "trafilatura-2.2.0" if record.get("__source_page_text") else None,
                 "identifier": record.get("identifier"),
                 "applicant_location_requirements": record.get("applicantLocationRequirements"),
                 "direct_apply": record.get("directApply"),
