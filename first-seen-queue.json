@@ -1,11 +1,30 @@
 {
   "bootstrap": false,
-  "generated_at": "2026-09-06T16:11:37.934883+00:00",
-  "items": [],
-  "new_item_count": 0,
-  "pending_count": 0,
+  "generated_at": "2026-09-08T10:40:33.909005+00:00",
+  "items": [
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8177092",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8177092",
+      "content_hash": "f3b6af100418d271bc035dd8afe1e1ce8881462fa7474e0568db015ffcd56da8",
+      "description_excerpt": "<div class=\"content-intro\"><p>Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. &nbsp;We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world.&nbsp;</p></div><p>We are hiring people who wish to grow in a dynamic Technical Support environment. Our ideal candidate is a customer-focused individual who leverages their technical expertise to give best-in-class support that benefits our users. Above all, we need individuals who are enthusiastic about working in a fast-paced, highly dynamic, and rewarding cross-functional setting.</p> <h2><strong>What You'll Do:</strong></h2> <ul> <li>Provide best-in-class support and solutions to our customers through tickets and emails with empathy.</li> <li>Collaborate in a 24/7 team environment, working a flexible schedule with rotating shifts (including nights and weekends).",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-08T10:40:31.259307+00:00",
+      "listing_language": null,
+      "location": "Karachi",
+      "published_at": null,
+      "radar_key": "radar:f0665702123b085320d4edfd0147d72688e2a9400c4e2fa4816aeb08e00cd3d8",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8177092",
+      "source_type": "ats",
+      "title": "Senior Cloud Support Engineer (Platform Migration)",
+      "updated_at": "2026-09-07T12:48:05-04:00"
+    }
+  ],
+  "new_item_count": 1,
+  "pending_count": 1,
   "schema_version": 1,
-  "source_completed_at": "2026-09-06T16:11:37.719645+00:00",
-  "source_run_id": "ingestion-1788711097",
+  "source_completed_at": "2026-09-08T10:40:33.233681+00:00",
+  "source_run_id": "ingestion-1788864033",
   "ttl_hours": 72
 }
