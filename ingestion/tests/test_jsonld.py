@@ -20,6 +20,47 @@ class JsonLdTests(unittest.TestCase):
         self.assertEqual(row["source_metadata"]["structured_extractor"],"extruct")
         self.assertEqual(row["source_metadata"]["text_extractor"],"trafilatura")
 
+    def test_remote_country_requirement_uses_name(self):
+        url="https://example.test/jobs/remote-us"
+        html='''<script type="application/ld+json">{"@type":"JobPosting","title":"Remote WordPress Engineer","jobLocationType":"TELECOMMUTE","applicantLocationRequirements":{"@type":"Country","name":"USA"},"identifier":{"value":"wp-us"},"url":"https://example.test/jobs/remote-us"}</script>'''
+        spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
+        adapter=ADAPTERS["jsonld"]
+        row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
+        self.assertEqual(row["location"],"USA")
+        self.assertTrue(row["remote"])
+
+    def test_remote_administrative_area_requirement_uses_name(self):
+        url="https://example.test/jobs/remote-eu"
+        html='''<script type="application/ld+json">{"@type":"JobPosting","title":"Remote WordPress Engineer","jobLocationType":"TELECOMMUTE","applicantLocationRequirements":{"@type":"AdministrativeArea","name":"European Union"},"identifier":{"value":"wp-eu"},"url":"https://example.test/jobs/remote-eu"}</script>'''
+        spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
+        adapter=ADAPTERS["jsonld"]
+        row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
+        self.assertEqual(row["location"],"European Union")
+
+    def test_remote_state_requirements_join_names(self):
+        url="https://example.test/jobs/remote-states"
+        html='''<script type="application/ld+json">{"@type":"JobPosting","title":"Remote WordPress Engineer","jobLocationType":"TELECOMMUTE","applicantLocationRequirements":[{"@type":"State","name":"Michigan, USA"},{"@type":"State","name":"Texas, USA"}],"identifier":{"value":"wp-states"},"url":"https://example.test/jobs/remote-states"}</script>'''
+        spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
+        adapter=ADAPTERS["jsonld"]
+        row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
+        self.assertEqual(row["location"],"Michigan, USA; Texas, USA")
+
+    def test_physical_job_location_precedes_remote_requirement(self):
+        url="https://example.test/jobs/hybrid-location"
+        html='''<script type="application/ld+json">{"@type":"JobPosting","title":"WordPress Engineer","jobLocationType":"TELECOMMUTE","jobLocation":{"@type":"Place","address":{"@type":"PostalAddress","addressLocality":"Detroit","addressRegion":"MI","addressCountry":{"@type":"Country","name":"US"}}},"applicantLocationRequirements":{"@type":"Country","name":"Canada"},"identifier":{"value":"wp-hybrid"},"url":"https://example.test/jobs/hybrid-location"}</script>'''
+        spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
+        adapter=ADAPTERS["jsonld"]
+        row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
+        self.assertEqual(row["location"],"Detroit, MI, US")
+
+    def test_multiple_employment_types_are_normalized(self):
+        url="https://example.test/jobs/flexible"
+        html='''<script type="application/ld+json">{"@type":"JobPosting","title":"WordPress Engineer","employmentType":["FULL_TIME","CONTRACTOR"],"identifier":{"value":"wp-flex"},"url":"https://example.test/jobs/flexible"}</script>'''
+        spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
+        adapter=ADAPTERS["jsonld"]
+        row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
+        self.assertEqual(row["employment_type"],"FULL_TIME; CONTRACTOR")
+
     def test_page_text_fallback_when_description_missing(self):
         url="https://example.test/jobs/wp"
         html='''<html><body><main><h1>WordPress Engineer</h1><p>Build accessible WordPress sites for clients.</p></main><script type="application/ld+json">{"@type":"JobPosting","title":"WordPress Engineer","identifier":{"value":"wp-2"},"hiringOrganization":{"name":"Acme"},"url":"https://example.test/jobs/wp"}</script></body></html>'''
