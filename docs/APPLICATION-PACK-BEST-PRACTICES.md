@@ -41,7 +41,7 @@ This document records external evidence used to validate the caller-owned form/e
 - DOCX is the default CV delivery format. Switch to PDF only when the official form/site explicitly requires PDF, accepts only PDF, or official email instructions explicitly require a PDF attachment.
 - General PDF advice or provider preference does not override the user's DOCX default when DOCX is accepted.
 - If the employer prescribes a filename, follow it exactly. Otherwise use `Andrew_Baeten_Resume.<ext>` when the official flow calls the document Resume; otherwise use `Andrew_Baeten_CV.<ext>`.
-- Keep internal vacancy-bound artifact identity/provenance separate from the visible delivery filename.
+- Keep internal vacancy-bound artifact identity/provenance separate from the visible delivery filename. When several application packs are prepared together, use vacancy-scoped internal paths so the same simple visible filename cannot overwrite another CV.
 - Keep the CV parser-friendly: simple structure, no decorative graphics, no core content dependent on tables/text boxes or multiple columns, and no essential contact information only in headers/footers.
 - Check supported extension and relevant file-size limits before readiness.
 - Official AI/disclosure/original-work instructions are checked before drafting prose.
