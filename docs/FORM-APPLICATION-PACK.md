@@ -7,14 +7,14 @@
 For each form-based vacancy, the caller prepares:
 
 1. **Vacancy name** - exact role title + employer.
-2. **Answers to the questions** - in official form order, evidence-bound and ready for the user to review/fill.
-3. **CV** - vacancy-specific, based on the canonical CV and delivered in the supported/preferred application format.
+2. **Answers to the questions** - in official form order, evidence-bound, short and ready for the user to review/fill.
+3. **CV** - vacancy-specific, based on the canonical CV.
 
 Only the official canonical employer/ATS form may be used as the question source. Hidden or inaccessible questions must never be guessed.
 
 ## Field metadata
 
-For every visible field, the caller should preserve the information that changes how the answer must be entered:
+For every visible field, preserve the information that changes how the answer must be entered:
 
 - exact question/label and visible help text;
 - required vs optional;
@@ -23,28 +23,31 @@ For every visible field, the caller should preserve the information that changes
 - visible character/word/date/number constraints;
 - upload type/size/name/count requirements.
 
-Structured fields must be answered in the accepted structure. A yes/no or select option should not be paraphrased into prose, a numeric field should not receive free text, and visible limits must be respected.
+Structured fields must be answered in the accepted structure. Keep normal answers as short as the field allows; do not turn a simple field into a mini cover letter.
 
 ## Answer classes
 
 - `verified_factual`: direct from verified candidate evidence or explicit current user input.
 - `approved_reuse`: only from a user-approved `ApplicationAnswers` entry for an exact or semantically equivalent question.
-- `evidence_bound_draft`: a new concise draft for motivation/experience, using verified candidate facts only.
-- `user_confirmation_required`: salary, current availability/start date, work authorization/legal declarations, relocation, or other current-state decisions.
-- `user_action_only`: privacy/GDPR acknowledgement, e-signature/attestation, CAPTCHA, voluntary demographic/EEO questions, or sensitive choices the user must make personally. Protected characteristics are never inferred.
-- `manual_assessment`: coding/writing tests, take-home assessments, quizzes, or questions where the employer explicitly prohibits AI-generated answers or requires the candidate's own response.
+- `evidence_bound_draft`: a concise draft for motivation/experience, using verified candidate facts only.
+- `user_confirmation_required`: salary, availability/start date, work authorization/legal declarations, relocation, or other current-state decisions.
+- `user_action_only`: privacy/GDPR acknowledgement, e-signature/attestation, CAPTCHA, voluntary demographic/EEO questions, or sensitive choices the user must make personally.
+- `manual_assessment`: coding/writing tests, take-home assessments, quizzes, or questions where the employer requires the candidate's own response or prohibits AI-generated answers.
 
-A vacancy requirement is never candidate evidence. The caller must not invent claims, dates, salary, legal status, eligibility, or experience. Core screening fields such as work authorization, location eligibility, required certification and availability require especially strict evidence because application systems can use answers for screening.
+A vacancy requirement is never candidate evidence. Do not invent claims, dates, salary, legal status, eligibility, or experience.
 
 ## CV / attachments
 
-Format priority is:
+User-facing delivery policy:
 
-1. explicit employer/application-site requirement;
-2. official provider-documented preference when the concrete flow supports it;
-3. configured fallback.
+1. Use DOCX by default.
+2. Switch to PDF only when the official form/site explicitly requires PDF or accepts only PDF.
+3. Do not switch to PDF merely because the ATS also supports or generally prefers PDF.
+4. If the employer prescribes an exact filename, use it exactly. Otherwise use `Andrew_Baeten_Resume.<ext>` when the official flow calls the document `Resume`; otherwise use `Andrew_Baeten_CV.<ext>`.
+5. Keep vacancy-bound artifact identity/provenance internal; do not put employer/role/date/version text into the default visible filename.
+6. Check supported extension, file size, file count and any upload constraints before readiness.
 
-Never upload a rejected file type. Keep the final CV readable and parser-friendly; do not use hidden text, keyword stuffing or other parsing tricks. Required extra attachments must be present or readiness is blocked.
+Keep the CV parser-friendly: simple one-column structure where practical, standard section headings, no photos/graphics/word art, no core content dependent on tables/text boxes, and no essential contact information only in headers/footers. Required extra attachments must be present or readiness is blocked.
 
 ## Safety and submission boundary
 
@@ -56,7 +59,7 @@ Never upload a rejected file type. Keep the final CV readable and parser-friendl
 
 ## Readiness QA
 
-A pack is only ready when every visible required field is accounted for with a valid answer or an explicit user/manual-action marker; structured answers fit their field type/options/limits; all required files follow naming/format instructions; employer AI/original-work rules were checked; spelling/links were reviewed; and no final application action was taken.
+A pack is only ready when every visible required field is accounted for with a valid answer or explicit user/manual-action marker; structured answers fit their field type/options/limits; all required files follow naming/format/size instructions; employer AI/original-work rules were checked; spelling/links were reviewed; and no final application action was taken.
 
 ## Runtime ownership
 
