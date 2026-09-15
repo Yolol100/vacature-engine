@@ -20,6 +20,12 @@ Het `vacature_engine`-pakket bevat geen scraping, netwerkdiscovery, jobboardlijs
 
 De live waarheid blijft het `Vacature Register`. Alleen sterk vacature-specifiek bewijs mag een sollicitatiestatus of dedupebeslissing ondersteunen. Inbox, Sent en Spam/Junk mogen worden gecontroleerd, maar mailboxstate mag niet worden gewijzigd. Zie [`docs/MAILBOX-APPLICATION-RECONCILIATION.md`](docs/MAILBOX-APPLICATION-RECONCILIATION.md) voor het volledige contract.
 
+## Form application packs
+
+Wanneer een geverifieerde vacature via een officieel werkgever-/ATS-formulier loopt, mag `vacature-search` vooraf een invulpakket maken met de exacte vacaturenaam, de zichtbare formulier-vragen met bewijsgebonden conceptantwoorden en een vacature-specifieke CV. Dit blijft volledig caller-owned: de engine leest of verstuurt geen formulieren, schrijft geen antwoordproza, maakt geen accounts aan en omzeilt geen login/CAPTCHA.
+
+Herbruikbare antwoorden mogen alleen uit door de gebruiker goedgekeurde `ApplicationAnswers` komen. Salaris, work authorization, juridische/sensitieve/current-state velden vereisen menselijke bevestiging; assessments of expliciet AI-verboden antwoorden blijven handmatig. Zie [`docs/FORM-APPLICATION-PACK.md`](docs/FORM-APPLICATION-PACK.md).
+
 ## Ingestion component
 
 `ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. GitHub Actions voert deze component alleen handmatig of bij relevante codewijzigingen uit; periodieke vacaturediscovery blijft caller-owned. In de eenvoudige modus is de ChatGPT-automation de enige scheduler. Source-health kan bij zo'n expliciete run compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
