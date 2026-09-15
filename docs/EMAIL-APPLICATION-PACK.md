@@ -8,10 +8,10 @@ For an official email route, the caller prepares these items in this order:
 
 1. **Vacancy name** - exact role title and employer.
 2. **Email subject** - use the employer-required subject exactly; when none is specified, use the exact vacancy title plus candidate name according to live Config.
-3. **Email content** - a short vacancy-specific motivation letter with a greeting, exactly two content paragraphs, and a sign-off.
-4. **CV** - the vacancy-specific CV based on the immutable canonical CV and delivered in the correct supported format.
+3. **Email content** - a short vacancy-specific motivation letter with a greeting, exactly two compact content paragraphs, and a sign-off.
+4. **CV** - the vacancy-specific CV based on the immutable canonical CV.
 
-Employer instructions always override defaults. If a separate cover letter, portfolio, references, question responses, specific filenames, or other materials are required, prepare them or block readiness rather than silently omit them.
+Employer instructions always override defaults. If a separate cover letter, portfolio, references, question responses, specific filename, or other material is required, prepare it or block readiness rather than silently omit it.
 
 ## Recipient and subject rules
 
@@ -24,36 +24,37 @@ Employer instructions always override defaults. If a separate cover letter, port
 
 - Use the vacancy language.
 - Keep exactly two content paragraphs; greeting and sign-off are separate.
-- The message should answer two questions: why this role/employer, and why this candidate. It should not simply restate the CV.
-- Paragraph 1 should open naturally with a concrete role-specific reason and connect it to one or two directly relevant, verified experiences.
-- Paragraph 2 should connect the employer's work, product, users, mission, or way of working to the candidate's verified background and may close naturally with interest in speaking further.
-- Keep the writing personal, human, concise and active. Avoid generic application cliches, inflated claims, keyword stuffing and AI-like phrasing.
-- Target roughly 120-180 total words unless the employer or live Config imposes a stricter limit.
-- Use only employer/company details that are verifiable on the official vacancy or official employer site.
-- If a separate cover letter attachment is explicitly required, prepare it separately and keep the email body shorter to avoid duplicating the same text.
+- The message should answer why this role/employer and why this candidate without restating the CV.
+- Use one or two directly relevant verified experiences.
+- Keep the writing personal, human, simple and active; avoid generic application cliches, inflated claims and AI-like phrasing.
+- Target roughly 80-130 total words unless the employer or live Config imposes a stricter limit.
+- Use only employer/company details verifiable on the official vacancy or official employer site.
+- If a separate cover letter attachment is required, keep the email body shorter to avoid duplication.
 
 ## AI / original-work instructions
 
-Before application prose is prepared, the caller should inspect the official instructions for explicit rules around AI, ChatGPT, generative AI, disclosure, original work, or own words.
+Before application prose is prepared, inspect the official instructions for explicit rules around AI, ChatGPT, generative AI, disclosure, original work, or own words.
 
 - Follow those rules exactly.
 - If AI-generated application prose is prohibited, do not produce a ready-made email body; provide factual evidence bullets for the user to write from.
-- If disclosure is required, do not hide AI assistance; follow the requested disclosure format.
+- If disclosure is required, follow the requested disclosure format.
 
 ## CV and filename
 
-Format priority is:
+User-facing delivery policy:
 
-1. explicit employer/application-site requirement;
-2. official provider-documented preference when relevant;
-3. PDF for email/manual-review when supported;
-4. configured fallback.
+1. Use DOCX by default.
+2. Switch to PDF only when the official email instructions explicitly require a PDF attachment or otherwise make PDF mandatory.
+3. PDF being supported or generally preferred is not enough to override the DOCX default.
+4. If the employer prescribes an exact filename, use it exactly. Otherwise use `Andrew_Baeten_Resume.<ext>` when the official flow calls the document `Resume`; otherwise use `Andrew_Baeten_CV.<ext>`.
+5. Do not add employer, role, date, `final`, or version numbers to the default visible filename. Keep vacancy-bound artifact identity/provenance internal.
+6. Check extension and any explicit/provider file-size limit before readiness.
 
-Use an employer-required filename exactly. Otherwise use a clear vacancy-bound name such as `Andrew_Baeten_CV_<Employer>_<Role>.<ext>`. Keep the CV reader/ATS friendly and do not use hidden text or keyword-stuffing tricks.
+Keep the CV reader/ATS friendly: simple one-column structure where practical, standard section headings, no photos/graphics/word art, no core content dependent on tables/text boxes, and no essential contact information only in headers/footers.
 
 ## Final QA
 
-A pack is only ready when the exact recipient/route, subject, role/employer/job ID, two-paragraph structure, word limit, factual support, spelling/grammar, attachment names/formats, required extra materials and AI/original-work rules all pass review. Nothing is sent automatically.
+A pack is only ready when the exact recipient/route, subject, role/employer/job ID, two-paragraph structure, word limit, factual support, spelling/grammar, attachment name/format/size, required extra materials and AI/original-work rules all pass review. Nothing is sent automatically.
 
 ## Draft and submission boundary
 
