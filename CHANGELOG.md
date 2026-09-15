@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.6.1 - 2026-09-15
+- Documenteert de caller-owned Form Application Pack-boundary voor geverifieerde werkgever-/ATS-formulieren.
+- Vacature Search mag de exacte vacaturenaam, zichtbare formulier-vragen met bewijsgebonden conceptantwoorden en een vacature-specifieke CV voorbereiden.
+- Salaris, work authorization, juridische/sensitieve/current-state velden blijven menselijke bevestiging vereisen; assessments en expliciet AI-verboden antwoorden blijven handmatig.
+- De engine zelf blijft formulierloos en policy-free: geen browsing, antwoordproza, accounts, CAPTCHA-omzeiling of auto-submit.
+
 ## 5.6.0 - 2026-09-07
 - Voegt CV Artifact Contract v1.0 toe voor deterministische vacaturegebonden DOCX-bestandsnamen, bron-CV/vacature-snapshot SHA-256-provenance en stabiele artifact identity.
 - De helper blijft policy-free: geen CV-proza, kandidaatclaiminferentie, documentgeneratie, discovery of auto-apply.
