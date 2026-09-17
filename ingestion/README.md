@@ -24,7 +24,7 @@ Secondary discovery feeds:
 - Jobicy public Remote Jobs REST API with public RSS fallback; optional targeted HEAD checks treat only 404/410 as closed evidence
 - Remotive public API (24h-delayed; attribution metadata retained)
 
-Secondary feeds remain discovery evidence. `vacature-search` must verify a promising role on the canonical employer/ATS page before eligibility and ranking. Jobicy REST remains primary; RSS is a technical fallback and HEAD failures other than 404/410 do not silently close a vacancy.
+Secondary feeds remain discovery evidence. `vacature-search` must verify a promising role on the canonical employer/ATS page before eligibility and ranking. Jobicy REST remains primary. RSS fallback is limited to expected transport failures or a malformed provider payload; unexpected adapter/programming errors fail visibly instead of being masked. Optional HEAD verification remains targeted, and statuses other than 404/410 do not silently close a vacancy.
 
 ## Review queue
 
