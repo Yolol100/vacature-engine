@@ -1,6 +1,7 @@
 import unittest
 
 from vacature_ingestion.adapters import ADAPTERS
+from vacature_ingestion.http import FetchError
 from vacature_ingestion.models import SourceSpec
 from vacature_ingestion.normalize import normalize_canonical_url, strong_identity_keys
 
@@ -101,6 +102,47 @@ class AdapterTests(unittest.TestCase):
         out=ADAPTERS["jobicy"].normalize_records([row],spec)[0]
         self.assertEqual(out["source_job_id"],"global:9")
         self.assertEqual(out["employment_type"],"full-time")
+
+    def test_jobicy_rest_failure_uses_rss_fallback(self):
+        class Client:
+            def get_json(self, url):
+                raise FetchError("upstream_transient", "temporary", status=503)
+
+            def get_text(self, url, *, headers=None):
+                self.url = url
+                return """<rss><channel><item>
+                    <title>Acme: WP Developer</title>
+                    <link>https://jobicy.com/jobs/9</link>
+                    <guid>9</guid>
+                    <pubDate>Thu, 17 Sep 2026 10:00:00 GMT</pubDate>
+                    <description><![CDATA[<p>WordPress</p>]]></description>
+                </item></channel></rss>"""
+
+        spec=SourceSpec("jobicy-api","discovery_api","jobicy","global",options={"rss_fallback_url":"https://jobicy.com/jobs/feed"})
+        client=Client()
+        rows=ADAPTERS["jobicy"].fetch(client,spec)
+        self.assertEqual(client.url,"https://jobicy.com/jobs/feed")
+        out=ADAPTERS["jobicy"].normalize_records(rows,spec)[0]
+        self.assertEqual(out["title"],"WP Developer")
+        self.assertEqual(out["employer"],"Acme")
+        self.assertEqual(out["source_metadata"]["transport"],"rss")
+
+    def test_jobicy_head_validation_drops_only_explicit_closed(self):
+        class Client:
+            def get_json(self, url):
+                return {"jobs":[
+                    {"id":1,"url":"https://jobicy.com/jobs/open","jobTitle":"Open","companyName":"Acme"},
+                    {"id":2,"url":"https://jobicy.com/jobs/closed","jobTitle":"Closed","companyName":"Acme"},
+                ]}
+
+            def head_status(self, url):
+                return 410 if url.endswith("/closed") else 200
+
+        spec=SourceSpec("jobicy-api","discovery_api","jobicy","global",options={"head_validate":True})
+        rows=ADAPTERS["jobicy"].fetch(Client(),spec)
+        self.assertEqual([row["id"] for row in rows],[1])
+        out=ADAPTERS["jobicy"].normalize_records(rows,spec)[0]
+        self.assertEqual(out["source_metadata"]["head_status"],200)
 
     def test_remotive_marks_delayed_attributed_feed(self):
         spec=SourceSpec("remotive","discovery_api","remotive","global")
