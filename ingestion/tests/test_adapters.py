@@ -136,6 +136,23 @@ class AdapterTests(unittest.TestCase):
         self.assertEqual(out["source_url"],"https://jobicy.com/jobs/feed")
         self.assertTrue(out["source_metadata"]["attribution_required"])
 
+    def test_jobicy_rss_fallback_on_malformed_provider_payload(self):
+        rss='''<rss version="2.0"><channel><item><guid>r1</guid><title>WordPress Engineer</title><link>https://jobicy.com/jobs/r1</link><description>WordPress</description></item></channel></rss>'''
+        class Client:
+            def get_json(self,url): return {"jobs":"not-a-list"}
+            def get_text(self,url,headers=None): return rss
+        spec=SourceSpec("jobicy-api","discovery_api","jobicy","global",options={"tag":"wordpress","rss_fallback_url":"https://jobicy.com/jobs/feed"})
+        rows=ADAPTERS["jobicy"].fetch(Client(),spec)
+        self.assertEqual([row["id"] for row in rows],["r1"])
+
+    def test_jobicy_does_not_hide_unexpected_adapter_bug_with_rss(self):
+        class Client:
+            def get_json(self,url): raise RuntimeError("programming bug")
+            def get_text(self,url,headers=None): raise AssertionError("RSS fallback must not run")
+        spec=SourceSpec("jobicy-api","discovery_api","jobicy","global",options={"rss_fallback_url":"https://jobicy.com/jobs/feed"})
+        with self.assertRaisesRegex(RuntimeError,"programming bug"):
+            ADAPTERS["jobicy"].fetch(Client(),spec)
+
     def test_remotive_marks_delayed_attributed_feed(self):
         spec=SourceSpec("remotive","discovery_api","remotive","global")
         row={"id":5,"url":"https://remotive.com/remote-jobs/5","title":"WP Developer","company_name":"Acme","candidate_required_location":"Worldwide","description":"<p>WordPress</p>","publication_date":"2026-09-04T00:00:00Z"}
