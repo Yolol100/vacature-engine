@@ -1,6 +1,7 @@
 import unittest
 
 from vacature_ingestion.adapters import ADAPTERS
+from vacature_ingestion.http import FetchError
 from vacature_ingestion.models import SourceSpec
 from vacature_ingestion.normalize import normalize_canonical_url, strong_identity_keys
 
@@ -101,6 +102,39 @@ class AdapterTests(unittest.TestCase):
         out=ADAPTERS["jobicy"].normalize_records([row],spec)[0]
         self.assertEqual(out["source_job_id"],"global:9")
         self.assertEqual(out["employment_type"],"full-time")
+
+    def test_jobicy_head_only_closes_404_410(self):
+        class Client:
+            def get_json(self, url):
+                return {"jobs":[
+                    {"id":1,"url":"https://jobicy.com/jobs/open","jobTitle":"WordPress Developer","companyName":"A"},
+                    {"id":2,"url":"https://jobicy.com/jobs/closed","jobTitle":"WordPress Developer","companyName":"B"},
+                    {"id":3,"url":"https://jobicy.com/jobs/unknown","jobTitle":"WordPress Developer","companyName":"C"},
+                ]}
+            def head_status(self, url):
+                if url.endswith("closed"): return 410
+                if url.endswith("unknown"): raise FetchError("timeout_or_network","timeout")
+                return 200
+        spec=SourceSpec("jobicy-api","discovery_api","jobicy","global",options={"tag":"wordpress","verify_active_head":True})
+        rows=ADAPTERS["jobicy"].fetch(Client(),spec)
+        self.assertEqual([row["id"] for row in rows],[1,3])
+        self.assertEqual(rows[0]["_head_status"],200)
+        self.assertEqual(rows[1]["_head_error"],"FetchError")
+
+    def test_jobicy_rss_fallback_when_api_fails(self):
+        rss='''<rss version="2.0"><channel><item><guid>r1</guid><title>Senior WordPress Engineer</title><link>https://jobicy.com/jobs/r1</link><description><![CDATA[<p>Build WordPress sites.</p>]]></description><pubDate>Thu, 17 Sep 2026 12:00:00 +0000</pubDate><author>Acme</author><location>Anywhere</location></item><item><guid>r2</guid><title>Python Engineer</title><link>https://jobicy.com/jobs/r2</link><description>Python</description></item></channel></rss>'''
+        class Client:
+            def get_json(self,url): raise FetchError("upstream_transient","api down",status=503)
+            def get_text(self,url,headers=None): self.rss_url=url; return rss
+        client=Client()
+        spec=SourceSpec("jobicy-api","discovery_api","jobicy","global",options={"tag":"wordpress","attribution_required":True,"rss_fallback_url":"https://jobicy.com/jobs/feed"})
+        rows=ADAPTERS["jobicy"].fetch(client,spec)
+        self.assertEqual(client.rss_url,"https://jobicy.com/jobs/feed")
+        self.assertEqual(len(rows),1)
+        out=ADAPTERS["jobicy"].normalize_records(rows,spec)[0]
+        self.assertEqual(out["source_metadata"]["discovery_mode"],"rss_fallback")
+        self.assertEqual(out["source_url"],"https://jobicy.com/jobs/feed")
+        self.assertTrue(out["source_metadata"]["attribution_required"])
 
     def test_remotive_marks_delayed_attributed_feed(self):
         spec=SourceSpec("remotive","discovery_api","remotive","global")
