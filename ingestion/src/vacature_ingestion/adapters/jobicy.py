@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from xml.etree import ElementTree as ET
 
 from .base import Adapter, source_job_id
+from ..http import FetchError
 from ..models import SourceSpec
 from ..normalize import clean_text, html_to_text
 
@@ -145,7 +146,7 @@ class JobicyAdapter(Adapter):
         options = spec.options if isinstance(spec.options, dict) else {}
         try:
             rows = self._fetch_api(client, spec)
-        except Exception:
+        except (FetchError, ValueError):
             rss_url = clean_text(options.get("rss_fallback_url"))
             if not rss_url:
                 raise
