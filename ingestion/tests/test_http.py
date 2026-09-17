@@ -5,7 +5,7 @@ from urllib.error import HTTPError, URLError
 from vacature_ingestion.http import FetchError, HttpClient
 
 class FakeResponse:
-    def __init__(self,body,status=200,headers=None): self.body=body; self.status=status; self.headers=headers or {}
+    def __init__(self,body=b"",status=200,headers=None): self.body=body; self.status=status; self.headers=headers or {}
     def __enter__(self): return self
     def __exit__(self,*args): return False
     def read(self,amount): return self.body[:amount]
@@ -30,5 +30,19 @@ class HttpTests(unittest.TestCase):
         with self.assertRaises(FetchError): HttpClient(retries=0,max_response_bytes=5).get_json("https://x")
     @patch("vacature_ingestion.http.urlopen",return_value=FakeResponse("héllo".encode()))
     def test_text(self,_): self.assertEqual(HttpClient(retries=0).get_text("https://x"),"héllo")
+    @patch("vacature_ingestion.http.urlopen",return_value=FakeResponse(status=204))
+    def test_head_success(self,mocked):
+        self.assertEqual(HttpClient(retries=0).head_status("https://x"),204)
+        self.assertEqual(mocked.call_args.args[0].method,"HEAD")
+    @patch("vacature_ingestion.http.urlopen")
+    def test_head_404_is_closed_evidence(self,mocked):
+        mocked.side_effect=HTTPError("https://x",404,"gone",{},io.BytesIO(b""))
+        self.assertEqual(HttpClient(retries=0).head_status("https://x"),404)
+    @patch("vacature_ingestion.http.time.sleep",return_value=None)
+    @patch("vacature_ingestion.http.urlopen")
+    def test_head_transient_retry(self,mocked,_sleep):
+        mocked.side_effect=[HTTPError("https://x",503,"upstream",{},io.BytesIO(b"")),FakeResponse(status=200)]
+        self.assertEqual(HttpClient(retries=1).head_status("https://x"),200)
+        self.assertEqual(mocked.call_count,2)
 
 if __name__ == "__main__": unittest.main()
