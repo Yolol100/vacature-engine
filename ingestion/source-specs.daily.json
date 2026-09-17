@@ -13,7 +13,7 @@
     "adapter": "jobicy",
     "account": "global",
     "max_jobs": 200,
-    "options": {"tag": "wordpress", "attribution_required": true}
+    "options": {"tag": "wordpress", "attribution_required": true, "rss_fallback_url": "https://jobicy.com/jobs/feed"}
   },
   {
     "source_id": "remotive",
