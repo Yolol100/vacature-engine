@@ -30,5 +30,15 @@ class HttpTests(unittest.TestCase):
         with self.assertRaises(FetchError): HttpClient(retries=0,max_response_bytes=5).get_json("https://x")
     @patch("vacature_ingestion.http.urlopen",return_value=FakeResponse("héllo".encode()))
     def test_text(self,_): self.assertEqual(HttpClient(retries=0).get_text("https://x"),"héllo")
+    @patch("vacature_ingestion.http.urlopen")
+    def test_head_returns_explicit_not_found_status(self,mocked):
+        mocked.side_effect=HTTPError("https://x",404,"missing",{},io.BytesIO(b""))
+        self.assertEqual(HttpClient(retries=0).head_status("https://x"),404)
+    @patch("vacature_ingestion.http.time.sleep",return_value=None)
+    @patch("vacature_ingestion.http.urlopen")
+    def test_head_retries_transient_then_succeeds(self,mocked,_sleep):
+        mocked.side_effect=[HTTPError("https://x",503,"temp",{},io.BytesIO(b"")),FakeResponse(b"",status=200)]
+        self.assertEqual(HttpClient(retries=1).head_status("https://x"),200)
+        self.assertEqual(mocked.call_count,2)
 
 if __name__ == "__main__": unittest.main()
