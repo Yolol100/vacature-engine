@@ -1,0 +1,1362 @@
+{
+  "completed_at": "2026-09-17T19:46:20.342284+00:00",
+  "page": 60,
+  "page_item_count": 25,
+  "review_queue": [
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb",
+      "content_hash": "b689a4a75dd920cde17be57344aa99828ec27f6e5d15bc7e6a8996746f9f38ac",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "Poland",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-27T20:21:07.157+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:1e4869bff1eaf18b93c34c9f3bd64fa6283ff4eb416d76e358d93f273ca8f025",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:aa387988-9983-46a0-a265-d678af9939cb",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "Poland"
+          }
+        },
+        "department": "Operations",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "European Union"
+              }
+            },
+            "location": "Europe"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "United Kingdom",
+                "addressLocality": "London"
+              }
+            },
+            "location": "London"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Netherlands"
+              }
+            },
+            "location": "Amsterdam"
+          }
+        ],
+        "team": "Finance"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Executive Assistant - Finance",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb",
+      "workplace_type": "Remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/bionews-inc/jobs/myasthenia-gravis-news-columnist-7500512201",
+      "canonical_url": "https://himalayas.app/companies/bionews-inc/jobs/myasthenia-gravis-news-columnist-7500512201",
+      "content_hash": "5db6987df003a1c165862ac5075d5bef0fdbeadd279ec78187c781abc045f603",
+      "description_excerpt": "Job Opening Details: Bionews, a digital news company dedicated to creating communities for patients with rare and chronic diseases and their caregivers, is looking for members of the myasthenia gravis (MG) community to join our freelance staff of caregiver columnists on Myasthenia Gravis News. A Bionews columnist is a patient or caregiver who shares about life with a rare or chronic disease. They write personal essays in a column format to inform, inspire, empathize, and advise. Their audience includes patients, caregivers, medical teams, and researchers. Columnists also write to a general audience interested in learning how to improve society's understanding and treatment of disease/disability communities. All columns are reviewed with a critical eye by professional editors who will work with columnists to smooth rough spots and help the columnist grow as a writer. This is a contract position. Please note you MUST be a member of the myasthenia gravis community -- caregiver preferred -- in order to apply for this position. Responsibilities and Duties Fulfill 1x weekly deadlines as agreed upon on hire. Communicate efficiently with your managers and editors. Submit 400-800 word draft",
+      "employer": "Bionews, Inc.",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789301928",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:1ed6795affd7e1f852a8c21088f4eb4b8d601109b0a73e601f608c40eef186d5",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/bionews-inc/jobs/myasthenia-gravis-news-columnist-7500512201",
+      "source_metadata": {
+        "categories": [
+          "Health-Writing",
+          "Caregiver-Columnist",
+          "Patient-Advocacy-Writing",
+          "Freelance-Writing",
+          "Content-Writing",
+          "Neurology-News-Writer"
+        ],
+        "company_slug": "bionews-inc",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/bionews-inc/jobs/myasthenia-gravis-news-columnist-7500512201",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Myasthenia Gravis News Columnist",
+      "url": "https://himalayas.app/companies/bionews-inc/jobs/myasthenia-gravis-news-columnist-7500512201",
+      "valid_through": "1794485927",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-hotline-paralegal-legal-services-nyc-1136861",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-hotline-paralegal-legal-services-nyc-1136861",
+      "content_hash": "87d98d05197654a8e1908fdafe9cfc27c6f9a9ee45cc3d4c29f012446eb1afbd",
+      "description_excerpt": "Legal Services NYC (LSNYC) fights poverty and seeks racial, social and economic justice for low-income New Yorkers. For over 50 years, we have challenged systemic injustices that trap people in poverty and provided legal services that help our clients meet basic needs for housing, income and economic security, family and immigration stability, education, and health care. LSNYC is the largest civil legal services provider in the country; our staff of more than 600 people in neighborhood-based offices and outreach sites across all five boroughs helps hundreds of thousands of New Yorkers annually. We partner with scores of community-based and client-run organizations, elected officials, public agencies, pro bono lawyers, and the courts to maximize our effectiveness. Our work fights discrimination and helps to achieve equity for all low-income New Yorkers. LSNYC employees have numerous opportunities for growth and professional development, including access to our internal Justice Learning Center, which provides opportunities to earn free CLEs and gain experience as a trainer. Legal Services NYC seeks one intake paralegal to staff the Access Line, our citywide intake hotline. Access Lin",
+      "employer": "Legal Services NYC",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "LSNYC Central Office",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-17T16:00:38+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:1f25377af4d04a95c13a62680947d10bcd5888f4235b9211e161e4ac8702c04d",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136861",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1786982438,
+        "provider": "remoteok",
+        "provider_job_id": "1136861",
+        "slug": "remote-hotline-paralegal-legal-services-nyc-1136861",
+        "tags": [
+          "infosec",
+          "education",
+          "dev",
+          "marketing",
+          "exec",
+          "legal",
+          "medical",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Hotline Paralegal",
+      "url": "https://remoteOK.com/remote-jobs/remote-hotline-paralegal-legal-services-nyc-1136861",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-senior-people-talent-operations-partner-testgorilla-1137378",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-senior-people-talent-operations-partner-testgorilla-1137378",
+      "content_hash": "a673d0874e654603a2edcaa6987c4cc2daf9fe030e4b921913e24dfdd1bc7f02",
+      "description_excerpt": "â¡ This one's going to move fast. We're expecting a lot of interest, so we're running this as a focused hiring sprint. Applications and assessments close September 20, with interviews happening over the two weeks after that.Â ð Where do we hire from? Almost everywhere. Check that your country appears on this page . For this role, you'll have at least 4 hours daily overlap with your UK-based manager. Hi there, I'm Olive Turon, Head of People & Culture at TestGorilla. I'm excited to share more about the Senior People & Talent Operations Partner role and our team. About TestGorilla At TestGorilla, we're on a mission to place 1 billion people in their dream jobs. To democratize opportunity, we're building the world's leading skills-based talent discovery platform - one that replaces reliance on resumes with scientific validation of what people can truly do. Founded as a 100% remote company in 2020, our global team is united by high standards, a lot of heart, and a relentless drive to conquer new technological frontiers. We're all AI-fluent builders who care deeply about replacing bias with fairness. After empowering thousands of companies to hire smarter and faster, we're now unloc",
+      "employer": "TestGorilla",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-10T21:13:22+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:2034b06f3852c06d8b314d73a0a921d83921db87367551a2732789f7a5b8dfd4",
+      "salary": {
+        "currency": null,
+        "max": 80000,
+        "min": 70000,
+        "period": null
+      },
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137378",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1789074802,
+        "provider": "remoteok",
+        "provider_job_id": "1137378",
+        "slug": "remote-senior-people-talent-operations-partner-testgorilla-1137378",
+        "tags": [
+          "hr",
+          "non tech"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Senior People & Talent Operations Partner",
+      "url": "https://remoteOK.com/remote-jobs/remote-senior-people-talent-operations-partner-testgorilla-1137378",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8165867",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8165867",
+      "content_hash": "c6d85c78a1fd9e29091b7b0aeb36c827b2512b22296fecf884c52b2335e8fd16",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Senior DevOps Engineer to lead the strategy, design, and implementation of our large-scale cloud infrastructure projects. In this role, you will tackle the challenges of modernizing IT operations, focusi",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "location": "Bengaluru",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:203b5936d43e909985d28648fee31055fe765b523583f85ece4609fc6195f63e",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8165867",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 84598,
+            "name": "Cloudways",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3533909,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 258058,
+            "location": "Karachi, Sindh, Pakistan",
+            "name": "Karachi",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8165867
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior DevOps Engineer",
+      "updated_at": "2026-09-14T07:57:12-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8165867"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8783610002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8783610002",
+      "content_hash": "224c7a02234e4920e4ad743efa2d1d8b71cecd764fa89363f5b8625b4ea0316b",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "location": "Remote Ireland; Remote, France; Remote, Germany; Remote, Netherlands; Remote, Spain; Remote, United Kingdom",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:20437f087c61cd9f84d3a6117e044a54193ee2a0996af126de3f67e0226c97c6",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8783610002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4016437002,
+            "name": "Customer Success",
+            "parent_id": 4011043002
+          }
+        ],
+        "internal_job_id": 6513895002,
+        "offices": [
+          {
+            "child_ids": [
+              4042500002,
+              4040905002,
+              4040903002,
+              4112146002,
+              4112147002,
+              4112148002,
+              4040908002,
+              4112149002,
+              4112150002,
+              4040907002,
+              4112151002,
+              4112152002,
+              4112153002,
+              4112154002,
+              4041064002
+            ],
+            "id": 4019553002,
+            "location": null,
+            "name": "EMEA",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8783610002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Director, Customer Success, EMEA",
+      "updated_at": "2026-09-14T16:01:39-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8783610002"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pressable/jobs/business-development-representative",
+      "canonical_url": "https://himalayas.app/companies/pressable/jobs/business-development-representative",
+      "content_hash": "a72731cd0cac37feeda686ea231cb14cc586c9b7fbf0905958266afe0d8b542a",
+      "description_excerpt": "Pressable (“WordPress hosting that means business”) seeks an experienced, motivated, and empathetic professional with the expertise to help us meet or exceed aggressive growth goals for our superb WordPress hosting company, part of the Automattic family. We’re looking for a motivated and detail-oriented Business Development Representative (BDR) to join our sales team. This role is essential in driving the early stages of the sales process by handling inbound leads, answering questions from prospects, creating interest in our product, and setting up meetings for senior members of the team. The role is designed to leverage AI tools to improve speed, quality, and consistency across prospect research, discovery preparation, follow-ups, and internal documentation, while keeping human judgment and relationship-building at the center of the sales process. As a BDR, you will play a crucial role in building relationships with potential customers by understanding their needs, introducing them to our WordPress hosting solutions, and moving them through the sales funnel. You’ll be the first point of contact for many prospects, ensuring they have a positive experience with Pressable from the st",
+      "employer": "Pressable",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Worldwide",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789301258",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:21fd9838026e67c798c421dd619e5adeaffcd2689091075dd05c97bd57bafb0f",
+      "salary": {
+        "currency": "USD",
+        "max": 65000,
+        "min": 50000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pressable/jobs/business-development-representative",
+      "source_metadata": {
+        "categories": [
+          "Business-Development",
+          "Sales",
+          "Business-Development-Representative",
+          "Inside-Sales",
+          "Sales-Development",
+          "Sales-Business-Development-Representative",
+          "Sales-Development-Representative",
+          "Business-Development-Professional",
+          "Partner-Business-Development-Representative",
+          "Business-Developer",
+          "Remote-Business-Development-Representative",
+          "Business-Development-Specialist",
+          "SDR-Business-Development-Representative"
+        ],
+        "company_slug": "pressable",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [],
+        "location_restrictions": [],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pressable/jobs/business-development-representative",
+        "timezone_restrictions": [
+          -11,
+          -10,
+          -9.5,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3.5,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          3.5,
+          4,
+          4.5,
+          5,
+          5.5,
+          5.75,
+          6,
+          6.5,
+          7,
+          8,
+          8.75,
+          9,
+          9.5,
+          10,
+          10.5,
+          11,
+          12,
+          12.75,
+          13,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Business Development Representative",
+      "url": "https://himalayas.app/companies/pressable/jobs/business-development-representative",
+      "valid_through": "1794485257",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8783485002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8783485002",
+      "content_hash": "37c060536edf14756447a6d680bb5fc1a2cfc4a688992028566871f175a95f09",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "location": "Remote, South Korea",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:22e0a6b5d48108fe0c3d6140e9166863bc7e002dd7bac984683a091699de7eb7",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8783485002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [
+              4109797002
+            ],
+            "id": 4011052002,
+            "name": "SA",
+            "parent_id": 4011043002
+          }
+        ],
+        "internal_job_id": 6513845002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4042579002,
+            "location": "South Korea",
+            "name": "Korea, Republic of",
+            "parent_id": 4019590002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8783485002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Solutions Architect",
+      "updated_at": "2026-09-14T16:01:39-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8783485002"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/hunt-st/jobs/cg-performance-marketing-manager-017-0860",
+      "canonical_url": "https://himalayas.app/companies/hunt-st/jobs/cg-performance-marketing-manager-017-0860",
+      "content_hash": "f147ea55866c277d914cf7e1e1162773b66cf81d5e3b7787a5a6083074bd9740",
+      "description_excerpt": "​​Looking for Philippines-based candidates Job Role: Performance Marketing Manager Compensation range: $2000 - $3000 AUD / Monthly Engagement type: Independent Contractor Agreement Work Schedule: This role is expected to align with the AU business hours (approx. 9 AM - 5 PM, Monday to Friday) for collaboration, but as a contractor, you’ll have flexibility in how you manage your time. Who We Are: At Hunt St , we help Australian companies hire top remote talent in the Philippines. For this role, you will be engaged directly by the client as an independent contractor. We are not an outsourcing agency. All of our roles are 100% remote, so you'll be able to work from home. Who The Client Is: Our client is a fast-growing Australian business in the renewable energy and electrical services space, helping residential and commercial customers reduce energy costs through smart solar and energy solutions. Operating in a regional Australian market, the company has built a strong reputation through high-quality workmanship, word-of-mouth referrals, and long-term customer trust. They are now entering an exciting growth phase, bringing marketing further in-house, expanding their digital presence, ",
+      "employer": "Hunt St",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Philippines",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789618630",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:22e9bc4c9d558e0c663884d5c4cf5da1f6a370915ca1926ecfaa7163e0d67c84",
+      "salary": {
+        "currency": "AUD",
+        "max": 3000,
+        "min": 2000,
+        "period": "monthly"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/hunt-st/jobs/cg-performance-marketing-manager-017-0860",
+      "source_metadata": {
+        "categories": [
+          "Performance-Marketing",
+          "Digital-Marketing",
+          "Google-Ads-Management",
+          "SEO",
+          "Renewable-Energy-Marketing",
+          "Performance-Marketing-Manager",
+          "CPA-Marketing-Manager",
+          "Mid-Level-Performance-Marketing-Manager",
+          "Performance-Marketing-Lead",
+          "Marketing-Manager",
+          "Marketing",
+          "Growth"
+        ],
+        "company_slug": "hunt-st",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Philippines"
+        ],
+        "location_restrictions": [
+          "Philippines"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/hunt-st/jobs/cg-performance-marketing-manager-017-0860",
+        "timezone_restrictions": [
+          8
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "CG Performance Marketing Manager - (017-0860)",
+      "url": "https://himalayas.app/companies/hunt-st/jobs/cg-performance-marketing-manager-017-0860",
+      "valid_through": "1794802630",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975071",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7975071",
+      "content_hash": "c2fa0df7f466b89c49b90ef7e018c31dbed0455376c4d1f989d74c3fe7a52b16",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Principal Engineer, AI/ML Security who is passionate about securing AI systems and operationalizing ML-powered security at cloud scale. In this role, you will report to the VP, Deputy CISO and partner closely with Security Data Science and Security leadership teams. You will lead DigitalOcean’s engagement with the external AI security community and serve as our internal expert and escalation point for all AI-related security risk. What You’ll Do: Partner with Product Security and Engineering leadership to define how AI security controls are integrated into DigitalOcean’s customer-facing products. Partner with Security Data Science and Security Engineering to build, deploy, and ser",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "location": "San Francisco",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:237cbd74892cb553b18136b3a9b3d6d7ba2c2f96e91f29450495dbbd1b413cf4",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7975071",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 45958,
+            "name": "Security",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3461438,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 213279,
+            "location": "Boston Metro",
+            "name": "Boston Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7975071
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Director, Security Products: Key Management",
+      "updated_at": "2026-09-15T00:03:51-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975071"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-regional-sales-manager-balco-inc-1136097",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-regional-sales-manager-balco-inc-1136097",
+      "content_hash": "f44aed3a7c44d4365ca1d5f95257321a6014922d32e81bc4ee825c8e92348e45",
+      "description_excerpt": "Company Information CSWâs Engineered Building Solutions segment manufactures custom architectural building components and innovative firestopping and smoke-rated products that help protect people. Safety and code compliance are top of mind for architects, engineers and contractors. Our purposeful brands combine functionality with aesthetically pleasing designs for the construction, refurbishment, and modernization of buildings.â¯Our brands include Balco, Greco Architectural Metal Products, and Smoke Guard. Position Summary Balco is seeking a dynamic, motivated, and results-driven Regional Sales Manager to lead and grow sales of our architectural product lines across the Western Half of the United States. This is a high-impact leadership role for a sales professional who thrives in the architectural building products space and is energized by building teams, driving growth, and influencing complex construction projects from design through installation. The RSM will lead a network of direct sales professionals and independent manufacturer representatives while serving as a key market ambassador for Balcoâs portfolio of architectural engineered products for the construction indus",
+      "employer": "Balco, Inc.",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Wichita,",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-04T00:00:00+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:23c34e842645670c8999075b33f526e66de5c7299e2c36aee29d4cb8d87e56c4",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136097",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785801600,
+        "provider": "remoteok",
+        "provider_job_id": "1136097",
+        "slug": "remote-regional-sales-manager-balco-inc-1136097",
+        "tags": [
+          "design",
+          "saas",
+          "salesforce",
+          "wordpress",
+          "customer support",
+          "dev",
+          "testing",
+          "marketing",
+          "web dev",
+          "travel",
+          "cloud",
+          "ads",
+          "exec",
+          "content writing",
+          "stats",
+          "sales",
+          "recruiter",
+          "digital nomad",
+          "embedded",
+          "hr",
+          "sys admin",
+          "game dev",
+          "technical",
+          "payroll",
+          "finance",
+          "api",
+          "ops",
+          "engineer",
+          "education",
+          "coordinator",
+          "medical",
+          "full time",
+          "microsoft",
+          "excel"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Regional Sales Manager",
+      "url": "https://remoteOK.com/remote-jobs/remote-regional-sales-manager-balco-inc-1136097",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-qa-tester-entry-level-ace-it-careers-1136701",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-qa-tester-entry-level-ace-it-careers-1136701",
+      "content_hash": "4a808328c06ab54992a506051c0567cc4248d25931edcd53810857951f47a082",
+      "description_excerpt": "Looking to start or restart your career in Software Quality Assurance?Ace IT Careers is reviewing candidates for QA Tester and QA Analyst opportunities with employers and staffing partners across the United States.This opportunity may be suitable for r... Please mention the word **SMOOTHES** and tag RMTcyLjE3NC4xOTguMTYw when applying to show you read the job post completely (#RMTcyLjE3NC4xOTguMTYw). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "Ace IT Careers",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-15T00:00:25+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:24e3123dd2d4c695ba45e02842575578fa14385eba3d7cc4d85ac1b617ab009a",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136701",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1786752025,
+        "provider": "remoteok",
+        "provider_job_id": "1136701",
+        "slug": "remote-qa-tester-entry-level-ace-it-careers-1136701",
+        "tags": [
+          "testing",
+          "dev",
+          "analyst",
+          "quality assurance",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "QA Tester Entry Level",
+      "url": "https://remoteOK.com/remote-jobs/remote-qa-tester-entry-level-ace-it-careers-1136701",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8193018",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8193018",
+      "content_hash": "7ea2ea1c59edf5c7ff6f364e307c8a6d7534f0c4266b9a11950fc12eeedaa191",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Software Engineer II to join our App Platform and Functions engineering team. App Platform is DigitalOcean’s managed PaaS: customers ship apps from source to production on Kubernetes-backed infrastructure without managing clusters themselves. Functions is our serverless compute product, running event-driven workloads on a secure, multi-tenant runtime. Together these products sit on the critical path for developers deploying and scaling modern applications—and increasingly AI and agent workloads—on DigitalOcean. In this role, you will contribute meaningfully to building and operating the control plane and runtime systems that power App Platform and Functions. You will work within estab",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "location": "Hyderabad",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:2597409ac06bb0edce3aa38f9d52db4b1a430e78895fbe009829772e45fe2e56",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8193018",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 365100,
+            "name": "Core Cloud",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3545175,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 213283,
+            "location": "Hyderabad Metro",
+            "name": "Hyderabad Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8193018
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Software Engineer II - Managed Kubernetes products",
+      "updated_at": "2026-09-15T14:01:38-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8193018"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8801523002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8801523002",
+      "content_hash": "f6d23a63e92624536544a6977f0b45b92c4c63b1ce1835c776172b84ec8e147f",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "location": "Remote, United Kingdom",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:26fe52c84471cfa30d19e7e8496d95e877421611d4e35cf5a580c44b9b51e5a7",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8801523002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4011065002,
+            "name": "Talent Acquisition",
+            "parent_id": 4111246002
+          }
+        ],
+        "internal_job_id": 6521780002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4040908002,
+            "location": null,
+            "name": "United Kingdom",
+            "parent_id": 4019553002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8801523002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Candidate Experience Specialist, Contractor",
+      "updated_at": "2026-09-14T16:01:39-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8801523002"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pavago/jobs/growth-marketing-manager-979526408",
+      "canonical_url": "https://himalayas.app/companies/pavago/jobs/growth-marketing-manager-979526408",
+      "content_hash": "33452a07249f520a5825884d2ef9f339bb356ebe86699024563c1d1032668043",
+      "description_excerpt": "Growth Marketing Manager – AI, SEO & Organic Growth Full-Time | Remote | U.S. Business Hours About the Role At Pavago , one of our clients is hiring a hands-on Growth Marketing Manager to lead organic growth, content execution, SEO, and marketing operations. This is an AI-first marketing role for someone who can execute independently and use tools like ChatGPT, Claude, and Jasper AI to accelerate content, research, automation, and campaign performance. You’ll work closely with designers, developers, and marketing stakeholders to build scalable marketing systems and drive consistent organic growth. What You’ll Own Social Media & Content Plan and execute organic growth across LinkedIn, Instagram, Facebook, and X Create blogs, PR content, social posts, and marketing assets Repurpose long-form content across multiple channels Manage publishing through Buffer or Hootsuite Collaborate with designers using Canva Track engagement and optimize content based on performance SEO & Organic Growth Own keyword and content strategy to increase organic visibility Develop and execute backlink acquisition strategies Conduct competitor, keyword, and SEO analysis using Ahrefs and SEMrush Work with deve",
+      "employer": "Pavago",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Brazil",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789277112",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:27a4000f662aa1e0c017f71796edfcba654c914b0e96686ff5e5d8691443ac81",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/growth-marketing-manager-979526408",
+      "source_metadata": {
+        "categories": [
+          "Growth-Marketing",
+          "Digital-Marketing",
+          "Content-Marketing",
+          "SEO",
+          "Marketing-Operations",
+          "Social-Media-Marketing",
+          "AI-Marketing",
+          "Growth-Marketing-Manager",
+          "Growth-Marketer-Manager",
+          "B2B-Growth-Marketing-Manager"
+        ],
+        "company_slug": "pavago",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Brazil"
+        ],
+        "location_restrictions": [
+          "Brazil"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/growth-marketing-manager-979526408",
+        "timezone_restrictions": [
+          -5,
+          -4,
+          -3,
+          -2
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Growth Marketing Manager",
+      "url": "https://himalayas.app/companies/pavago/jobs/growth-marketing-manager-979526408",
+      "valid_through": "1794461112",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/ci-t-job-26953-senior-full-stack-developer-react-net",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/ci-t-job-26953-senior-full-stack-developer-react-net",
+      "content_hash": "a071a1f23fa49b9f2b902cf09c6405b00f4833bd9a26bb5e07ca34d3397d9922",
+      "description_excerpt": "Headquarters: Brazil We are tech transformation specialists, uniting human expertise with AI to create scalable tech solutions. With over 8,000 CI&Ters around the world, we’ve built partnerships with more than 1,000 clients during our 30 years of history. Artificial Intelligence is our reality. We are looking for a highly motivated and experienced Senior FullStack Software Developer to join our development team. You will be responsible for designing, developing, and implementing scalable and robust Cloud-Native software solutions to meet the complex requirements of our projects. Main responsabilities • Design, develop, and deploy .NET -based microservices on Cloud providers, following best practices for scalability, performance, and security. • Develop responsive and user-friendly frontend applications using React framework, ensuring a seamless and engaging user experience. • Implement and maintain CI/CD pipelines for automated build, test, and deployment processes. • Integrate third-party APIs and services to enhance the functionality of our applications. • Mentor junior developers and provide technical guidance and support to ensure the successful delivery of projects. • Stay up-",
+      "employer": "Ci&t",
+      "first_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-18T20:34:05+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:27ba840701b6952f991829d8fd7b1a41fc9b7225d86d55bcd0311a45bb2daf1d",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/ci-t-job-26953-senior-full-stack-developer-react-net",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "[Job -26953] Senior Full Stack Developer (React/.Net)",
+      "url": "https://weworkremotely.com/remote-jobs/ci-t-job-26953-senior-full-stack-developer-react-net",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pantheon/jobs/senior-engineering-manager-customer-runtimes",
+      "canonical_url": "https://himalayas.app/companies/pantheon/jobs/senior-engineering-manager-customer-runtimes",
+      "content_hash": "d58b135221598c9a24d634b2314bcf5a64ff171c2978469559955f3b3e44badd",
+      "description_excerpt": "About Pantheon Pantheon brings together exceptional builders who take ownership, drive meaningful impact, and shape what's next for the web. We power more than 300,000 websites globally for organizations including Google, Princeton, Salesloft, Clorox, and the United Nations. Every day, thousands of developers and marketers use our WebOps platform to build, iterate, and scale WordPress, Drupal, and Next.js sites that reach billions of people worldwide. As an employer, we operate with the same philosophy that drives our product: foundation and freedom. Pantheon is a vibrant, remote-forward team of experts who care deeply about their craft and results. Here, you take ownership of work that matters, contribute alongside exceptional people, and see the impact you create. The Role As the Senior Engineering Manager for Customer Runtimes, you will lead and manage a sizable team of talented software engineers focused on building the scaled infrastructure services that run the high-impact Drupal, Wordpress, and Next.js sites of our customers. The team is driving an exciting transformation of our most core customer infrastructure to expand our capabilities, leverage best of breed open source ",
+      "employer": "Pantheon",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789348057",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:2855359715a5598cfc6b047d9475b28bf440be44d14e2f7d4bfb316e14583582",
+      "salary": {
+        "currency": "CAD",
+        "max": 213000,
+        "min": 170400,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pantheon/jobs/senior-engineering-manager-customer-runtimes",
+      "source_metadata": {
+        "categories": [
+          "Engineering-Management",
+          "Engineering-Leadership",
+          "Software-Engineering-Management",
+          "Infrastructure-Engineering",
+          "Technical-Management",
+          "Software-Engineering-Manager",
+          "Engineering-Manager",
+          "Senior-Backend-Engineering-Manager",
+          "Senior-Manager-Backend-Engineering"
+        ],
+        "company_slug": "pantheon",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pantheon/jobs/senior-engineering-manager-customer-runtimes",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Engineering Manager, Customer Runtimes",
+      "url": "https://himalayas.app/companies/pantheon/jobs/senior-engineering-manager-customer-runtimes",
+      "valid_through": "1794532057",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pacvue/jobs/web-designer",
+      "canonical_url": "https://himalayas.app/companies/pacvue/jobs/web-designer",
+      "content_hash": "f7595a115f5909c3267ec82431d6c57eb3833ea7bb5926fdda14e89b4a3fea64",
+      "description_excerpt": "About Us: Pacvue is the leading Commerce Operating System, unifying retail media, commerce management, and advanced measurement across 100+ global marketplaces, including Amazon, Walmart, Target, and Instacart. Through Pacvue and Helium 10, our enterprise and SMB platforms, we empower over 70,000 brands, agencies, and sellers with AI-driven insights and technology to win in today’s rapidly evolving commerce landscape. At Pacvue and Helium 10, great careers don’t just happen — they’re built. Here, you’ll rise as an industry leader, push the boundaries of innovation, own your journey, and thrive as part of an inclusive global community that’s redefining the future of commerce. About the Role: The Web Designer supports the design and execution of marketing websites, digital, and print experiences with regular check-ins, mentorship, and guidance of senior designers. This role works closely with marketing, product, and engineering teams to help bring business goals and user needs to life within established brand and design guidelines. The designer contributes to the design lifecycle following established systems while applying responsive, accessibility, and UI/UX best practices. We are ",
+      "employer": "Pacvue",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789317940",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:29adabe5023222dfa2ba3dfd8d8d0eac23e655f64601c7b812289bcbc31c2c0e",
+      "salary": {
+        "currency": "USD",
+        "max": 75000,
+        "min": 60000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pacvue/jobs/web-designer",
+      "source_metadata": {
+        "categories": [
+          "Web-Designer",
+          "UI-Designer",
+          "UX-Designer",
+          "Web-Development",
+          "Digital-Marketing-Designer",
+          "Website-Designer",
+          "Web-Design",
+          "Graphic-Web-Designer",
+          "Freelance-Web-Designer",
+          "Web-App-Designer",
+          "Site-Designer",
+          "WordPress-Designer",
+          "WordPress-Web-Designer"
+        ],
+        "company_slug": "pacvue",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pacvue/jobs/web-designer",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Web Designer",
+      "url": "https://himalayas.app/companies/pacvue/jobs/web-designer",
+      "valid_through": "1794501939",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/bambooworks/jobs/digital-marketing-executive-content-wordpress-social-media-2022979266",
+      "canonical_url": "https://himalayas.app/companies/bambooworks/jobs/digital-marketing-executive-content-wordpress-social-media-2022979266",
+      "content_hash": "6a2b075093df6bfb0c0bc738c6736438f9f726404ca8f586408b7ea0fe198e79",
+      "description_excerpt": "We are seeking a versatile, proactive Digital Marketing Executive to join a premier UK-based digital marketing agency that specializes in scaling private healthcare, medical, aesthetic, and wellness practices. The client helps clinics, surgeons, and healthcare professionals establish a powerful digital presence that drives patient inquiries, builds authority, and elevates brand reputation across search and social platforms. In this broad, all-around marketing role, you will support multiple client accounts by building and publishing blog articles, managing social media channels, handling light Canva graphics design, and keeping WordPress sites updated. While deep technical development isn't required, you should be a strong communicator with a sharp eye for content layout, on-page SEO, and modern AI productivity workflows. Part-time: 20 hours per week (with opportunity to grow into full-time) Remote: Fully remote (UK working hours) Engagement Type: Independent Contractor (client based in the UK) Monthly Rate: $600-720 (based on a 20-hour workweek; flexible depending on experience) Key Responsibilities: WordPress Content Publishing & Site Maintenance: Format, build, and publish blog ",
+      "employer": "Bamboo Works",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Philippines",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789624849",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:2b94f2ca44e50b5fa4cdb1368c013df34382558ebddcb87bd022f5cdc6c275f8",
+      "salary": {
+        "currency": "USD",
+        "max": 720,
+        "min": 600,
+        "period": "monthly"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/bambooworks/jobs/digital-marketing-executive-content-wordpress-social-media-2022979266",
+      "source_metadata": {
+        "categories": [
+          "Digital-Marketing",
+          "Content-Marketing",
+          "Social-Media-Marketing",
+          "WordPress-Development",
+          "Marketing-Executive",
+          "Digital-Marketing-Executive",
+          "Marketing-and-Social-Media-Executive",
+          "Digital-Marketing-Associate",
+          "Marketing-PR-Content-Executive",
+          "Digital-Marketing-Content-Writer",
+          "Social-Media",
+          "Marketing",
+          "Content-Creator"
+        ],
+        "company_slug": "bambooworks",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Philippines"
+        ],
+        "location_restrictions": [
+          "Philippines"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/bambooworks/jobs/digital-marketing-executive-content-wordpress-social-media-2022979266",
+        "timezone_restrictions": [
+          8
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Digital Marketing Executive (Content, WordPress & Social Media)",
+      "url": "https://himalayas.app/companies/bambooworks/jobs/digital-marketing-executive-content-wordpress-social-media-2022979266",
+      "valid_through": "1794808849",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/74b8610d-697c-404b-9620-8b934e3c65bd/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/74b8610d-697c-404b-9620-8b934e3c65bd",
+      "content_hash": "68b6e9167a97fdcf14d9ebfa0e7f160713d5eba4522503817a85d5b14866c125",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "Canada",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-11T18:11:03.440+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:2d8d5fe7dd9a5136ccf1bfe82ae6321e5f99541ac78154bb708d23d101cfb101",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:74b8610d-697c-404b-9620-8b934e3c65bd",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "Canada"
+          }
+        },
+        "department": "Engineering & Product",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Canada",
+                "addressLocality": "Toronto",
+                "addressRegion": "Ontario"
+              }
+            },
+            "location": "Toronto"
+          }
+        ],
+        "team": "Enterprise - Deployment"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Deployment Strategist - Canada",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/74b8610d-697c-404b-9620-8b934e3c65bd",
+      "workplace_type": "Remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-desarrollador-full-stack-kruger-nearshore-llc-rekluti-1137062",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-desarrollador-full-stack-kruger-nearshore-llc-rekluti-1137062",
+      "content_hash": "6e8dcf521602ba17ca9ba9199a14a9597307917291388361fac8253f06d07851",
+      "description_excerpt": "Desarrollador/a Full Stack â Python / Angular / Go En Rekluti , consultora especializada en talento tecnolÃ³gico en LATAM, buscamos un/a Desarrollador/a Full Stack para integrarse a proyectos de alta complejidad y participar en el desarrollo de soluciones web escalables. Buscamos un perfil con sÃ³lida experiencia en Python, Angular y Go , capaz de desenvolverse de manera autÃ³noma, aportar en decisiones tÃ©cnicas y colaborar con equipos multidisciplinarios. ð¯ Principales responsabilidades DiseÃ±ar, desarrollar y mantener aplicaciones Full Stack, participando en frontend y backend. Desarrollar servicios y APIs REST utilizando principalmente Python y Go. Construir y mantener interfaces web modernas con Angular . Participar en el diseÃ±o de arquitecturas y definiciÃ³n de soluciones tÃ©cnicas. Integrar servicios, APIs y diferentes componentes de la plataforma. Desarrollar cÃ³digo limpio, mantenible, escalable y de alta calidad. Participar en revisiones de cÃ³digo, testing y resoluciÃ³n de incidencias. Colaborar con equipos de Producto, QA, DevOps y otros perfiles tÃ©cnicos. Contribuir a la mejora continua de procesos y buenas prÃ¡cticas de desarrollo. Trabajar con servicios cloud ",
+      "employer": "Kruger NearShore LLC - Rekluti",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-22T00:00:12+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:2deeea7553fca7ec455eeb43c01819c5eab55ce40a40249e3eaf10380f178d65",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137062",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787356812,
+        "provider": "remoteok",
+        "provider_job_id": "1137062",
+        "slug": "remote-desarrollador-full-stack-kruger-nearshore-llc-rekluti-1137062",
+        "tags": [
+          "full stack",
+          "front end",
+          "python",
+          "dev",
+          "testing",
+          "web dev",
+          "quality assurance",
+          "devops",
+          "c",
+          "cloud",
+          "nosql",
+          "git",
+          "flutter",
+          "angular",
+          "mobile",
+          "golang",
+          "backend",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "DESARROLLADOR FULL STACK",
+      "url": "https://remoteOK.com/remote-jobs/remote-desarrollador-full-stack-kruger-nearshore-llc-rekluti-1137062",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-member-of-technical-staff-engineering-physical-superintelligence-1136798",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-member-of-technical-staff-engineering-physical-superintelligence-1136798",
+      "content_hash": "a3d29200f6d2c3de0d8248ac3ca12dc440f058a90cb4f9caae776d62aba46827",
+      "description_excerpt": "Overview Physical Superintelligence is a startup with roots at Google, NVIDIA, Harvard, Meta, MIT, Oxford, Johns Hopkins, Cambridge, and the Perimeter Institute building AI systems to discover new physics at scale. We are seeking engineers to build platform infrastructure at the intersection of computational science, AI systems, and software engineering. Our mission is to discover and commercialize transformative physics breakthroughs at scale with artificial superintelligence, safely, verifiably, and for broad public benefit. The last century's golden age of physics gave us transistors, lasers, and nuclear energy. We believe artificial superintelligence will unlock the next one. We're creating the infrastructure to industrialize scientific discovery and usher in this new era. We have one product: new physics, at scale. Use this application if you are an engineer, no open engineering role fits your profile, and you want to be considered anyway. We hire excellent engineers when we find them, whether or not a matching role is open. Tell us how your background and ambitions intersect with our mission, and where you would have the most impact. Â Role and Responsibilities Our platform s",
+      "employer": "Physical Superintelligence",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Boston",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-16T00:00:23+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:2e2985174ea3cd6b11e74e9b7c44727021f6df894da45a7746d401e1c4b50ef5",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136798",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1786838423,
+        "provider": "remoteok",
+        "provider_job_id": "1136798",
+        "slug": "remote-member-of-technical-staff-engineering-physical-superintelligence-1136798",
+        "tags": [
+          "design",
+          "infosec",
+          "technical",
+          "dev",
+          "testing",
+          "cloud",
+          "exec",
+          "engineer",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Member of Technical Staff Engineering",
+      "url": "https://remoteOK.com/remote-jobs/remote-member-of-technical-staff-engineering-physical-superintelligence-1136798",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-ai-agent-engineer-sticker-mule-1137399",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-ai-agent-engineer-sticker-mule-1137399",
+      "content_hash": "bca8d2ae77d337d565accefc001f9ae985806a21180ffa1d04bf8cad3cbfb0b2",
+      "description_excerpt": "Sticker Mule is building the most lucrative commerce platform on the Internet by combining software, manufacturing, and AI in one stack. We're hiring an engineer to build, run and manage a team of AI agents to help us innovate faster, improve performance, and better serve customers. Work performed Identify where agents can help and build them accordingly. Work with department leads to assess AI needs. Help connect agents to appropriate third-party and internal tools. Measure results and remove agents that don't deliver. Test new tools and models as they ship and adopt what works. Advise others on AI capabilities to help them perform. Requirements Experience building agents that run on their own and do meaningful work Strong with Grok, Claude, OpenAI, and open source Comfortable in Go, TypeScript, GraphQL, Postgres, GCP Writes clearly in English Compensation Salary: $150,000â$250,000 USD $20,000 signing bonus 4 weeks vacation + country-specific holidays Fully remote Please mention the word **HUMOUR** and tag RMTcyLjE3NC4xOTguMTYw when applying to show you read the job post completely (#RMTcyLjE3NC4xOTguMTYw). This is a beta feature to avoid spam applicants. Companies can search th",
+      "employer": "Sticker Mule",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-16T12:44:27+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:2ec98e61701a3e7a1571b0c40d280a1bf6104a36ed79386abc7e552596c7c345",
+      "salary": {
+        "currency": null,
+        "max": 250000,
+        "min": 150000,
+        "period": null
+      },
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137399",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1789562667,
+        "provider": "remoteok",
+        "provider_job_id": "1137399",
+        "slug": "remote-ai-agent-engineer-sticker-mule-1137399",
+        "tags": [
+          "ai",
+          "golang",
+          "javascript",
+          "typescript"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "AI agent engineer",
+      "url": "https://remoteOK.com/remote-jobs/remote-ai-agent-engineer-sticker-mule-1137399",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-ai-trainer-image-qa-evaluator-imerit-technology-1137398",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-ai-trainer-image-qa-evaluator-imerit-technology-1137398",
+      "content_hash": "93c4af6f4d54f5dc9d23068f959d6a7655fe7e851e88e6e37e0db5852beff8ab",
+      "description_excerpt": "Location: South Korea | Remote Engagement: Freelance / Independent Contractor | Project-Based | Part-Time About the Project We are looking for English-speaking Image Quality Evaluators based in South Korea to support AI training and evaluation projects. You will review images and assess their quality according to project guidelines, helping improve the accuracy and performance of AI systems. You do not need to be Korean. We welcome applicants of any nationality who are currently living in South Korea, have lived there for several years, and are highly familiar with Korean culture, everyday life, and local context. What You'll Do Evaluate images based on quality standards and project guidelines. Identify issues such as blur, poor lighting, noise, exposure, compression, and framing. Evaluate visual content with awareness of South Korean cultural and local context . Accurately describe and interpret images in English. Maintain high accuracy, consistency, and productivity. Flag unusual cases or data-quality issues to the project team. Requirements Currently residing in South Korea. Legally authorized to work as an independent contractor in South Korea. Have a South Korean bank account ",
+      "employer": "iMerit Technology",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-16T06:55:47+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:3094230ee75828e6dfe8e765b8a40eedd7a7cb5cd332703b6c903e2bb345be9f",
+      "salary": {
+        "currency": null,
+        "max": 40000,
+        "min": 30000,
+        "period": null
+      },
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137398",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1789541747,
+        "provider": "remoteok",
+        "provider_job_id": "1137398",
+        "slug": "remote-ai-trainer-image-qa-evaluator-imerit-technology-1137398",
+        "tags": [
+          "ai",
+          "data annotation",
+          "quality assurance"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "AI Trainer Image QA Evaluator",
+      "url": "https://remoteOK.com/remote-jobs/remote-ai-trainer-image-qa-evaluator-imerit-technology-1137398",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8189940",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8189940",
+      "content_hash": "55ca4dfcb2670b7fe9fc004b1f801752915543f5eb42dc7885b0cddbc9797d22",
+      "description_excerpt": "About Pantheon Pantheon brings together exceptional builders who take ownership, drive meaningful impact, and shape what's next for the web. We power more than 300,000 websites globally for organizations including Google, Princeton, Salesloft, Clorox, and the United Nations. Every day, thousands of developers and marketers use our WebOps platform to build, iterate, and scale WordPress, Drupal, and Next.js sites that reach billions of people worldwide. As an employer, we operate with the same philosophy that drives our product: foundation and freedom. Pantheon is a vibrant, remote-forward team of experts who care deeply about their craft and results. Here, you take ownership of work that matters, contribute alongside exceptional people, and see the impact you create. The Role As the Senior Engineering Manager for Customer Runtimes, you will lead and manage a sizable team of talented software engineers focused on building the scaled infrastructure services that run the high-impact Drupal, Wordpress, and Next.js sites of our customers. The team is driving an exciting transformation of our most core customer infrastructure to expand our capabilities, leverage best of breed open source ",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-17T19:46:14.232190+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:14.232190+00:00",
+      "location": "United States (Remote)",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:312161c53b2b4a1b421deacff059b7475380da5d12b1ea59bcb4e9fd791fe07b",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8189940",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 2645,
+            "name": "Engineering",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3514140,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8189940
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Senior Engineering Manager, Customer Runtimes",
+      "updated_at": "2026-09-09T19:29:35-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8189940"
+    }
+  ],
+  "review_queue_count": 1788,
+  "run_id": "ingestion-1789674380",
+  "schema_version": 1,
+  "total_pages": 72
+}

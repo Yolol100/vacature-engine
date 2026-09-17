@@ -1,0 +1,1263 @@
+{
+  "completed_at": "2026-09-17T19:46:20.342284+00:00",
+  "page": 59,
+  "page_item_count": 25,
+  "review_queue": [
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
+      "content_hash": "f393bf32b1660d2d80ca6c8bb8ed14658c9c1404c0ec5f7f0b2bffb2ffc8369e",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "UAE",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-12T17:01:03.666+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:07a81b40e218f4d3e0713c2f744e73fccb5ae8c6b0e0cab1472ac3986f93ba78",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "United Arab Emirates",
+            "addressLocality": "Dubai",
+            "addressRegion": "Dubai"
+          }
+        },
+        "department": "Operations",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [],
+        "team": "Legal"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Public Sector Partnerships Lead - Middle East",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
+      "workplace_type": "Remote"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8755524002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8755524002",
+      "content_hash": "a1de6399da1b9cf8a36ebd670b05de6276dd3a697c66b7fa96cd118cd68ec647",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "location": "Bangalore, India",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:07b134643ab7446c931f72fae00e6c5e56888621a821de073670254333fd83de",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8755524002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4034706002,
+            "name": "DevOps Engineering",
+            "parent_id": 4011044002
+          }
+        ],
+        "internal_job_id": 6502117002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4112140002,
+            "location": null,
+            "name": "India",
+            "parent_id": 4019590002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8755524002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Engineering Manager - Continuous Deployment",
+      "updated_at": "2026-09-15T02:59:05-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8755524002"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/automatticcareers/jobs/7475345",
+      "canonical_url": "https://job-boards.greenhouse.io/automatticcareers/jobs/7475345",
+      "content_hash": "3a4fd641b9c7a27b440d22ae39ddb8eb55c4fecc6895f702dbeb6dd5f97adc74",
+      "description_excerpt": "At WooCommerce , we’re on a mission to democratize commerce. Millions of merchants around the world build their businesses with our open-source platform, and we’re scaling how we support them. Specifically, we’re scaling our B2B merchant acquisition efforts and are looking for a Senior Revenue Operations Manager to help build our Revenue Operations function largely from the ground up. This role goes beyond optimizing what exists today: it involves designing systems, processes, and data foundations that don’t yet fully exist, while ensuring they can scale thoughtfully over time. You’ll partner closely with Sales and Customer Success leadership as a trusted operational and analytical partner, helping establish the foundations that enable clear decision-making, effective execution, and predictable growth. This is a senior individual contributor role with significant ownership and influence. Your work will directly shape how we operate today and how we scale going forward. What You’ll Do First 90 days: Build core dashboards, identify process/data gaps, establish remediation plans. First 180 days: Create capacity and territory models, map the full tech stack and integrations, define the",
+      "employer": "Automattic",
+      "first_seen_at": "2026-09-17T19:46:11.377264+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:11.377264+00:00",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:09064457649cc496a5a1f623f553fec88e66f7ef36c6430a5bac6e8210d2dfab",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:automatticcareers",
+      "source_job_id": "automatticcareers:7475345",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 307167,
+            "name": "Business Operations Wrangler",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3318706,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 297537,
+            "location": null,
+            "name": "Product Maisons",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7475345
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://automatticcareers",
+      "title": "Senior Revenue Operations Manager",
+      "updated_at": "2026-09-14T13:20:38-04:00",
+      "url": "https://job-boards.greenhouse.io/automatticcareers/jobs/7475345"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/assessment-systems-corporation/jobs/sales-marketing-coordinator-b2b-edtech-saas-spanish-english",
+      "canonical_url": "https://himalayas.app/companies/assessment-systems-corporation/jobs/sales-marketing-coordinator-b2b-edtech-saas-spanish-english",
+      "content_hash": "1a5d683d1a9ab0569fb3f0de66804eb43902053779287b88b8e4befa03d17d07",
+      "description_excerpt": "We are an EdTech/HRTech company looking for a driven sales and marketing professional to contribute to our ongoing growth. The primary goal of this position is to increase the number of leads in our pipeline, primarily through the coordination of marketing efforts and focused outbound. The second aspect is to nurture leads into opportunities; sending resources, emailing check-ins, inviting to webinars, setting up consultations with our founder. The third aspect is to help manage opportunities into closed deals, in partnership with our experienced consultative experts. We are based in the USA, but are seeking a bilingual professional in Latin America to expand reach. Please submit resume and cover letter in English. Company Background: Assessment Systems Corporation (ASC) is a leading provider of robust web-based assessment platforms built upon leading-edge psychometric science and best practices. Our mission is to improve career and educational opportunities by modernizing the assessment design and delivery process at organizations that administer tests. We only work with \"real\" exams; that is, no psychology midterms at your local univeristy, but rather Certification, Licensure, Pr",
+      "employer": "Assessment Systems Corporation",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Argentina",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789080144",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:0ba73b9724362d40f5c16f93acf240b96c3e2f2ee42b8aaa0916b77915d2a030",
+      "salary": {
+        "currency": "USD",
+        "max": 2000,
+        "min": 1000,
+        "period": "monthly"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/assessment-systems-corporation/jobs/sales-marketing-coordinator-b2b-edtech-saas-spanish-english",
+      "source_metadata": {
+        "categories": [
+          "Sales-and-Marketing-Coordinator",
+          "B2B-Sales",
+          "Digital-Marketing",
+          "Edtech-Sales",
+          "Marketing-Coordinator",
+          "B2B-Sales-Coordinator",
+          "Bilingual-Sales-Development-Representative-(Spanish-English)",
+          "EdTech-Sales-Support",
+          "Bilingual-B2B-Sales-Associate",
+          "Sales",
+          "Marketing"
+        ],
+        "company_slug": "assessment-systems-corporation",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Argentina"
+        ],
+        "location_restrictions": [
+          "Argentina"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/assessment-systems-corporation/jobs/sales-marketing-coordinator-b2b-edtech-saas-spanish-english",
+        "timezone_restrictions": [
+          -3
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Sales & Marketing Coordinator - B2B EdTech SaaS (Spanish/English)",
+      "url": "https://himalayas.app/companies/assessment-systems-corporation/jobs/sales-marketing-coordinator-b2b-edtech-saas-spanish-english",
+      "valid_through": "1794264143",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-software-engineer-ii-golang-stone-1136569",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-software-engineer-ii-golang-stone-1136569",
+      "content_hash": "be6aa696241f1fd9adc524bb744379366ee55a5213c71d9a5aca55bc3a192b44",
+      "description_excerpt": "Sobre a Stone: Somos muito mais do que uma empresa de maquininhas! A Stone Ã© uma empresa de tecnologia e serviÃ§os financeiros focada no(a) cliente. Nascemos com o propÃ³sito de ser protagonistas na transformaÃ§Ã£o da indÃºstria de pagamentos, servindo o(a) empreendedor(a) brasileiro(a) e transformando seus sonhos em resultados. Somos a maior empresa independente de meios de pagamentos do Brasil, com mais de quinze mil pessoas espalhadas pelas cinco regiÃµes do paÃ­s, em um cenÃ¡rio repleto de desafios e oportunidades. Valorizamos o trabalho em equipe, a flexibilidade, o desenvolvimento contÃ­nuo e os pensamentos disruptivos e incansÃ¡veis na busca de soluÃ§Ãµes para a nossa RAZÃO. Nossa Cultura: Por aqui, vivemos nossa cultura no dia a dia, guiados por esses 5 valores: ð O cliente Ã© a razÃ£o O cliente Ã© o motivo pelo qual existimos e sÃ³ temos sucesso se ele tiver sucesso. â¡ CabeÃ§a de dono Fazemos o que Ã© certo, do jeito certo, com responsabilidade e tecnologia para decidir melhor. ð¯ Direto ao ponto Profundidade para entender e simplicidade para resolver. ð¤ ExcelÃªncia Ã© um jogo de equipe ConstruÃ­mos um negÃ³cio de longo prazo, em time e com colaboraÃ§Ã£o. â¨ P",
+      "employer": "Stone",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remoto",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-12T16:01:04+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:0bd82745207214329a47fc81af7afaebc1707c18c4dbe29d8c2af07da98afc91",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136569",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1786550464,
+        "provider": "remoteok",
+        "provider_job_id": "1136569",
+        "slug": "remote-software-engineer-ii-golang-stone-1136569",
+        "tags": [
+          "dev",
+          "excel",
+          "golang",
+          "engineer",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Software Engineer II Golang",
+      "url": "https://remoteOK.com/remote-jobs/remote-software-engineer-ii-golang-stone-1136569",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-online-bidder-webnotics-pvt-ltd-1137209",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-online-bidder-webnotics-pvt-ltd-1137209",
+      "content_hash": "2dec711323796609cc319f3f4c25022e322bd1207b0f769a809f73a1ac0e310b",
+      "description_excerpt": "About Us When it comes to developing web-based and mobile-based applications, we are formidable competition. Our valued clientele and we work together as a team. In this way, we can determine client demands and provide the best solution. Each project is overseen by a project manager and a team of professionals. Founded in 2004, Webnotics is an IT & Software business that provides end-to-end solutions for websites, online applications, and mobile apps. To provide startups and small businesses with unique web & app solutions, Webnotics was founded. Webnotics was founded to serve exclusively high-end consumers. As of right now, Webnotics is comprised of individuals with a variety of expertise. A sustainable vision and set of values guide the company's operations, and our services are founded on three principles: love for what we do, commitment to excellence, and honesty. We're Hiring: Online Bidder (Night Shift) | Remote (India Only) Are you an experienced Online Bidder looking to grow your career with a dynamic IT company? If you have a proven track record of winning projects and building long-term client relationships, we'd love to hear from you! Job Details Role: Online Bidder (Nig",
+      "employer": "Webnotics Pvt Ltd",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Agra,",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-04T04:28:15+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:0cb02daff8823ab208f07af34541674222df5ee2600ac8b6860aba22101d8941",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137209",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785817695,
+        "provider": "remoteok",
+        "provider_job_id": "1137209",
+        "slug": "remote-online-bidder-webnotics-pvt-ltd-1137209",
+        "tags": [
+          "technical",
+          "dev",
+          "marketing",
+          "web dev",
+          "exec",
+          "mobile",
+          "ops",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Online Bidder",
+      "url": "https://remoteOK.com/remote-jobs/remote-online-bidder-webnotics-pvt-ltd-1137209",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-digital-workplace-automation-specialist-dreem-health-1136948",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-digital-workplace-automation-specialist-dreem-health-1136948",
+      "content_hash": "0f1c62c0c23ad05d1d40cb42ae1b956690e1d6aa15e631fa4d89b37694815f4c",
+      "description_excerpt": "About Dreem Health, by Sunrise Dreem Health is Americaâs leading digital sleep clinic. Powered by Sunriseâs technology, Dreem Health makes sleep care simple â replacing long waits and in-lab sleep studies with home-based testing, expert telehealth visits, and personalized treatment plans that are easy for patients to follow. Weâre fixing the broken sleep care journey and helping more people get the care they need â from home, on their schedule. Your Opportunity The Workplace Technology & AI Automation Specialist owns the digital backbone of the employee experience at Sunrise/Dreem Health: IT provisioning and support, user access management, and the design and delivery of AI-powered automations across non-clinical teams. This role exists because we are a remote-first, fast-scaling organization where tooling, access, and AI capability are expanding faster than our processes can absorb. The role has two halves that share one purpose â removing friction so people can do their best work. - The first half is operational: provisioning hardware and accounts, managing access and permissions, and being the first line of support when something breaks. - The second half is developm",
+      "employer": "Dreem Health",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-18T16:00:22+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:0e9f204966962c460ca46a8c57aea9a23654eb9f82ce5c158723d600cbfab003",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136948",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787068822,
+        "provider": "remoteok",
+        "provider_job_id": "1136948",
+        "slug": "remote-digital-workplace-automation-specialist-dreem-health-1136948",
+        "tags": [
+          "design",
+          "customer support",
+          "testing",
+          "exec",
+          "ops",
+          "marketing",
+          "sales",
+          "medical",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Digital Workplace & Automation Specialist",
+      "url": "https://remoteOK.com/remote-jobs/remote-digital-workplace-automation-specialist-dreem-health-1136948",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8745623002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8745623002",
+      "content_hash": "4735a513e0ec5c48068aa9c8b4356aaf6bf631de93ba8f67cec26740fe4dec15",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "location": "Remote, Netherlands; Remote, Spain",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:10666853a694d246a5de8c7c9098be1ce039e70bc066945f1e36689d660ba1e7",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8745623002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4052737002,
+            "name": "Consulting Delivery",
+            "parent_id": 4011049002
+          }
+        ],
+        "internal_job_id": 6497535002,
+        "offices": [
+          {
+            "child_ids": [
+              4042500002,
+              4040905002,
+              4040903002,
+              4112146002,
+              4112147002,
+              4112148002,
+              4040908002,
+              4112149002,
+              4112150002,
+              4040907002,
+              4112151002,
+              4112152002,
+              4112153002,
+              4112154002,
+              4041064002
+            ],
+            "id": 4019553002,
+            "location": null,
+            "name": "EMEA",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8745623002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Professional Services Engineer",
+      "updated_at": "2026-09-17T08:43:55-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8745623002"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/holafly-finance-business-partner-marketing-product",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/holafly-finance-business-partner-marketing-product",
+      "content_hash": "6e908e54f1f00cfb487b80d5cbc22948945b9ec4a3c5c89b7eb495ca44fbe8ea",
+      "description_excerpt": "Headquarters: Remote Company Overview Holafly is a high-growth scale-up revolutionising how businesses and travellers connect to the internet abroad. Since 2018, we’ve empowered travellers in over 200 destinations worldwide with secure and reliable eSIM solutions. With a team of 500+ professionals across multiple countries, we are scaling globally to support travellers with seamless, unlimited data connectivity. We’re not just connecting people—we’re enabling freedom and peace of mind, ensuring our users stay connected from the second they land, wherever their journey takes them. The Role You will serve as the strategic bridge between Finance and our core growth engines, translating complex data into actionable roadmaps for our Marketing and Product leaders. Your mission is to move beyond the numbers, driving operational excellence and ensuring every Euro spent accelerates our global scaling efforts. Key Responsibilities Drive Strategic Alignment: Partner with Marketing and Product leads to co-create annual budgets and rolling forecasts that reflect ambitious growth targets. Maximise Returns: Assist with the delivery and analysis of Customer and Product ROI to ensure marketing spen",
+      "employer": "Holafly",
+      "first_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-18T20:33:40+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:10fd98e7e6aa84f089703347962fd8e6262b7458988c307a9e1d0d2a7aae4ed3",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/holafly-finance-business-partner-marketing-product",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "Finance Business Partner (Marketing & Product)",
+      "url": "https://weworkremotely.com/remote-jobs/holafly-finance-business-partner-marketing-product",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/assist-world/jobs/marketing-assistant",
+      "canonical_url": "https://himalayas.app/companies/assist-world/jobs/marketing-assistant",
+      "content_hash": "8ecd87fdcca220b055f1f5ef453a4baa8ffe8de6eae4a264a475f025a5ad0d2d",
+      "description_excerpt": "Are you a creative, organised marketing professional with experience managing digital content and social media? We're looking for a proactive Marketing Assistant to support a growing psychotherapy practice based in California. This is an exciting opportunity to work with a values-driven team that prioritises kindness, inclusivity, and meaningful mental health support. Key Responsibilities ●Schedule and publish content across social media platforms ●Create and edit graphics using Canva ●Edit short-form marketing videos ●Upload and manage blog content in WordPress ●Assist with email marketing campaigns using Kit ●Work with Zapier automations ●Support ongoing marketing initiatives and content creation ●Maintain brand consistency across digital channels Requirements ●Previous experience in digital marketing or social media management ●Strong Canva skills ●Basic video editing experience ●Experience with WordPress ●Familiarity with email marketing platforms (Kit or similar) ●Knowledge of Zapier is advantageous ●Excellent written English ●Highly organised with great attention to detail ●Comfortable working independently About You You'll be someone who communicates warmly but directly, enj",
+      "employer": "Assist World",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Philippines, South Africa",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789562540",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:12ef1345ef101ac8baad6fcdc7b7560784b6442c6e388148026b4c3a41dc3dca",
+      "salary": {
+        "currency": "USD",
+        "max": 800,
+        "min": 600,
+        "period": "monthly"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/assist-world/jobs/marketing-assistant",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Assistant",
+          "Digital-Marketing",
+          "Social-Media-Management",
+          "Content-Marketing",
+          "Marketing-Coordinator",
+          "Student-Marketing-Assistant",
+          "Digital-Marketing-Assistant",
+          "Entry-Level-Marketing-Assistant",
+          "Marketing-and-Content-Assistant"
+        ],
+        "company_slug": "assist-world",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Philippines",
+          "South Africa"
+        ],
+        "location_restrictions": [
+          "Philippines",
+          "South Africa"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/assist-world/jobs/marketing-assistant",
+        "timezone_restrictions": [
+          2,
+          8
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Assistant",
+      "url": "https://himalayas.app/companies/assist-world/jobs/marketing-assistant",
+      "valid_through": "1794746537",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/wpromote/jobs/manager-seo",
+      "canonical_url": "https://himalayas.app/companies/wpromote/jobs/manager-seo",
+      "content_hash": "5f0f4dde89c82dd7c11d43124ef139e1b329a39d6d01a205bf0c14436ffd7a2f",
+      "description_excerpt": "The Role We are looking for an SEO Manager to join our growing team at Wpromote ! Our ideal candidate will have a passion for establishing strong relationships with their clients, a natural curiosity for website optimization, and a knack for being proactive in pursuing growth opportunities for their book of business. You will work with a group of amazing SEO team members that you are able to learn from and bounce ideas off of. Read on, if this sounds like your next challenge! At Wpromote , we believe that great work is only possible with great people. Our goal is to build a better, more inclusive work environment and support our people at every stage of their careers by prioritizing a strong work-life balance through our policies and benefits listed below. As a Best Place to Work according to both Ad Age and Glassdoor and Adweek’s Fastest Growing Digital Agency, we are moving fast to expand our teams and bring new experts into the fold to keep pushing the boundaries of what’s possible in marketing. We offer: Remote-first culture Unlimited PTO Extended Holiday break (Winter) Flexible schedules Work from anywhere options* 100% paid parental leave 401(k) matching Medical, Dental, Visi",
+      "employer": "Wpromote",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789293025",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:130b010c7c31740025692fc419690f2205f363f46420092ee37bb15ca7f05655",
+      "salary": {
+        "currency": "USD",
+        "max": 80000,
+        "min": 69000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/wpromote/jobs/manager-seo",
+      "source_metadata": {
+        "categories": [
+          "SEO-Manager",
+          "Earned-Media",
+          "SEO-Strategy",
+          "Content-Strategy",
+          "Digital-Marketing",
+          "SEO-Marketing-Manager",
+          "SEO-Strategy-Manager",
+          "Technical-SEO-Manager",
+          "Search-Marketing-Manager"
+        ],
+        "company_slug": "wpromote",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/wpromote/jobs/manager-seo",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Manager, SEO",
+      "url": "https://himalayas.app/companies/wpromote/jobs/manager-seo",
+      "valid_through": "1794477024",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/trafilea-product-manager-ai-personalization",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/trafilea-product-manager-ai-personalization",
+      "content_hash": "7ce7864fbfb1b030763ef1c6a811b569c6fc39ef82b360e509597ab309671087",
+      "description_excerpt": "Headquarters: New York, New York, United States Job description About Trafilea Trafilea is a Consumer Tech Platform for Transformative Brand Growth. We’re building the AI Growth Engine that powers the next generation of consumer brands. With over $1B+ in cumulative revenue, 12M+ customers, and 500+ talents across 19 countries, we combine technology, growth marketing, and operational excellence to scale purpose-driven, digitally native brands. We own and operate our own digitally native brands (not an agency), with presence in Walmart, Nordstrom, and Amazon, and a strong global D2C footprint. Mission We’re looking for a Product Manager – AI Personalization to own and evolve our TrafiPersonalization Engine , a hybrid platform combining Machine Learning models, Generative AI, and rules-based logic to deliver real-time, cross-channel personalized experiences across our ecosystem. This is a high-ownership platform role at the intersection of MarTech, ML infrastructure, and Generative AI applications . Transform behavioral data and product signals into intelligent, scalable personalization that drives CVR, AOV, and retention across PDP, checkout, email, loyalty flows, and beyond. You’ll ",
+      "employer": "Trafilea",
+      "first_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-18T20:33:32+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:13271739efc3c1511e4164456fb7a9069b78ecfc302076912e2ab3be20bdafcb",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/trafilea-product-manager-ai-personalization",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "Product Manager AI Personalization",
+      "url": "https://weworkremotely.com/remote-jobs/trafilea-product-manager-ai-personalization",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/sentact/jobs/paid-media-specialist-b2b-healthcare-tech-2675076050",
+      "canonical_url": "https://himalayas.app/companies/sentact/jobs/paid-media-specialist-b2b-healthcare-tech-2675076050",
+      "content_hash": "3d7dab0dd3355192d20f8baf85b30bddd8f97c99c0fec365c9f490b5b82bd8c1",
+      "description_excerpt": "Job Title: Paid Media Specialist (B2B Healthcare Tech) Reports to: Director of Digital Marketing Location: Remote, U.S.* Type: Full-Time, Salaried, Exempt Compensation: $70,000 - $85,000 annual salary range, depending on experience Benefits: Generous PTO, employer-subsidized Medical, Dental, Vision, Disability, Life, HSA/FSA accounts, and 401(k) with 4% employer match About the Company In 2025, through the addition of several new business lines, Sentact expanded to form a truly unique company with the goal of strategically addressing a critical need for healthcare organizations – specifically, offering an integrated suite of solutions to encompass patient safety, quality, experience, and regulatory readiness. From credentialing to peer review, to comprehensive rounding for safety and experience, to clinical analytics, incident reporting and a market-leading patient safety organization, Sentact ’s solutions address the pressing operational and regulatory challenges facing healthcare leaders today. And our story is still being written – with the help of our customers. We will continue to evolve as we listen and respond to the needs of our customers, empowering them to reimagine the p",
+      "employer": "Sentact",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789312120",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:13eaad082e330607716cc6ff5c734940754ff6d793c56b685a851131dfaffc61",
+      "salary": {
+        "currency": "USD",
+        "max": 85000,
+        "min": 70000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/sentact/jobs/paid-media-specialist-b2b-healthcare-tech-2675076050",
+      "source_metadata": {
+        "categories": [
+          "Paid-Media-Specialist",
+          "PPC-Specialist",
+          "B2B-digital-marketing",
+          "Healthcare-Marketing",
+          "Paid-Search-Specialist",
+          "Senior-Paid-Media-Specialist",
+          "Paid-Media-Strategist",
+          "Senior-Paid-Media-Manager",
+          "Senior-Paid-Media-Buyer",
+          "Senior-Paid-Search-Specialist",
+          "Paid-Media-Analyst"
+        ],
+        "company_slug": "sentact",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/sentact/jobs/paid-media-specialist-b2b-healthcare-tech-2675076050",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Paid Media Specialist (B2B Healthcare Tech)",
+      "url": "https://himalayas.app/companies/sentact/jobs/paid-media-specialist-b2b-healthcare-tech-2675076050",
+      "valid_through": "1794496119",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager-7720330890",
+      "canonical_url": "https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager-7720330890",
+      "content_hash": "6b63f0d593f4521d515d6ba77a3372be1f1556008b0087482b4f6f2de4e97b4f",
+      "description_excerpt": "About MonetizeMore MonetizeMore is a global pioneer in ad technology, powering ad monetization for over 150,000 websites and apps globally. We combine proprietary technology with sophisticated optimization strategies to secure and maximize publisher revenue. We are a 100% remote, culture-first organization driven by four core values: Integrity, Enterprising, Kaizen (Continuous Improvement), and Collaboration . We empower our global team with absolute location autonomy and flexible global schedules. We care about the impact you deliver, not the hours you log on. About the Role The company is seeking an experienced, systems-driven Business Operations / Project Manager with a strong AdTech Background to transform informal workflows into owned, structured, and scalable operational systems. As the primary connective layer across departments, this role focuses on process kaizen, SOP governance, and end-to-end operational enablement—ensuring teams execute efficiently without reinventing processes. The Business Operations / Project Manager will manage the central project management infrastructure and partner directly with Product and executive leadership. Key responsibilities include prepa",
+      "employer": "MonetizeMore",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Indonesia",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789419709",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:14443540c782de57bd03d22343945cf5fb39dd5100024c2f306d922ff00570b0",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager-7720330890",
+      "source_metadata": {
+        "categories": [
+          "Business-Operations",
+          "Project-Management",
+          "Ad-Tech-Operations",
+          "Process-Management",
+          "Operations-Project-Manager",
+          "Project-Operations-Manager",
+          "Business-Operations-Manager",
+          "Business-Project-Manager",
+          "Business-Operations-Coordinator",
+          "Project-Operations-Specialist",
+          "Operations-And-Business-Development-Manager",
+          "Business-Operations-Administrator",
+          "Project-Manager",
+          "Operations"
+        ],
+        "company_slug": "monetizemore",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Indonesia"
+        ],
+        "location_restrictions": [
+          "Indonesia"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager-7720330890",
+        "timezone_restrictions": [
+          7,
+          8,
+          9
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Business Operations / Project Manager",
+      "url": "https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager-7720330890",
+      "valid_through": "1794603708",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
+      "content_hash": "fe4ca5fde7a3b69ca3b16b864e2e94f77cfa57ebfa267e42e3abc5e5c00ff330",
+      "description_excerpt": "Remote - About AIWIAIWI is an independent non-profit that exists to ensure that insiders at frontier AI companies can speak up safely and effectively when they see something that should be addressed. We do this by integrating the ecosystem of lawyers, AI researchers, AI advoc... Please mention the word **EARNESTNESS** and tag RMTcyLjE3NC4xOTguMTYw when applying to show you read the job post completely (#RMTcyLjE3NC4xOTguMTYw). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "The AI Whistleblower Initiative",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-27T09:00:02+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:14b386838ea4abdec1efc938eb478f48480bca550c52d2f826bd5d5a7415283b",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137162",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787821202,
+        "provider": "remoteok",
+        "provider_job_id": "1137162",
+        "slug": "remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
+        "tags": [
+          "golang",
+          "engineer"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Principal Engineer",
+      "url": "https://remoteOK.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-freelance-creative-director-bmwl-1135901",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-freelance-creative-director-bmwl-1135901",
+      "content_hash": "dcc9e2f72253dbeef7e17adfe4fff378d57e9eab586b907a3b0ace016912142b",
+      "description_excerpt": "Freelance Creative Director BMWL (an Axiom Advisors Group company) â Remote / Contract About Us: BMWL is a dynamic political consulting and public affairs firm located in the heart of the Bay Area. We specialize in providing strategic communication, advocacy, and campaign management services to a diverse range of clients, including political candidates, advocacy groups, and non-profit organizations. Our team comprises experienced professionals passionate about making a positive impact through effective communication and strategic political consulting. BMWL is committed to creating a diverse and welcoming workplace and is proud to be an equal opportunity employer. We encourage all qualified applicants to apply, including people of color, women, LGBTQIA+ individuals, veterans, and persons with disabilities. If you are unsure whether you meet the qualifications for this role but are still interested, we encourage you to apply. About the Role BMWL is seeking a freelance Creative Director to support branding and media development across our client roster. This is a flexible, project-based engagement ideal for a seasoned creative who thrives working with campaigns, advocacy groups, and",
+      "employer": "BMWL",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "California, California, United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-07-31T23:38:35+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:15c6219f55fc509522eca4cca8c6d305ccb4e75a3f4f9ac55cd7e9bb423060ba",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1135901",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785541115,
+        "provider": "remoteok",
+        "provider_job_id": "1135901",
+        "slug": "remote-freelance-creative-director-bmwl-1135901",
+        "tags": [
+          "design",
+          "amazon",
+          "designer",
+          "customer support",
+          "video",
+          "exec",
+          "junior",
+          "marketing",
+          "ecommerce",
+          "digital nomad",
+          "art direction",
+          "consulting",
+          "ads",
+          "content writing"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Freelance Creative Director",
+      "url": "https://remoteOK.com/remote-jobs/remote-freelance-creative-director-bmwl-1135901",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8731996002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8731996002",
+      "content_hash": "ad4bf471c08bdf0b3eea0f16ca0deb4b7fe408cd113ec43fc79839cff2b5e87a",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "location": "Bangalore, India",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:164b57aaccad5c29df3a15102b1b63a48ebbf99fbef79f807391cc39d034e206",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8731996002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [
+              4109797002
+            ],
+            "id": 4011052002,
+            "name": "SA",
+            "parent_id": 4011043002
+          }
+        ],
+        "internal_job_id": 6491281002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4112140002,
+            "location": null,
+            "name": "India",
+            "parent_id": 4019590002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8731996002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Solutions Architect",
+      "updated_at": "2026-09-14T16:01:39-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8731996002"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/endava-senior-product-architect",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/endava-senior-product-architect",
+      "content_hash": "ecee16b7d07673b1ae0407bea5e6004c0cf368a29cfea267da04ae15cb24cecb",
+      "description_excerpt": "Headquarters: Bucharest, Bucharest, Romania Company Description Technology is our how. And people are our why. For over two decades, we have been harnessing technology to drive meaningful change. By combining world-class engineering, industry expertise and a people-centric mindset, we consult and partner with leading brands from various industries to create dynamic platforms and intelligent digital experiences that drive innovation and transform businesses. From prototype to real-world impact - be part of a global shift by doing work that matters. Job Description The Oracle Product Architect provides strategic analysis, design and implementation guidance of solution design /architecture services on the development, integration, interfacing and synchronization of a variety of Oracle Cloud Applications (Fusion ERP, EPM,) and Oracle Infrastructure Cloud components on both existing business needs and integration/implementation needs. The position will work closely with other technology departments and business stakeholders and has an emphasis on shaping the development of architectural solutions. The role is responsible for the assessment and selection of the most suitable solution tha",
+      "employer": "Endava",
+      "first_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-18T20:34:51+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:1687d61812b632583e01e437b9c4be8d65a4c55f2c6b1f3580437bf6a9df109a",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/endava-senior-product-architect",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "Senior Product Architect",
+      "url": "https://weworkremotely.com/remote-jobs/endava-senior-product-architect",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://jobicy.com/jobs/150885-contract-senior-web-engineer",
+      "canonical_url": "https://jobicy.com/jobs/150885-contract-senior-web-engineer",
+      "content_hash": "581e96c0e4d647e51e872b1c24d44e80f89c80fa23795546135540d0bb3ac448",
+      "description_excerpt": "Location: Remote — Anywhere (Open to applicants located anywhere around the globe.) Fueled is a leading digital strategy, design, and engineering agency. We are a 300+ person team that has designed and built hundreds of digital products and experiences for brands like Google, Apple, The New York Times, ESPN, Victoria’s Secret, MGM Resorts, Albertsons, and CLEAR. As a Contract Senior Web Engineer at Fueled, your mission is to architect the foundational systems that power dynamic, large-scale digital experiences. You will define the technical backbone of our projects, leveraging deep WordPress expertise to build robust, scalable solutions with modern PHP and sophisticated Gutenberg architecture. Your work bridges critical business needs and elegant technical execution, ensuring the platforms you build are performant, maintainable, and capable of evolving with our clients' ambitions. By setting a high bar for back-end craftsmanship and mentoring through your code, you'll leave a lasting imprint on our products, our team, and the millions of users who interact with your work. Intentionally remote, our team thrives in a culture that values flexibility, creativity, and cutting-edge techn",
+      "employer": "Fueled",
+      "employment_type": "Contract",
+      "first_seen_at": "2026-09-17T19:46:19.519025+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:19.519025+00:00",
+      "location": "Anywhere",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-17T05:35:10+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:16f8437e93c0cbdc0c48788347a56920eb3b8fcfc9607cd2753f5151e1af746b",
+      "source_id": "jobicy-api",
+      "source_instance": "jobicy-api:global",
+      "source_job_id": "global:150885",
+      "source_metadata": {
+        "discovery_tag": "wordpress",
+        "industry": [
+          "Software Engineering"
+        ],
+        "level": "Senior",
+        "provider": "jobicy",
+        "provider_job_id": 150885
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://jobicy.com/api/v2/remote-jobs",
+      "title": "Contract Senior Web Engineer",
+      "url": "https://jobicy.com/jobs/150885-contract-senior-web-engineer",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8808115002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8808115002",
+      "content_hash": "ac5a0b62d3626206280e4ef1a748e115f37cd24d6ded521f7547daf3521195f0",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "location": "Remote, United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:18f409a18617d1ef074cb48a9c6dee57ac4de9612abf39b2243698efb7fadfc5",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8808115002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [
+              4109795002,
+              4143090002
+            ],
+            "id": 4021652002,
+            "name": "Field Operations",
+            "parent_id": 4011049002
+          }
+        ],
+        "internal_job_id": 6524972002,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 4040901002,
+            "location": null,
+            "name": "Canada",
+            "parent_id": 4019551002
+          },
+          {
+            "child_ids": [
+              4040902002
+            ],
+            "id": 4040904002,
+            "location": null,
+            "name": "United States of America",
+            "parent_id": 4019551002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8808115002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Associate Revenue Operations Analyst, Policy & Rules of Engagement",
+      "updated_at": "2026-09-16T16:43:54-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8808115002"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/automattic/jobs/technical-support-engineer-pressable",
+      "canonical_url": "https://himalayas.app/companies/automattic/jobs/technical-support-engineer-pressable",
+      "content_hash": "f7f85521c6e1e824ae7a8484fad533522185bb80c8e5af80130816271f178e24",
+      "description_excerpt": "Pressable (“WordPress hosting that means business”) seeks an experienced, motivated, and empathetic professional with the expertise to help us meet or exceed our high standards in Customer Technical Support. Pressable is seeking an experienced WordPress & Hosting expert with advanced WordPress performance and troubleshooting skills to join our Customer Support Team. Here at Pressable, we take pride in offering the best WordPress hosting on the planet. Our platform is rock-solid, our pricing is fair, and our team is fiercely dedicated to our customers' success and happiness. With our exciting growth, we’re looking for experts who can investigate highly technical WordPress and Hosting related questions and issues. All while providing the fast, friendly, and helpful support experience that our customers love. This is a technical role designed for a self-driven problem solver and lifelong learner who thrives in complex troubleshooting environments. You will report to Customer Support leadership and work closely with cross-functional partners across Pressable and Automattic to ensure a high-quality experience across all customer interactions. Responsibilities Interacting with existing a",
+      "employer": "Automattic",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789341693",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:19091269dd9ca6645009ccbf10e71a33f245595225f8e423f1de6c6257336f55",
+      "salary": {
+        "currency": "USD",
+        "max": 40000,
+        "min": 25000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/automattic/jobs/technical-support-engineer-pressable",
+      "source_metadata": {
+        "categories": [
+          "Technical-Support-Engineer",
+          "WordPress-Support",
+          "Customer-Support",
+          "WordPress-Hosting",
+          "Happiness-Engineering",
+          "Product-Support-Engineer",
+          "Support-Engineer",
+          "WordPress-Support-Engineer",
+          "SaaS-Support-Engineer"
+        ],
+        "company_slug": "automattic",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/automattic/jobs/technical-support-engineer-pressable",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Technical Support Engineer, Pressable",
+      "url": "https://himalayas.app/companies/automattic/jobs/technical-support-engineer-pressable",
+      "valid_through": "1794525692",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-freelance-designer-control-shift-video-1136213",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-freelance-designer-control-shift-video-1136213",
+      "content_hash": "f6e6ed4e3e13a5bbf2d7ad33b23a76b3c4e2972c214772688c461782f7319294",
+      "description_excerpt": "Job Description And Requirements Project-based | Remote | United States | Contract Pay based on freelancer's rate Control Shift Video is looking for a freelance designer to collaborate with our creative team on project-based work across video, motion graphics, web visuals, and brand content. Our projects span technology, healthcare, energy, consumer brands, nonprofits, and passion projects. What Youâll Do Design visual systems, frames, and assets for video and motion projects Support branding, layout, and visual storytelling needs Translate concepts into clean, purposeful designs Prepare files for animation and production workflows What Weâre Looking For Strong design fundamentals and visual judgment Experience designing for motion or video Clear communication and reliable delivery Proficiency in Adobe Creative Suite or similar tools How We Work Remote-first and flexible Project-based engagements with clear scopes and timelines Respectful collaboration â we treat freelancers like partners, not resources Clear feedback, fair rates, and no last-minute chaos whenever possible Why Work With Us Youâll work on meaningful projects with real impact We value creativity, curiosity, a",
+      "employer": "Control Shift Video",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Texas,",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-05T08:16:20+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:1994bcd1b877494c001624a2ac5ba2a58ab3862d167dcdaf2177cebce85646c1",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136213",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785917780,
+        "provider": "remoteok",
+        "provider_job_id": "1136213",
+        "slug": "remote-freelance-designer-control-shift-video-1136213",
+        "tags": [
+          "exec",
+          "design",
+          "architecture",
+          "recruiter",
+          "customer support",
+          "marketing",
+          "content writing",
+          "ops",
+          "golang",
+          "full time",
+          "digital nomad",
+          "dev",
+          "senior",
+          "medical",
+          "engineer",
+          "infosec",
+          "react",
+          "embedded",
+          "technical",
+          "finance",
+          "cloud",
+          "postgres",
+          "typescript",
+          "ruby",
+          "stats",
+          "accounting",
+          "designer",
+          "web dev",
+          "video",
+          "ads"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Freelance Designer",
+      "url": "https://remoteOK.com/remote-jobs/remote-freelance-designer-control-shift-video-1136213",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-gardener-handyman-driver-nt-health-1136625",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-gardener-handyman-driver-nt-health-1136625",
+      "content_hash": "d012eef8f6cbd41745c63dbe06803123bbac55e8e08133b68b2c25e981560fff",
+      "description_excerpt": "Vacancy Number: 043183 Agency: Department of Health Number of Vacancies: 1 Work Unit: Primary Health Care â Business Support Location: Alice Springs Primary Objective: Under the general direction of the Fleet Officer and relevant remote Health Centre Manager, establish and maintain facility grounds, remove green and general waste from remote clinic campuses and affiliated off-site facilities as required throughout Central Australia. Contact: Julie Casey on 08 8951 5816 or Julie.casey@nt.gov.au Remuneration Package: Remuneration Package $80,383 - $83,807 (including salary $67,945 - $70,839) Experience Level: Physical 3 Please mention the word **PARAMOUNT** and tag RMTcyLjE3NC4xOTguMTYw when applying to show you read the job post completely (#RMTcyLjE3NC4xOTguMTYw). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "NT Health",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Alice Springs,",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-13T20:09:23+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:19c5fa527902cf6f3b10c5b270afd0f3da70efe05d6a61b25d587fe4601b05e4",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136625",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1786651763,
+        "provider": "remoteok",
+        "provider_job_id": "1136625",
+        "slug": "remote-gardener-handyman-driver-nt-health-1136625",
+        "tags": [
+          "customer support",
+          "exec",
+          "medical"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Gardener Handyman Driver",
+      "url": "https://remoteOK.com/remote-jobs/remote-gardener-handyman-driver-nt-health-1136625",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/msq-dx/jobs/senior-front-end-developer-wordpress",
+      "canonical_url": "https://himalayas.app/companies/msq-dx/jobs/senior-front-end-developer-wordpress",
+      "content_hash": "a98ee87db27c6b9765f25cb9ade0aa98afb0cc34f77a4aa0eb96b146018bd4d6",
+      "description_excerpt": "In Short MSQ DX is actively searching for a highly skilled Senior Front-end developer in Brazil. You'll lead front-end development initiatives within a collaborative team environment, working directly with our Brazil Country Head and fellow developers. Your expertise will guide the creation of intuitive, appealing, and performant web applications for our clients. Ideal candidates will have a passion for innovation, staying ahead of emerging technologies, and mentoring team members. Code samples are required. What You’ll Be Doing Collaborate with clients and lead team members through the design and implementation of high-quality solutions based on technical and business requirements Drive the adoption of modern development standards, tools, and frameworks to ensure the highest quality output Produce detailed documentation, test plans, and maintain well-documented, clean, and efficient code Actively mentor junior and mid-level team members, promoting best practices and professional growth Foster trusted partnerships with coworkers and clients Develop interactive prototypes to explore innovative UI solutions Develop tested and documented TypeScript, HTML, and CSS Build responsive and ",
+      "employer": "MSQ DX",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Brazil",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789330643",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:1b0364c5d088e078a45f76957e6e54dd333bac115f7c2c4c4e3dd9e5aff76bec",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/msq-dx/jobs/senior-front-end-developer-wordpress",
+      "source_metadata": {
+        "categories": [
+          "Frontend-Development",
+          "Web-Development",
+          "React",
+          "UI-Engineering",
+          "Frontend-Engineer",
+          "WordPress-Developer",
+          "Senior-Front-End-Developer",
+          "Senior-Frontend-Development",
+          "Senior-Web-Developer",
+          "Senior-Frontend-Engineering",
+          "Front-End-Developer"
+        ],
+        "company_slug": "msq-dx",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Brazil"
+        ],
+        "location_restrictions": [
+          "Brazil"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/msq-dx/jobs/senior-front-end-developer-wordpress",
+        "timezone_restrictions": [
+          -5,
+          -4,
+          -3,
+          -2
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Front-end Developer(Wordpress)",
+      "url": "https://himalayas.app/companies/msq-dx/jobs/senior-front-end-developer-wordpress",
+      "valid_through": "1794514642",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/asialocalize/jobs/content-manager-digital-marketing-expert-5852869344",
+      "canonical_url": "https://himalayas.app/companies/asialocalize/jobs/content-manager-digital-marketing-expert-5852869344",
+      "content_hash": "28c57a647aad2b2828c3e843915fac08dbff39fc171659cbfb1cbcc12f74175a",
+      "description_excerpt": "Now Hiring: Freelance Content & Data Managers + Digital Marketing Process Experts (Remote) Greetings! We are currently assisting a client in sourcing qualified freelancers for multiple upcoming digital projects. These roles are ideal for professionals with experience in content management, data operations, or digital marketing processes . Role: Content & Data Manager Were looking for skilled freelancers with hands-on experience in modern CMS platforms , including: WordPress, Drupal Salesforce Commerce Cloud (SFCC) Adobe Experience Manager (AEM) Sitecore, Contentful Product Information Management (PIM) systems Scope of Work: Content setup, migration, QA, and publishing (content is provided) Use of CMS, PIMs, DAMs, and eCRM tools Ensuring localization, accurate system migration, and QA Occasional platform support, ticket handling via Jira, and liaising with engineering teams Role: Digital Marketing Process Expert Seeking professionals with a strong process-oriented mindset and a deep understanding of digital marketing operations. Responsibilities: Define governance and improve marketing-related business processes Campaign and workflow consultation Stakeholder engagement and communica",
+      "employer": "AsiaLocalize",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "France",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789349938",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:1e365442a00555e62a5ba9bf258b4945c03a09a8aba69eb63ad01af1c7185233",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/asialocalize/jobs/content-manager-digital-marketing-expert-5852869344",
+      "source_metadata": {
+        "categories": [
+          "Content-Manager",
+          "Digital-Marketing-Process-Expert",
+          "CMS-Specialist",
+          "Data-Operations-Manager",
+          "Process-Consultant",
+          "Digital-Content-Marketing-Manager",
+          "Digital-Content-Strategist",
+          "Digital-Content-Manager",
+          "Social-And-Content-Marketer",
+          "Content-Marketing-Specialist",
+          "Digital-Marketing-Expert"
+        ],
+        "company_slug": "asialocalize",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "France"
+        ],
+        "location_restrictions": [
+          "France"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/asialocalize/jobs/content-manager-digital-marketing-expert-5852869344",
+        "timezone_restrictions": [
+          1
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Content Manager & Digital Marketing Expert",
+      "url": "https://himalayas.app/companies/asialocalize/jobs/content-manager-digital-marketing-expert-5852869344",
+      "valid_through": "1794533937",
+      "workplace_type": "remote"
+    }
+  ],
+  "review_queue_count": 1788,
+  "run_id": "ingestion-1789674380",
+  "schema_version": 1,
+  "total_pages": 72
+}

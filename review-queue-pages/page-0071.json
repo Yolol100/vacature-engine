@@ -1,0 +1,1398 @@
+{
+  "completed_at": "2026-09-17T19:46:20.342284+00:00",
+  "page": 71,
+  "page_item_count": 25,
+  "review_queue": [
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-solutions-delivery-manager-benchling-1136937",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-solutions-delivery-manager-benchling-1136937",
+      "content_hash": "476dd27105474dad2c49c06506116e8b25f83c1e8afa0a711180c8d4f02d9a2e",
+      "description_excerpt": "We are rebuilding biotech for the AI era. When a breakthrough is delayed, the world waits. Getting a molecule from discovery to patients, or a crop from lab to field, involves thousands of slow, manual, disconnected steps. AI has the potential to change this, compressing decades of R&D work into years. But that only happens when clean, structured scientific data and AI are built into how science gets done. Benchling is the AI platform for biotech R&D. Scientists use Benchling to design experiments, capture structured data, and run AI agents and models directly in their workflows. Over 200,000 scientists around the world trust Benchling to power their most important work, from academic labs to Sanofi, Moderna, and more than half of the world's top 50 biopharma. Weâre building an AI scientist for our customers. We canât do that if we havenât built the muscle ourselves. AI fluency is the foundation we build on; it's core to how we work, and we're committed to helping every new hire integrate it into their day-to-day. As part of our interview process, you'll complete a brief AI-focused exercise or discussion so we can understand how you think about and use AI to drive impact in y",
+      "employer": "Benchling",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Boston",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-18T08:00:07+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:e4aae712a2c9e9d1907659ce5b5ed82f490eec1aee67d4c50c349c30af791786",
+      "salary": {
+        "currency": null,
+        "max": 200000,
+        "min": 150000,
+        "period": null
+      },
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136937",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787040007,
+        "provider": "remoteok",
+        "provider_job_id": "1136937",
+        "slug": "remote-solutions-delivery-manager-benchling-1136937",
+        "tags": [
+          "exec",
+          "design",
+          "technical",
+          "marketing",
+          "sales",
+          "biotech",
+          "medical",
+          "education",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Solutions Delivery Manager",
+      "url": "https://remoteOK.com/remote-jobs/remote-solutions-delivery-manager-benchling-1136937",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pavago/jobs/website-designer-3321739934",
+      "canonical_url": "https://himalayas.app/companies/pavago/jobs/website-designer-3321739934",
+      "content_hash": "6ec6154c7b0f0fb7e73786e4fcb2cfc391773292bf44c1482a821e5d655358c5",
+      "description_excerpt": "Website Designer – WordPress, Webflow, Figma & UX/UI Full-Time | Remote | U.S. Business Hours About the Role At Pavago , one of our clients is hiring a Website Designer to design and build modern, responsive, and conversion-focused websites. This is a hands-on role combining UX/UI design with CMS implementation . You’ll take projects from wireframes and high-fidelity designs through live website builds while ensuring strong performance, SEO, accessibility, and mobile responsiveness. We’re looking for someone who can create websites that look great, perform well, and support real business goals. What You’ll Own Website & UX/UI Design Create wireframes, mockups, and high-fidelity designs using Figma, Adobe XD, or Sketch Design responsive websites and landing pages Translate brand and business goals into intuitive user experiences Design with engagement and conversion in mind CMS Development Build and maintain websites using WordPress, Webflow, Squarespace, or Shopify Customize themes and layouts with HTML and CSS Use light JavaScript where required Configure forms, plugins, integrations, and third-party tools Performance, SEO & Optimization Optimize websites for speed, SEO, accessibi",
+      "employer": "Pavago",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Colombia",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789424520",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:e606bfa0efd5ba693410cbe17a7da9582e5f548e0f7b2bba12cfbd06ea44466f",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/website-designer-3321739934",
+      "source_metadata": {
+        "categories": [
+          "Website-Designer",
+          "Web-Designer",
+          "UI-UX-Designer",
+          "Frontend-Development",
+          "WordPress-Developer",
+          "Site-Designer",
+          "Web-Design",
+          "Graphic-Web-Designer",
+          "WordPress-Designer",
+          "WordPress-Web-Designer",
+          "Freelance-Web-Designer",
+          "Web-App-Designer"
+        ],
+        "company_slug": "pavago",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Colombia"
+        ],
+        "location_restrictions": [
+          "Colombia"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/website-designer-3321739934",
+        "timezone_restrictions": [
+          -5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Website Designer",
+      "url": "https://himalayas.app/companies/pavago/jobs/website-designer-3321739934",
+      "valid_through": "1794608519",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/sai360/jobs/digital-content-website-coordinator",
+      "canonical_url": "https://himalayas.app/companies/sai360/jobs/digital-content-website-coordinator",
+      "content_hash": "a525f0ff7f0328d74ddd4e9c0a99caea5bcc42717a5607b6ebe053c432d3e741",
+      "description_excerpt": "We are looking for a Digital Content & Website Coordinator to join our Marketing team! Are you a detail-oriented project coordinator who thrives on keeping content initiatives organized, moving forward, and delivered on time? Do you have a passion for digital content and website management, helping create exceptional online experiences for customers? Who we are: SAI360 is giving companies a new perspective on risk management. By integrating Governance, Risk, Compliance (GRC) software and Ethics & Compliance Learning resources, SAI360 can broaden your risk horizon and increase your ability to identify, manage, and mitigate risk. See risk from every angle. Visit www.sai360.com. Think you’re a fit for SAI360 ? SAI360 is looking for a highly organized and detail-oriented Digital Content & Website Coordinator to support the marketing team across content operations, project coordination, and website management. This role will work closely with the Content Manager and Digital Marketing team to keep content projects organized and moving forward, coordinate reviews and approvals across teams, manage content calendars, and assist with publishing and maintaining website content. The ideal can",
+      "employer": "SAI360",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Lithuania",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789301840",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:e657d0c5053c99dfb4b1a465f27481a3c659fc146fd5c2828eb520f90f9a753a",
+      "salary": {
+        "currency": "EUR",
+        "max": 2333,
+        "min": 2000,
+        "period": "monthly"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/sai360/jobs/digital-content-website-coordinator",
+      "source_metadata": {
+        "categories": [
+          "Digital-Content-Coordinator",
+          "Website-Management",
+          "Content-Marketing",
+          "Digital-Marketing",
+          "Project-Coordinator",
+          "Web-Content-Coordinator",
+          "Content-and-Communications-Coordinator",
+          "Digital-Content-Associate",
+          "Digital-Media-Coordinator",
+          "Digital-Content-Editor",
+          "Digital-Content-Specialist",
+          "Digital-Marketing-Coordinator"
+        ],
+        "company_slug": "sai360",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Lithuania"
+        ],
+        "location_restrictions": [
+          "Lithuania"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/sai360/jobs/digital-content-website-coordinator",
+        "timezone_restrictions": [
+          2
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Digital Content & Website Coordinator",
+      "url": "https://himalayas.app/companies/sai360/jobs/digital-content-website-coordinator",
+      "valid_through": "1794485838",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-data-entry-administrator-pulsemedianl-1135903",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-data-entry-administrator-pulsemedianl-1135903",
+      "content_hash": "c32285072900a7693b11649d1cfc436537e93e2bff36cd630ed33c34430e33fd",
+      "description_excerpt": "About PulseMediaNL PulseMediaNL is a forward-thinking digital media company committed to delivering high-quality content, innovative marketing solutions, and exceptional customer experiences. We value accuracy, efficiency, collaboration, and continuous improvement. As our team grows, we are seeking a highly organized and detail-oriented Data Entry Administrator to support our daily operations by maintaining accurate and reliable data across multiple platforms. Position Overview The Data Entry Administrator is responsible for accurately entering, updating, verifying, and maintaining company data while ensuring the highest standards of quality and confidentiality. This role requires excellent attention to detail, strong organizational skills, and the ability to work independently in a remote environment. The successful candidate will help ensure that business records remain complete, accurate, and accessible, contributing directly to operational efficiency. Key Responsibilities Accurately enter data into company databases, spreadsheets, and internal management systems. Review and verify information for completeness, accuracy, and consistency before submission. Update existing records",
+      "employer": "PulseMediaNL",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Ø§ÙØ±ÙØ§Ø¶, Ø§ÙØ±ÙØ§Ø¶ Ø§ÙØ±ÙØ§Ø¶ Ø§ÙØ³Ø¹ÙØ¯ÙØ©",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-02T01:50:08+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:e7696cd57d06b27e5b23f9cce999b658d61336608ef5642c1af7bef6032d5dae",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1135903",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785635408,
+        "provider": "remoteok",
+        "provider_job_id": "1135903",
+        "slug": "remote-data-entry-administrator-pulsemedianl-1135903",
+        "tags": [
+          "data entry",
+          "infosec",
+          "education",
+          "customer support",
+          "dev",
+          "marketing",
+          "admin",
+          "microsoft",
+          "exec",
+          "content writing",
+          "ops",
+          "excel",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Data Entry Administrator",
+      "url": "https://remoteOK.com/remote-jobs/remote-data-entry-administrator-pulsemedianl-1135903",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/human-made/jobs/engineering-manager-emea",
+      "canonical_url": "https://himalayas.app/companies/human-made/jobs/engineering-manager-emea",
+      "content_hash": "14e223514cae9cce5161fa057cf8e6d178b2065b1ea8afe87a068669b1d65dd8",
+      "description_excerpt": "Discipline: Engineering Line Management Responsibility: Yes Salary: £55k to £65k per annum, dependent on location and experience. This is a remote position and is open to applications based in the Europe, Middle East and Africa ( EMEA ) region, with CET and GMT time coverage. Job Overview As an Engineering Manager you’ll balance technical oversight and people management with strategic team leadership, to ensure best practices around software development. You will be responsible for the wellbeing and ongoing professional development of the engineers within your team, supporting individuals, and enhancing project development through the excellence of those in your team. You will be the primary point of contact for them to come to with any difficulties that they are facing. You should have thorough knowledge of the challenges of working in engineering, delivering projects to clients and working in a global remote team. You should be confident in collaborating with delivery and commercial teams to ensure the smooth running of the squad. You’ll be able to anticipate and identify problems as they arise, addressing them yourself, or escalating them to the relevant discipline lead when nec",
+      "employer": "Human Made",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United Kingdom",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789606083",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:e85adb24f178e29d612590dce4c16f7ac20c639e8e9e3a9b08ce2ffcab2d9cf7",
+      "salary": {
+        "currency": "GBP",
+        "max": 65000,
+        "min": 55000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/human-made/jobs/engineering-manager-emea",
+      "source_metadata": {
+        "categories": [
+          "Engineering-Management",
+          "Technology-Leadership",
+          "Engineering-Manager",
+          "People-Management",
+          "Software-Engineering-Leadership"
+        ],
+        "company_slug": "human-made",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United Kingdom"
+        ],
+        "location_restrictions": [
+          "United Kingdom"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/human-made/jobs/engineering-manager-emea",
+        "timezone_restrictions": [
+          0
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Engineering Manager - EMEA",
+      "url": "https://himalayas.app/companies/human-made/jobs/engineering-manager-emea",
+      "valid_through": "1794790082",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/huzzle-full-stack-developer-python-react-ai-1",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/huzzle-full-stack-developer-python-react-ai-1",
+      "content_hash": "5825ccdc71c15ab64149b1e0c471b89adff58607474c9f33013837fc991f409f",
+      "description_excerpt": "Headquarters: Colombia About Huzzle At Huzzle, we connect high-performing B2B sales professionals with global companies across the UK, US, Canada, Europe, and Australia. Our clients include startups, digital agencies, and tech platforms in industries like SaaS, MarTech, FinTech, and EdTech. We match top sales talent to full-time remote roles where they’re hired directly into client teams and provided ongoing support by Huzzle. Role Type: Full-time Engagement: Independent Contractor Job Summary We are seeking a Remote AI Backend / Full-Stack Engineer with strong Python and modern web development experience to help build and scale an AI-powered travel planning platform. You will work closely with the product and engineering teams to develop backend services, build APIs, and contribute to frontend features. This role requires a developer who can write clean, scalable code, collaborate through GitHub pull requests, and contribute to sprint planning in an agile environment . The ideal candidate is comfortable working in a startup environment , takes ownership of deliverables, and is passionate about building high-quality AI-driven applications. Key Responsibilities Develop and maintain ",
+      "employer": "Huzzle",
+      "first_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.312711+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-18T20:34:11+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:e87db84fa196fa4a8aee1115e3816643839d057123e5343de451b3cf52435fb2",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/huzzle-full-stack-developer-python-react-ai-1",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "Full-Stack Developer (Python, React, AI)",
+      "url": "https://weworkremotely.com/remote-jobs/huzzle-full-stack-developer-python-react-ai-1",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/group-one/jobs/affiliate-influencer-coordinator",
+      "canonical_url": "https://himalayas.app/companies/group-one/jobs/affiliate-influencer-coordinator",
+      "content_hash": "2f6ef0d418ab428faad005ccb469958c796c708779d439bbbf06aeb9abb5264a",
+      "description_excerpt": "Description Are you passionate about building meaningful partnerships, working with creators and influencers, and driving growth through strategic collaborations? Do you enjoy connecting with people, negotiating win-win partnerships, and turning great relationships into measurable business impact? Does working in a remote, international environment with a strong collaborative culture excite you? If you answered yes to these questions, we're sure this opportunity will sound exciting to you. 🤩 We’re looking for a proactive and relationship-driven Affiliate & Influencer Coordinator to join our Marketing team and help grow the reach of our products through affiliates, influencers, creators, and strategic partnerships. 🚀 Keep reading for more details! 📝 Become Our New Affiliate & Influencer Coordinator! You will play a key role in expanding the visibility and growth of our products by building and managing relationships with creators, affiliates, influencers, media partners, and strategic partners. This role is fully remote, but to keep collaboration smooth and our working hours nicely aligned, we’re looking for someone based in Europe. You’ll be officially employed in your country of r",
+      "employer": "group.one",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "France",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789295337",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:e95c4c6d204f2d621c275a2d4143bc716e770303136bf3d596a8af69190b60e1",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/group-one/jobs/affiliate-influencer-coordinator",
+      "source_metadata": {
+        "categories": [
+          "Affiliate-Marketing",
+          "Influencer-Marketing",
+          "Partnership-Development",
+          "Digital-Marketing",
+          "Creator-Partnerships",
+          "Affiliate-Program-Coordinator",
+          "Affiliate-Marketing-Coordinator",
+          "Influencer-Marketing-Coordinator",
+          "Influencer-Relations-Coordinator",
+          "Influencer-Coordinator",
+          "Influencer-and-Affiliate-Marketing-Manager",
+          "Social-Media-Influencer-Coordinator",
+          "Influencer-Partnerships-Manager",
+          "Affiliate-Partnerships-Manager",
+          "Influencer-Partnership-Manager"
+        ],
+        "company_slug": "group-one",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "France"
+        ],
+        "location_restrictions": [
+          "France"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/group-one/jobs/affiliate-influencer-coordinator",
+        "timezone_restrictions": [
+          1
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Affiliate & Influencer Coordinator",
+      "url": "https://himalayas.app/companies/group-one/jobs/affiliate-influencer-coordinator",
+      "valid_through": "1794479336",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/3eede250-d2a7-4f13-b0b2-d8a530cb6130/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/3eede250-d2a7-4f13-b0b2-d8a530cb6130",
+      "content_hash": "590185b6888367baf5a46dc666a37673d7c08c09d368834367d19d3584daa5b6",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-10T09:14:16.972+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:e9c720d99ee1dbf038d947c9195cfb3fb97f1991a2b047de6a9b33fc3ec91818",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:3eede250-d2a7-4f13-b0b2-d8a530cb6130",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "United States"
+          }
+        },
+        "department": "Engineering & Product",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Ireland"
+              }
+            },
+            "location": "Ireland"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Spain"
+              }
+            },
+            "location": "Spain"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "European Union"
+              }
+            },
+            "location": "Europe"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Germany"
+              }
+            },
+            "location": "Germany"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Belgium"
+              }
+            },
+            "location": "Belgium"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Switzerland"
+              }
+            },
+            "location": "Switzerland"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Denmark"
+              }
+            },
+            "location": "Denmark"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Portugal"
+              }
+            },
+            "location": "Portugal"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Poland"
+              }
+            },
+            "location": "Poland"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "United Kingdom"
+              }
+            },
+            "location": "United Kingdom"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Netherlands"
+              }
+            },
+            "location": "Netherlands"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "France"
+              }
+            },
+            "location": "France"
+          }
+        ],
+        "team": "Productions"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Post-Production Lead",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/3eede250-d2a7-4f13-b0b2-d8a530cb6130",
+      "workplace_type": "Remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-customer-service-representative-adaptive-teams-1136566",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-customer-service-representative-adaptive-teams-1136566",
+      "content_hash": "a3823ee15ef63f7c5b0959184c158153fc91e23d19a494f3989e1560cfbb862a",
+      "description_excerpt": "Confident on the phone and cool under pressure? This part-time role puts you at the center of fast-paced auction activityâmaking critical outbound calls, delivering clear info, and keeping everything on track. About the Company: This is a full time role with a partner agency in the self-storage industry, specializing in technology-driven storage solutions. The company enhances the rental experience through seamless digital tools and personalized customer service, helping individuals and businesses with secure, convenient storage options. Location: El Salvador - Fully Remote Your Mission: Day to Day Responsibilities Make high-volume inbound and outbound auction-related calls using approved scripts Clearly explain auction details, deadlines, and next steps Document call outcomes and tenant responses accurately in the system Complete multiple call attempts and follow required follow-ups Handle sensitive or escalated conversations with empathy and professionalism Stay compliant with timelines, legal requirements, and internal policies Flag trends, issues, or concerns to team leads Jump in on additional outbound call projects as business needs shift Your Toolbox: Skills to be Successf",
+      "employer": "Adaptive Teams",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-12T16:00:04+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:eb7b88e819f1cbd2efaa462456f2e74bbc154030b8873314c9c4041e4e105a9d",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136566",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1786550404,
+        "provider": "remoteok",
+        "provider_job_id": "1136566",
+        "slug": "remote-customer-service-representative-adaptive-teams-1136566",
+        "tags": [
+          "hr",
+          "sys admin",
+          "education",
+          "customer support",
+          "video",
+          "finance",
+          "legal",
+          "part time",
+          "non tech"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Customer Service Representative",
+      "url": "https://remoteOK.com/remote-jobs/remote-customer-service-representative-adaptive-teams-1136566",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-junior-crypto-analyst-trader-empire-assets-1137307",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-junior-crypto-analyst-trader-empire-assets-1137307",
+      "content_hash": "9524491a6a0bb80c43e2ea09675ab35860001b60e28c1752f1a356ffe67b7427",
+      "description_excerpt": "Application URL https://empireground.com/work/remoteok Empire Assets is a young and rapidly developing company working in the field of digital markets and analytics. We bring together enterprising people who want to master modern approaches to trading, analysis and decision-making in a dynamic market environment. We are currently looking for aÂ Junior Crypto Analyst & Trader Â , a novice specialist who is ready to complete training, perform real trading operations and develop under the guidance of experienced mentors. Your Responsibilities Execution and support of trading operations on digital markets. Tracking asset dynamics and market trends. Maintaining internal records on transactions and statistics. Analyzing market data, news, and charts for decision-making. Work with analytical tools and participate in discussions with a team of traders. The gradual formation and improvement of your own trading strategy. What We Offer Working for a young and growing international company. Remote format â you can work from anywhere in the world. Flexible schedule â up to 20 hours per week, convenient to combine with study or main activity. Learning from scratch â all processes and tradi",
+      "employer": "Empire Assets",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-04T15:13:46+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ebc5f8cd0342968e18e64cdb03fae6fcd88597e1f0f5ba806df6f43ec5d286de",
+      "salary": {
+        "currency": null,
+        "max": 80000,
+        "min": 60000,
+        "period": null
+      },
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137307",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788534826,
+        "provider": "remoteok",
+        "provider_job_id": "1137307",
+        "slug": "remote-junior-crypto-analyst-trader-empire-assets-1137307",
+        "tags": [
+          "part time",
+          "junior",
+          "analyst",
+          "crypto",
+          "other",
+          "web3",
+          "blockchain",
+          "defi",
+          "bitcoin",
+          "ethereum",
+          "remote",
+          "trader",
+          "Binance"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Junior Crypto Analyst & Trader",
+      "url": "https://remoteOK.com/remote-jobs/remote-junior-crypto-analyst-trader-empire-assets-1137307",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-software-engineer-mirantis-1137387",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-software-engineer-mirantis-1137387",
+      "content_hash": "32f244c042fa791027405263fe0237a3b60104a1e6689e035c5ece0d46a6c426",
+      "description_excerpt": "Remote - Mirantis, an IREN company, is the Kubernetes-native AI infrastructure company, enabling organizations to build and operate scalable, secure, and sovereign infrastructure for modern AI, machine learning, and data-intensive applications. By combining open source innovatio... Please mention the word **SEAMLESS** and tag RMTcyLjE3NC4xOTguMTYw when applying to show you read the job post completely (#RMTcyLjE3NC4xOTguMTYw). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "Mirantis",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-12T14:00:03+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ec1fdf6339872891441426d71f036b3473b3d1d74a6e4ce38ddc7c9c2256ef4f",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137387",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1789221603,
+        "provider": "remoteok",
+        "provider_job_id": "1137387",
+        "slug": "remote-software-engineer-mirantis-1137387",
+        "tags": [
+          "golang",
+          "dev",
+          "engineer",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Software Engineer",
+      "url": "https://remoteOK.com/remote-jobs/remote-software-engineer-mirantis-1137387",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-business-development-grow10x-1136221",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-business-development-grow10x-1136221",
+      "content_hash": "ce6dd9536034f5e67f3f872ecc7e5650eefe1e870059c54ee306e00278ed835b",
+      "description_excerpt": "Company Description Grow10X is a leading full-service agency dedicated to accelerating revenue growth for B2B SaaS technology companies through outbound lead generation. By integrating expertise, technology, on-demand data, and a globally distributed workforce, Grow10X empowers clients to achieve fast and scalable business growth. The company specializes in enhancing sales outcomes through direct outreach, including cold calling and personalized cold email campaigns. Supported by a comprehensive team of strategists, researchers, content creators, sales development representatives, and analysts, Grow10X operates as an embedded sales team for its clients. Their expertise enables businesses to effectively identify prospects, automate outbound processes, and build a strong sales pipeline. Role Description: This is a cold calling role. If you do not have cold calling experience please DO NOT apply You will be cold calling to Australian prospects You will be working from 6 am PST- 3pm PST This is a REMOTE work Qualifications Cold calling Neutral accent Salary: 150,000 PAK RS per month Please mention the word **REGALLY** and tag RMTcyLjE3NC4xOTguMTYw when applying to show you read the job",
+      "employer": "GROW10X",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Islamabad, Islamabad, IslÄmÄbÄd, Pakistan",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-04T07:17:17+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ec4e68988bcde6afc7a46202f98eeedd3488b979a3b7eb6ba174a3c90a0eb099",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136221",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785827837,
+        "provider": "remoteok",
+        "provider_job_id": "1136221",
+        "slug": "remote-business-development-grow10x-1136221",
+        "tags": [
+          "saas",
+          "customer support",
+          "marketing",
+          "exec",
+          "ops",
+          "sales",
+          "analyst",
+          "virtual assistant",
+          "infosec",
+          "consulting",
+          "dev",
+          "finance",
+          "math",
+          "data science",
+          "medical",
+          "full time",
+          "digital nomad",
+          "web dev",
+          "speech",
+          "video",
+          "mobile",
+          "senior",
+          "recruiter",
+          "technical",
+          "content writing",
+          "social media",
+          "golang",
+          "ads",
+          "embedded",
+          "bus dev"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Business Development",
+      "url": "https://remoteOK.com/remote-jobs/remote-business-development-grow10x-1136221",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager",
+      "canonical_url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager",
+      "content_hash": "126d0b2946a21a00d26c319148c17de072ee26bd005f4f09065fa1cf2072da6c",
+      "description_excerpt": "Marketing Account Manager (Email Marketing, Client Success & Campaign Operations) Position Type: Full-Time, Remote Working Hours: U.S. Business Hours About the Role We’re hiring a proactive and highly organized Marketing Account Manager to manage client relationships and oversee the execution of marketing initiatives across multiple high-level accounts. In this role, you’ll act as the primary point of contact for clients — ensuring communication stays clear, campaigns stay organized, and deliverables move forward efficiently. You’ll work directly with leadership while coordinating: Email marketing campaigns Client communication Website updates SEO support Reporting & analytics Workflow management This role is ideal for someone who thrives in fast-paced agency-style environments, enjoys managing relationships, and can keep multiple moving parts organized without dropping details. What You’ll Own Client Relationship Management Serve as the main point of contact for client accounts Manage communication through: Email Slack WhatsApp Zoom/video calls Lead recurring client meetings and strategy check-ins Maintain strong relationships with executive-level stakeholders Ensure clients feel ",
+      "employer": "Pavago",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789601703",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:edbcb6b5a50e2a6e88610deaacda164d49c20958770a9f385aed7ac991b61bcd",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/marketing-account-manager",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Account-Manager",
+          "Customer-Success-Manager",
+          "Email-Marketing-Manager",
+          "Digital-Marketing-Manager",
+          "Marketing-Operations",
+          "Marketing-Account-Management",
+          "Digital-Marketing-Account-Manager",
+          "Advertising-Account-Manager"
+        ],
+        "company_slug": "pavago",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Account Manager",
+      "url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager",
+      "valid_through": "1794785702",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8193029",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8193029",
+      "content_hash": "d38c0412b2426afe3d524ba245910a06b01cea13a384354ebb73d8e491ac0f78",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Senior Engineer II to implement and contribute to the design and optimization of our Serverless Inference infrastructure and APIs. In this role, you will tackle the challenges of large-scale AI workloads, focusing on throughput, GPU utilization, and fault tolerance to support next-generation inference needs of AI native enterprises. What You'll Do: Design and build scalable, multi-tenant services that power AI inference and intelligent routing workloads. Strengthen platform resiliency through improved observability, capacity management, automation, and operational tooling. Partner closely with platform, GPU infrastructure, and product engineering teams to deliver production-grade syst",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "location": "Seattle",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:ee32c957bb4df5ac91aeda1ed1ce68a781512e3bbe5e4df37a7dd80b3c9f6102",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8193029",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 365098,
+            "name": "Agentic AI",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3545176,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 396968,
+            "location": null,
+            "name": "DigitalOcean Seattle Office",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8193029
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Engineer II, Serverless Inference",
+      "updated_at": "2026-09-11T16:06:41-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8193029"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/bridgit-com/jobs/production-designer-ai-creative-systems",
+      "canonical_url": "https://himalayas.app/companies/bridgit-com/jobs/production-designer-ai-creative-systems",
+      "content_hash": "cb24181c1bf9a35270ccabd44840f91c9584c9a239b22d280e95cd56b6115e6b",
+      "description_excerpt": "The construction industry is facing a severe labor shortage. The industry is at an inflection point where they must reimagine talent and modernize their people strategy. Bridgit is the category leader for workforce planning and working with the largest and most sophisticated US general contractors. We have already built significant momentum since launching in 2019, and there remains an even larger opportunity ahead as we continue to innovate with AI and broaden our offering across markets. We are seeking a [Production Designer, AI and Creative Systems] to reshape how we do design in a modern era. This role is a rare hybrid: a skilled visual designer who's equally at home building AI-powered design workflows. This isn't a traditional designer role — and that's intentional. You'll be responsible for producing the high-quality, on-brand creative that requires a human eye and creative judgment, while also building the AI-powered tools, templates, and pipelines that let great design scale across the company. The best designers right now aren't just making things — they're shaping how their craft evolves. This role sits at that intersection: a real opportunity to define what a modern, AI",
+      "employer": "Bridgit",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Canada",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789604759",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ee61b7b5e14d6c287d0de89dad34bdd778dca2d966907764bb41d7ac08bc4aa1",
+      "salary": {
+        "currency": "CAD",
+        "max": 135,
+        "min": 75,
+        "period": "hourly"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/bridgit-com/jobs/production-designer-ai-creative-systems",
+      "source_metadata": {
+        "categories": [
+          "Production-Designer",
+          "Visual-Design",
+          "Marketing-Design",
+          "AI-Design",
+          "Graphic-Design",
+          "Production-Visual-Designer",
+          "AI-Creative-Systems",
+          "Creative-Production-Specialist",
+          "AI-Creative-Specialist",
+          "Design"
+        ],
+        "company_slug": "bridgit-com",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Canada"
+        ],
+        "location_restrictions": [
+          "Canada"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/bridgit-com/jobs/production-designer-ai-creative-systems",
+        "timezone_restrictions": [
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3.5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Production Designer, AI & Creative Systems",
+      "url": "https://himalayas.app/companies/bridgit-com/jobs/production-designer-ai-creative-systems",
+      "valid_through": "1794788758",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/vava-virtual-assistants/jobs/web-developer",
+      "canonical_url": "https://himalayas.app/companies/vava-virtual-assistants/jobs/web-developer",
+      "content_hash": "b46a24b01ec3c3d1b1e7916310f8c529dd8eae6c8934a0726e2819db10c81a3d",
+      "description_excerpt": "WEB DEVELOPER Independent Contractor | Remote | Minimum 10 Hours/Week This is an independent contractor (1099) position. VaVa contractors are responsible for managing their own taxes, benefits, and business expenses. VaVa Virtual Assistants is a remote company based out of Atlanta, Georgia, built on the belief that businesses thrive when they have the right support behind them. We connect clients across industries like nonprofit, legal, coaching, and finance with skilled virtual professionals who bring genuine expertise to the work. Our team may be distributed, but the culture is deeply connected through daily conversation, project collaboration, and regular all-company virtual gatherings. We are looking for an experienced Web Developer who is already freelancing or running their own web development practice and wants to supplement that work with additional client projects through VaVa. This role calls for both front end and backend expertise, along with the technical range to move between quick maintenance requests, full site builds, and ecommerce or security work as each project demands. Beyond your client work, you will be part of a contractor community that genuinely invests in",
+      "employer": "VaVa Virtual Assistants",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789087768",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ee7c59e9e7161a496ac4b50a77d9ef6069e951e63f5d0d2263e0934788675346",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/vava-virtual-assistants/jobs/web-developer",
+      "source_metadata": {
+        "categories": [
+          "Web-Development",
+          "Frontend-Development",
+          "Backend-Development",
+          "WordPress-Development",
+          "E-commerce-Development",
+          "Web-Developer",
+          "JavaScript-Web-Developer",
+          "Web-Application-Developer",
+          "IT-Web-Developer",
+          "Web-Development-Engineer",
+          "HTML-Developer"
+        ],
+        "company_slug": "vava-virtual-assistants",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/vava-virtual-assistants/jobs/web-developer",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "WEB DEVELOPER",
+      "url": "https://himalayas.app/companies/vava-virtual-assistants/jobs/web-developer",
+      "valid_through": "1794271767",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/automattic/jobs/business-development-representative-pressable",
+      "canonical_url": "https://himalayas.app/companies/automattic/jobs/business-development-representative-pressable",
+      "content_hash": "f2c190476fa5b534732ccc6e82eb9540578250071148b69d15c23f5d3caf5840",
+      "description_excerpt": "Pressable (“WordPress hosting that means business”) seeks an experienced, motivated, and empathetic professional with the expertise to help us meet or exceed aggressive growth goals for our superb WordPress hosting company, part of the Automattic family. We’re looking for a motivated and detail-oriented Business Development Representative (BDR) to join our sales team. This role is essential in driving the early stages of the sales process by handling inbound leads, answering questions from prospects, creating interest in our product, and setting up meetings for senior members of the team. The role is designed to leverage AI tools to improve speed, quality, and consistency across prospect research, discovery preparation, follow-ups, and internal documentation, while keeping human judgment and relationship-building at the center of the sales process. As a BDR, you will play a crucial role in building relationships with potential customers by understanding their needs, introducing them to our WordPress hosting solutions, and moving them through the sales funnel. You’ll be the first point of contact for many prospects, ensuring they have a positive experience with Pressable from the st",
+      "employer": "Automattic",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789314768",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ef19d287cd15103c751642676133629476d3f46ce46a0faf7a5b2a45e89ce0fd",
+      "salary": {
+        "currency": "USD",
+        "max": 65000,
+        "min": 50000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/automattic/jobs/business-development-representative-pressable",
+      "source_metadata": {
+        "categories": [
+          "Business-Development-Representative",
+          "BDR",
+          "Sales-Development",
+          "Sales",
+          "Lead-Generation",
+          "Sales-Business-Development-Representative",
+          "Sales-Development-Representative",
+          "Account-Development-Representative",
+          "Remote-Business-Development-Representative",
+          "Business-Development-Associate",
+          "Business-Development"
+        ],
+        "company_slug": "automattic",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/automattic/jobs/business-development-representative-pressable",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Business Development Representative, Pressable",
+      "url": "https://himalayas.app/companies/automattic/jobs/business-development-representative-pressable",
+      "valid_through": "1794498767",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/db8e1ff9-5a5a-49ed-89ea-93f993e5a65f/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/db8e1ff9-5a5a-49ed-89ea-93f993e5a65f",
+      "content_hash": "7df19f55da121993eb5368b2d01944cd1134e0c3c0662300e2ed90a3554163ab",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "Europe",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-14T15:58:45.756+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ef21390f456cce8072ef9eef545ab17a34bbc53356be61e037d34e7e15af3c92",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:db8e1ff9-5a5a-49ed-89ea-93f993e5a65f",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "European Union"
+          }
+        },
+        "department": "Revenue",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [
+          {
+            "address": null,
+            "location": "Paris"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "United Kingdom",
+                "addressLocality": "London"
+              }
+            },
+            "location": "London"
+          }
+        ],
+        "team": "Revenue"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Proposal Manager",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/db8e1ff9-5a5a-49ed-89ea-93f993e5a65f",
+      "workplace_type": "Remote"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8790680002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8790680002",
+      "content_hash": "eeb6be120b3926930265c0a3a9d0b5e526f7fc4b3c7cbd650b04edae241fc52e",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:13.657138+00:00",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:efa7d7bb9534a06d16419a3d25d43a231c20feece44de804911d180741d4e054",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8790680002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [
+              4109797002
+            ],
+            "id": 4011052002,
+            "name": "SA",
+            "parent_id": 4011043002
+          }
+        ],
+        "internal_job_id": 6516870002,
+        "offices": [
+          {
+            "child_ids": [
+              4040902002
+            ],
+            "id": 4040904002,
+            "location": null,
+            "name": "United States of America",
+            "parent_id": 4019551002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8790680002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Solutions Architect, Public Sector - East",
+      "updated_at": "2026-09-15T14:14:35-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8790680002"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/ed5d50eb-e41a-48e4-bea0-3686176f0461/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/ed5d50eb-e41a-48e4-bea0-3686176f0461",
+      "content_hash": "76a794f4ed5b8f97b1d4bcfec60e940989a68ff2e66f495077e77738f57137c3",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "France",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-12T17:02:20.549+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:f03e1af2aa176796221df4ea350fc9aabed26b6e25d1aa5d01f65fe2bf07680d",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:ed5d50eb-e41a-48e4-bea0-3686176f0461",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "France"
+          }
+        },
+        "department": "Operations",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [],
+        "team": "Legal"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Public Sector Partnerships Lead - France",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/ed5d50eb-e41a-48e4-bea0-3686176f0461",
+      "workplace_type": "Remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-surveyor-i-american-bureau-of-shipping-abs-1136592",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-surveyor-i-american-bureau-of-shipping-abs-1136592",
+      "content_hash": "40a57f77ec72a174b9e4ce58ed88282622dcdd968bfd4c4be5ca6d92c3356d35",
+      "description_excerpt": "Job Description The Surveyor I is an entry or junior-level position for new graduates and/or those candidates with less than five (5) years of experience in an applicable industry. The Surveyor I, under a direct supervisor, performs work involving conventional surveying practices. The primary function is to develop the ability to effectively examine and report on vessels and other marine structures during and after construction relative to compliance with the applicable requirements for maintaining the vessel in Classification with ABS and meeting associated statutory and special service requirements related to Safety of Life at Sea, Loadline, Tonnage, Cargo Gear and Pollution Prevention Certification. What You Will Do (with the assistance and guidance of an experienced ABS Surveyor): Acts as a professional specialist for the organization in the application of related rules, regulations, requirements, concepts, principles, and processes. Performs routine surveys on classed vessels, platforms, or other marine structures and at manufacturers for classification and compliance with statutory requirements. Prepares technically accurate and timely reports of inspections and surveys perfo",
+      "employer": "American Bureau of Shipping (ABS)",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Port of Spain,",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-12T16:00:12+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:f06913fc7ae595f42f1d708e5d1b55dc119ab0ea0fd343a893eac0af2eaf53cd",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136592",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1786550412,
+        "provider": "remoteok",
+        "provider_job_id": "1136592",
+        "slug": "remote-surveyor-i-american-bureau-of-shipping-abs-1136592",
+        "tags": [
+          "sales",
+          "engineer",
+          "technical",
+          "ecommerce",
+          "teaching",
+          "admin",
+          "education",
+          "infosec",
+          "design",
+          "hr",
+          "sys admin",
+          "customer support",
+          "testing",
+          "travel",
+          "exec",
+          "ops",
+          "medical",
+          "full time",
+          "digital nomad",
+          "supervisor",
+          "dev",
+          "senior",
+          "junior"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Surveyor I",
+      "url": "https://remoteOK.com/remote-jobs/remote-surveyor-i-american-bureau-of-shipping-abs-1136592",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8192777",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8192777",
+      "content_hash": "02bb0ef1392edb626615952bf6ca6ec13a1e9342c6c17c46bf8a2f018be6fd4b",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. DigitalOcean's console is where every customer, from a solo developer to an enterprise platform team, comes to provision, manage, and scale their infrastructure. We're looking for a designer to own that experience end to end: the navigation, the cross-product patterns, the moments where a dozen product teams' features have to feel like one coherent product. You'll sit on a product team, and use that vantage point to build the reusable frameworks, patterns, and guidance that every team working in the console relies on, while holding the broader view of how the console works as a system. This is a role for someone who can zoom from a single dialog to the entire information architecture and back, often i",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "location": "Seattle",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "queue_seen_in_current_run": true,
+      "review_key": "review:f197660f22c38732702345dc3a550ad95ee4903115945662dfdbbab94ed2172e",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8192777",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 365100,
+            "name": "Core Cloud",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3545154,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 213281,
+            "location": "Seattle Metro",
+            "name": "Seattle Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8192777
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Staff Product Designer, Console Experience",
+      "updated_at": "2026-09-10T17:39:54-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8192777"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/46b3cde4-709f-4d46-9817-5cf881bb35d5/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/46b3cde4-709f-4d46-9817-5cf881bb35d5",
+      "content_hash": "d35e49b18aad437315a29e435cc1004c53868905be50745170c73a0aa6f5395f",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "Singapore",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-07-08T07:54:46.988+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:f2ececc792fb19750d3175258365746e0ede0deb5b6511e996391cac22db701a",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:46b3cde4-709f-4d46-9817-5cf881bb35d5",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "Singapore",
+            "addressLocality": "Singapore"
+          }
+        },
+        "department": "Revenue",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [],
+        "team": "Revenue - North Asia & Singapore"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Account Manager - North Asia",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/46b3cde4-709f-4d46-9817-5cf881bb35d5",
+      "workplace_type": "Remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-ai-response-analyst-imerit-technology-1137309",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-ai-response-analyst-imerit-technology-1137309",
+      "content_hash": "637a9ac63964f71cb3dab9cb7f2272bdb500262c77982f941654e69856fd783a",
+      "description_excerpt": "The work iMerit, an EXL company, is looking for detail oriented analysts to evaluate and rank AI generated responses to image based prompts. You will judge answers on accuracy, relevance, clarity, conciseness, safety, localization, and how well they follow the user's instructions, then explain your reasoning in writing. Much of the job comes down to this: look at the image, look at what the model said about it, and decide whether the two actually match. What you will do Review images alongside the prompts and responses attached to them Interpret both visual and conversational context before scoring anything Compare multiple responses and rank them against defined criteria Confirm that descriptions and claims about an image reflect what is actually there Verify factual claims using approved research sources Flag tasks that cannot be reliably evaluated Write clear justification for every ranking you submit What you bring A sharp eye for visual detail and the patience to look twice Strong critical thinking, research skills, and reading comprehension Sound judgment and well supported decision making Professional written English, including the ability to describe what you see precisely ",
+      "employer": "iMerit Technology",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-06T03:47:24+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:f34fea058e0dcdb77a995629e0adfd21893417fe684deedc7da99f70e4fbbdf6",
+      "salary": {
+        "currency": null,
+        "max": 20000,
+        "min": 20000,
+        "period": null
+      },
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137309",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788666444,
+        "provider": "remoteok",
+        "provider_job_id": "1137309",
+        "slug": "remote-ai-response-analyst-imerit-technology-1137309",
+        "tags": [
+          "content writing",
+          "quality assurance",
+          "ai"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "AI Response Analyst",
+      "url": "https://remoteOK.com/remote-jobs/remote-ai-response-analyst-imerit-technology-1137309",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-managing-director-berni-and-mick-ireland-1135908",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-managing-director-berni-and-mick-ireland-1135908",
+      "content_hash": "d9053d6b1ef41303eae8dbfa8afea2d7aeacae49201b1d12feae4f50df57490b",
+      "description_excerpt": "Strategic Overview We are identifying a strategic thinker and natural leader âan individual who thrives on solving complex challenges and inspiring others to do the same. This role is designed for a professional with extensive experience as a Managing Director who is ready to leverage their expertise in a new, autonomous career path. We are seeking the right person who is eager to make a meaningful impact and thrive within a constantly evolving global environment. About the Opportunity Representing a global entity with a 20-year track record and a presence in over 100 countries , we are currently expanding our executive footprint. We specialize in Strategic Planning, People Development, and Professional Growth. This is a singular opportunity for a high-performing professional to move away from the corporate grind and contribute to a world-class mission while maintaining full operational autonomy. The Profile & Requirements Proven Track Record: 7+ years of professional experience as a Managing Director - Business Development or a senior leadership capacity. Leadership Maturity: The ability to lead by example, showing initiative and the capacity to motivate a remote team. Strategic",
+      "employer": "Berni and Mick Ireland",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Sunshine Coast, Sunshine Coast, Queensland, Australia",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-01T06:38:19+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:f386e31e553f89a917b1cedced9c2f70669a59c71fe87bf0dee5c01bef1df51e",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1135908",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785566299,
+        "provider": "remoteok",
+        "provider_job_id": "1135908",
+        "slug": "remote-managing-director-berni-and-mick-ireland-1135908",
+        "tags": [
+          "exec",
+          "consulting",
+          "marketing",
+          "senior",
+          "ops"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Managing Director",
+      "url": "https://remoteOK.com/remote-jobs/remote-managing-director-berni-and-mick-ireland-1135908",
+      "workplace_type": "remote"
+    }
+  ],
+  "review_queue_count": 1788,
+  "run_id": "ingestion-1789674380",
+  "schema_version": 1,
+  "total_pages": 72
+}
