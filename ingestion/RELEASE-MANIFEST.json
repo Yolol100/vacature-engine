@@ -1,6 +1,6 @@
 {
   "artifact": "vacature-ingestion",
-  "version": "0.10.4",
+  "version": "0.10.5",
   "created_date": "2026-09-17",
   "python": ">=3.11",
   "runtime_dependencies": [
@@ -31,6 +31,7 @@
   "source_activation_fail_closed": true,
   "scheduler_included": false,
   "scheduler": "No repository cron scheduler. GitHub Actions runs on relevant ingestion code pushes and workflow_dispatch; periodic discovery cadence is caller/automation-owned.",
+  "jobicy_fallback_policy": "REST primary; public RSS fallback is limited to expected transport failures or malformed provider payloads. Unexpected adapter/programming errors fail visibly. Optional targeted HEAD checks treat only 404/410 as closed.",
   "technical_state": "separate GitHub radar-state and ingestion-state branches + SQLite; shared workflow_state helper owns ACK normalization/merge and review queue handoff preparation",
   "first_seen_radar": "isolated direct employer/ATS first-seen workflow available on relevant push/manual dispatch + persistent ingestion_change=new semantics + bootstrap-safe 72-hour ACK queue",
   "vacancy_snapshot_history": "SQLite job_snapshots keyed by job_id + content_hash",
