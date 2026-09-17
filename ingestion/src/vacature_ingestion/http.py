@@ -16,6 +16,16 @@ class FetchError(RuntimeError):
         self.status = status
 
 
+def _http_error_category(status: int) -> str:
+    if status == 429:
+        return "rate_limited"
+    if status in {401, 403}:
+        return "blocked_or_auth_required"
+    if 500 <= status < 600:
+        return "upstream_transient"
+    return "http_error"
+
+
 @dataclass
 class HttpClient:
     timeout_seconds: float = 20.0
@@ -55,14 +65,7 @@ class HttpClient:
                     return body
             except HTTPError as exc:
                 last = exc
-                if exc.code == 429:
-                    category = "rate_limited"
-                elif exc.code in {401, 403}:
-                    category = "blocked_or_auth_required"
-                elif 500 <= exc.code < 600:
-                    category = "upstream_transient"
-                else:
-                    category = "http_error"
+                category = _http_error_category(exc.code)
                 if attempt + 1 >= attempts or exc.code not in {429, 500, 502, 503, 504}:
                     raise FetchError(category, f"HTTP {exc.code} for {url}", status=exc.code) from exc
             except (URLError, TimeoutError) as exc:
@@ -73,6 +76,34 @@ class HttpClient:
                 delay = min(4.0, 0.25 * (2**attempt)) + random.random() * 0.1
                 time.sleep(delay)
         raise FetchError("other_technical_failure", f"fetch failed: {last}")
+
+    def head_status(self, url: str, *, headers: dict[str, str] | None = None) -> int:
+        """Return a lightweight HEAD status; 404/410 are normal closed-listing evidence."""
+        attempts = max(0, int(self.retries)) + 1
+        last: Exception | None = None
+        for attempt in range(attempts):
+            try:
+                req_headers = {"User-Agent": self.user_agent, "Accept": "*/*"}
+                if headers:
+                    req_headers.update(headers)
+                request = Request(url, headers=req_headers, method="HEAD")
+                with urlopen(request, timeout=self.timeout_seconds) as response:
+                    return int(getattr(response, "status", 200))
+            except HTTPError as exc:
+                last = exc
+                if exc.code in {404, 410}:
+                    return exc.code
+                category = _http_error_category(exc.code)
+                if attempt + 1 >= attempts or exc.code not in {429, 500, 502, 503, 504}:
+                    raise FetchError(category, f"HTTP {exc.code} for {url}", status=exc.code) from exc
+            except (URLError, TimeoutError) as exc:
+                last = exc
+                if attempt + 1 >= attempts:
+                    raise FetchError("timeout_or_network", f"network error for {url}: {exc}") from exc
+            if attempt + 1 < attempts:
+                delay = min(4.0, 0.25 * (2**attempt)) + random.random() * 0.1
+                time.sleep(delay)
+        raise FetchError("other_technical_failure", f"HEAD failed: {last}")
 
     def get_json(self, url: str, *, headers: dict[str, str] | None = None) -> Any:
         req_headers = {"Accept": "application/json"}
