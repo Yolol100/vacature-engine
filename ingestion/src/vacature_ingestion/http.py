@@ -74,6 +74,40 @@ class HttpClient:
                 time.sleep(delay)
         raise FetchError("other_technical_failure", f"fetch failed: {last}")
 
+    def head_status(self, url: str, *, headers: dict[str, str] | None = None) -> int:
+        """Return an HTTP status for a lightweight HEAD check.
+
+        404/410 are returned to callers so source-specific logic can treat only those
+        statuses as explicit closure evidence. Transient failures still use bounded
+        retries and fail closed instead of being mistaken for a closed listing.
+        """
+        attempts = max(0, int(self.retries)) + 1
+        last: Exception | None = None
+        retryable = {429, 500, 502, 503, 504}
+        for attempt in range(attempts):
+            try:
+                req_headers = {"User-Agent": self.user_agent}
+                if headers:
+                    req_headers.update(headers)
+                request = Request(url, headers=req_headers, method="HEAD")
+                with urlopen(request, timeout=self.timeout_seconds) as response:
+                    return int(getattr(response, "status", 200))
+            except HTTPError as exc:
+                last = exc
+                if exc.code not in retryable:
+                    return int(exc.code)
+                if attempt + 1 >= attempts:
+                    category = "rate_limited" if exc.code == 429 else "upstream_transient"
+                    raise FetchError(category, f"HTTP {exc.code} for {url}", status=exc.code) from exc
+            except (URLError, TimeoutError) as exc:
+                last = exc
+                if attempt + 1 >= attempts:
+                    raise FetchError("timeout_or_network", f"network error for {url}: {exc}") from exc
+            if attempt + 1 < attempts:
+                delay = min(4.0, 0.25 * (2**attempt)) + random.random() * 0.1
+                time.sleep(delay)
+        raise FetchError("other_technical_failure", f"HEAD failed: {last}")
+
     def get_json(self, url: str, *, headers: dict[str, str] | None = None) -> Any:
         req_headers = {"Accept": "application/json"}
         if headers:
