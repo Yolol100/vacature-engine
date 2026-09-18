@@ -23,3 +23,9 @@ Extra provenance remains internal unless it changes a decision or explains a war
 ## Safety
 
 Early blockers should stop downstream work. No layer may weaken remote/geography/language/WordPress/authenticity/evidence gates to fill the requested result count.
+
+## Register integrity boundary
+
+Before normalized production candidates reach `vacature_engine`, the caller must exclude live-configured nonproduction IDs (for example `test:` and `history:`) and preserve Register referential integrity. Production vacancy IDs must be unique; production Applications/JobSnapshots must resolve to a Vacatures anchor; and non-empty historical `last_run_id` values must resolve to Runs or a neutral recovery stub. Recovery stubs preserve provenance only and must never invent metrics or success.
+
+Preparation-only application states are caller-owned and never count as submitted/outcome states. Legacy status aliases may be normalized at read/metrics time without rewriting historical evidence.
