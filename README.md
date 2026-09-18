@@ -14,6 +14,10 @@ Het `vacature_engine`-pakket doet alleen:
 
 Het `vacature_engine`-pakket bevat geen scraping, netwerkdiscovery, jobboardlijst, bronprioritering, e-mail of sollicitatieformulieren. Het schrijft ook geen CV-proza en leidt geen kandidaatervaring af. De repository bevat daarnaast een strikt gescheiden sibling-component onder `ingestion/` voor publieke read-acquisitie, technische cross-run state en source-health. Die component is geen onderdeel van het `vacature_engine` runtimepakket en bezit geen kandidaat-, score-, bronprioriteits- of sollicitatiebeleid.
 
+## Fast decision contract
+
+Normal discovery now uses a live Register-owned fast lane and expands only when the verified result target is not filled. The repository still owns no changing source policy: it receives normalized candidates only after caller-side discovery/verification and keeps deterministic gates/ranking unchanged. See [docs/FAST-DECISION-CONTRACT.md](docs/FAST-DECISION-CONTRACT.md).
+
 ## Mailbox application reconciliation
 
 `vacature-search` mag, wanneer de gebruiker daarvoor verbonden mailboxen beschikbaar heeft, sollicitatiehistorie en lifecycle-evidence read-only reconciliëren met Gmail en Outlook. Dit blijft caller-owned beleid: er komen geen mailboxcredentials, persoonlijke maildata of e-mailnetwerkcalls in `vacature_engine` of `ingestion/`.
