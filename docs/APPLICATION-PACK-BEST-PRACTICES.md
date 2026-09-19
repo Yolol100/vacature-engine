@@ -1,6 +1,6 @@
 # Application pack best practices — online validation
 
-Last reviewed: 2026-09-15.
+Last reviewed: 2026-09-19.
 
 This document records external evidence used to validate the caller-owned form/email application-pack defaults. It does not move application policy into `vacature-engine`.
 
@@ -31,9 +31,14 @@ This document records external evidence used to validate the caller-owned form/e
   - AI disclosure required: https://careerservices.fas.harvard.edu/jobs/ai-now-institute-communications-associate/
   - Original/non-AI cover letter required: https://careerservices.upenn.edu/jobs/w-w-norton-company-college-marketing-internship-summer-2026/
 
+- Career-presentation evidence handoff: [CAREER-PRESENTATION-HANDOFF.md](CAREER-PRESENTATION-HANDOFF.md)
+  - Adds bounded resume first-scan, job-title integrity and portfolio/project-evidence guidance while keeping all semantics caller-owned.
+  - Historical recruiter timing studies support only a brief-initial-scan heuristic, never a universal fixed number of seconds.
+
 ## Policy conclusions
 
 - Employer/application instructions outrank defaults.
+- Resume/portfolio presentation semantics remain outside the engine; see `CAREER-PRESENTATION-HANDOFF.md` for the validated caller-owned boundary.
 - Keep application packs simple and compact.
 - Form packs preserve exact question order and field constraints; structured fields are answered in the accepted format, not rewritten as prose.
 - Legal, work-authorization, salary, current-state, sensitive, demographic, consent and signature fields are not inferred.
