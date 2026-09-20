@@ -69,6 +69,14 @@ jobs:
           fi
           echo "specs=$specs" >> "$GITHUB_OUTPUT"
           echo "Using $specs"
+      - name: Build complete active-source execution coverage
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: >-
+          python -m vacature_ingestion source-coverage
+          --specs ingestion/source-specs.deploy.json
+          --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0
+          --out .runtime/source-coverage.json
       - name: Resolve active sources from Vacature Register
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
@@ -134,9 +142,10 @@ jobs:
             cp -R "$GITHUB_WORKSPACE/.runtime/review-queue-pages" review-queue-pages
             cp "$GITHUB_WORKSPACE/.runtime/review-ack.json" review-ack.json
             cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
+            cp "$GITHUB_WORKSPACE/.runtime/source-coverage.json" source-coverage.json
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add state.sqlite3 latest.json review-queue.json review-queue-index.json review-queue-pages review-ack.json source-health.json
+            git add state.sqlite3 latest.json review-queue.json review-queue-index.json review-queue-pages review-ack.json source-health.json source-coverage.json
             git commit -m "chore: persist vacancy ingestion snapshot"
             git push origin HEAD:ingestion-state
             exit 0
@@ -154,11 +163,12 @@ jobs:
             cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
             cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
             cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
+            cp "$GITHUB_WORKSPACE/.runtime/source-coverage.json" source-coverage.json
             python -m vacature_ingestion.snapshot_merge --state-dir . --runtime-dir "$GITHUB_WORKSPACE/.runtime"
 
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add state.sqlite3 latest.json review-queue.json review-queue-index.json review-queue-pages review-ack.json source-health.json
+            git add state.sqlite3 latest.json review-queue.json review-queue-index.json review-queue-pages review-ack.json source-health.json source-coverage.json
             if git diff --cached --quiet; then
               success=1
               break

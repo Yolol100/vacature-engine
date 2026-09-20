@@ -12,32 +12,43 @@ class RegistrySourceError(RuntimeError):
     pass
 
 
-def active_source_ids_from_values(values: Any) -> set[str]:
+def active_source_rows_from_values(values: Any) -> list[dict[str, str]]:
     if not isinstance(values, list) or not values:
         raise RegistrySourceError("Bronnen sheet returned no rows")
     header = values[0]
     if not isinstance(header, list):
         raise RegistrySourceError("Bronnen header is invalid")
     columns = {str(value).strip(): index for index, value in enumerate(header)}
-    if "source_id" not in columns or "status" not in columns:
+    required = {"source_id", "status"}
+    if not required.issubset(columns):
         raise RegistrySourceError("Bronnen must contain source_id and status columns")
 
-    source_col = columns["source_id"]
-    status_col = columns["status"]
-    active: set[str] = set()
-    for row in values[1:]:
-        if not isinstance(row, list) or source_col >= len(row):
+    rows: list[dict[str, str]] = []
+    for raw_row in values[1:]:
+        if not isinstance(raw_row, list):
             continue
-        source_id = str(row[source_col] or "").strip()
-        status = str(row[status_col] if status_col < len(row) else "").strip().lower()
-        if source_id and status == "active":
-            active.add(source_id)
-    if not active:
+        source_col = columns["source_id"]
+        status_col = columns["status"]
+        if source_col >= len(raw_row):
+            continue
+        source_id = str(raw_row[source_col] or "").strip()
+        status = str(raw_row[status_col] if status_col < len(raw_row) else "").strip().lower()
+        if not source_id or status != "active":
+            continue
+        row: dict[str, str] = {}
+        for name, index in columns.items():
+            row[name] = str(raw_row[index] if index < len(raw_row) else "").strip()
+        rows.append(row)
+    if not rows:
         raise RegistrySourceError("Bronnen contains no active sources")
-    return active
+    return rows
 
 
-def read_active_source_ids(spreadsheet_id: str) -> set[str]:
+def active_source_ids_from_values(values: Any) -> set[str]:
+    return {row["source_id"] for row in active_source_rows_from_values(values)}
+
+
+def _read_source_values(spreadsheet_id: str) -> list[list[Any]]:
     raw_credentials = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
     if not raw_credentials:
         raise RegistrySourceError("GOOGLE_SERVICE_ACCOUNT_JSON is required for Register-owned source gating")
@@ -47,7 +58,15 @@ def read_active_source_ids(spreadsheet_id: str) -> set[str]:
     range_ref = quote("Bronnen!A1:O2000", safe="!")
     response = _request_json(f"{base}/values/{range_ref}", token)
     values = response.get("values", []) if isinstance(response, dict) else []
-    return active_source_ids_from_values(values)
+    return values if isinstance(values, list) else []
+
+
+def read_active_source_rows(spreadsheet_id: str) -> list[dict[str, str]]:
+    return active_source_rows_from_values(_read_source_values(spreadsheet_id))
+
+
+def read_active_source_ids(spreadsheet_id: str) -> set[str]:
+    return {row["source_id"] for row in read_active_source_rows(spreadsheet_id)}
 
 
 def required_registry_ids(spec: dict[str, Any]) -> set[str]:
