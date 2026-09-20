@@ -48,6 +48,19 @@ No candidate scoring happens inside ingestion.
 
 `review_backlog.load_review_backlog()` can rebuild pending review candidates from persisted SQLite first-seen state after a handoff failure. GitHub Actions only runs such a recovery when an explicit `ingestion/review-backlog-recovery.json` request is present and its migration ID is not already recorded in `review-ack.json`. Recovery is technical transport repair only; it does not decide vacancy relevance or candidate fit.
 
+## Complete source coverage handoff
+
+The live `Bronnen` registry may contain far more active sources than the repository has dedicated API/feed adapters for. No active source may now disappear silently.
+
+Before live ingestion, `source-coverage` reads every active registry row and assigns exactly one execution mode:
+
+- `github_adapter`: covered by a verified repository source spec/adapter;
+- `live_web_required`: must be searched by the caller's public web/X-ray discovery using the source's native filters where available, followed by canonical employer/ATS verification;
+- `mailbox_read_only`: application-evidence sources handled by mailbox reconciliation;
+- `blocked_*`: no safe execution route exists; the workflow fails closed.
+
+The resulting `source-coverage.json` is persisted on `ingestion-state`. It is an execution handoff, not vacancy evidence. A `live_web_required` source is not considered checked until the caller actually attempts it and records source health. GitHub does not bypass logins, paywalls, bot protection or private APIs to force unsupported boards into an adapter.
+
 ## Source classes
 
 - `source-specs.live.json`: targeted ATS sources for an explicit/manual ingestion run.
