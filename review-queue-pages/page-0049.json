@@ -1,42 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 49,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-higienizador-de-carros-blumenau-sc-localizaampco-1137269",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-higienizador-de-carros-blumenau-sc-localizaampco-1137269",
-      "content_hash": "d921813d35774aea79f85ee3078dcef13b8e1fce0ba653795ba2102f1915b996",
-      "description_excerpt": "LOCALIZA&CO Estar em constante evoluÃ§Ã£o nos trouxe atÃ© aqui. Ao lado de talentos e habilidades mÃºltiplas nos conectamos em busca da nossa motivaÃ§Ã£o: construir o futuro da mobilidade sustentÃ¡vel. Ã por meio da valorizaÃ§Ã£o da individualidade de cada um que impulsionamos o nosso movimento para conquistar resultados extraordinÃ¡rios, desenvolver nossas operaÃ§Ãµes e criar soluÃ§Ãµes para os nossos clientes.Somos apaixonados por nossa histÃ³ria, por nossas ideias e pela capacidade de realizÃ¡-las.Sabemos que juntos, todos vamos mais longe. Ã assim que conectamos a Localiza&Co com o futuro. O QUE VOCÃ IRÃ FAZER COMO HIGIENIZADOR DE CARROS Lavar os carros disponÃ­veis para venda conforme determinaÃ§Ã£o da lideranÃ§a, observando rigorosamente as partes internas e externas; Executar a calibragem dos pneus dos carros, conforme a tabela de calibragem e ligar os carros frequentemente para garantir a durabilidade da bateria; Contribuir na identificaÃ§Ã£o de problemas nos veÃ­culos, atravÃ©s de comunicaÃ§Ã£o ao lÃ­der, sobre qualquer defeito, avaria ou falta de acessÃ³rios observados nos carros. O QUE PRECISAMOS CNH categoria B hÃ¡, no mÃ­nimo, 1 ano Ensino fundamental completo Expe",
-      "employer": "Localiza&amp;Co",
-      "first_seen_at": "2026-09-06T16:11:41.684927+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T16:11:41.684927+00:00",
-      "listing_language": "en",
-      "location": "Blumenau,",
-      "origin_completed_at": "2026-09-06T16:11:47.811646+00:00",
-      "origin_run_id": "ingestion-1788711107",
-      "published_at": "2026-08-28T22:37:27+00:00",
-      "remote": true,
-      "review_key": "review:00726d8f2297daceac30c0f3d2c357b11322fe9f06786dcbefdaec9d23027999",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137269",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787956647,
-        "provider": "remoteok",
-        "provider_job_id": "1137269",
-        "slug": "remote-higienizador-de-carros-blumenau-sc-localizaampco-1137269",
-        "tags": []
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "HIGIENIZADOR DE CARROS BLUMENAU SC",
-      "url": "https://remoteOK.com/remote-jobs/remote-higienizador-de-carros-blumenau-sc-localizaampco-1137269",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-receiver-petes-frootique-1137192",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-receiver-petes-frootique-1137192",
@@ -1061,10 +1027,55 @@
       "title": "Produce Clerk",
       "url": "https://remoteOK.com/remote-jobs/remote-produce-clerk-food-basics-1137247",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
+      "content_hash": "383b07271c5d8a5e74231a21710ad08fa815eb7998ffe62ed6c8b836749af752",
+      "description_excerpt": "Job Title: Customer Service Agent Location: Exeter Head Office - Full Time Hours: 40 hours Monday-Friday + Saturday shift rota Benefits: 22 days holiday, increasing to 27 plus bank holidays Free onsite parking Free onsite gym Company pension scheme Employee discount scheme Funded Summer and Christmas events Cycle to Work Scheme Discounted car hire rates The Role: You will be a valued member of a team, providing support through a variety of communications, accurate recording of data and various tasks that impact on our services, taking inbound and outbound calls from our branches and customers. You will be creating an exceptional experience for customers, whilst building trusting relationships and handling queries with confidence to provide all National Account customers with a dedicated vehicle hire reservation service. No prior experience is necessary, full training will be given. This is an office-based role. The candidate will be required to work 40 hours per week as well as Saturdays on a rota basis. Responsibilities: To provide outstanding customer service and exhibit excellent communications skills when interacting with clients Regularly monitor personal and team inboxes and",
+      "employer": "Thrifty Car and Van Rental",
+      "first_seen_at": "2026-09-06T16:11:41.684927+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T16:11:41.684927+00:00",
+      "listing_language": "en",
+      "location": "Exeter,",
+      "origin_completed_at": "2026-09-06T16:11:47.811646+00:00",
+      "origin_run_id": "ingestion-1788711107",
+      "published_at": "2026-08-30T03:31:01+00:00",
+      "remote": true,
+      "review_key": "review:4d611554582ee2cfad1db819d71efd1c88f205709dd5c35b59f1c62eb4d8fda6",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137219",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788060661,
+        "provider": "remoteok",
+        "provider_job_id": "1137219",
+        "slug": "remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
+        "tags": [
+          "testing",
+          "sys admin",
+          "education",
+          "finance",
+          "scheme",
+          "non tech",
+          "customer support",
+          "marketing",
+          "admin",
+          "ops"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Customer Service Agent",
+      "url": "https://remoteOK.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

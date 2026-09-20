@@ -1,41 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 12,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://weworkremotely.com/remote-jobs/toptal-ai-ml-engineer-for-an-ai-driven-e-commerce-platform",
-      "canonical_url": "https://weworkremotely.com/remote-jobs/toptal-ai-ml-engineer-for-an-ai-driven-e-commerce-platform",
-      "content_hash": "f690c014383dbb663e18e1fd0a247e2a112eb30ae8515b1093fa77828b7d45b2",
-      "description_excerpt": "Headquarters: We are seeking an AI Engineer to develop AI-first applications and integrate custom models and infrastructure into an existing e-commerce platform. The role focuses on building agent-led product experiences, including internal automation, dynamic site customization, and customer-facing conversational commerce workflows. General information This engagement supports an e-commerce startup building a platform around conversational design and intelligent automation. The current objective is to extend the existing product with AI-native capabilities while building on top of the current backend and application stack. The work includes three core initiative areas: an internal AI employee for operational tasks, a fluid site customizer, and a customer-facing commerce agent designed to support one-prompt checkout experiences. The role will involve model integration, infrastructure setup, and product-facing implementation across both backend and UI surfaces. Tasks and Deliverables - Develop AI-first applications for an existing e-commerce platform. - Architect and implement autonomous e-commerce AI agents using open-source and proprietary foundation models. - Establish GPU infras",
-      "employer": "Toptal",
-      "first_seen_at": "2026-09-05T20:16:21.946199+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-05T20:16:21.946199+00:00",
-      "listing_language": "en",
-      "location": "Anywhere in the World",
-      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
-      "origin_run_id": "ingestion-1788639387",
-      "published_at": "2026-08-17T14:10:09+00:00",
-      "remote": true,
-      "review_key": "review:499d669f89e71556f26f21d3764912e7e53c0ca5774bc6e32244a8db6b5af80d",
-      "source_id": "we-work-remotely",
-      "source_instance": "we-work-remotely:programming",
-      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/toptal-ai-ml-engineer-for-an-ai-driven-e-commerce-platform",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "categories": [
-          "Full-Stack Programming"
-        ],
-        "provider": "weworkremotely"
-      },
-      "source_type": "job_board",
-      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
-      "title": "AI/ML Engineer for an AI-Driven E-Commerce Platform",
-      "url": "https://weworkremotely.com/remote-jobs/toptal-ai-ml-engineer-for-an-ai-driven-e-commerce-platform",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-assistant-store-manager-puerto-rico-premium-outlets-brooks-brothers-1137241",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-assistant-store-manager-puerto-rico-premium-outlets-brooks-brothers-1137241",
@@ -1017,10 +984,46 @@
       "title": "Stibo Sr. Architect/Platform Owner for Global Fortune 500",
       "url": "https://weworkremotely.com/remote-jobs/toptal-stibo-sr-architect-platform-owner-for-global-fortune-500",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-merchandiser-jugopetrol-ad-1137234",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-merchandiser-jugopetrol-ad-1137234",
+      "content_hash": "a2d35b6470880ead21368891533aad9eedd6a09d35441ac42622cbf9c7e09705",
+      "description_excerpt": "JUGOPETROL AD, dio HelleniQ Energy Grupe, vodeÄa kompanija u oblasti veleprodaje i maloprodaje nafte i naftnih derivata u Crnoj Gori pod brendom EKO, traÅ¾i proaktivnog profesionalca na poziciji: Merchandiser (Maloprodaja dopunskog asortimana) KljuÄni zadaci i odgovornosti: Koordinacija implementacije i redovnog aÅ¾uriranja planograma za kategorije dopunskog asortimana; ObezbjeÄivanje usklaÄenosti na nivou prodajnih mjesta sa cjenovnim politikama i standardima izlaganja robe; Obilasci prodajnih mjesta i obuka prodajnog osoblja o standardima izlaganja proizvoda; PraÄenje KPI-jeva prodaje i merÄandajzinga i predlaganje poboljÅ¡anja; Priprema izvjeÅ¡taja o dostupnosti proizvoda i usklaÄenosti sa planom rasporeda proizvoda; Redovno provjeravanje adekvatnosti cjenovnika; PraÄenje: nestaÅ¡ica proizvoda i implementacije asortimana; izgleda prodajnih objekata; stanja promotivnog materijala i prikazanih poruka; rasporeda i implementacije merÄandajzinga na benzinskoj pumpi; asortimana proizvoda u kafiÄima i stanja ponuÄenih proizvoda. Zahtjevi za kandidate: Minimum 1 godina iskustva u maloprodajnom merÄandajzingu ili operacijama; Univerzitetsko obrazovanje; Aktivan vozaÄ spreman",
+      "employer": "Jugopetrol AD",
+      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "listing_language": "en",
+      "location": "Podgorica,",
+      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
+      "origin_run_id": "ingestion-1788639387",
+      "published_at": "2026-08-31T06:50:02+00:00",
+      "remote": true,
+      "review_key": "review:81cd7e91d3e18b7bca8e31e7e17ccb65b39fd3222016667ff9156f6b5cb80eba",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137234",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788159002,
+        "provider": "remoteok",
+        "provider_job_id": "1137234",
+        "slug": "remote-merchandiser-jugopetrol-ad-1137234",
+        "tags": [
+          "microsoft"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Merchandiser",
+      "url": "https://remoteOK.com/remote-jobs/remote-merchandiser-jugopetrol-ad-1137234",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

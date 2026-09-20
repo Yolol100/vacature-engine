@@ -1,58 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 91,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-real-time-drilling-ops-centre-analyst-slb-1136857",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-real-time-drilling-ops-centre-analyst-slb-1136857",
-      "content_hash": "1851fef437b781cc739bf9f72ba5209da056868e381a6e28677819bab9be4f26",
-      "description_excerpt": "The DrillOps Field Deployment Lead is comfortable in the rig environment and has advanced knowledge and access to the IT infrastructure at the wellsite. The DrillOps Field Deployment Lead is essentially responsible for the rig-IT infrastructure and software updates, IT equipment inventory control, data management and communication between rig site and any remote center. This person is a basic user of the data acquisition/core and services elements of the wellsite execution systems. The DrillOps Field Deployment Lead needs to understand town-based Orchestra & Prism systems. Establish and maintain data link to town and wellsite network. Manage user access / permissions. Troubleshoot of IT infrastructure, RCS and Coda systems, sensors and cabling and related problems. Manages IT equipment inventory. Re-start virtual machines. 3 years experience SLB is an equal employment opportunity employer. Qualified applicants are considered without regard to race, color, religion, sex, national origin, age, disability, or other characteristics protected by law. Please mention the word **ENRAPTURE** and tag RMTcyLjIxNC40NC4yMTU= when applying to show you read the job post completely (#RMTcyLjIxNC40",
-      "employer": "SLB",
-      "first_seen_at": "2026-09-17T19:59:00.690359+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-17T19:59:00.690359+00:00",
-      "listing_language": "en",
-      "location": "Dehradun,",
-      "origin_completed_at": "2026-09-17T19:59:04.410583+00:00",
-      "origin_run_id": "ingestion-1789675144",
-      "published_at": "2026-08-12T22:34:19+00:00",
-      "remote": true,
-      "review_key": "review:b193283eaf31890aa403946e71fb77cc5c0eddfdf901a9790aaa2898d41074ad",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1136857",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1786574059,
-        "provider": "remoteok",
-        "provider_job_id": "1136857",
-        "slug": "remote-real-time-drilling-ops-centre-analyst-slb-1136857",
-        "tags": [
-          "testing",
-          "golang",
-          "non tech",
-          "technical",
-          "exec",
-          "design",
-          "digital nomad",
-          "education",
-          "supervisor",
-          "customer support",
-          "ops",
-          "senior",
-          "junior",
-          "analyst",
-          "dev"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Real Time Drilling Ops Centre Analyst",
-      "url": "https://remoteOK.com/remote-jobs/remote-real-time-drilling-ops-centre-analyst-slb-1136857",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-data-analyst-seahub-asia-1136222",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-data-analyst-seahub-asia-1136222",
@@ -1244,10 +1194,50 @@
       "title": "Growth Strategist",
       "url": "https://remoteOK.com/remote-jobs/remote-growth-strategist-lyric-1135681",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-managing-director-berni-and-mick-ireland-1135908",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-managing-director-berni-and-mick-ireland-1135908",
+      "content_hash": "5e6a2ddec6693fc41e71c6cc3dc169a43f68c50ddbbd17fd1507559ac3835055",
+      "description_excerpt": "Strategic Overview We are identifying a strategic thinker and natural leader âan individual who thrives on solving complex challenges and inspiring others to do the same. This role is designed for a professional with extensive experience as a Managing Director who is ready to leverage their expertise in a new, autonomous career path. We are seeking the right person who is eager to make a meaningful impact and thrive within a constantly evolving global environment. About the Opportunity Representing a global entity with a 20-year track record and a presence in over 100 countries , we are currently expanding our executive footprint. We specialize in Strategic Planning, People Development, and Professional Growth. This is a singular opportunity for a high-performing professional to move away from the corporate grind and contribute to a world-class mission while maintaining full operational autonomy. The Profile & Requirements Proven Track Record: 7+ years of professional experience as a Managing Director - Business Development or a senior leadership capacity. Leadership Maturity: The ability to lead by example, showing initiative and the capacity to motivate a remote team. Strategic",
+      "employer": "Berni and Mick Ireland",
+      "first_seen_at": "2026-09-17T19:59:00.690359+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:59:00.690359+00:00",
+      "listing_language": "en",
+      "location": "Sunshine Coast, Sunshine Coast, Queensland, Australia",
+      "origin_completed_at": "2026-09-17T19:59:04.410583+00:00",
+      "origin_run_id": "ingestion-1789675144",
+      "published_at": "2026-08-01T06:38:19+00:00",
+      "remote": true,
+      "review_key": "review:e6d33867296e45d086add64fb0cb470ed69733aeea67898be2b8d573d27d81af",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1135908",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785566299,
+        "provider": "remoteok",
+        "provider_job_id": "1135908",
+        "slug": "remote-managing-director-berni-and-mick-ireland-1135908",
+        "tags": [
+          "exec",
+          "consulting",
+          "marketing",
+          "senior",
+          "ops"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Managing Director",
+      "url": "https://remoteOK.com/remote-jobs/remote-managing-director-berni-and-mick-ireland-1135908",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

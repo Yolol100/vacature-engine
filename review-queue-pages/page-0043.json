@@ -1,49 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 43,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-mot-tester-mr-clutch-autocentres-1137218",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-mot-tester-mr-clutch-autocentres-1137218",
-      "content_hash": "3d0930ac385c36a1e5b9662e062c06120eb5f3e9ab3ef9fc2c9d22038f046b34",
-      "description_excerpt": "We have a fabulous opportunity for an experienced MOT Tester to join our friendly team. We offer a competitive salary with an outstanding bonus scheme, ongoing training and the opportunity to progress within the company for the right candidate. Current employee quotes: 1. \"Such a good bonus scheme, the BEST I have had from anywhere I have worked. It is more realistic here as it goes on your own productivity and not anyone else's\" . Mr Clutch employee, employed over 6 years. 2. \"Most places you have to hit a centre bonus, but here you can hit a bonus no matter what, as long as you are productive, it is achieveable. I know I am going to get my bonus because of what I do, not anyone else!\" Mr Clutch employee, employed over 8 years. Our MOT Tester positions are dedicated positions that play a crucial role within our branches. By carrying out MOT Testing to DVSA standards on a variety of vehicle types, our MOT Testers assist with meeting our customer needs and work closely with the staff team to provide an efficient workshop flow. If you hold a current DVSA card, enjoy working as part of a friendly team, and take pride in your work, please do submit your CV at your earliest opportunity.",
-      "employer": "Mr Clutch Autocentres",
-      "first_seen_at": "2026-09-06T14:07:23.316114+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T14:07:23.316114+00:00",
-      "listing_language": "en",
-      "location": "Oxford,",
-      "origin_completed_at": "2026-09-06T14:07:23.728138+00:00",
-      "origin_run_id": "ingestion-1788703643",
-      "published_at": "2026-08-30T03:32:53+00:00",
-      "remote": true,
-      "review_key": "review:7c334cd4f8c83843ca4bdef809981b628e41470d8c5d4e740b3d3b76e33ba460",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137218",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788060773,
-        "provider": "remoteok",
-        "provider_job_id": "1137218",
-        "slug": "remote-mot-tester-mr-clutch-autocentres-1137218",
-        "tags": [
-          "testing",
-          "sys admin",
-          "education",
-          "finance",
-          "scheme",
-          "non tech"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "MOT Tester",
-      "url": "https://remoteOK.com/remote-jobs/remote-mot-tester-mr-clutch-autocentres-1137218",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-job-role-tap-growth-ai-1137246",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-job-role-tap-growth-ai-1137246",
@@ -1029,10 +988,44 @@
       "title": "Principal Engineer",
       "url": "https://remoteOK.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-higienizador-de-carros-macae-rj-localizaampco-1137203",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-higienizador-de-carros-macae-rj-localizaampco-1137203",
+      "content_hash": "81ea47d8b89c4be87c03c38bab67a4acb3ab5daf467b579f999c56b19fb27958",
+      "description_excerpt": "LOCALIZA&CO Estar em constante evoluÃ§Ã£o nos trouxe atÃ© aqui. Ao lado de talentos e habilidades mÃºltiplas nos conectamos em busca da nossa motivaÃ§Ã£o: construir o futuro da mobilidade sustentÃ¡vel. Ã por meio da valorizaÃ§Ã£o da individualidade de cada um que impulsionamos o nosso movimento para conquistar resultados extraordinÃ¡rios, desenvolver nossas operaÃ§Ãµes e criar soluÃ§Ãµes para os nossos clientes.Somos apaixonados por nossa histÃ³ria, por nossas ideias e pela capacidade de realizÃ¡-las.Sabemos que juntos, todos vamos mais longe. Ã assim que conectamos a Localiza&Co com o futuro. O QUE VOCÃ IRÃ FAZER COMO HIGIENIZADOR DE CARROS Lavar os carros disponÃ­veis para venda conforme determinaÃ§Ã£o da lideranÃ§a, observando rigorosamente as partes internas e externas; Executar a calibragem dos pneus dos carros, conforme a tabela de calibragem e ligar os carros frequentemente para garantir a durabilidade da bateria; Contribuir na identificaÃ§Ã£o de problemas nos veÃ­culos, atravÃ©s de comunicaÃ§Ã£o ao lÃ­der, sobre qualquer defeito, avaria ou falta de acessÃ³rios observados nos carros. O QUE PRECISAMOS CNH categoria B hÃ¡, no mÃ­nimo, 1 ano Ensino fundamental completo Expe",
+      "employer": "Localiza&amp;Co",
+      "first_seen_at": "2026-09-06T14:07:23.316114+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T14:07:23.316114+00:00",
+      "listing_language": "en",
+      "location": "MacaÃ©,",
+      "origin_completed_at": "2026-09-06T14:07:23.728138+00:00",
+      "origin_run_id": "ingestion-1788703643",
+      "published_at": "2026-08-28T22:37:54+00:00",
+      "remote": true,
+      "review_key": "review:c21ea6fd4d3c27b7d949ebf639b43c1a5bd808d59df570f04da3a4cd222e7cb7",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137203",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787956674,
+        "provider": "remoteok",
+        "provider_job_id": "1137203",
+        "slug": "remote-higienizador-de-carros-macae-rj-localizaampco-1137203",
+        "tags": []
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "HIGIENIZADOR DE CARROS MACAÃ RJ",
+      "url": "https://remoteOK.com/remote-jobs/remote-higienizador-de-carros-macae-rj-localizaampco-1137203",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

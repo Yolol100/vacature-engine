@@ -1,58 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 71,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-solutions-delivery-manager-benchling-1136937",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-solutions-delivery-manager-benchling-1136937",
-      "content_hash": "476dd27105474dad2c49c06506116e8b25f83c1e8afa0a711180c8d4f02d9a2e",
-      "description_excerpt": "We are rebuilding biotech for the AI era. When a breakthrough is delayed, the world waits. Getting a molecule from discovery to patients, or a crop from lab to field, involves thousands of slow, manual, disconnected steps. AI has the potential to change this, compressing decades of R&D work into years. But that only happens when clean, structured scientific data and AI are built into how science gets done. Benchling is the AI platform for biotech R&D. Scientists use Benchling to design experiments, capture structured data, and run AI agents and models directly in their workflows. Over 200,000 scientists around the world trust Benchling to power their most important work, from academic labs to Sanofi, Moderna, and more than half of the world's top 50 biopharma. Weâre building an AI scientist for our customers. We canât do that if we havenât built the muscle ourselves. AI fluency is the foundation we build on; it's core to how we work, and we're committed to helping every new hire integrate it into their day-to-day. As part of our interview process, you'll complete a brief AI-focused exercise or discussion so we can understand how you think about and use AI to drive impact in y",
-      "employer": "Benchling",
-      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
-      "listing_language": "en",
-      "location": "Boston",
-      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
-      "origin_run_id": "ingestion-1789674380",
-      "published_at": "2026-08-18T08:00:07+00:00",
-      "remote": true,
-      "review_key": "review:e4aae712a2c9e9d1907659ce5b5ed82f490eec1aee67d4c50c349c30af791786",
-      "salary": {
-        "currency": null,
-        "max": 200000,
-        "min": 150000,
-        "period": null
-      },
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1136937",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787040007,
-        "provider": "remoteok",
-        "provider_job_id": "1136937",
-        "slug": "remote-solutions-delivery-manager-benchling-1136937",
-        "tags": [
-          "exec",
-          "design",
-          "technical",
-          "marketing",
-          "sales",
-          "biotech",
-          "medical",
-          "education",
-          "digital nomad"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Solutions Delivery Manager",
-      "url": "https://remoteOK.com/remote-jobs/remote-solutions-delivery-manager-benchling-1136937",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://himalayas.app/companies/pavago/jobs/website-designer-3321739934",
       "canonical_url": "https://himalayas.app/companies/pavago/jobs/website-designer-3321739934",
@@ -1364,10 +1314,54 @@
       "title": "Managing Director",
       "url": "https://remoteOK.com/remote-jobs/remote-managing-director-berni-and-mick-ireland-1135908",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975074",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7975074",
+      "content_hash": "42fc11dd13739f4c42e70a67b1f77f679829a0a19fc3cce91a5b9330460848d8",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Principal Engineer, AI/ML Security who is passionate about securing AI systems and operationalizing ML-powered security at cloud scale. In this role, you will report to the VP, Deputy CISO and partner closely with Security Data Science and Security leadership teams. You will lead DigitalOcean’s engagement with the external AI security community and serve as our internal expert and escalation point for all AI-related security risk. What You’ll Do: Partner with Product Security and Engineering leadership to define how AI security controls are integrated into DigitalOcean’s customer-facing products. Partner with Security Data Science and Security Engineering to build, deploy, and ser",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:14.083276+00:00",
+      "location": "Denver",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "review_key": "review:f3cb4799956d7b30b130e469d171bf850e2f6552933ac54936c1454b074ffdd7",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7975074",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 45958,
+            "name": "Security",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3461438,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 213279,
+            "location": "Boston Metro",
+            "name": "Boston Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7975074
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Director, Security Products: Key Management",
+      "updated_at": "2026-09-15T00:03:51-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975074"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

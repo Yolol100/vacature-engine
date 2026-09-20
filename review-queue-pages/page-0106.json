@@ -1,0 +1,79 @@
+{
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
+  "page": 106,
+  "page_item_count": 2,
+  "review_queue": [
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/toptal-pt-ft-senior-roblox-developer-game-designer",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/toptal-pt-ft-senior-roblox-developer-game-designer",
+      "content_hash": "ecbc73f9397544f448bafe9649e540c423072abf976ac23e2c0e1962c9e53a46",
+      "description_excerpt": "Headquarters: Summary We are seeking an experienced Roblox Developer or small development team to build a polished Roblox experience from concept through launch. The experience will be promoted to a large kids-and-families audience, with a strong focus on engagement, scalability, and player retention. General information This project is being developed for two major social media creators with a combined audience of 20M+ followers. The Roblox experience is expected to be heavily promoted across their social platforms, so the build needs to support a high-quality player experience and scale effectively as adoption grows. The role covers end-to-end ownership across product planning, development, launch support, and post-launch iteration. This is initially a project-based engagement, with potential for ongoing development and support if the initial launch performs well. Tasks and Deliverables We are looking for a developer/team that can own the project A–Z, including: Game concept and gameplay planning Roblox Studio development Map/world design 3D assets and environments Luau scripting Core gameplay mechanics Multiplayer systems UI/UX Player progression and rewards Data saving Monetiza",
+      "employer": "Toptal",
+      "first_seen_at": "2026-09-20T21:21:24.724727+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-20T21:21:24.724727+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-20T21:21:31.803282+00:00",
+      "origin_run_id": "ingestion-1789939291",
+      "published_at": "2026-08-28T20:34:17+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ff701d7efdbe0c3e19fde0df4cc287cc8a480d84ca063853488c5201993f46ee",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/toptal-pt-ft-senior-roblox-developer-game-designer",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "[PT/FT] Senior Roblox Developer & Game Designer",
+      "url": "https://weworkremotely.com/remote-jobs/toptal-pt-ft-senior-roblox-developer-game-designer",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/a-team-senior-independent-software-developer-90-170-hr",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/a-team-senior-independent-software-developer-90-170-hr",
+      "content_hash": "0f4aa240a91be3bc68dfaa600e50e65984fc2f0466f951e27a3d4b348baf0df7",
+      "description_excerpt": "Headquarters: NYC and TLV URL: https://build.a.team/wwrfastrackreferral Imagine choosing your projects, collaborating with the best, and keeping every dollar you earn. At A·Team, we’ve turned this vision into reality for top-tier independent software builders. Since May 2020, A·Teamers have earned over $108 million working on high-impact projects for companies backed by a16z, YC, Insight Partners, Tiger Global, Softbank, General Catalyst, and more. Why A·Team? High-paying, meaningful missions: Earn $90-$170/hr with over 500 companies—from trailblazing startups like Sightful, D-ID, and Apprentice to enterprise innovators like Lyft, Google X, and HCA. Collaborate with trusted peers: Work in small, elite teams for high-impact projects, ensuring top-tier collaboration. Full autonomy: Choose projects that excite you. Join when you're ready, and take breaks as needed. Exclusive gatherings: Participate in off-the-record events and connect with top builders. Transparent earnings: Keep 100% of your rate. How to Join: Visit A·Team Application and mention WWR under \"how you heard about A·Team.\" No cover letter needed – we value your portfolio. What to Expect: As an A·Teamer, you’ll be invited",
+      "employer": "A.Team",
+      "first_seen_at": "2026-09-20T21:21:24.724727+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-20T21:21:24.724727+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-20T21:21:31.803282+00:00",
+      "origin_run_id": "ingestion-1789939291",
+      "published_at": "2024-06-16T17:30:51+00:00",
+      "queue_seen_in_current_run": true,
+      "remote": true,
+      "review_key": "review:ffce66e72fc040b64b2f9e433a5883bdcba65eaa1532a19f802152836e363ca6",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/a-team-senior-independent-software-developer-90-170-hr",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "Senior Independent Software Developer ($90-$170/hr)",
+      "url": "https://weworkremotely.com/remote-jobs/a-team-senior-independent-software-developer-90-170-hr",
+      "workplace_type": "remote"
+    }
+  ],
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
+  "schema_version": 1,
+  "total_pages": 106
+}

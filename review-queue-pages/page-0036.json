@@ -1,71 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 36,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
-      "canonical_url": "https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
-      "content_hash": "8394a2ea909467d441aaf1a302a452b7bd62bbd3ad9b255dcab1d72c1a19890d",
-      "description_excerpt": "Who We Are At Bluehost, we believe all small businesses deserve the opportunity to succeed online. Our mission is to give small businesses the confidence to think big. We're the all-in-one platform for small businesses to grow online with powerful simplicity, premium performance, smart tools and human support. The Pro Serv Tech Support Specialist (Canada) will manage various website services, including SSL installation, WordPress website launches, and troubleshooting. The ideal candidate will have a strong background in web technologies, possess excellent communication skills, and demonstrate a passion for creating seamless online experiences. What you’ll do & how you’ll make your mark. Launching WordPress Websites Email Troubleshooting SSL Installing & Troubleshooting DNS change requests Basic website troubleshooting (Critical errors, builder/theme issues, updating plugins, etc.) Who you are & what you’ll need to succeed. Excellent written and verbal skills. Detail-oriented, problem solver, and dynamic. Dedicated, organized, and team-oriented. Experienced with HTML and CSS. Basic understanding of cPanel, SSL, Domain, DNS, and Email. Experienced with WordPress and WordPress Plugins",
-      "employer": "Newfold Digital",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Canada",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788477959",
-      "remote": true,
-      "review_key": "review:22dd73ca5eb92f5c98d69c430e326c3ec91c08ab65727713d12fbe53895cae14",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
-      "source_metadata": {
-        "categories": [
-          "Technical-Support",
-          "WordPress-Support",
-          "Web-Hosting-Support",
-          "IT-Helpdesk",
-          "Website-Troubleshooting",
-          "Technical-Support-Specialist",
-          "Technical-Service-Specialist",
-          "Service-Support-Specialist",
-          "Technical-Support-Representative",
-          "Technical-Support-Technician",
-          "Technology-Support-Specialist",
-          "Technical-Services-Specialist",
-          "Technician-Support-Specialist",
-          "Service-Support-Representative",
-          "Product-Support-Technician"
-        ],
-        "company_slug": "newfold-digital",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Canada"
-        ],
-        "location_restrictions": [
-          "Canada"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
-        "timezone_restrictions": [
-          -8,
-          -7,
-          -6,
-          -5,
-          -4,
-          -3.5
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Pro Serv Tech Support Specialist",
-      "url": "https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
-      "valid_through": "1793661959",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://himalayas.app/companies/accelerated-digital-media-an-outerbox-company/jobs/seo-strategist-9833300380",
       "canonical_url": "https://himalayas.app/companies/accelerated-digital-media-an-outerbox-company/jobs/seo-strategist-9833300380",
@@ -1501,10 +1438,48 @@
       "title": "handyman woman",
       "url": "https://remoteOK.com/remote-jobs/remote-handyman-woman-royal-lepage-icon-realty-1137196",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-enterprise-architect-l0-wipro-1137226",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-enterprise-architect-l0-wipro-1137226",
+      "content_hash": "eb0be0a627af3974b1c908f82334c79cc034832f3a82fd1377fa051f58ec0cf0",
+      "description_excerpt": "Job description: Job Description Í Í Í Í Mandatory Skills: Enterprise Architecting . Â Experience: 8-10 Years . Â Reinvent your world. We are building a modern Wipro. We are an end-to-end digital transformation partner with the boldest ambitions. To realize them, we need people inspired by reinvention. Of yourself, your career, and your skills. We want to see the constant evolution of our business and our industry. It has always been in our DNA - as the world around us changes, so do we. Join a business powered by purpose and a place that empowers you to design your own reinvention. Please mention the word **LUCK** and tag RMjAuMjUuMTAuNjc= when applying to show you read the job post completely (#RMjAuMjUuMTAuNjc=). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "Wipro",
+      "first_seen_at": "2026-09-06T10:49:48.528778+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T10:49:48.528778+00:00",
+      "listing_language": "en",
+      "location": "Chennai,",
+      "origin_completed_at": "2026-09-06T10:49:48.961557+00:00",
+      "origin_run_id": "ingestion-1788691788",
+      "published_at": "2026-08-31T00:16:57+00:00",
+      "remote": true,
+      "review_key": "review:01903a4e04aafbc90e3d0bd612c197ba1db60edebdbe4614c08b15d79fb2dd01",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137226",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788135417,
+        "provider": "remoteok",
+        "provider_job_id": "1137226",
+        "slug": "remote-enterprise-architect-l0-wipro-1137226",
+        "tags": [
+          "architecture",
+          "design",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "ENTERPRISE ARCHITECT L0",
+      "url": "https://remoteOK.com/remote-jobs/remote-enterprise-architect-l0-wipro-1137226",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

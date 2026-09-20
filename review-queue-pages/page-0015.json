@@ -1,55 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 15,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-assistant-manager-storage-king-group-1137161",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-assistant-manager-storage-king-group-1137161",
-      "content_hash": "09e0cd3a19dbd9bfe8be1f2536e2bec2ed29eca5e47215dd9c49a76013cb406c",
-      "description_excerpt": "About Us Storage King is a fast-growing business offering stable and rewarding employment. We have a fun and friendly culture across our store network which currently includes over 200 stores across Australia and New Zealand. Storage King is a market leader in self-storage and with continued growth plans it is an exciting time to become involved with our brand. Certified Great Place to Work â 2025/2026 in both Australia and New Zealand The Role We currently have a full-time position available for an Assistant Store Manager to join our teams based in Rozelle & Balmain. Assistant Store Managers are the key support management role in store and work hand in hand with the leadership to deliver exceptional store results and customer service. Working Hours Tuesday to Saturday Total 38 hours per week Occasional Sunday shifts may be offered. We Are Open Monday to Friday 8am - 5pm Saturday 8am - 4pm Sunday 10am - 4pm Some flexibility will be required for this role. About You To be successful in this role, you will bring: Ideal if you have a retail, sales or hospitality background Willingness to learn new skills associated with a sales and customer service role - training is provided Self-m",
-      "employer": "Storage King Group",
-      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
-      "listing_language": "en",
-      "location": "Rozelle,",
-      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
-      "origin_run_id": "ingestion-1788639387",
-      "published_at": "2026-08-27T02:27:09+00:00",
-      "remote": true,
-      "review_key": "review:eafa98f90150ad967ed23c1727ed316a898c16894682ce1aed77ec6df4e101a3",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137161",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787797629,
-        "provider": "remoteok",
-        "provider_job_id": "1137161",
-        "slug": "remote-assistant-manager-storage-king-group-1137161",
-        "tags": [
-          "exec",
-          "virtual assistant",
-          "education",
-          "customer support",
-          "marketing",
-          "travel",
-          "finance",
-          "legal",
-          "sales",
-          "medical",
-          "recruiter",
-          "full time"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Assistant Manager",
-      "url": "https://remoteOK.com/remote-jobs/remote-assistant-manager-storage-king-group-1137161",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/",
       "canonical_url": "https://remoteok.com/remote-jobs",
@@ -1060,10 +1013,53 @@
       "title": "Store Manager BOSS Store Plaza Las Americas",
       "url": "https://remoteOK.com/remote-jobs/remote-store-manager-boss-store-plaza-las-americas-hugo-boss-1137301",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-cloud-computing-amazon-web-services-aws-1137231",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-cloud-computing-amazon-web-services-aws-1137231",
+      "content_hash": "4bb40cf2e544609c461a1b48ef0d7caea4e9554219df5a1ef2ff864d642ba290",
+      "description_excerpt": "Roles and Responsibilities - AWS cloud computing Location - Hyderabad, Chennai, Kolkata, Pune, Bengaluru Exp - 6 - 8 yrs Please mention the word **LOVE** and tag RNTIuMTYwLjE0OS4xMzI= when applying to show you read the job post completely (#RNTIuMTYwLjE0OS4xMzI=). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "Amazon Web Services (AWS)",
+      "first_seen_at": "2026-09-05T21:08:15.822039+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-05T21:08:15.822039+00:00",
+      "listing_language": "en",
+      "location": "Telangana,",
+      "origin_completed_at": "2026-09-05T21:08:20.457140+00:00",
+      "origin_run_id": "ingestion-1788642500",
+      "published_at": "2026-08-31T06:05:15+00:00",
+      "remote": true,
+      "review_key": "review:0b7cd08476cc41d68e26e709a80d6754976d253021cffd83f1aece2636e7fca6",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137231",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788156315,
+        "provider": "remoteok",
+        "provider_job_id": "1137231",
+        "slug": "remote-cloud-computing-amazon-web-services-aws-1137231",
+        "tags": [
+          "education",
+          "exec",
+          "ops",
+          "engineer",
+          "amazon",
+          "web dev",
+          "cloud",
+          "aws"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Cloud Computing",
+      "url": "https://remoteOK.com/remote-jobs/remote-cloud-computing-amazon-web-services-aws-1137231",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

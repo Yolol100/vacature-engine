@@ -1,71 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 57,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff/application",
-      "canonical_url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff",
-      "content_hash": "c75a9e95cd825a185c1f8c1206dbf2138572e7308536c687adacc0748361345d",
-      "description_excerpt": "AI AT ZAPIER At Zapier https://zapier.com/about, we build and use automation every day to make work more efficient, creative, and human. So if you’re using AI tools while applying here - that’s great! We just ask that you use them responsibly and transparently. Check out our guidance on How to Collaborate with AI During Zapier’s Hiring Process https://zapier.com/l/jobs/ai-at-zapier, including how to use AI tools like ChatGPT, Claude, Gemini, or others during our hiring process - and when not to. Job Posted: 08/26 Location: Americas (North, Central and South America) Hi there! Zapier is hiring a Manager, Analytics & Strategy to lead our newly formed GTM Analytics team. This team is the central analytics home for Marketing, Sales, RevOps, and Customer Ops, with a mandate to deliver trusted GTM insights, improve the quality and speed of decision-making, and turn repeated questions into durable self-service analytics assets. You will manage a team of embedded analysts supporting Marketing, Sales, and Support/Customer Ops. Your team will own the day-to-day analytics interface for GTM leaders: funnel reporting, campaign performance, sales and support analytics, forecasting inputs, recurr",
-      "employer": "Zapier",
-      "employment_type": "FullTime",
-      "first_seen_at": "2026-09-08T10:40:55.461738+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-08T10:40:55.461738+00:00",
-      "location": "NAMER",
-      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
-      "origin_run_id": "ingestion-1788864064",
-      "published_at": "2026-08-26T15:46:24.987+00:00",
-      "remote": true,
-      "review_key": "review:c7d7591eeaa641f61ea7b86023d6e781d1cebae12d80498ef916672476819030",
-      "salary": {
-        "components": [
-          {
-            "compensationType": "Bonus",
-            "interval": "1 YEAR",
-            "maxValue": null,
-            "minValue": null
-          },
-          {
-            "compensationType": "EquityPercentage",
-            "interval": "1 YEAR",
-            "maxValue": null,
-            "minValue": null
-          },
-          {
-            "compensationType": "Salary",
-            "currencyCode": "USD",
-            "interval": "1 YEAR",
-            "maxValue": 261300,
-            "minValue": 174200
-          }
-        ],
-        "summary": "$174.2K - $261.3K"
-      },
-      "source_id": "ashby",
-      "source_instance": "ashby:zapier",
-      "source_job_id": "zapier:7dd68291-3696-4fd0-a5d0-24ab73d22fff",
-      "source_metadata": {
-        "address": {
-          "postalAddress": {
-            "addressCountry": "United States",
-            "addressLocality": "San Francisco",
-            "addressRegion": "California"
-          }
-        },
-        "department": "Data",
-        "is_listed": true,
-        "provider": "ashby",
-        "secondary_locations": [],
-        "team": "Data"
-      },
-      "source_type": "ats",
-      "source_url": "ashby://zapier",
-      "title": "Manager, GTM Analytics",
-      "url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff",
-      "workplace_type": "Remote"
-    },
     {
       "apply_url": "https://weworkremotely.com/remote-jobs/myneva-senior-devops-engineer-m-f-d",
       "canonical_url": "https://weworkremotely.com/remote-jobs/myneva-senior-devops-engineer-m-f-d",
@@ -1138,10 +1075,55 @@
       "title": "Store Manager BOSS Store Plaza Las Americas",
       "url": "https://remoteOK.com/remote-jobs/remote-store-manager-boss-store-plaza-las-americas-hugo-boss-1137301",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
+      "content_hash": "5f2b629f714d536e14f71d17382ed4e0512ece62d27baebcb0eea25d57ed19ba",
+      "description_excerpt": "Radisson Hotel Group is one of the world's largest hotel groups with ten distinctive hotel brands, and more than 1,500 hotels in operation and under development in 95+ countries. The Groupâs overarching brand promise is Every Moment Matters with a signature Yes I Can! service ethos. People are at the core of our business success and future. Our people are true Moment Makers and together we bring the culture, spirit, environment and opportunities that empower you to be your best, every day, everywhere, every time. Together, we make Every Moment Matter. Job Description Ambitious, thirsty for results, love interacting with people? We are looking for a natural brand promoter just like you! Our people are at the core of our success. Your role guarantees variety and excitement every day. At RHG, we cherish your entrepreneurial spirit, collaborative nature. We foster an inclusive and supportive culture where, together, we ensure that every moment is truly meaningful. Embrace your uniqueness as an individual in our team and explore the exciting growth opportunities we have for you and the chance to create memorable moments. We are currently seeking a Sales Manager to join our vibrant tea",
+      "employer": "Radisson Hotel Group",
+      "first_seen_at": "2026-09-08T10:40:57.394748+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-08T10:40:57.394748+00:00",
+      "listing_language": "en",
+      "location": "Visakhapatnam Rural mandal,",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "2026-08-28T12:44:40+00:00",
+      "remote": true,
+      "review_key": "review:ebfb1faaa52b458cf40c63f5b35a322c67c941d0bef453435e4f922f35f091d5",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137200",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787921080,
+        "provider": "remoteok",
+        "provider_job_id": "1137200",
+        "slug": "remote-sales-manager-radisson-hotel-group-1137200",
+        "tags": [
+          "technical",
+          "marketing",
+          "excel",
+          "sales",
+          "engineer",
+          "recruiter",
+          "full time",
+          "exec",
+          "customer support",
+          "golang"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Sales Manager",
+      "url": "https://remoteOK.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

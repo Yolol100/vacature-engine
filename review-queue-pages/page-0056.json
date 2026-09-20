@@ -1,47 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 56,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-public-area-attendant-four-seasons-1137297",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-public-area-attendant-four-seasons-1137297",
-      "content_hash": "93c4a35d32e6f41917c8eacd0290feddbbfbfd70a2c334b6826d7d88ed4ff987",
-      "description_excerpt": "About Four Seasons Four Seasons is powered by our people. We are a collective of individuals who crave to become better, to push ourselves to new heights and to treat each other as we wish to be treated in return. Our team members around the world create amazing experiences for our guests, residents, and partners through a commitment to luxury with genuine heart. We know that the best way to enable our people to deliver these exceptional guest experiences is through a world-class employee experience and company culture. At Four Seasons, we believe in recognizing a familiar face, welcoming a new one and treating everyone we meet the way we would want to be treated ourselves. Whether you work with us, stay with us, live with us or discover with us, we believe our purpose is to create impressions that will stay with you for a lifetime. It comes from our belief that life is richer when we truly connect to the people and the world around us. About the location: Since opening in 1962, The Ocean Club, A Four Seasons Resort, Bahamas has been a playground for celebrities and discerning travellers set along an 8-kilometre (5-mile) stretch of natural, white-sand beach on Paradise Island. Conn",
-      "employer": "Four Seasons",
-      "first_seen_at": "2026-09-08T10:40:57.394748+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-08T10:40:57.394748+00:00",
-      "listing_language": "en",
-      "location": "Nassau,",
-      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
-      "origin_run_id": "ingestion-1788864064",
-      "published_at": "2026-09-02T22:54:41+00:00",
-      "remote": true,
-      "review_key": "review:9227f71e5cec3d5a4fe3baba26b84e1ac6b0028b43ff2deaeabb0a156aa82f1c",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137297",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788389681,
-        "provider": "remoteok",
-        "provider_job_id": "1137297",
-        "slug": "remote-public-area-attendant-four-seasons-1137297",
-        "tags": [
-          "education",
-          "supervisor",
-          "legal",
-          "non tech"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Public Area Attendant",
-      "url": "https://remoteOK.com/remote-jobs/remote-public-area-attendant-four-seasons-1137297",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-store-manager-crocs-inc-1137181",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-store-manager-crocs-inc-1137181",
@@ -1184,10 +1145,73 @@
       "url": "https://himalayas.app/companies/great-minds/jobs/senior-web-developer-8426026419",
       "valid_through": "1793910484",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff/application",
+      "canonical_url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff",
+      "content_hash": "c75a9e95cd825a185c1f8c1206dbf2138572e7308536c687adacc0748361345d",
+      "description_excerpt": "AI AT ZAPIER At Zapier https://zapier.com/about, we build and use automation every day to make work more efficient, creative, and human. So if you’re using AI tools while applying here - that’s great! We just ask that you use them responsibly and transparently. Check out our guidance on How to Collaborate with AI During Zapier’s Hiring Process https://zapier.com/l/jobs/ai-at-zapier, including how to use AI tools like ChatGPT, Claude, Gemini, or others during our hiring process - and when not to. Job Posted: 08/26 Location: Americas (North, Central and South America) Hi there! Zapier is hiring a Manager, Analytics & Strategy to lead our newly formed GTM Analytics team. This team is the central analytics home for Marketing, Sales, RevOps, and Customer Ops, with a mandate to deliver trusted GTM insights, improve the quality and speed of decision-making, and turn repeated questions into durable self-service analytics assets. You will manage a team of embedded analysts supporting Marketing, Sales, and Support/Customer Ops. Your team will own the day-to-day analytics interface for GTM leaders: funnel reporting, campaign performance, sales and support analytics, forecasting inputs, recurr",
+      "employer": "Zapier",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-08T10:40:55.461738+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-08T10:40:55.461738+00:00",
+      "location": "NAMER",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "2026-08-26T15:46:24.987+00:00",
+      "remote": true,
+      "review_key": "review:c7d7591eeaa641f61ea7b86023d6e781d1cebae12d80498ef916672476819030",
+      "salary": {
+        "components": [
+          {
+            "compensationType": "Bonus",
+            "interval": "1 YEAR",
+            "maxValue": null,
+            "minValue": null
+          },
+          {
+            "compensationType": "EquityPercentage",
+            "interval": "1 YEAR",
+            "maxValue": null,
+            "minValue": null
+          },
+          {
+            "compensationType": "Salary",
+            "currencyCode": "USD",
+            "interval": "1 YEAR",
+            "maxValue": 261300,
+            "minValue": 174200
+          }
+        ],
+        "summary": "$174.2K - $261.3K"
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:zapier",
+      "source_job_id": "zapier:7dd68291-3696-4fd0-a5d0-24ab73d22fff",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "United States",
+            "addressLocality": "San Francisco",
+            "addressRegion": "California"
+          }
+        },
+        "department": "Data",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [],
+        "team": "Data"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://zapier",
+      "title": "Manager, GTM Analytics",
+      "url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff",
+      "workplace_type": "Remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

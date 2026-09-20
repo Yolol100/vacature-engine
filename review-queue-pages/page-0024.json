@@ -1,47 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 24,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-domestic-nt-health-1137261",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-domestic-nt-health-1137261",
-      "content_hash": "ce2d654a06d7d39212f85b94351081b2880b423de3f3b5c4e55c65ef5c11cd07",
-      "description_excerpt": "Vacancy Number: 002722 Agency: Department of Health Number of Vacancies: 1 Work Unit: Support Services - Housekeeping Location: Katherine Primary Objective: As a member of the housekeeping team, under the direction of the Housekeeping Supervisor provide an efficient and effective Housekeeping Service for Katherine Hospital ensuring infection control and guidelines are followed. Contact: Rossarin Watkins on 08 8973 9271or rossarin.watkins@nt.gov.au Remuneration Package: RDO - Remuneration Package $75,635 - $78,907 (including salary $63,931 - $66,697) Experience Level: Physical 2 - RDO Please mention the word **BREAKTHROUGH** and tag RMTcyLjE3Mi4yMzcuMjEx when applying to show you read the job post completely (#RMTcyLjE3Mi4yMzcuMjEx). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
-      "employer": "NT Health",
-      "first_seen_at": "2026-09-05T22:49:14.623977+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-05T22:49:14.623977+00:00",
-      "listing_language": "en",
-      "location": "Katherine,",
-      "origin_completed_at": "2026-09-05T22:49:15.070983+00:00",
-      "origin_run_id": "ingestion-1788648555",
-      "published_at": "2026-09-01T20:10:36+00:00",
-      "remote": true,
-      "review_key": "review:0398922c1baff47f01f8f1345066680900cec190c0462b84cd72a771bfa4ee4e",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137261",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788293436,
-        "provider": "remoteok",
-        "provider_job_id": "1137261",
-        "slug": "remote-domestic-nt-health-1137261",
-        "tags": [
-          "supervisor",
-          "customer support",
-          "medical",
-          "non tech"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Domestic",
-      "url": "https://remoteOK.com/remote-jobs/remote-domestic-nt-health-1137261",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-cloud-computing-amazon-web-services-aws-1137231",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-cloud-computing-amazon-web-services-aws-1137231",
@@ -1073,10 +1034,51 @@
       "title": "handyman woman",
       "url": "https://remoteOK.com/remote-jobs/remote-handyman-woman-the-russell-inn-hotel-amp-conference-centre-1137282",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-payroll-clerk-pvh-group-inc-1137264",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-payroll-clerk-pvh-group-inc-1137264",
+      "content_hash": "c57fc0ffa30c5d2a1bbbc072a2a82314136795a5e4dbd96e5ec7cc5f537a324a",
+      "description_excerpt": "Are you a detail-driven payroll professional looking for your next opportunity? We're looking for a Payroll Clerk to join our team and support weekly and monthly payroll processing across a dynamic group of companies. This is a great chance to grow your payroll career within a fast-paced, professional environment. Experience with Paypak payroll software is considered a strong asset. Key Requirements : Prior experience processing payroll, ideally within a multi-company environment Ability to process weekly and monthly payrolls accurately and on time Strong attention to detail and good organizational skills Familiarity with statutory deductions and payroll compliance Discretion in handling confidential and sensitive information Asset Experience working with Paypak payroll software If you're reliable, organized, and ready to grow your career with a professional team, we'd love to hear from you! Apply now! All suitably qualified applicants interested in this opportunity, please email your cover letter along with a detailed curriculum vitae to https://pvhgroupinc.bamboohr.com/careers/163?source=aWQ9MjI%3D Applications should reach the company no later than September 15, 2026 . Please me",
+      "employer": "PVH Group Inc",
+      "first_seen_at": "2026-09-05T22:49:14.623977+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-05T22:49:14.623977+00:00",
+      "listing_language": "en",
+      "location": "Bridgetown,",
+      "origin_completed_at": "2026-09-05T22:49:15.070983+00:00",
+      "origin_run_id": "ingestion-1788648555",
+      "published_at": "2026-09-01T20:40:45+00:00",
+      "remote": true,
+      "review_key": "review:48014092a6a692c0f8cd416d63539a76d83d77331243b6b61570aec03db59f49",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137264",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788295245,
+        "provider": "remoteok",
+        "provider_job_id": "1137264",
+        "slug": "remote-payroll-clerk-pvh-group-inc-1137264",
+        "tags": [
+          "payroll",
+          "vfx",
+          "customer support",
+          "dev",
+          "non tech",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Payroll Clerk",
+      "url": "https://remoteOK.com/remote-jobs/remote-payroll-clerk-pvh-group-inc-1137264",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

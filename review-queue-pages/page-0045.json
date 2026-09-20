@@ -1,45 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 45,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-store-manager-hola-moda-1137206",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-store-manager-hola-moda-1137206",
-      "content_hash": "9e846a77aa5f51e7986f4df9fab8d36cc9afd857be119517742371181905e081",
-      "description_excerpt": "Buscamos un/a Store Manager que lidere la tienda como un negÃ³cio propio, impulsando resultados comerciales, desarrollando equipos inspiradores y ofreciendo una experiencia de cliente alineada con una marca global de moda accesible. SerÃ¡s responsable de la experiencia integral del cliente, asegurando altos estÃ¡ndares visuales y comerciales, una ejecuciÃ³n impecable en tienda y un fuerte enfoque OMNI. LiderarÃ¡s al equipo con pasiÃ³n, mentalidad emprendedora y orientaciÃ³n a resultados. Â¿QuÃ© harÃ¡s? Liderar y desarrollar a todo el equipo de tienda, creando una cultura inclusiva, colaborativa y de alto desempeÃ±o. Impulsar ventas, rentabilidad y productividad mediante el anÃ¡lisis de KPIs y planes de acciÃ³n comerciales. Garantizar una ejecuciÃ³n visual fuerte y consistente, alineada a las estrategias globales y locales de la marca. Asegurar una experiencia de cliente inspiradora, relevante y comercial en cada punto de contacto. Gestionar las operaciones diarias de la tienda con excelencia, simplicidad y foco en resultados. Â¿QuÃ© buscamos? Experiencia sÃ³lida liderando equipos en retail de moda. PasiÃ³n por la moda, las tendencias y la comercialidad. Perfil analÃ­tico, orientado",
-      "employer": "Hola Moda",
-      "first_seen_at": "2026-09-06T15:11:37.717025+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T15:11:37.717025+00:00",
-      "listing_language": "en",
-      "location": "Valencia,",
-      "origin_completed_at": "2026-09-06T15:11:44.237732+00:00",
-      "origin_run_id": "ingestion-1788707504",
-      "published_at": "2026-08-28T19:27:42+00:00",
-      "remote": true,
-      "review_key": "review:02789b04ee02b12f09370bdddff6426efa4d5361e128ce5752325a324c0d1963",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137206",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787945262,
-        "provider": "remoteok",
-        "provider_job_id": "1137206",
-        "slug": "remote-store-manager-hola-moda-1137206",
-        "tags": [
-          "exec",
-          "c"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Store Manager",
-      "url": "https://remoteOK.com/remote-jobs/remote-store-manager-hola-moda-1137206",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
@@ -1067,10 +1030,48 @@
       "title": "GTM",
       "url": "https://remoteOK.com/remote-jobs/remote-gtm-wonderful-1137225",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
+      "content_hash": "419fb9d79a5f6f5502bccc0a07452b4028e98bf72efa5aa5e2c2a5aea257a47c",
+      "description_excerpt": "Expression of Interest Canât see a role thatâs right for you? Weâre always interested in hearing from talented people who would like to join our team. Click â Apply Now â to Submit an expression of interest and attach your CV to tell us about your experience, skills and the type of work youâre looking for. While we may not have a suitable vacancy available right now, weâll keep your details on file and contact you if a relevant opportunity arises. Please note that submitting an expression of interest does not guarantee employment or a response. We encourage you to continue checking our current vacancies and apply directly for any roles that interest you. Please mention the word **INTERESTS** and tag RMTA0LjIwOS4xMC4yMjQ= when applying to show you read the job post completely (#RMTA0LjIwOS4xMC4yMjQ=). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "C2 Group",
+      "first_seen_at": "2026-09-06T15:11:37.717025+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T15:11:37.717025+00:00",
+      "listing_language": "en",
+      "location": "Greater Sydney Area,",
+      "origin_completed_at": "2026-09-06T15:11:44.237732+00:00",
+      "origin_run_id": "ingestion-1788707504",
+      "published_at": "2026-09-01T05:48:16+00:00",
+      "remote": true,
+      "review_key": "review:59a26c4c35de5932bf8b77351a6970aa917be1262b2e4a8d8e5e7080d3913174",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137251",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788241696,
+        "provider": "remoteok",
+        "provider_job_id": "1137251",
+        "slug": "remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
+        "tags": [
+          "full time",
+          "infosec",
+          "education"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Expression of Interest Canât see a role thatâs right for you",
+      "url": "https://remoteOK.com/remote-jobs/remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

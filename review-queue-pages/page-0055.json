@@ -1,62 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 55,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-junior-crypto-analyst-trader-empire-assets-1137307",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-junior-crypto-analyst-trader-empire-assets-1137307",
-      "content_hash": "0db383ab13472133be70f9ad0a3b87240bd83baafa1dd41cc849907184b405f6",
-      "description_excerpt": "Empire Assets is a young and rapidly developing company working in the field of digital markets and analytics. We bring together enterprising people who want to master modern approaches to trading, analysis and decision-making in a dynamic market environment. We are currently looking for aÂ Junior Crypto Analyst & Trader Â , a novice specialist who is ready to complete training, perform real trading operations and develop under the guidance of experienced mentors. Your Responsibilities Execution and support of trading operations on digital markets. Tracking asset dynamics and market trends. Maintaining internal records on transactions and statistics. Analyzing market data, news, and charts for decision-making. Work with analytical tools and participate in discussions with a team of traders. The gradual formation and improvement of your own trading strategy. What We Offer Working for a young and growing international company. Remote format â you can work from anywhere in the world. Flexible schedule â up to 20 hours per week, convenient to combine with study or main activity. Learning from scratch â all processes and trading tools are mastered with a mentor. The opportunity fo",
-      "employer": "Empire Assets",
-      "first_seen_at": "2026-09-08T10:40:57.394748+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-08T10:40:57.394748+00:00",
-      "listing_language": "en",
-      "location": "Remote",
-      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
-      "origin_run_id": "ingestion-1788864064",
-      "published_at": "2026-09-04T15:13:46+00:00",
-      "remote": true,
-      "review_key": "review:56a63f0e302c6ec43dd66ba7b6d0ec9a8facd7f1eed62f66c5d0347c30f80e49",
-      "salary": {
-        "currency": null,
-        "max": 80000,
-        "min": 60000,
-        "period": null
-      },
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137307",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788534826,
-        "provider": "remoteok",
-        "provider_job_id": "1137307",
-        "slug": "remote-junior-crypto-analyst-trader-empire-assets-1137307",
-        "tags": [
-          "other",
-          "crypto",
-          "remote",
-          "trader",
-          "analyst",
-          "Binance",
-          "web3",
-          "bitcoin",
-          "ethereum",
-          "blockchain",
-          "defi",
-          "part time",
-          "junior"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Junior Crypto Analyst & Trader",
-      "url": "https://remoteOK.com/remote-jobs/remote-junior-crypto-analyst-trader-empire-assets-1137307",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-english-teacher-pembroke-school-1137182",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-english-teacher-pembroke-school-1137182",
@@ -1118,10 +1064,49 @@
       "title": "Test",
       "url": "https://remoteOK.com/remote-jobs/remote-test-digest-media-1137198",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-public-area-attendant-four-seasons-1137297",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-public-area-attendant-four-seasons-1137297",
+      "content_hash": "93c4a35d32e6f41917c8eacd0290feddbbfbfd70a2c334b6826d7d88ed4ff987",
+      "description_excerpt": "About Four Seasons Four Seasons is powered by our people. We are a collective of individuals who crave to become better, to push ourselves to new heights and to treat each other as we wish to be treated in return. Our team members around the world create amazing experiences for our guests, residents, and partners through a commitment to luxury with genuine heart. We know that the best way to enable our people to deliver these exceptional guest experiences is through a world-class employee experience and company culture. At Four Seasons, we believe in recognizing a familiar face, welcoming a new one and treating everyone we meet the way we would want to be treated ourselves. Whether you work with us, stay with us, live with us or discover with us, we believe our purpose is to create impressions that will stay with you for a lifetime. It comes from our belief that life is richer when we truly connect to the people and the world around us. About the location: Since opening in 1962, The Ocean Club, A Four Seasons Resort, Bahamas has been a playground for celebrities and discerning travellers set along an 8-kilometre (5-mile) stretch of natural, white-sand beach on Paradise Island. Conn",
+      "employer": "Four Seasons",
+      "first_seen_at": "2026-09-08T10:40:57.394748+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-08T10:40:57.394748+00:00",
+      "listing_language": "en",
+      "location": "Nassau,",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "2026-09-02T22:54:41+00:00",
+      "remote": true,
+      "review_key": "review:9227f71e5cec3d5a4fe3baba26b84e1ac6b0028b43ff2deaeabb0a156aa82f1c",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137297",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788389681,
+        "provider": "remoteok",
+        "provider_job_id": "1137297",
+        "slug": "remote-public-area-attendant-four-seasons-1137297",
+        "tags": [
+          "education",
+          "supervisor",
+          "legal",
+          "non tech"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Public Area Attendant",
+      "url": "https://remoteOK.com/remote-jobs/remote-public-area-attendant-four-seasons-1137297",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

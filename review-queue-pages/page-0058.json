@@ -1,53 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 58,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
-      "content_hash": "5f2b629f714d536e14f71d17382ed4e0512ece62d27baebcb0eea25d57ed19ba",
-      "description_excerpt": "Radisson Hotel Group is one of the world's largest hotel groups with ten distinctive hotel brands, and more than 1,500 hotels in operation and under development in 95+ countries. The Groupâs overarching brand promise is Every Moment Matters with a signature Yes I Can! service ethos. People are at the core of our business success and future. Our people are true Moment Makers and together we bring the culture, spirit, environment and opportunities that empower you to be your best, every day, everywhere, every time. Together, we make Every Moment Matter. Job Description Ambitious, thirsty for results, love interacting with people? We are looking for a natural brand promoter just like you! Our people are at the core of our success. Your role guarantees variety and excitement every day. At RHG, we cherish your entrepreneurial spirit, collaborative nature. We foster an inclusive and supportive culture where, together, we ensure that every moment is truly meaningful. Embrace your uniqueness as an individual in our team and explore the exciting growth opportunities we have for you and the chance to create memorable moments. We are currently seeking a Sales Manager to join our vibrant tea",
-      "employer": "Radisson Hotel Group",
-      "first_seen_at": "2026-09-08T10:40:57.394748+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-08T10:40:57.394748+00:00",
-      "listing_language": "en",
-      "location": "Visakhapatnam Rural mandal,",
-      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
-      "origin_run_id": "ingestion-1788864064",
-      "published_at": "2026-08-28T12:44:40+00:00",
-      "remote": true,
-      "review_key": "review:ebfb1faaa52b458cf40c63f5b35a322c67c941d0bef453435e4f922f35f091d5",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137200",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787921080,
-        "provider": "remoteok",
-        "provider_job_id": "1137200",
-        "slug": "remote-sales-manager-radisson-hotel-group-1137200",
-        "tags": [
-          "technical",
-          "marketing",
-          "excel",
-          "sales",
-          "engineer",
-          "recruiter",
-          "full time",
-          "exec",
-          "customer support",
-          "golang"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Sales Manager",
-      "url": "https://remoteOK.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-gardener-nusc-w-hotels-1137185",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-gardener-nusc-w-hotels-1137185",
@@ -1262,10 +1217,53 @@
       "url": "https://himalayas.app/companies/pressable/jobs/technical-support-engineer",
       "valid_through": "1794468335",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
+      "content_hash": "f393bf32b1660d2d80ca6c8bb8ed14658c9c1404c0ec5f7f0b2bffb2ffc8369e",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "UAE",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-12T17:01:03.666+00:00",
+      "remote": true,
+      "review_key": "review:07a81b40e218f4d3e0713c2f744e73fccb5ae8c6b0e0cab1472ac3986f93ba78",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "United Arab Emirates",
+            "addressLocality": "Dubai",
+            "addressRegion": "Dubai"
+          }
+        },
+        "department": "Operations",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [],
+        "team": "Legal"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Public Sector Partnerships Lead - Middle East",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
+      "workplace_type": "Remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

@@ -1,57 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 11,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-construction-estimator-streamline-search-1137238",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-construction-estimator-streamline-search-1137238",
-      "content_hash": "d995ff46b865de358dc69bef2dcaa3ac25c7f9e291cab01e09b0afce88e7cf26",
-      "description_excerpt": "Estimator We are seeking a detail-orientated and analytical Estimator with a passion for construction to join our team. Overview Working alongside the Senior Estimator, the ideal candidate will be responsible for preparing detailed and accurate cost estimates for a wide variety of commercial construction projects. Candidates must have a building background with extensive knowledge of all aspects of refurbishment and commercial construction across numerous sectors. This role requires a strong understanding of cost control and the ability to communicate effectively with various stakeholders. The Estimator will work closely with project managers, engineers and other sub-contractors, and play a crucial role in ensuring our bids are technically accurate, timely and competitive. Min 3 years experience in an estimating role. Full driving licence and the ability to travel when required is essential. Duties Prepare detailed cost estimates for projects, including materials, subcontractors, labour and pre - lims from tenders, drawings and client briefs. Read and interpret technical drawings and specifications Liaise with clients, suppliers, and internal design/production teams Ensure our tend",
-      "employer": "Streamline Search",
-      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
-      "listing_language": "en",
-      "location": "Corby,",
-      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
-      "origin_run_id": "ingestion-1788639387",
-      "published_at": "2026-08-31T15:34:32+00:00",
-      "remote": true,
-      "review_key": "review:10883f39102bd9987e1f781fbf62b602772f8ab7fb832c1896089185da41375e",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137238",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788190472,
-        "provider": "remoteok",
-        "provider_job_id": "1137238",
-        "slug": "remote-construction-estimator-streamline-search-1137238",
-        "tags": [
-          "design",
-          "infosec",
-          "music",
-          "education",
-          "exec",
-          "medical",
-          "digital nomad",
-          "technical",
-          "customer support",
-          "dev",
-          "travel",
-          "microsoft",
-          "senior",
-          "excel"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Construction Estimator",
-      "url": "https://remoteOK.com/remote-jobs/remote-construction-estimator-streamline-search-1137238",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8731718002",
       "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8731718002",
@@ -989,10 +940,43 @@
       "title": "Cdp",
       "url": "https://remoteOK.com/remote-jobs/remote-cdp-hilton-salwa-beach-resort-amp-villas-1137179",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/toptal-ai-ml-engineer-for-an-ai-driven-e-commerce-platform",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/toptal-ai-ml-engineer-for-an-ai-driven-e-commerce-platform",
+      "content_hash": "f690c014383dbb663e18e1fd0a247e2a112eb30ae8515b1093fa77828b7d45b2",
+      "description_excerpt": "Headquarters: We are seeking an AI Engineer to develop AI-first applications and integrate custom models and infrastructure into an existing e-commerce platform. The role focuses on building agent-led product experiences, including internal automation, dynamic site customization, and customer-facing conversational commerce workflows. General information This engagement supports an e-commerce startup building a platform around conversational design and intelligent automation. The current objective is to extend the existing product with AI-native capabilities while building on top of the current backend and application stack. The work includes three core initiative areas: an internal AI employee for operational tasks, a fluid site customizer, and a customer-facing commerce agent designed to support one-prompt checkout experiences. The role will involve model integration, infrastructure setup, and product-facing implementation across both backend and UI surfaces. Tasks and Deliverables - Develop AI-first applications for an existing e-commerce platform. - Architect and implement autonomous e-commerce AI agents using open-source and proprietary foundation models. - Establish GPU infras",
+      "employer": "Toptal",
+      "first_seen_at": "2026-09-05T20:16:21.946199+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-05T20:16:21.946199+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
+      "origin_run_id": "ingestion-1788639387",
+      "published_at": "2026-08-17T14:10:09+00:00",
+      "remote": true,
+      "review_key": "review:499d669f89e71556f26f21d3764912e7e53c0ca5774bc6e32244a8db6b5af80d",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/toptal-ai-ml-engineer-for-an-ai-driven-e-commerce-platform",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "AI/ML Engineer for an AI-Driven E-Commerce Platform",
+      "url": "https://weworkremotely.com/remote-jobs/toptal-ai-ml-engineer-for-an-ai-driven-e-commerce-platform",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

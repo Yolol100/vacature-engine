@@ -1,51 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 59,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e/application",
-      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
-      "content_hash": "f393bf32b1660d2d80ca6c8bb8ed14658c9c1404c0ec5f7f0b2bffb2ffc8369e",
-      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
-      "employer": "ElevenLabs",
-      "employment_type": "FullTime",
-      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
-      "location": "UAE",
-      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
-      "origin_run_id": "ingestion-1789674380",
-      "published_at": "2026-08-12T17:01:03.666+00:00",
-      "remote": true,
-      "review_key": "review:07a81b40e218f4d3e0713c2f744e73fccb5ae8c6b0e0cab1472ac3986f93ba78",
-      "salary": {
-        "components": [],
-        "summary": null
-      },
-      "source_id": "ashby",
-      "source_instance": "ashby:elevenlabs",
-      "source_job_id": "elevenlabs:ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
-      "source_metadata": {
-        "address": {
-          "postalAddress": {
-            "addressCountry": "United Arab Emirates",
-            "addressLocality": "Dubai",
-            "addressRegion": "Dubai"
-          }
-        },
-        "department": "Operations",
-        "is_listed": true,
-        "provider": "ashby",
-        "secondary_locations": [],
-        "team": "Legal"
-      },
-      "source_type": "ats",
-      "source_url": "ashby://elevenlabs",
-      "title": "Public Sector Partnerships Lead - Middle East",
-      "url": "https://jobs.ashbyhq.com/elevenlabs/ba9014c9-0d42-4b19-a984-3ab2a0e45c1e",
-      "workplace_type": "Remote"
-    },
     {
       "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8755524002",
       "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8755524002",
@@ -1229,10 +1186,77 @@
       "url": "https://himalayas.app/companies/asialocalize/jobs/content-manager-digital-marketing-expert-5852869344",
       "valid_through": "1794533937",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb",
+      "content_hash": "b689a4a75dd920cde17be57344aa99828ec27f6e5d15bc7e6a8996746f9f38ac",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "Poland",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-27T20:21:07.157+00:00",
+      "remote": true,
+      "review_key": "review:1e4869bff1eaf18b93c34c9f3bd64fa6283ff4eb416d76e358d93f273ca8f025",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:aa387988-9983-46a0-a265-d678af9939cb",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "Poland"
+          }
+        },
+        "department": "Operations",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "European Union"
+              }
+            },
+            "location": "Europe"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "United Kingdom",
+                "addressLocality": "London"
+              }
+            },
+            "location": "London"
+          },
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "Netherlands"
+              }
+            },
+            "location": "Amsterdam"
+          }
+        ],
+        "team": "Finance"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Executive Assistant - Finance",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb",
+      "workplace_type": "Remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

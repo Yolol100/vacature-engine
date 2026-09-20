@@ -1,53 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 73,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
-      "content_hash": "07d6795e99ce14ea4c5b89454561f4562c0593f0e0d22e865bba9ebd11bd45ef",
-      "description_excerpt": "Location: South Africa â Remote Hours: 14:00â23:00 SAST, MondayâFriday, aligned with U.S. Eastern business hours Employment: Permanent, Full-Time Role Purpose Execute and maintain programmatic campaigns accurately and efficiently within MediaPath's established strategy, workflows, and QA standards. This is a hands-on campaign execution role focused on campaign builds, trafficking, pacing, optimisation, troubleshooting, and maintenance. Key Responsibilities Build campaigns, line items, targeting structures, and campaign components within assigned DSPs. Traffic creative assets and third-party tags. Complete pre-launch campaign QA. Monitor campaign pacing and delivery on a daily basis. Identify and escalate pacing or delivery risks before they become client-visible. Execute routine optimisations and approved campaign changes within defined guidelines. Troubleshoot campaign, creative, targeting, and activation issues. Escalate complex technical issues to the Senior Programmatic Operations Lead. Maintain accurate campaign documentation, naming conventions, and change histories. Provide screenshots, compliance documentation, and campaign data when required. Support campaign closeou",
-      "employer": "VirtuHire",
-      "first_seen_at": "2026-09-17T19:47:31.606076+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-17T19:47:31.606076+00:00",
-      "listing_language": "en",
-      "location": "Remote",
-      "origin_completed_at": "2026-09-17T19:47:37.122709+00:00",
-      "origin_run_id": "ingestion-1789674457",
-      "published_at": "2026-08-27T16:00:04+00:00",
-      "remote": true,
-      "review_key": "review:2bcc8807c5d1b62d54b6b012f5234a150f35738a6cad47e93f859d533ac3052d",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137169",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787846404,
-        "provider": "remoteok",
-        "provider_job_id": "1137169",
-        "slug": "remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
-        "tags": [
-          "amazon",
-          "technical",
-          "customer support",
-          "quality assurance",
-          "video",
-          "exec",
-          "senior",
-          "ops",
-          "excel",
-          "full time"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Programmatic Campaign Operations Specialist Trader",
-      "url": "https://remoteOK.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-lead-product-designer-highlevel-1136841",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-lead-product-designer-highlevel-1136841",
@@ -1201,10 +1156,54 @@
       "title": "Patient Outreach Specialist",
       "url": "https://remoteOK.com/remote-jobs/remote-patient-outreach-specialist-grapefruit-health-1135789",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-education-designer-ux-ui-and-ai-interaction-design-foundation-1137138",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-education-designer-ux-ui-and-ai-interaction-design-foundation-1137138",
+      "content_hash": "a4ebc3fb1c41ac456099617ded7e53a707f4acdd6e7ed8d544f28f0f7a6903c5",
+      "description_excerpt": "You're a designer who has facilitated workshops or built online courses, and you noticed that Â you loved it and that you were unusually good at it . You know how to make complex skills easy to learn, and how to guide people in applying their new skills. As one of our Education Designers, you'll structure and create the courses and Master Classes you lead. You've taught design or AI to hundreds of people. Now you get the opportunity toÂ teach it to hundreds of thousandsÂ of learners around the world. You see the fear around AI, and you understand where it comes from. But you also see the opportunities, and you want to show people how to work with AI in a way that benefits their lives, their users, and the world. The industry leaders whose expertise you'll be turning into courses and Master Classes includeÂ Don Norman and Vitaly Friedman , as well as Design Leads atÂ Netflix, LinkedIn, Meta, and Adobe . Don Norman also chairs our executive board. Youâll be involved in all stages of course and Master Class creation, including key decisions, so there are incredible opportunities for you toÂ take initiative, make meaningful contributions, and grow . Forget political struggles or long",
+      "employer": "Interaction Design Foundation",
+      "first_seen_at": "2026-09-17T19:47:31.606076+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:47:31.606076+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:47:37.122709+00:00",
+      "origin_run_id": "ingestion-1789674457",
+      "published_at": "2026-08-26T12:41:23+00:00",
+      "remote": true,
+      "review_key": "review:6b577e73c0a3d324b051bf8391d362dcfe5fd20d064beb5f2002e86c7ea66d9a",
+      "salary": {
+        "currency": null,
+        "max": 750000,
+        "min": 10000,
+        "period": null
+      },
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137138",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787748083,
+        "provider": "remoteok",
+        "provider_job_id": "1137138",
+        "slug": "remote-education-designer-ux-ui-and-ai-interaction-design-foundation-1137138",
+        "tags": [
+          "design",
+          "content writing",
+          "education"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Education Designer UX UI and AI",
+      "url": "https://remoteOK.com/remote-jobs/remote-education-designer-ux-ui-and-ai-interaction-design-foundation-1137138",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

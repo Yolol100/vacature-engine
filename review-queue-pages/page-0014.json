@@ -1,45 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 14,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
-      "content_hash": "334a32e7d8c099502c77b9fb7a961142fea0d79cda9b2075fb524e4d59e0ae79",
-      "description_excerpt": "Remote - About AIWIAIWI is an independent non-profit that exists to ensure that insiders at frontier AI companies can speak up safely and effectively when they see something that should be addressed. We do this by integrating the ecosystem of lawyers, AI researchers, AI advoc... Please mention the word **EARNESTNESS** and tag RNTIuMTYxLjQ1LjIzMw== when applying to show you read the job post completely (#RNTIuMTYxLjQ1LjIzMw==). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
-      "employer": "The AI Whistleblower Initiative",
-      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
-      "listing_language": "en",
-      "location": "Remote",
-      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
-      "origin_run_id": "ingestion-1788639387",
-      "published_at": "2026-08-27T09:00:02+00:00",
-      "remote": true,
-      "review_key": "review:ba687a1880981ceb6d7134252f94fa359e0f0561a8b2c1e6206ff4bbd0e18083",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137162",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787821202,
-        "provider": "remoteok",
-        "provider_job_id": "1137162",
-        "slug": "remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
-        "tags": [
-          "golang",
-          "engineer"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Principal Engineer",
-      "url": "https://remoteOK.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-people-director-sisal-hub-albania-1137175",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-people-director-sisal-hub-albania-1137175",
@@ -978,10 +941,57 @@
       "title": "Regional Sales Manager",
       "url": "https://remoteOK.com/remote-jobs/remote-regional-sales-manager-orderyoyo-1137279",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-assistant-manager-storage-king-group-1137161",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-assistant-manager-storage-king-group-1137161",
+      "content_hash": "09e0cd3a19dbd9bfe8be1f2536e2bec2ed29eca5e47215dd9c49a76013cb406c",
+      "description_excerpt": "About Us Storage King is a fast-growing business offering stable and rewarding employment. We have a fun and friendly culture across our store network which currently includes over 200 stores across Australia and New Zealand. Storage King is a market leader in self-storage and with continued growth plans it is an exciting time to become involved with our brand. Certified Great Place to Work â 2025/2026 in both Australia and New Zealand The Role We currently have a full-time position available for an Assistant Store Manager to join our teams based in Rozelle & Balmain. Assistant Store Managers are the key support management role in store and work hand in hand with the leadership to deliver exceptional store results and customer service. Working Hours Tuesday to Saturday Total 38 hours per week Occasional Sunday shifts may be offered. We Are Open Monday to Friday 8am - 5pm Saturday 8am - 4pm Sunday 10am - 4pm Some flexibility will be required for this role. About You To be successful in this role, you will bring: Ideal if you have a retail, sales or hospitality background Willingness to learn new skills associated with a sales and customer service role - training is provided Self-m",
+      "employer": "Storage King Group",
+      "first_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-05T20:16:22.283158+00:00",
+      "listing_language": "en",
+      "location": "Rozelle,",
+      "origin_completed_at": "2026-09-05T20:16:27.352387+00:00",
+      "origin_run_id": "ingestion-1788639387",
+      "published_at": "2026-08-27T02:27:09+00:00",
+      "remote": true,
+      "review_key": "review:eafa98f90150ad967ed23c1727ed316a898c16894682ce1aed77ec6df4e101a3",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137161",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787797629,
+        "provider": "remoteok",
+        "provider_job_id": "1137161",
+        "slug": "remote-assistant-manager-storage-king-group-1137161",
+        "tags": [
+          "exec",
+          "virtual assistant",
+          "education",
+          "customer support",
+          "marketing",
+          "travel",
+          "finance",
+          "legal",
+          "sales",
+          "medical",
+          "recruiter",
+          "full time"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Assistant Manager",
+      "url": "https://remoteOK.com/remote-jobs/remote-assistant-manager-storage-king-group-1137161",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

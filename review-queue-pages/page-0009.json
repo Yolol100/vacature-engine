@@ -1,52 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 9,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8623751002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8623751002",
-      "content_hash": "b370126c517bf365221ded88f8581c1267e2b99db2c309260966efc847f4e992",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Bangalore, India",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:ea5f0e73c69d54f9b2fe43735a119581282ccd795623997a571c2fa994ea4afc",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8623751002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4115239002,
-            "name": "Data Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6443992002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4112140002,
-            "location": null,
-            "name": "India",
-            "parent_id": 4019590002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8623751002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Intermediate Fullstack Engineer - Data Products",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8623751002"
-    },
     {
       "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8037598",
       "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8037598",
@@ -1106,10 +1062,56 @@
       "title": "Staff Software Engineer: AI Inference Data Plane",
       "updated_at": "2026-09-01T16:32:23-04:00",
       "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7714484"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8746461002",
+      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8746461002",
+      "content_hash": "ea272d26f3f6fa0b51e023ce3ebcf0a877209541316baa0031fe02ceba90e4cd",
+      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
+      "employer": "GitLab",
+      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
+      "location": "Remote, United States",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:f552303fbc2c400f4fcc219c5cf7b4ef733d481bd6904f1374b5bd5786609ec8",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:gitlab",
+      "source_job_id": "gitlab:8746461002",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 4052737002,
+            "name": "Consulting Delivery",
+            "parent_id": 4011049002
+          }
+        ],
+        "internal_job_id": 6497900002,
+        "offices": [
+          {
+            "child_ids": [
+              4040902002
+            ],
+            "id": 4040904002,
+            "location": null,
+            "name": "United States of America",
+            "parent_id": 4019551002
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8746461002
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://gitlab",
+      "title": "Senior Professional Services Engineer- PubSec - DC Metro",
+      "updated_at": "2026-09-02T15:02:43-04:00",
+      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8746461002"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

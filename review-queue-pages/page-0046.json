@@ -1,46 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 46,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
-      "content_hash": "419fb9d79a5f6f5502bccc0a07452b4028e98bf72efa5aa5e2c2a5aea257a47c",
-      "description_excerpt": "Expression of Interest Canât see a role thatâs right for you? Weâre always interested in hearing from talented people who would like to join our team. Click â Apply Now â to Submit an expression of interest and attach your CV to tell us about your experience, skills and the type of work youâre looking for. While we may not have a suitable vacancy available right now, weâll keep your details on file and contact you if a relevant opportunity arises. Please note that submitting an expression of interest does not guarantee employment or a response. We encourage you to continue checking our current vacancies and apply directly for any roles that interest you. Please mention the word **INTERESTS** and tag RMTA0LjIwOS4xMC4yMjQ= when applying to show you read the job post completely (#RMTA0LjIwOS4xMC4yMjQ=). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
-      "employer": "C2 Group",
-      "first_seen_at": "2026-09-06T15:11:37.717025+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T15:11:37.717025+00:00",
-      "listing_language": "en",
-      "location": "Greater Sydney Area,",
-      "origin_completed_at": "2026-09-06T15:11:44.237732+00:00",
-      "origin_run_id": "ingestion-1788707504",
-      "published_at": "2026-09-01T05:48:16+00:00",
-      "remote": true,
-      "review_key": "review:59a26c4c35de5932bf8b77351a6970aa917be1262b2e4a8d8e5e7080d3913174",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137251",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788241696,
-        "provider": "remoteok",
-        "provider_job_id": "1137251",
-        "slug": "remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
-        "tags": [
-          "full time",
-          "infosec",
-          "education"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Expression of Interest Canât see a role thatâs right for you",
-      "url": "https://remoteOK.com/remote-jobs/remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-receiver-petes-frootique-1137192",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-receiver-petes-frootique-1137192",
@@ -1055,10 +1017,53 @@
       "title": "Vehicle Technician MOT Tester",
       "url": "https://remoteOK.com/remote-jobs/remote-vehicle-technician-mot-tester-halfords-1137258",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "content_hash": "d5aef4788f2c02ff20d105000708f2b9b994076c65521a93f38b8605975edd87",
+      "description_excerpt": "The MRO Buyer manages procurement activities across various departments, ensuring optimal cost-effectiveness, timely delivery, and compliance with quality standards and procurement policies. This role requires effective collaboration with cross-functional teams, internal stakeholders, customers, and external suppliers, as well as a proactive approach to continuous improvement and cost savings. Primary Responsibilities: Procurement Planning Collaborate with cross-functional teams, including Engineering and Logistics, to understand procurement requirements, specifications, inventory needs, and priorities. Ensure planning covers MRO materials and office supplies needs. Order Management Place purchase orders and ensure timely delivery of materials and services, coordinating with suppliers and internal stakeholders to resolve any issues, delays, or supply risks. Supplier Management Monitor and manage supplier performance, including delivery performance, quality and responsiveness, and compliance with contractual obligations. Conduct regular supplier reviews and evaluations. Seek opportunities for supplier development, improved commercial terms, and long-term supplier relationships. Reco",
+      "employer": "U.P.PRO",
+      "first_seen_at": "2026-09-06T15:11:37.717025+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T15:11:37.717025+00:00",
+      "listing_language": "en",
+      "location": "Visakhapatnam Rural mandal,",
+      "origin_completed_at": "2026-09-06T15:11:44.237732+00:00",
+      "origin_run_id": "ingestion-1788707504",
+      "published_at": "2026-09-03T12:18:27+00:00",
+      "remote": true,
+      "review_key": "review:80844a72e65f87c47a889fe25cabe2f3aed819c306bfb876fa89d62da239ad9e",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137303",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788437907,
+        "provider": "remoteok",
+        "provider_job_id": "1137303",
+        "slug": "remote-mro-buyer-u-p-pro-1137303",
+        "tags": [
+          "customer support",
+          "dev",
+          "microsoft",
+          "exec",
+          "ops",
+          "excel",
+          "engineer",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "MRO Buyer",
+      "url": "https://remoteOK.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

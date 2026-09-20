@@ -1,52 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 30,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-manager-rewards-management-coca-cola-cambodia-beverage-company-ltd-1137227",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-manager-rewards-management-coca-cola-cambodia-beverage-company-ltd-1137227",
-      "content_hash": "aa9b62d565f6a0246fdf0608b4adf88fa97485edc274ff93a0e1418f43454bfb",
-      "description_excerpt": "We are seeking a passionate and results-driven Manager, Rewards Management to lead the delivery of compensation, benefits, HR operations, and people services that support our business strategy and employee experience. This role is responsible for managing rewards programs, HR systems, payroll governance, employee services, and process improvements while ensuring compliance with company policies and local labour regulations. The successful candidate will partner closely with business leaders and HR teams to drive operational excellence, enhance employee engagement, and deliver a high-quality people experience. Responsibilities Manage the design and implementation of compensation, benefits, and total rewards programs aligned with company strategy. Review salary structures, market benchmarking, incentive programs, and annual reward processes to maintain internal equity and market competitiveness. Lead HR operations, including HRIS, payroll governance, employee records, reporting, and HR service delivery. Ensure all HR policies, procedures, and employee services comply with labour law and company standards. Analyze HR data and metrics to provide business insights and recommend continuo",
-      "employer": "Coca-Cola Cambodia Beverage Company Ltd",
-      "first_seen_at": "2026-09-06T00:50:50.086713+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T00:50:50.086713+00:00",
-      "listing_language": "en",
-      "location": "Phnom Penh,",
-      "origin_completed_at": "2026-09-06T00:50:50.585524+00:00",
-      "origin_run_id": "ingestion-1788655850",
-      "published_at": "2026-08-31T07:32:20+00:00",
-      "remote": true,
-      "review_key": "review:8aa4d9387c6da2ca0d4f6e2e5f28060d93c817219d4847e7eba6c4d9567ad1c0",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137227",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788161540,
-        "provider": "remoteok",
-        "provider_job_id": "1137227",
-        "slug": "remote-manager-rewards-management-coca-cola-cambodia-beverage-company-ltd-1137227",
-        "tags": [
-          "exec",
-          "design",
-          "hr",
-          "infosec",
-          "customer support",
-          "payroll",
-          "finance",
-          "ops",
-          "digital nomad"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Manager Rewards Management",
-      "url": "https://remoteOK.com/remote-jobs/remote-manager-rewards-management-coca-cola-cambodia-beverage-company-ltd-1137227",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-junior-crypto-analyst-trader-empire-assets-1137307",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-junior-crypto-analyst-trader-empire-assets-1137307",
@@ -1075,10 +1031,55 @@
       "title": "Test",
       "url": "https://remoteOK.com/remote-jobs/remote-test-larsen-amp-toubro-1137178",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
+      "content_hash": "d3d2d45381d4ad821ed7118c4e15707181d0527e19efb7d27dae2a8548a96ba4",
+      "description_excerpt": "Radisson Hotel Group is one of the world's largest hotel groups with ten distinctive hotel brands, and more than 1,500 hotels in operation and under development in 95+ countries. The Groupâs overarching brand promise is Every Moment Matters with a signature Yes I Can! service ethos. People are at the core of our business success and future. Our people are true Moment Makers and together we bring the culture, spirit, environment and opportunities that empower you to be your best, every day, everywhere, every time. Together, we make Every Moment Matter. Job Description Ambitious, thirsty for results, love interacting with people? We are looking for a natural brand promoter just like you! Our people are at the core of our success. Your role guarantees variety and excitement every day. At RHG, we cherish your entrepreneurial spirit, collaborative nature. We foster an inclusive and supportive culture where, together, we ensure that every moment is truly meaningful. Embrace your uniqueness as an individual in our team and explore the exciting growth opportunities we have for you and the chance to create memorable moments. We are currently seeking a Sales Manager to join our vibrant tea",
+      "employer": "Radisson Hotel Group",
+      "first_seen_at": "2026-09-06T00:50:50.086713+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T00:50:50.086713+00:00",
+      "listing_language": "en",
+      "location": "Visakhapatnam Rural mandal,",
+      "origin_completed_at": "2026-09-06T00:50:50.585524+00:00",
+      "origin_run_id": "ingestion-1788655850",
+      "published_at": "2026-08-28T12:44:40+00:00",
+      "remote": true,
+      "review_key": "review:c77afc4349f0e1748b96ae737bcd00431fd7a32594ba7369f136b94c3892dcfc",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137200",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787921080,
+        "provider": "remoteok",
+        "provider_job_id": "1137200",
+        "slug": "remote-sales-manager-radisson-hotel-group-1137200",
+        "tags": [
+          "technical",
+          "marketing",
+          "excel",
+          "sales",
+          "engineer",
+          "recruiter",
+          "full time",
+          "exec",
+          "customer support",
+          "golang"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Sales Manager",
+      "url": "https://remoteOK.com/remote-jobs/remote-sales-manager-radisson-hotel-group-1137200",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

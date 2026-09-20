@@ -1,47 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 28,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-police-officer-scottish-police-authority-1137305",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-police-officer-scottish-police-authority-1137305",
-      "content_hash": "72ce62e863ceebb2c9ab8cf66f44e8394a1d09ee382e0955fa0d24a7c2cdb30c",
-      "description_excerpt": "The skills you need to be a police officer might be the ones you already have. . Being a police officer is less about formal qualifications and all about the skills you already have, skills that get added to every day. Those skills come from the jobs you do, the community you live in, your friends, family and the expectations and values that you set yourself. The skills that we will look for during the police officer selection process and develop through our high-quality training programmes will allow you to confidently uphold the law and make a difference to the people, places, and communities of Scotland. If you are over 18 years old, physically fit, have lived in the UK for a minimum of three years at the point of application and have a manual driving licence you could already have the skills we need. Apply now and we will guide you through every stage of the process or, if you have questions, speak with one of our recruitment specialists. Being a police officer really is a job like no other. Here are just some of the benefits: Salary of Â£34,001 Â£54,597 Dynamic work environment Part of a close team Job stability High quality training Loads of job progression opportunities Exce",
-      "employer": "Scottish Police Authority",
-      "first_seen_at": "2026-09-06T00:50:50.086713+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T00:50:50.086713+00:00",
-      "listing_language": "en",
-      "location": "Kirkwall,",
-      "origin_completed_at": "2026-09-06T00:50:50.585524+00:00",
-      "origin_run_id": "ingestion-1788655850",
-      "published_at": "2026-09-03T03:36:21+00:00",
-      "remote": true,
-      "review_key": "review:02c870a008932e0ed2d11323ad80174954e42e80f9c5b8257b95e53a30e9258b",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137305",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788406581,
-        "provider": "remoteok",
-        "provider_job_id": "1137305",
-        "slug": "remote-police-officer-scottish-police-authority-1137305",
-        "tags": [
-          "education",
-          "customer support",
-          "recruiter",
-          "non tech"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Police Officer",
-      "url": "https://remoteOK.com/remote-jobs/remote-police-officer-scottish-police-authority-1137305",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-multi-skilled-maintenance-technician-sigma-1137273",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-multi-skilled-maintenance-technician-sigma-1137273",
@@ -1033,10 +994,53 @@
       "title": "Vehicle Detailer",
       "url": "https://remoteOK.com/remote-jobs/remote-vehicle-detailer-clutch-1137278",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "content_hash": "01defd26686a6bce17ca841eb3a250c2d0492773e326520d3b47beeaa551d1b0",
+      "description_excerpt": "The MRO Buyer manages procurement activities across various departments, ensuring optimal cost-effectiveness, timely delivery, and compliance with quality standards and procurement policies. This role requires effective collaboration with cross-functional teams, internal stakeholders, customers, and external suppliers, as well as a proactive approach to continuous improvement and cost savings. Primary Responsibilities: Procurement Planning Collaborate with cross-functional teams, including Engineering and Logistics, to understand procurement requirements, specifications, inventory needs, and priorities. Ensure planning covers MRO materials and office supplies needs. Order Management Place purchase orders and ensure timely delivery of materials and services, coordinating with suppliers and internal stakeholders to resolve any issues, delays, or supply risks. Supplier Management Monitor and manage supplier performance, including delivery performance, quality and responsiveness, and compliance with contractual obligations. Conduct regular supplier reviews and evaluations. Seek opportunities for supplier development, improved commercial terms, and long-term supplier relationships. Reco",
+      "employer": "U.P.PRO",
+      "first_seen_at": "2026-09-06T00:50:50.086713+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T00:50:50.086713+00:00",
+      "listing_language": "en",
+      "location": "Visakhapatnam Rural mandal,",
+      "origin_completed_at": "2026-09-06T00:50:50.585524+00:00",
+      "origin_run_id": "ingestion-1788655850",
+      "published_at": "2026-09-03T12:18:27+00:00",
+      "remote": true,
+      "review_key": "review:4199269dd45c6d70749641e8e54e049c7941162205044c5e2a8126d1b2f1db78",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137303",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788437907,
+        "provider": "remoteok",
+        "provider_job_id": "1137303",
+        "slug": "remote-mro-buyer-u-p-pro-1137303",
+        "tags": [
+          "customer support",
+          "dev",
+          "microsoft",
+          "exec",
+          "ops",
+          "excel",
+          "engineer",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "MRO Buyer",
+      "url": "https://remoteOK.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

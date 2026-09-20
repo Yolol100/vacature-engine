@@ -1,58 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 62,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-real-time-drilling-ops-centre-analyst-slb-1136857",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-real-time-drilling-ops-centre-analyst-slb-1136857",
-      "content_hash": "2e923f762a8f8dfa006f296a829f9d42964a08cbe9301562709dac2c8e03cf2b",
-      "description_excerpt": "The DrillOps Field Deployment Lead is comfortable in the rig environment and has advanced knowledge and access to the IT infrastructure at the wellsite. The DrillOps Field Deployment Lead is essentially responsible for the rig-IT infrastructure and software updates, IT equipment inventory control, data management and communication between rig site and any remote center. This person is a basic user of the data acquisition/core and services elements of the wellsite execution systems. The DrillOps Field Deployment Lead needs to understand town-based Orchestra & Prism systems. Establish and maintain data link to town and wellsite network. Manage user access / permissions. Troubleshoot of IT infrastructure, RCS and Coda systems, sensors and cabling and related problems. Manages IT equipment inventory. Re-start virtual machines. 3 years experience SLB is an equal employment opportunity employer. Qualified applicants are considered without regard to race, color, religion, sex, national origin, age, disability, or other characteristics protected by law. Please mention the word **ENRAPTURE** and tag RMTcyLjE3NC4xOTguMTYw when applying to show you read the job post completely (#RMTcyLjE3NC4x",
-      "employer": "SLB",
-      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
-      "listing_language": "en",
-      "location": "Dehradun,",
-      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
-      "origin_run_id": "ingestion-1789674380",
-      "published_at": "2026-08-12T22:34:19+00:00",
-      "remote": true,
-      "review_key": "review:43666846e526c5e4379b9caabdf069754f93bf42f2c20ed68cabe9314dd5fb19",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1136857",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1786574059,
-        "provider": "remoteok",
-        "provider_job_id": "1136857",
-        "slug": "remote-real-time-drilling-ops-centre-analyst-slb-1136857",
-        "tags": [
-          "testing",
-          "golang",
-          "non tech",
-          "technical",
-          "exec",
-          "design",
-          "digital nomad",
-          "education",
-          "supervisor",
-          "customer support",
-          "ops",
-          "senior",
-          "junior",
-          "analyst",
-          "dev"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Real Time Drilling Ops Centre Analyst",
-      "url": "https://remoteOK.com/remote-jobs/remote-real-time-drilling-ops-centre-analyst-slb-1136857",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://apply.workable.com/j/99F85C87EE/apply",
       "canonical_url": "https://apply.workable.com/j/99F85C87EE",
@@ -1395,10 +1345,63 @@
       "title": "Marketing Student Assistant",
       "url": "https://remoteOK.com/remote-jobs/remote-marketing-student-assistant-copenhagen-optimization-1137381",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager",
+      "canonical_url": "https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager",
+      "content_hash": "2e4d7f1cc7e336368dba584ac17512d24a29461da391504ea24c32a6e8f1831c",
+      "description_excerpt": "About MonetizeMore MonetizeMore is a global pioneer in ad technology, powering ad monetization for over 150,000 websites and apps globally. We combine proprietary technology with sophisticated optimization strategies to secure and maximize publisher revenue. We are a 100% remote, culture-first organization driven by four core values: Integrity, Enterprising, Kaizen (Continuous Improvement), and Collaboration . We empower our global team with absolute location autonomy and flexible global schedules. We care about the impact you deliver, not the hours you log on. About the Role The company is seeking an experienced, systems-driven Business Operations / Project Manager with a strong AdTech Background to transform informal workflows into owned, structured, and scalable operational systems. As the primary connective layer across departments, this role focuses on process kaizen, SOP governance, and end-to-end operational enablement—ensuring teams execute efficiently without reinventing processes. The Business Operations / Project Manager will manage the central project management infrastructure and partner directly with Product and executive leadership. Key responsibilities include prepa",
+      "employer": "MonetizeMore",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
+      "location": "Singapore",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "1789402462",
+      "remote": true,
+      "review_key": "review:4dd17b064d5fb61f202811b5dac033804b6639622a724c299f770506350cc7a8",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager",
+      "source_metadata": {
+        "categories": [
+          "Business-Operations-Manager",
+          "Project-Manager",
+          "Operations-Manager",
+          "Ad-Tech-Operations",
+          "Process-Improvement-Manager",
+          "Operations-Project-Manager",
+          "Project-Operations-Manager",
+          "Business-Project-Manager",
+          "IT-Operations-Project-Manager",
+          "Operations-And-Business-Development-Manager"
+        ],
+        "company_slug": "monetizemore",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Singapore"
+        ],
+        "location_restrictions": [
+          "Singapore"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager",
+        "timezone_restrictions": [
+          8
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Business Operations / Project Manager",
+      "url": "https://himalayas.app/companies/monetizemore/jobs/business-operations-project-manager",
+      "valid_through": "1794586461",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

@@ -1,52 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 72,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975074",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7975074",
-      "content_hash": "42fc11dd13739f4c42e70a67b1f77f679829a0a19fc3cce91a5b9330460848d8",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Principal Engineer, AI/ML Security who is passionate about securing AI systems and operationalizing ML-powered security at cloud scale. In this role, you will report to the VP, Deputy CISO and partner closely with Security Data Science and Security leadership teams. You will lead DigitalOcean’s engagement with the external AI security community and serve as our internal expert and escalation point for all AI-related security risk. What You’ll Do: Partner with Product Security and Engineering leadership to define how AI security controls are integrated into DigitalOcean’s customer-facing products. Partner with Security Data Science and Security Engineering to build, deploy, and ser",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-17T19:46:14.083276+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-17T19:46:14.083276+00:00",
-      "location": "Denver",
-      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
-      "origin_run_id": "ingestion-1789674380",
-      "review_key": "review:f3cb4799956d7b30b130e469d171bf850e2f6552933ac54936c1454b074ffdd7",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7975074",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 45958,
-            "name": "Security",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3461438,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213279,
-            "location": "Boston Metro",
-            "name": "Boston Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7975074
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Director, Security Products: Key Management",
-      "updated_at": "2026-09-15T00:03:51-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975074"
-    },
     {
       "apply_url": "https://weworkremotely.com/remote-jobs/performyard-vp-of-product",
       "canonical_url": "https://weworkremotely.com/remote-jobs/performyard-vp-of-product",
@@ -1277,10 +1233,55 @@
       "title": "Marketing Student Assistant",
       "url": "https://remoteOK.com/remote-jobs/remote-marketing-student-assistant-copenhagen-optimization-1137381",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
+      "content_hash": "07d6795e99ce14ea4c5b89454561f4562c0593f0e0d22e865bba9ebd11bd45ef",
+      "description_excerpt": "Location: South Africa â Remote Hours: 14:00â23:00 SAST, MondayâFriday, aligned with U.S. Eastern business hours Employment: Permanent, Full-Time Role Purpose Execute and maintain programmatic campaigns accurately and efficiently within MediaPath's established strategy, workflows, and QA standards. This is a hands-on campaign execution role focused on campaign builds, trafficking, pacing, optimisation, troubleshooting, and maintenance. Key Responsibilities Build campaigns, line items, targeting structures, and campaign components within assigned DSPs. Traffic creative assets and third-party tags. Complete pre-launch campaign QA. Monitor campaign pacing and delivery on a daily basis. Identify and escalate pacing or delivery risks before they become client-visible. Execute routine optimisations and approved campaign changes within defined guidelines. Troubleshoot campaign, creative, targeting, and activation issues. Escalate complex technical issues to the Senior Programmatic Operations Lead. Maintain accurate campaign documentation, naming conventions, and change histories. Provide screenshots, compliance documentation, and campaign data when required. Support campaign closeou",
+      "employer": "VirtuHire",
+      "first_seen_at": "2026-09-17T19:47:31.606076+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:47:31.606076+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:47:37.122709+00:00",
+      "origin_run_id": "ingestion-1789674457",
+      "published_at": "2026-08-27T16:00:04+00:00",
+      "remote": true,
+      "review_key": "review:2bcc8807c5d1b62d54b6b012f5234a150f35738a6cad47e93f859d533ac3052d",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137169",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787846404,
+        "provider": "remoteok",
+        "provider_job_id": "1137169",
+        "slug": "remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
+        "tags": [
+          "amazon",
+          "technical",
+          "customer support",
+          "quality assurance",
+          "video",
+          "exec",
+          "senior",
+          "ops",
+          "excel",
+          "full time"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Programmatic Campaign Operations Specialist Trader",
+      "url": "https://remoteOK.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

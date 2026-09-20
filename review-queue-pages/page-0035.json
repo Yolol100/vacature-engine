@@ -1,51 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 35,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-gtm-wonderful-1137225",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-gtm-wonderful-1137225",
-      "content_hash": "10f692f00c17d04e19b9d8325bfe8cfc9710775b09c9a9bcb73f75af3d9e91ce",
-      "description_excerpt": "Role Overview: Youâll lead and close high-stakes enterprise deals across the region, expand existing relationships, and create durable revenue streams with major organizations. Build and grow trusted relationships with CxOs, IT leaders, and Customer Service executives in large enterprises. Drive measurable growth within the accounts you own, turning them into long-term success stories. Expand Wonderfulâs footprint by opening new doors and landing fresh enterprise customers. Hit - and exceed - activity, pipeline, and revenue targets, setting the bar for sales excellence. Keep customer details sharp and actionable in Salesforce: use cases, purchase timelines, next steps, and forecasts. Sell on value, not features using a solution-based approach that proves real business impact for customers. Requirements: 7+ years of smashing Sales quotas in SaaS or AI-driven solutions, consistently closing large, complex accounts with multi-stakeholder cycles Exceptional communication, presentation, and negotiation skills The ability to work independently, manage a sales pipeline, and prioritize effectively Excellent English (written and spoken) plus fluency in local language A passion for artif",
-      "employer": "Wonderful",
-      "first_seen_at": "2026-09-06T05:49:16.830379+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T05:49:16.830379+00:00",
-      "listing_language": "en",
-      "location": "Bridgetown,",
-      "origin_completed_at": "2026-09-06T05:49:17.782994+00:00",
-      "origin_run_id": "ingestion-1788673757",
-      "published_at": "2026-08-30T19:57:07+00:00",
-      "remote": true,
-      "review_key": "review:bc3cfc65be8c5f72743b524df227f2f12d1ea0245d67df0a89a4b475cdb842a7",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137225",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788119827,
-        "provider": "remoteok",
-        "provider_job_id": "1137225",
-        "slug": "remote-gtm-wonderful-1137225",
-        "tags": [
-          "saas",
-          "salesforce",
-          "sys admin",
-          "technical",
-          "marketing",
-          "exec",
-          "senior",
-          "sales"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "GTM",
-      "url": "https://remoteOK.com/remote-jobs/remote-gtm-wonderful-1137225",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-meat-and-seafood-clerk-petes-frootique-1137191",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-meat-and-seafood-clerk-petes-frootique-1137191",
@@ -1024,10 +981,73 @@
       "title": "Commercial Building Estimator",
       "url": "https://remoteOK.com/remote-jobs/remote-commercial-building-estimator-complex-co-1137228",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
+      "canonical_url": "https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
+      "content_hash": "8394a2ea909467d441aaf1a302a452b7bd62bbd3ad9b255dcab1d72c1a19890d",
+      "description_excerpt": "Who We Are At Bluehost, we believe all small businesses deserve the opportunity to succeed online. Our mission is to give small businesses the confidence to think big. We're the all-in-one platform for small businesses to grow online with powerful simplicity, premium performance, smart tools and human support. The Pro Serv Tech Support Specialist (Canada) will manage various website services, including SSL installation, WordPress website launches, and troubleshooting. The ideal candidate will have a strong background in web technologies, possess excellent communication skills, and demonstrate a passion for creating seamless online experiences. What you’ll do & how you’ll make your mark. Launching WordPress Websites Email Troubleshooting SSL Installing & Troubleshooting DNS change requests Basic website troubleshooting (Critical errors, builder/theme issues, updating plugins, etc.) Who you are & what you’ll need to succeed. Excellent written and verbal skills. Detail-oriented, problem solver, and dynamic. Dedicated, organized, and team-oriented. Experienced with HTML and CSS. Basic understanding of cPanel, SSL, Domain, DNS, and Email. Experienced with WordPress and WordPress Plugins",
+      "employer": "Newfold Digital",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Canada",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788477959",
+      "remote": true,
+      "review_key": "review:22dd73ca5eb92f5c98d69c430e326c3ec91c08ab65727713d12fbe53895cae14",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
+      "source_metadata": {
+        "categories": [
+          "Technical-Support",
+          "WordPress-Support",
+          "Web-Hosting-Support",
+          "IT-Helpdesk",
+          "Website-Troubleshooting",
+          "Technical-Support-Specialist",
+          "Technical-Service-Specialist",
+          "Service-Support-Specialist",
+          "Technical-Support-Representative",
+          "Technical-Support-Technician",
+          "Technology-Support-Specialist",
+          "Technical-Services-Specialist",
+          "Technician-Support-Specialist",
+          "Service-Support-Representative",
+          "Product-Support-Technician"
+        ],
+        "company_slug": "newfold-digital",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Canada"
+        ],
+        "location_restrictions": [
+          "Canada"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
+        "timezone_restrictions": [
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3.5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Pro Serv Tech Support Specialist",
+      "url": "https://himalayas.app/companies/newfold-digital/jobs/pro-serv-tech-support-specialist",
+      "valid_through": "1793661959",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

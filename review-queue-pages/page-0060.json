@@ -1,75 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 60,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb/application",
-      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb",
-      "content_hash": "b689a4a75dd920cde17be57344aa99828ec27f6e5d15bc7e6a8996746f9f38ac",
-      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
-      "employer": "ElevenLabs",
-      "employment_type": "FullTime",
-      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
-      "location": "Poland",
-      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
-      "origin_run_id": "ingestion-1789674380",
-      "published_at": "2026-08-27T20:21:07.157+00:00",
-      "remote": true,
-      "review_key": "review:1e4869bff1eaf18b93c34c9f3bd64fa6283ff4eb416d76e358d93f273ca8f025",
-      "salary": {
-        "components": [],
-        "summary": null
-      },
-      "source_id": "ashby",
-      "source_instance": "ashby:elevenlabs",
-      "source_job_id": "elevenlabs:aa387988-9983-46a0-a265-d678af9939cb",
-      "source_metadata": {
-        "address": {
-          "postalAddress": {
-            "addressCountry": "Poland"
-          }
-        },
-        "department": "Operations",
-        "is_listed": true,
-        "provider": "ashby",
-        "secondary_locations": [
-          {
-            "address": {
-              "postalAddress": {
-                "addressCountry": "European Union"
-              }
-            },
-            "location": "Europe"
-          },
-          {
-            "address": {
-              "postalAddress": {
-                "addressCountry": "United Kingdom",
-                "addressLocality": "London"
-              }
-            },
-            "location": "London"
-          },
-          {
-            "address": {
-              "postalAddress": {
-                "addressCountry": "Netherlands"
-              }
-            },
-            "location": "Amsterdam"
-          }
-        ],
-        "team": "Finance"
-      },
-      "source_type": "ats",
-      "source_url": "ashby://elevenlabs",
-      "title": "Executive Assistant - Finance",
-      "url": "https://jobs.ashbyhq.com/elevenlabs/aa387988-9983-46a0-a265-d678af9939cb",
-      "workplace_type": "Remote"
-    },
     {
       "apply_url": "https://himalayas.app/companies/bionews-inc/jobs/myasthenia-gravis-news-columnist-7500512201",
       "canonical_url": "https://himalayas.app/companies/bionews-inc/jobs/myasthenia-gravis-news-columnist-7500512201",
@@ -1328,10 +1261,55 @@
       "title": "Senior Engineering Manager, Customer Runtimes",
       "updated_at": "2026-09-09T19:29:35-04:00",
       "url": "https://pantheon.io/about/careers/detail?gh_jid=8189940"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
+      "content_hash": "25e8b01ff1b918f8f94797da6fa456f5c890172770ee5646db9d1db75cf6de1e",
+      "description_excerpt": "Location: South Africa â Remote Hours: 14:00â23:00 SAST, MondayâFriday, aligned with U.S. Eastern business hours Employment: Permanent, Full-Time Role Purpose Execute and maintain programmatic campaigns accurately and efficiently within MediaPath's established strategy, workflows, and QA standards. This is a hands-on campaign execution role focused on campaign builds, trafficking, pacing, optimisation, troubleshooting, and maintenance. Key Responsibilities Build campaigns, line items, targeting structures, and campaign components within assigned DSPs. Traffic creative assets and third-party tags. Complete pre-launch campaign QA. Monitor campaign pacing and delivery on a daily basis. Identify and escalate pacing or delivery risks before they become client-visible. Execute routine optimisations and approved campaign changes within defined guidelines. Troubleshoot campaign, creative, targeting, and activation issues. Escalate complex technical issues to the Senior Programmatic Operations Lead. Maintain accurate campaign documentation, naming conventions, and change histories. Provide screenshots, compliance documentation, and campaign data when required. Support campaign closeou",
+      "employer": "VirtuHire",
+      "first_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:15.542380+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-08-27T16:00:04+00:00",
+      "remote": true,
+      "review_key": "review:32d236e1837a572a206944a1f069517dc414de7ea0ccdfd631c68e2b3e78e7ba",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137169",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787846404,
+        "provider": "remoteok",
+        "provider_job_id": "1137169",
+        "slug": "remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
+        "tags": [
+          "amazon",
+          "technical",
+          "customer support",
+          "quality assurance",
+          "video",
+          "exec",
+          "senior",
+          "ops",
+          "excel",
+          "full time"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Programmatic Campaign Operations Specialist Trader",
+      "url": "https://remoteOK.com/remote-jobs/remote-programmatic-campaign-operations-specialist-trader-virtuhire-1137169",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

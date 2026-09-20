@@ -1,84 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 67,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/18d52799-7b88-4516-9d8f-e9db312ad195/application",
-      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/18d52799-7b88-4516-9d8f-e9db312ad195",
-      "content_hash": "47c05d4be08884a47cb969bd846777bb67a0dbec2fe7fe7a9023e8f6c691db62",
-      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
-      "employer": "ElevenLabs",
-      "employment_type": "FullTime",
-      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
-      "origin_run_id": "ingestion-1789674380",
-      "published_at": "2026-08-28T18:23:48.152+00:00",
-      "remote": true,
-      "review_key": "review:9507668415e6f6833deac513e30d6e6a92cf52b89570a1bb0ea4cd9b5930e253",
-      "salary": {
-        "components": [],
-        "summary": null
-      },
-      "source_id": "ashby",
-      "source_instance": "ashby:elevenlabs",
-      "source_job_id": "elevenlabs:18d52799-7b88-4516-9d8f-e9db312ad195",
-      "source_metadata": {
-        "address": {
-          "postalAddress": {
-            "addressCountry": "United States"
-          }
-        },
-        "department": "Growth",
-        "is_listed": true,
-        "provider": "ashby",
-        "secondary_locations": [
-          {
-            "address": {
-              "postalAddress": {
-                "addressCountry": "Ireland"
-              }
-            },
-            "location": "Ireland"
-          },
-          {
-            "address": {
-              "postalAddress": {
-                "addressCountry": "Japan"
-              }
-            },
-            "location": "Japan"
-          },
-          {
-            "address": {
-              "postalAddress": {
-                "addressCountry": "Poland",
-                "addressLocality": "Warsaw",
-                "addressRegion": "Poland"
-              }
-            },
-            "location": "Poland"
-          },
-          {
-            "address": {
-              "postalAddress": {
-                "addressCountry": "United Kingdom"
-              }
-            },
-            "location": "United Kingdom"
-          }
-        ],
-        "team": "Growth Team"
-      },
-      "source_type": "ats",
-      "source_url": "ashby://elevenlabs",
-      "title": "Experiential Designer - Events",
-      "url": "https://jobs.ashbyhq.com/elevenlabs/18d52799-7b88-4516-9d8f-e9db312ad195",
-      "workplace_type": "Remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-software-engineer-go-wakacje-pl-1135634",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-software-engineer-go-wakacje-pl-1135634",
@@ -1236,10 +1160,64 @@
       "title": "Public Sector Partnerships - Europe Lead",
       "url": "https://jobs.ashbyhq.com/elevenlabs/2c9dfcd0-0aa3-466a-8a5a-2b2351afbf81",
       "workplace_type": "Remote"
+    },
+    {
+      "apply_url": "https://jobs.ashbyhq.com/elevenlabs/620d2558-77c0-4783-97fb-f51a79e6b392/application",
+      "canonical_url": "https://jobs.ashbyhq.com/elevenlabs/620d2558-77c0-4783-97fb-f51a79e6b392",
+      "content_hash": "90686b04bfe8374b03f861bd7b8956dab130251fc4e45f7ae8d333ca65172839",
+      "description_excerpt": "ABOUT ELEVENLABS ElevenLabs is an AI research and product company transforming how we interact with technology. We launched in January 2023 with the first human-like AI voice model. Today, we serve millions of users and thousands of businesses - from fast-growing startups to large enterprises like Deutsche Telekom and Meta. Our investors are some of the world's most prominent, including Andreessen Horowitz, ICONIQ Growth and Sequoia. We've raised $781M in funding and our last valuation was $11B - multiples of 11, always. We have expanded from voice into three main platforms: - ElevenAgents enables businesses to deliver seamless and intelligent customer experiences, with the integrations, testing, monitoring, and reliability necessary to deploy voice and chat agents at scale. - ElevenCreative empowers creators and marketers to generate and edit speech, music, image, and video across 70+ languages. - ElevenAPI gives developers access to our leading AI audio foundational models. Everything we do is the result of the creativity and commitment of our team - builders doing the best work of their lives. We are researchers, engineers, and operators. IOI medalists and ex-founders. If you wa",
+      "employer": "ElevenLabs",
+      "employment_type": "FullTime",
+      "first_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:13.040428+00:00",
+      "location": "San Francisco",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "published_at": "2026-09-09T19:32:30.004+00:00",
+      "remote": true,
+      "review_key": "review:a7c45c8548a59edfe2e6e9264c7b9067df2bef991663434dd201d50082cbfb1c",
+      "salary": {
+        "components": [],
+        "summary": null
+      },
+      "source_id": "ashby",
+      "source_instance": "ashby:elevenlabs",
+      "source_job_id": "elevenlabs:620d2558-77c0-4783-97fb-f51a79e6b392",
+      "source_metadata": {
+        "address": {
+          "postalAddress": {
+            "addressCountry": "United States",
+            "addressLocality": "San Francisco",
+            "addressRegion": "California"
+          }
+        },
+        "department": "Revenue",
+        "is_listed": true,
+        "provider": "ashby",
+        "secondary_locations": [
+          {
+            "address": {
+              "postalAddress": {
+                "addressCountry": "United States",
+                "addressLocality": "San Francisco",
+                "addressRegion": "California"
+              }
+            },
+            "location": "San Francisco"
+          }
+        ],
+        "team": "Revenue - US"
+      },
+      "source_type": "ats",
+      "source_url": "ashby://elevenlabs",
+      "title": "Executive Assistant - Revenue",
+      "url": "https://jobs.ashbyhq.com/elevenlabs/620d2558-77c0-4783-97fb-f51a79e6b392",
+      "workplace_type": "Remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

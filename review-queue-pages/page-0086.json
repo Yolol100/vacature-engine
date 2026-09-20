@@ -1,53 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 86,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-renewables-project-scheduler-transportation-partners-amp-logistics-1137194",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-renewables-project-scheduler-transportation-partners-amp-logistics-1137194",
-      "content_hash": "c8dcff51ed0d7454af27f309a19c92d47f46e5d7873366a8a4905fa2cd8aa384",
-      "description_excerpt": "Apply Description Job Summary: The BESS Project Scheduler is responsible for developing, maintaining, and analyzing detailed project schedules for Battery Energy Storage System (BESS) projects. This role plays a critical part in ensuring projects are delivered on time by providing accurate schedule forecasts, identifying risks, and supporting project teams with data-driven insights across engineering, procurement, construction, commissioning, and energization phases. This role requires a strong leader that will take ownership of driving accurate and up to date scheduling across multiple projects as well as taking initiative to drive process improvements where there is an opportunity to improve. Job Responsibilities Develop and maintain integrated project schedules for BESS projects from NTP through COD Build schedules covering engineering, procurement, manufacturing, logistics, civil, electrical, installation, commissioning, and grid interconnection Collaborate with Project Managers, Construction Managers, OEMs, and subcontractors to validate logic, durations, and sequencing Perform critical path analysis, float analysis, and schedule risk assessments Track project progress and upd",
-      "employer": "Transportation Partners &amp; Logistics",
-      "first_seen_at": "2026-09-17T19:57:37.053763+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-17T19:57:37.053763+00:00",
-      "listing_language": "en",
-      "location": "Black Bess,",
-      "origin_completed_at": "2026-09-17T19:57:42.775855+00:00",
-      "origin_run_id": "ingestion-1789675062",
-      "published_at": "2026-08-25T21:34:13+00:00",
-      "remote": true,
-      "review_key": "review:6d5c0215c02f2836bd36941a374bab5c8d4cebe3cd1e904dd565623d247683b7",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137194",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787693653,
-        "provider": "remoteok",
-        "provider_job_id": "1137194",
-        "slug": "remote-renewables-project-scheduler-transportation-partners-amp-logistics-1137194",
-        "tags": [
-          "sys admin",
-          "technical",
-          "customer support",
-          "testing",
-          "travel",
-          "microsoft",
-          "exec",
-          "excel",
-          "stats",
-          "engineer"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Renewables Project Scheduler",
-      "url": "https://remoteOK.com/remote-jobs/remote-renewables-project-scheduler-transportation-partners-amp-logistics-1137194",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-regional-flight-operations-support-manager-wing-1136054",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-regional-flight-operations-support-manager-wing-1136054",
@@ -1241,10 +1196,53 @@
       "title": "Business Development Manager",
       "url": "https://remoteOK.com/remote-jobs/remote-business-development-manager-libertex-group-1137373",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-course-writer-and-editor-ux-ui-and-ai-interaction-design-foundation-1137136",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-course-writer-and-editor-ux-ui-and-ai-interaction-design-foundation-1137136",
+      "content_hash": "e04423df2b9f614a4d109326b734bdbcfa62f5108e6c0130e71dd38b128d0a4d",
+      "description_excerpt": "You're the one people trust with the words, whether you're writing them or fixing them. You noticed thatÂ you loved it, and that you were unusually good at it . You turn rough, complex ideas into words people understand. Now you get the opportunity to work with some of the most respected designers alive, and help share their knowledge with hundreds of thousands of learners around the world. A great hook pulls your readers in, makes them see themselves in the topic, and shows them why it matters in their lives. That's your craft. Abstract ideas don't stay abstract for long, because you find the example that makes an idea concrete. You're structured and systematic, yet creative, and you'll rewrite a sentence six times until it says exactly what you mean. You see the fear around AI, and you understand where it comes from. But you also see the opportunities, and you want to show people how to work with AI in a way that benefits their lives, their users, and the world. If you're also curious about how great design and the responsible use of AI improve people's lives, read on. As one of our Course Writers and Editors, you'll shape how our courses and Master Classes read and flow. The ind",
+      "employer": "Interaction Design Foundation",
+      "first_seen_at": "2026-09-17T19:57:37.053763+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:57:37.053763+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:57:42.775855+00:00",
+      "origin_run_id": "ingestion-1789675062",
+      "published_at": "2026-08-26T12:33:33+00:00",
+      "remote": true,
+      "review_key": "review:b32d948ffb92a5f595c82d9023e9ecd9c447ccb3f22c61a3a510e38f9ba5ef0c",
+      "salary": {
+        "currency": null,
+        "max": 750000,
+        "min": 10000,
+        "period": null
+      },
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137136",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787747613,
+        "provider": "remoteok",
+        "provider_job_id": "1137136",
+        "slug": "remote-course-writer-and-editor-ux-ui-and-ai-interaction-design-foundation-1137136",
+        "tags": [
+          "design",
+          "content writing"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Course Writer and Editor UX UI and AI",
+      "url": "https://remoteOK.com/remote-jobs/remote-course-writer-and-editor-ux-ui-and-ai-interaction-design-foundation-1137136",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

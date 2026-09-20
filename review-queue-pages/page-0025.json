@@ -1,49 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 25,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-payroll-clerk-pvh-group-inc-1137264",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-payroll-clerk-pvh-group-inc-1137264",
-      "content_hash": "c57fc0ffa30c5d2a1bbbc072a2a82314136795a5e4dbd96e5ec7cc5f537a324a",
-      "description_excerpt": "Are you a detail-driven payroll professional looking for your next opportunity? We're looking for a Payroll Clerk to join our team and support weekly and monthly payroll processing across a dynamic group of companies. This is a great chance to grow your payroll career within a fast-paced, professional environment. Experience with Paypak payroll software is considered a strong asset. Key Requirements : Prior experience processing payroll, ideally within a multi-company environment Ability to process weekly and monthly payrolls accurately and on time Strong attention to detail and good organizational skills Familiarity with statutory deductions and payroll compliance Discretion in handling confidential and sensitive information Asset Experience working with Paypak payroll software If you're reliable, organized, and ready to grow your career with a professional team, we'd love to hear from you! Apply now! All suitably qualified applicants interested in this opportunity, please email your cover letter along with a detailed curriculum vitae to https://pvhgroupinc.bamboohr.com/careers/163?source=aWQ9MjI%3D Applications should reach the company no later than September 15, 2026 . Please me",
-      "employer": "PVH Group Inc",
-      "first_seen_at": "2026-09-05T22:49:14.623977+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-05T22:49:14.623977+00:00",
-      "listing_language": "en",
-      "location": "Bridgetown,",
-      "origin_completed_at": "2026-09-05T22:49:15.070983+00:00",
-      "origin_run_id": "ingestion-1788648555",
-      "published_at": "2026-09-01T20:40:45+00:00",
-      "remote": true,
-      "review_key": "review:48014092a6a692c0f8cd416d63539a76d83d77331243b6b61570aec03db59f49",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137264",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788295245,
-        "provider": "remoteok",
-        "provider_job_id": "1137264",
-        "slug": "remote-payroll-clerk-pvh-group-inc-1137264",
-        "tags": [
-          "payroll",
-          "vfx",
-          "customer support",
-          "dev",
-          "non tech",
-          "digital nomad"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Payroll Clerk",
-      "url": "https://remoteOK.com/remote-jobs/remote-payroll-clerk-pvh-group-inc-1137264",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-store-manager-boss-store-plaza-las-americas-hugo-boss-1137301",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-store-manager-boss-store-plaza-las-americas-hugo-boss-1137301",
@@ -1041,10 +1000,53 @@
       "title": "Amazon Specialist",
       "url": "https://remoteOK.com/remote-jobs/remote-amazon-specialist-volar-fashion-1137268",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-employee-hartmann-group-international-1137232",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-employee-hartmann-group-international-1137232",
+      "content_hash": "508f2a7e0c7dcfccbb0b2fe511fcfcc231fed685cbe4a4012b9b0fb617d6a6a2",
+      "description_excerpt": "404 This page doesnât exist. Beware, our IT man might be in a bad mood! You better take a look here. Please mention the word **DUMBFOUNDING** and tag RMTcyLjE3Mi4yMzcuMjEx when applying to show you read the job post completely (#RMTcyLjE3Mi4yMzcuMjEx). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "HARTMANN GROUP International",
+      "first_seen_at": "2026-09-05T22:49:14.623977+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-05T22:49:14.623977+00:00",
+      "listing_language": "en",
+      "location": "Warangal Rural,",
+      "origin_completed_at": "2026-09-05T22:49:15.070983+00:00",
+      "origin_run_id": "ingestion-1788648555",
+      "published_at": "2026-08-31T08:52:01+00:00",
+      "remote": true,
+      "review_key": "review:80d96440e4cb87b8519fd126e95189a1ddb060ca323b54f92aeb87309d459a20",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137232",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788166321,
+        "provider": "remoteok",
+        "provider_job_id": "1137232",
+        "slug": "remote-employee-hartmann-group-international-1137232",
+        "tags": [
+          "education",
+          "exec",
+          "ops",
+          "engineer",
+          "amazon",
+          "web dev",
+          "cloud",
+          "aws"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Employee",
+      "url": "https://remoteOK.com/remote-jobs/remote-employee-hartmann-group-international-1137232",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

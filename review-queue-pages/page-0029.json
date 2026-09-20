@@ -1,51 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 29,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
-      "content_hash": "01defd26686a6bce17ca841eb3a250c2d0492773e326520d3b47beeaa551d1b0",
-      "description_excerpt": "The MRO Buyer manages procurement activities across various departments, ensuring optimal cost-effectiveness, timely delivery, and compliance with quality standards and procurement policies. This role requires effective collaboration with cross-functional teams, internal stakeholders, customers, and external suppliers, as well as a proactive approach to continuous improvement and cost savings. Primary Responsibilities: Procurement Planning Collaborate with cross-functional teams, including Engineering and Logistics, to understand procurement requirements, specifications, inventory needs, and priorities. Ensure planning covers MRO materials and office supplies needs. Order Management Place purchase orders and ensure timely delivery of materials and services, coordinating with suppliers and internal stakeholders to resolve any issues, delays, or supply risks. Supplier Management Monitor and manage supplier performance, including delivery performance, quality and responsiveness, and compliance with contractual obligations. Conduct regular supplier reviews and evaluations. Seek opportunities for supplier development, improved commercial terms, and long-term supplier relationships. Reco",
-      "employer": "U.P.PRO",
-      "first_seen_at": "2026-09-06T00:50:50.086713+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T00:50:50.086713+00:00",
-      "listing_language": "en",
-      "location": "Visakhapatnam Rural mandal,",
-      "origin_completed_at": "2026-09-06T00:50:50.585524+00:00",
-      "origin_run_id": "ingestion-1788655850",
-      "published_at": "2026-09-03T12:18:27+00:00",
-      "remote": true,
-      "review_key": "review:4199269dd45c6d70749641e8e54e049c7941162205044c5e2a8126d1b2f1db78",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137303",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788437907,
-        "provider": "remoteok",
-        "provider_job_id": "1137303",
-        "slug": "remote-mro-buyer-u-p-pro-1137303",
-        "tags": [
-          "customer support",
-          "dev",
-          "microsoft",
-          "exec",
-          "ops",
-          "excel",
-          "engineer",
-          "digital nomad"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "MRO Buyer",
-      "url": "https://remoteOK.com/remote-jobs/remote-mro-buyer-u-p-pro-1137303",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-store-manager-hola-moda-1137206",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-store-manager-hola-moda-1137206",
@@ -1044,10 +1001,54 @@
       "title": "AI Engineer Data APIs",
       "url": "https://remoteOK.com/remote-jobs/remote-ai-engineer-data-apis-benzinga-1137224",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-manager-rewards-management-coca-cola-cambodia-beverage-company-ltd-1137227",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-manager-rewards-management-coca-cola-cambodia-beverage-company-ltd-1137227",
+      "content_hash": "aa9b62d565f6a0246fdf0608b4adf88fa97485edc274ff93a0e1418f43454bfb",
+      "description_excerpt": "We are seeking a passionate and results-driven Manager, Rewards Management to lead the delivery of compensation, benefits, HR operations, and people services that support our business strategy and employee experience. This role is responsible for managing rewards programs, HR systems, payroll governance, employee services, and process improvements while ensuring compliance with company policies and local labour regulations. The successful candidate will partner closely with business leaders and HR teams to drive operational excellence, enhance employee engagement, and deliver a high-quality people experience. Responsibilities Manage the design and implementation of compensation, benefits, and total rewards programs aligned with company strategy. Review salary structures, market benchmarking, incentive programs, and annual reward processes to maintain internal equity and market competitiveness. Lead HR operations, including HRIS, payroll governance, employee records, reporting, and HR service delivery. Ensure all HR policies, procedures, and employee services comply with labour law and company standards. Analyze HR data and metrics to provide business insights and recommend continuo",
+      "employer": "Coca-Cola Cambodia Beverage Company Ltd",
+      "first_seen_at": "2026-09-06T00:50:50.086713+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T00:50:50.086713+00:00",
+      "listing_language": "en",
+      "location": "Phnom Penh,",
+      "origin_completed_at": "2026-09-06T00:50:50.585524+00:00",
+      "origin_run_id": "ingestion-1788655850",
+      "published_at": "2026-08-31T07:32:20+00:00",
+      "remote": true,
+      "review_key": "review:8aa4d9387c6da2ca0d4f6e2e5f28060d93c817219d4847e7eba6c4d9567ad1c0",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137227",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788161540,
+        "provider": "remoteok",
+        "provider_job_id": "1137227",
+        "slug": "remote-manager-rewards-management-coca-cola-cambodia-beverage-company-ltd-1137227",
+        "tags": [
+          "exec",
+          "design",
+          "hr",
+          "infosec",
+          "customer support",
+          "payroll",
+          "finance",
+          "ops",
+          "digital nomad"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Manager Rewards Management",
+      "url": "https://remoteOK.com/remote-jobs/remote-manager-rewards-management-coca-cola-cambodia-beverage-company-ltd-1137227",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

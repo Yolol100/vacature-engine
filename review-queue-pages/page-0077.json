@@ -1,53 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 77,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-ai-agent-engineer-sticker-mule-1137399",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-ai-agent-engineer-sticker-mule-1137399",
-      "content_hash": "70e54fe25ebdf633aae1b61922e4c69a00a74ebb9a9df9a59c6fe7f2d078674e",
-      "description_excerpt": "Sticker Mule is building the most lucrative commerce platform on the Internet by combining software, manufacturing, and AI in one stack. We're hiring an engineer to build, run and manage a team of AI agents to help us innovate faster, improve performance, and better serve customers. Work performed Identify where agents can help and build them accordingly. Work with department leads to assess AI needs. Help connect agents to appropriate third-party and internal tools. Measure results and remove agents that don't deliver. Test new tools and models as they ship and adopt what works. Advise others on AI capabilities to help them perform. Requirements Experience building agents that run on their own and do meaningful work Strong with Grok, Claude, OpenAI, and open source Comfortable in Go, TypeScript, GraphQL, Postgres, GCP Writes clearly in English Compensation Salary: $150,000â$250,000 USD $20,000 signing bonus 4 weeks vacation + country-specific holidays Fully remote Please mention the word **HUMOUR** and tag RNTcuMTUxLjEzNy4xNDc= when applying to show you read the job post completely (#RNTcuMTUxLjEzNy4xNDc=). This is a beta feature to avoid spam applicants. Companies can search th",
-      "employer": "Sticker Mule",
-      "first_seen_at": "2026-09-17T19:48:57.346486+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-17T19:48:57.346486+00:00",
-      "listing_language": "en",
-      "location": "Remote",
-      "origin_completed_at": "2026-09-17T19:49:02.851337+00:00",
-      "origin_run_id": "ingestion-1789674542",
-      "published_at": "2026-09-16T12:44:27+00:00",
-      "remote": true,
-      "review_key": "review:1fd80c683ce60809173b90b13dd4eaf3e50e78a2972b2929a35d54db0c69f8fb",
-      "salary": {
-        "currency": null,
-        "max": 250000,
-        "min": 150000,
-        "period": null
-      },
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137399",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1789562667,
-        "provider": "remoteok",
-        "provider_job_id": "1137399",
-        "slug": "remote-ai-agent-engineer-sticker-mule-1137399",
-        "tags": [
-          "ai",
-          "golang",
-          "javascript",
-          "typescript"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "AI agent engineer",
-      "url": "https://remoteOK.com/remote-jobs/remote-ai-agent-engineer-sticker-mule-1137399",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-engineering-manager-thailand-bjak-1136670",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-engineering-manager-thailand-bjak-1136670",
@@ -1313,10 +1268,44 @@
       "title": "Course Director UX UI and AI",
       "url": "https://remoteOK.com/remote-jobs/remote-course-director-ux-ui-and-ai-interaction-design-foundation-1137139",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-functional-assessor-pfas-personal-functional-assessment-services-1136370",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-functional-assessor-pfas-personal-functional-assessment-services-1136370",
+      "content_hash": "a170086da7e9ffda7f98a8b6e946a31e64447a6add325a22c045a303481b7160",
+      "description_excerpt": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA6wAAAB+CAYAAAAgJZz9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFxEAABcRAcom8z8AAP+lSURBVHhe7L11YBVnvv9///197927vt3dbpXibiHu7u7u7u7uTkgCSQjuTine4u4WYgR3dyvv3+fznHMgpIFCC5Tde6Z9M3NmnjPznJnJzLzmY//VYVWH4xY171dWE9Du3oR2t8bel8v1m6jFbDyOm9M0q5flcr2dWs0noM20FgdtyrEoNB7Z5XYIb9JHyFRdhE7RQ3iFHhIiDJHhY4q8AGvkBtki2dMU0U56QvGuBkj1MkWWnwXSvM0Q6WiAQBtdBNnoIdLZGIkeprTcjL5jjDhnA4Tb6pB0Ee1oiFhnI4TZ6SPAUhP+FhrwNVeHq4EyXA2VEe6gh/wQe5RFOSONvh9FnyMd9RHhoI9wO12E22gjyl4XEfY6CLRQQ6i1BpI9jFEUZoP6JDc0Z/hgUooXCkLskOJpgkxfUxSFWKMu0R1Tc/wxNTcIc0qiML8sChOSvZEX6oSSOA9UJfqiMikA8xvysX7ZVOzZsxXtZ0/h9JXLuHjzGs7fuIqT186j6/o5nL1zFVcf3MHNB/dx7d4dXLl9C1duSXTp5g1cun0T1+/exZ37D3HnwUPcvv8IN+8+wA3SLZq++/AJ7pCu33uI83fuoevObbTdvo0jV+5iU+cNTN3agYyFuxE/+wCCm/fAqXgZXAsWwrNgPjS9UzDczBv6/rlwy56ByEk/IH7KFuTM24aV+05id8dl7D99E+duPcaDJz/i6dMf8eOPvQvPnlFfHuPIybPYeugY9hxrw6GOE2g5dQb7jragsXES/L3d4WJnA2dba9hZWsLBxga2lhYwM9CHgbYW9LW0oKakjHFjx0JDVRUWJsZwtrdFgJcbIoP9EB3ijzBfL4T6eiDYxw0edvRdPU0YaCjBkGShqwJbAw1Y6anB1kQb/i428HOibZloIsTLEXNmT8Xh1la0nT6DrvMXcerCJZyi8ekLl3H64pXnOvN8TPOpzRleLnRJKun0RdlnXodMkuW8XtbJcxfRRTrBOnsBnWfPo+PsObSfIZ0+R305i1baRy1dp3C0swtHaJ+xePpYVxdaTrJO4vjJUyQa",
+      "employer": "PFAS (Personal Functional Assessment Services)",
+      "first_seen_at": "2026-09-17T19:48:57.346486+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:48:57.346486+00:00",
+      "listing_language": "en",
+      "location": "Bury St Edmunds,",
+      "origin_completed_at": "2026-09-17T19:49:02.851337+00:00",
+      "origin_run_id": "ingestion-1789674542",
+      "published_at": "2026-08-03T13:21:42+00:00",
+      "remote": true,
+      "review_key": "review:5ac86da1207b6b3c5bcb2c9f89624412a52ecfaa15747cf830143a0bb4c139ac",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1136370",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785763302,
+        "provider": "remoteok",
+        "provider_job_id": "1136370",
+        "slug": "remote-functional-assessor-pfas-personal-functional-assessment-services-1136370",
+        "tags": []
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Functional Assessor",
+      "url": "https://remoteOK.com/remote-jobs/remote-functional-assessor-pfas-personal-functional-assessment-services-1136370",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

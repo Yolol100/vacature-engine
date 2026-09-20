@@ -1,48 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 39,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-receiver-petes-frootique-1137192",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-receiver-petes-frootique-1137192",
-      "content_hash": "2180dc111bd654b8d3989c6d958744fef86e51b76bf354cc3fd1959ec33473c8",
-      "description_excerpt": "Our Receiving team plays a vital role in keeping the store running smoothly. This fast-paced position is responsible for receiving, inspecting, and organizing incoming deliveries to ensure our departments are fully stocked with the freshest, highest-quality products. As a Receiver, you will accurately verify deliveries for quality and quantity, organize inventory efficiently, and rotate stock to maintain freshness and minimize waste. During slower periods, you will support the Produce Department with a variety of tasks, making you an important part of our overall store team. This position requires excellent organizational skills, attention to detail, physical stamina, and a positive, team-oriented attitude. You must be able to lift up to 50 lbs. A valid driver's license may be required, and applicants must meet company insurability requirements where applicable. Qualifications Positive, enthusiastic, and dependable attitude. Passion for food and delivering quality. Strong organizational skills and attention to detail. Commitment to providing outstanding customer service. Ability to work efficiently in a fast-paced environment. Willingness to learn new skills and take on a variety o",
-      "employer": "Pete's Frootique",
-      "first_seen_at": "2026-09-06T10:49:48.528778+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T10:49:48.528778+00:00",
-      "listing_language": "en",
-      "location": "Bedford,",
-      "origin_completed_at": "2026-09-06T10:49:48.961557+00:00",
-      "origin_run_id": "ingestion-1788691788",
-      "published_at": "2026-08-27T23:13:16+00:00",
-      "remote": true,
-      "review_key": "review:6fef35af925ab5a9f73b10e55d25311e1f25023c55b6ae4bdbc4fa6fd2f47e37",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137192",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1787872396,
-        "provider": "remoteok",
-        "provider_job_id": "1137192",
-        "slug": "remote-receiver-petes-frootique-1137192",
-        "tags": [
-          "supervisor",
-          "web dev",
-          "exec",
-          "customer support",
-          "ops"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Receiver",
-      "url": "https://remoteOK.com/remote-jobs/remote-receiver-petes-frootique-1137192",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-expression-of-interest-cant-see-a-role-thats-right-for-you-c2-group-1137251",
@@ -1037,10 +997,53 @@
       "title": "Now Hiring",
       "url": "https://remoteOK.com/remote-jobs/remote-now-hiring-greater-pell-city-chamber-of-commerce-1137165",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-shunter-stobart-1137216",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-shunter-stobart-1137216",
+      "content_hash": "acb037fd26b0973cec8707d988af1c0ca5bad5d4baf204b9eb4a3d9968ca201f",
+      "description_excerpt": "Company Description Stobart (Part of the Culina Group) is a leading ambient transport and logistics business, providing services to many of the UKs best known brands across core consumer and retail sectors. We are now recruiting for a Shunter to join our Northampton, Swan Valley on a full-time and permanent basis. Shift Pattern: Working4 on 4 off - 06:00-18:00 Salary: Â£33,509 per annum. Paid Bi-Weekly Job Description To ensure the timely trailer movements, on and off loading bays and where applicable to deliver a shunt load from one location to another, as instructed, in line with Company standards and operational requirements . Key Duties of a Shunter: This role will include inter-depot movements. To place trailers to the required areas as per instructions To use two way radios to keep in contact with areas of the operation as necessary To ensure you carry out all safety checks, as designated by the company. To ensure that you report defects, accident damage and any incidents as soon as they are found. To ensure fridges are set at the correct temperature, in line with loaded product temperature requirements. To ensure fridge diesel tanks have adequate fuel at all times. To always",
+      "employer": "Stobart",
+      "first_seen_at": "2026-09-06T10:49:48.528778+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T10:49:48.528778+00:00",
+      "listing_language": "en",
+      "location": "Northampton,",
+      "origin_completed_at": "2026-09-06T10:49:48.961557+00:00",
+      "origin_run_id": "ingestion-1788691788",
+      "published_at": "2026-08-30T03:31:02+00:00",
+      "remote": true,
+      "review_key": "review:b750e2d50480c542f55aac0659ee384b18f8dba40ff0fdf22b9dc4017c146bde",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137216",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788060662,
+        "provider": "remoteok",
+        "provider_job_id": "1137216",
+        "slug": "remote-shunter-stobart-1137216",
+        "tags": [
+          "c",
+          "scheme",
+          "ops",
+          "legal",
+          "medical",
+          "recruiter",
+          "full time",
+          "non tech"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Shunter",
+      "url": "https://remoteOK.com/remote-jobs/remote-shunter-stobart-1137216",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

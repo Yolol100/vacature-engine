@@ -1,53 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 50,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
-      "content_hash": "383b07271c5d8a5e74231a21710ad08fa815eb7998ffe62ed6c8b836749af752",
-      "description_excerpt": "Job Title: Customer Service Agent Location: Exeter Head Office - Full Time Hours: 40 hours Monday-Friday + Saturday shift rota Benefits: 22 days holiday, increasing to 27 plus bank holidays Free onsite parking Free onsite gym Company pension scheme Employee discount scheme Funded Summer and Christmas events Cycle to Work Scheme Discounted car hire rates The Role: You will be a valued member of a team, providing support through a variety of communications, accurate recording of data and various tasks that impact on our services, taking inbound and outbound calls from our branches and customers. You will be creating an exceptional experience for customers, whilst building trusting relationships and handling queries with confidence to provide all National Account customers with a dedicated vehicle hire reservation service. No prior experience is necessary, full training will be given. This is an office-based role. The candidate will be required to work 40 hours per week as well as Saturdays on a rota basis. Responsibilities: To provide outstanding customer service and exhibit excellent communications skills when interacting with clients Regularly monitor personal and team inboxes and",
-      "employer": "Thrifty Car and Van Rental",
-      "first_seen_at": "2026-09-06T16:11:41.684927+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T16:11:41.684927+00:00",
-      "listing_language": "en",
-      "location": "Exeter,",
-      "origin_completed_at": "2026-09-06T16:11:47.811646+00:00",
-      "origin_run_id": "ingestion-1788711107",
-      "published_at": "2026-08-30T03:31:01+00:00",
-      "remote": true,
-      "review_key": "review:4d611554582ee2cfad1db819d71efd1c88f205709dd5c35b59f1c62eb4d8fda6",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1137219",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1788060661,
-        "provider": "remoteok",
-        "provider_job_id": "1137219",
-        "slug": "remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
-        "tags": [
-          "testing",
-          "sys admin",
-          "education",
-          "finance",
-          "scheme",
-          "non tech",
-          "customer support",
-          "marketing",
-          "admin",
-          "ops"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Customer Service Agent",
-      "url": "https://remoteOK.com/remote-jobs/remote-customer-service-agent-thrifty-car-and-van-rental-1137219",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-courier-fedex-1137195",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-courier-fedex-1137195",
@@ -1071,10 +1026,53 @@
       "title": "Parts Person",
       "url": "https://remoteOK.com/remote-jobs/remote-parts-person-ama-group-ltd-1137250",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-vehicle-technician-mot-tester-halfords-1137258",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-vehicle-technician-mot-tester-halfords-1137258",
+      "content_hash": "f07c692462ecd6153e2d79351588c74db5e6860ae70c39acea28bccfd622d61b",
+      "description_excerpt": "On-target earnings up to Â£42,070 Comprising a base salary of Â£33,000 - Â£36,770 An uncapped monthly bonus scheme with average additional earnings of Â£5,300 per year. 5 days a week Earn extra with our refer a friend scheme T&Cs Apply Here at Halfords Garage Services, were looking for a skilled Vehicle Technician / MOT Tester to join our new Fusion Centre - upgraded with the latest facilities to lead the way in providing a first-class customer experience and a great working environment. If youre an experienced mechanic with a passion for delivering excellent customer experience and keeping vehicles safe on the road, we want to hear from you. As a Vehicle Technician / MOT Tester, youll carry out MOT tests to DVSA standards and complete a wide range of vehicle maintenance and repair work. From advanced diagnostics & repairs to routine services, youll ensure every job is done to the highest standard. Drive your career forward at Halfords, the UKs largest Automotive service, maintenance and repair business, offering excellent training & development opportunities, a wide range of benefits and an uncapped bonus scheme. Benefits Include: 5.6 weeks annual leave Up to 50% off garage bills",
+      "employer": "Halfords",
+      "first_seen_at": "2026-09-06T16:11:41.684927+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T16:11:41.684927+00:00",
+      "listing_language": "en",
+      "location": "Coventry,",
+      "origin_completed_at": "2026-09-06T16:11:47.811646+00:00",
+      "origin_run_id": "ingestion-1788711107",
+      "published_at": "2026-09-01T15:34:21+00:00",
+      "remote": true,
+      "review_key": "review:86992d23ed9f56ecf3d4fad8319e89042e12c9be988d46286dab32deea5654b2",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137258",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788276861,
+        "provider": "remoteok",
+        "provider_job_id": "1137258",
+        "slug": "remote-vehicle-technician-mot-tester-halfords-1137258",
+        "tags": [
+          "education",
+          "customer support",
+          "marketing",
+          "exec",
+          "finance",
+          "scheme",
+          "medical",
+          "testing"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Vehicle Technician MOT Tester",
+      "url": "https://remoteOK.com/remote-jobs/remote-vehicle-technician-mot-tester-halfords-1137258",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

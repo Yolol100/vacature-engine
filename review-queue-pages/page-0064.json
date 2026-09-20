@@ -1,63 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 64,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://himalayas.app/companies/bionews-inc/jobs/lennox-gastaut-syndrome-news-columnist-9027814324",
-      "canonical_url": "https://himalayas.app/companies/bionews-inc/jobs/lennox-gastaut-syndrome-news-columnist-9027814324",
-      "content_hash": "7df1f4d5f1cf0b3cd5a5409a8e9db859767273b178b9911f53b984997f70fda4",
-      "description_excerpt": "Job Opening Details: Bionews, a digital news company dedicated to creating communities for patients with rare and chronic diseases and their caregivers, is looking for members of the Lennox-Gastaut syndrome (LGS) community to join our freelance staff of caregiver columnists on Lennox-Gastaut Syndrome News . A Bionews columnist is a patient or caregiver who shares about life with a rare or chronic disease. They write personal essays in a column format to inform, inspire, empathize, and advise. Their audience includes patients, caregivers, medical teams, and researchers. Columnists also write to a general audience interested in learning how to improve society's understanding and treatment of disease/disability communities. All columns are reviewed with a critical eye by professional editors who will work with columnists to smooth rough spots and help the columnist grow as a writer. This is a contract position. Please note you MUST be a member of the Lennox-Gastaut syndrome community -- caregiver preferred -- in order to apply for this position. Responsibilities and Duties Fulfill 1x weekly deadlines as agreed upon on hire. Communicate efficiently with your managers and editors. Submi",
-      "employer": "Bionews, Inc.",
-      "employment_type": "Contractor",
-      "first_seen_at": "2026-09-17T19:46:16.134733+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-17T19:46:16.134733+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
-      "origin_run_id": "ingestion-1789674380",
-      "published_at": "1789321712",
-      "remote": true,
-      "review_key": "review:5fc71557dbaeb1756fd9366ec497b9838a814450b2eaaa9691ba5d21f6532356",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/bionews-inc/jobs/lennox-gastaut-syndrome-news-columnist-9027814324",
-      "source_metadata": {
-        "categories": [
-          "Content-Writing",
-          "Health-Writing",
-          "Caregiver-Support",
-          "Freelance-Writing",
-          "Columnist",
-          "Genetic-Disorders-Columnist"
-        ],
-        "company_slug": "bionews-inc",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/bionews-inc/jobs/lennox-gastaut-syndrome-news-columnist-9027814324",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Lennox-Gastaut Syndrome News Columnist",
-      "url": "https://himalayas.app/companies/bionews-inc/jobs/lennox-gastaut-syndrome-news-columnist-9027814324",
-      "valid_through": "1794505712",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7727252",
       "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7727252",
@@ -1451,10 +1396,62 @@
       "title": "Junior Payroll Assistant",
       "url": "https://remoteOK.com/remote-jobs/remote-junior-payroll-assistant-sleek-1137391",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://job-boards.greenhouse.io/acquia/jobs/8168828",
+      "canonical_url": "https://job-boards.greenhouse.io/acquia/jobs/8168828",
+      "content_hash": "e432c93d3d7b80ab107c85ff96bdbf201a1f34f0f47592e854416d7a4f588967",
+      "description_excerpt": "About Acquia Acquia empowers the world’s most ambitious brands to create digital customer experiences that matter. With open source Drupal at its core, the Acquia Digital Experience Platform (DXP) enables marketers, developers, and IT operations teams at thousands of global organizations to rapidly compose and deploy digital products and services that engage customers, enhance conversions, and help businesses stand out. Headquartered in Boston, MA, Acquia is a Great Place to Work-Certified™ company, is listed as one of the world’s top software companies by The Software Report, and is positioned as a market leader by the analyst community. We are Acquia. We are building for the future and we want you to be a part of it! Career Exploration at Acquia Our recruitment process is designed to empower you in making the most informed decisions. Acquia is committed to providing an inclusive, transparent, efficient, and educational interview experience that cultivates exploration into career opportunities at Acquia You will discover the opportunity to grow your career here and learn from a global team that empowers you to exceed boundaries and achieve the extraordinary. Acquia is the digital",
+      "employer": "Acquia",
+      "first_seen_at": "2026-09-17T19:46:12.504528+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-17T19:46:12.504528+00:00",
+      "location": "Remote-United-States",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "review_key": "review:74cd65886216e51f7cc1097f4d0c572d7089ff557a1c83be184867f7022b88d0",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:acquia",
+      "source_job_id": "acquia:8168828",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 5358,
+            "name": "Engineering",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3535196,
+        "offices": [
+          {
+            "child_ids": [
+              3208,
+              114569,
+              54533,
+              74690,
+              69020,
+              3212,
+              3207
+            ],
+            "id": 3216,
+            "location": null,
+            "name": "Remote-United-States",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8168828
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://acquia",
+      "title": "Staff AI Engineer (Data & Intelligence function)",
+      "updated_at": "2026-09-09T08:50:29-04:00",
+      "url": "https://job-boards.greenhouse.io/acquia/jobs/8168828"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

@@ -1,42 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 78,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-functional-assessor-pfas-personal-functional-assessment-services-1136370",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-functional-assessor-pfas-personal-functional-assessment-services-1136370",
-      "content_hash": "a170086da7e9ffda7f98a8b6e946a31e64447a6add325a22c045a303481b7160",
-      "description_excerpt": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA6wAAAB+CAYAAAAgJZz9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFxEAABcRAcom8z8AAP+lSURBVHhe7L11YBVnvv9///197927vt3dbpXibiHu7u7u7u7uTkgCSQjuTine4u4WYgR3dyvv3+fznHMgpIFCC5Tde6Z9M3NmnjPznJnJzLzmY//VYVWH4xY171dWE9Du3oR2t8bel8v1m6jFbDyOm9M0q5flcr2dWs0noM20FgdtyrEoNB7Z5XYIb9JHyFRdhE7RQ3iFHhIiDJHhY4q8AGvkBtki2dMU0U56QvGuBkj1MkWWnwXSvM0Q6WiAQBtdBNnoIdLZGIkeprTcjL5jjDhnA4Tb6pB0Ee1oiFhnI4TZ6SPAUhP+FhrwNVeHq4EyXA2VEe6gh/wQe5RFOSONvh9FnyMd9RHhoI9wO12E22gjyl4XEfY6CLRQQ6i1BpI9jFEUZoP6JDc0Z/hgUooXCkLskOJpgkxfUxSFWKMu0R1Tc/wxNTcIc0qiML8sChOSvZEX6oSSOA9UJfqiMikA8xvysX7ZVOzZsxXtZ0/h9JXLuHjzGs7fuIqT186j6/o5nL1zFVcf3MHNB/dx7d4dXLl9C1duSXTp5g1cun0T1+/exZ37D3HnwUPcvv8IN+8+wA3SLZq++/AJ7pCu33uI83fuoevObbTdvo0jV+5iU+cNTN3agYyFuxE/+wCCm/fAqXgZXAsWwrNgPjS9UzDczBv6/rlwy56ByEk/IH7KFuTM24aV+05id8dl7D99E+duPcaDJz/i6dMf8eOPvQvPnlFfHuPIybPYeugY9hxrw6GOE2g5dQb7jragsXES/L3d4WJnA2dba9hZWsLBxga2lhYwM9CHgbYW9LW0oKakjHFjx0JDVRUWJsZwtrdFgJcbIoP9EB3ijzBfL4T6eiDYxw0edvRdPU0YaCjBkGShqwJbAw1Y6anB1kQb/i428HOibZloIsTLEXNmT8Xh1la0nT6DrvMXcerCJZyi8ekLl3H64pXnOvN8TPOpzRleLnRJKun0RdlnXodMkuW8XtbJcxfRRTrBOnsBnWfPo+PsObSfIZ0+R305i1baRy1dp3C0swtHaJ+xePpYVxdaTrJO4vjJUyQa",
-      "employer": "PFAS (Personal Functional Assessment Services)",
-      "first_seen_at": "2026-09-17T19:48:57.346486+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-17T19:48:57.346486+00:00",
-      "listing_language": "en",
-      "location": "Bury St Edmunds,",
-      "origin_completed_at": "2026-09-17T19:49:02.851337+00:00",
-      "origin_run_id": "ingestion-1789674542",
-      "published_at": "2026-08-03T13:21:42+00:00",
-      "remote": true,
-      "review_key": "review:5ac86da1207b6b3c5bcb2c9f89624412a52ecfaa15747cf830143a0bb4c139ac",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1136370",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1785763302,
-        "provider": "remoteok",
-        "provider_job_id": "1136370",
-        "slug": "remote-functional-assessor-pfas-personal-functional-assessment-services-1136370",
-        "tags": []
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Functional Assessor",
-      "url": "https://remoteOK.com/remote-jobs/remote-functional-assessor-pfas-personal-functional-assessment-services-1136370",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-senior-specialist-global-qms-orca-bio-1137072",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-senior-specialist-global-qms-orca-bio-1137072",
@@ -1120,10 +1086,52 @@
       "title": "Senior Backend Engineer Build AI Agents",
       "url": "https://remoteOK.com/remote-jobs/remote-senior-backend-engineer-build-ai-agents-salesforge-1137114",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-licensed-customer-service-representative-liberty-mutual-insurance-1135788",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-licensed-customer-service-representative-liberty-mutual-insurance-1135788",
+      "content_hash": "fc32fc7d466853506bcabcb8eec4f024d28778eb363408b5e89589ffcab16843",
+      "description_excerpt": "Description Join Our Team as a Remote Experienced and Licensed Customer Service Representative! Within our Customer Response Center, the Remote Customer Service Representative provides timely, accurate and responsive information and service to policyholders and agents for a division of Personal Lines products, plans and programs. Independently solve problems relating to policies within scope and escalate others as appropriate. Identifies, analyzes, and owns customer policy needs to ensure high customer satisfaction, growth and retention of business. Training: Paid training is Monday - Friday, 9:00am - 5:30pm EST (full time). Training is a critical component to your success, and that success starts with reliable attendance. Attendance and active engagement during training is mandatory for success in this role. Shift: After onboarding and training is complete, go-forward shifts will have a start time between Shift hours 8:30 am -10:30 am EST with a weekend rotation. One weekend day (Saturday or Sunday) will be required with an alternate day off mid-week when working the weekend. Work Location: All equipment is provided. However, to work from home you must have dependable, wired inter",
+      "employer": "Liberty Mutual Insurance",
+      "first_seen_at": "2026-09-17T19:48:57.346486+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:48:57.346486+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:49:02.851337+00:00",
+      "origin_run_id": "ingestion-1789674542",
+      "published_at": "2026-08-01T16:00:06+00:00",
+      "remote": true,
+      "review_key": "review:a46001030d80e1135830e463a48d5f196b98ef77f46b053c0c73300acb7dc9e2",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1135788",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1785600006,
+        "provider": "remoteok",
+        "provider_job_id": "1135788",
+        "slug": "remote-licensed-customer-service-representative-liberty-mutual-insurance-1135788",
+        "tags": [
+          "embedded",
+          "education",
+          "customer support",
+          "marketing",
+          "c",
+          "golang",
+          "non tech"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Licensed Customer Service Representative",
+      "url": "https://remoteOK.com/remote-jobs/remote-licensed-customer-service-representative-liberty-mutual-insurance-1135788",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }

@@ -1,59 +1,8 @@
 {
-  "completed_at": "2026-09-17T20:00:33.651635+00:00",
+  "completed_at": "2026-09-20T21:21:31.803282+00:00",
   "page": 83,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://remoteOK.com/remote-jobs/remote-growth-strategist-lyric-1135681",
-      "canonical_url": "https://remoteok.com/remote-jobs/remote-growth-strategist-lyric-1135681",
-      "content_hash": "306cff278f221cfdcae5dffc248de276c7decf5dbaa39a9177bfdb9c7b0f027c",
-      "description_excerpt": "About the Company Why We Built Lyric: Supply chains are more critical and complex than ever. Every day, large enterprises navigate trillions of possible decisions that could impact the bottom line. Powerful algorithms and AI can address these problems, yet most organizations struggle to leverage supply chain AI at scale. The current SCM technologies are either rigid, limited-scope point solutions or custom solutions built in-house, which demand immense expertise and investment. That isâ¦until now. Enter Lyric : Lyric is an enterprise AI platform built specifically for supply chains, offering the best of both worlds: Out-of-the-box AI solutions for optimizing networks, allocating inventory, scheduling routes, planning fulfillment capacity, promising orders, propagating demand, building predictions, analyzing scenarios, and more, plus A platform-first approach that empowers both business and technical users with end-to-end product composability, leveraging no-code tools, their own code, or even forking our code to build and refine supply chain decision intelligence With Lyric, enterprises no longer have to choose between flexibility and speed, they get both. The Mission: Weâre bui",
-      "employer": "Lyric",
-      "first_seen_at": "2026-09-17T19:50:26.642463+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-17T19:50:26.642463+00:00",
-      "listing_language": "en",
-      "location": "Remote",
-      "origin_completed_at": "2026-09-17T19:50:32.262983+00:00",
-      "origin_run_id": "ingestion-1789674632",
-      "published_at": "2026-07-30T16:00:20+00:00",
-      "remote": true,
-      "review_key": "review:9e161803c391c780a72890519b60cb04bb4c71db7af5794c5570a49d6bb186ae",
-      "source_id": "remote-ok",
-      "source_instance": "remote-ok:global",
-      "source_job_id": "global:1135681",
-      "source_metadata": {
-        "attribution_required": true,
-        "canonical_verification_required": true,
-        "epoch": 1785427220,
-        "provider": "remoteok",
-        "provider_job_id": "1135681",
-        "slug": "remote-growth-strategist-lyric-1135681",
-        "tags": [
-          "marketing",
-          "design",
-          "embedded",
-          "technical",
-          "strategy",
-          "customer support",
-          "dev",
-          "travel",
-          "finance",
-          "exec",
-          "content writing",
-          "senior",
-          "ops",
-          "sales",
-          "golang",
-          "digital nomad"
-        ]
-      },
-      "source_type": "job_board",
-      "source_url": "https://remoteok.com/api",
-      "title": "Growth Strategist",
-      "url": "https://remoteOK.com/remote-jobs/remote-growth-strategist-lyric-1135681",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://remoteOK.com/remote-jobs/remote-student-success-coach-findtutors-1136086",
       "canonical_url": "https://remoteok.com/remote-jobs/remote-student-success-coach-findtutors-1136086",
@@ -1283,10 +1232,47 @@
       "title": "Marketing Operations Specialist",
       "url": "https://remoteOK.com/remote-jobs/remote-marketing-operations-specialist-engine-1136950",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
+      "content_hash": "c81ac1b9d18c3f48263e32a1ac75ffa9eb68cb0a8da2eebf8955210985963655",
+      "description_excerpt": "Remote - About AIWIAIWI is an independent non-profit that exists to ensure that insiders at frontier AI companies can speak up safely and effectively when they see something that should be addressed. We do this by integrating the ecosystem of lawyers, AI researchers, AI advoc... Please mention the word **EARNESTNESS** and tag RNTIuMTY1LjYyLjgx when applying to show you read the job post completely (#RNTIuMTY1LjYyLjgx). This is a beta feature to avoid spam applicants. Companies can search these words to find applicants that read this and see they're human.",
+      "employer": "The AI Whistleblower Initiative",
+      "first_seen_at": "2026-09-17T19:50:26.642463+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:50:26.642463+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-17T19:50:32.262983+00:00",
+      "origin_run_id": "ingestion-1789674632",
+      "published_at": "2026-08-27T09:00:02+00:00",
+      "remote": true,
+      "review_key": "review:e2d93520bb6786f88fafc9bd40a72d6d6b72ad4b33e7435f637539d03506c500",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137162",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1787821202,
+        "provider": "remoteok",
+        "provider_job_id": "1137162",
+        "slug": "remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
+        "tags": [
+          "golang",
+          "engineer"
+        ]
+      },
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Principal Engineer",
+      "url": "https://remoteOK.com/remote-jobs/remote-principal-engineer-the-ai-whistleblower-initiative-1137162",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2382,
-  "run_id": "ingestion-1789675233",
+  "review_queue_count": 2627,
+  "run_id": "ingestion-1789939291",
   "schema_version": 1,
-  "total_pages": 96
+  "total_pages": 106
 }
