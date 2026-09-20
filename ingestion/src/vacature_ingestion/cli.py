@@ -10,7 +10,8 @@ from pathlib import Path
 
 from .models import SourceSpec
 from .register_sync import sync_register
-from .registry_filter import filter_source_specs, read_active_source_ids
+from .registry_filter import filter_source_specs, read_active_source_ids, read_active_source_rows
+from .source_coverage import build_source_coverage
 from .runner import IngestionRunner
 
 
@@ -82,6 +83,24 @@ def cmd_filter_specs(args: argparse.Namespace) -> int:
         "blocked": blocked,
     }, sort_keys=True))
     return 0
+
+
+def cmd_source_coverage(args: argparse.Namespace) -> int:
+    raw = json.loads(Path(args.specs).read_text(encoding="utf-8"))
+    if not isinstance(raw, list):
+        raise SystemExit("--specs must contain a JSON array")
+    specs = [item for item in raw if isinstance(item, dict)]
+    active_rows = read_active_source_rows(args.spreadsheet_id)
+    coverage = build_source_coverage(specs, active_rows)
+    _write_json(args.out, coverage)
+    print(json.dumps({
+        "active_source_count": coverage["active_source_count"],
+        "coverage_complete": coverage["coverage_complete"],
+        "execution_counts": coverage["execution_counts"],
+        "live_web_queue_count": coverage["live_web_queue_count"],
+        "blocked": coverage["blocked"],
+    }, sort_keys=True))
+    return 0 if coverage["coverage_complete"] else 2
 
 
 def cmd_export_state(args: argparse.Namespace) -> int:
@@ -166,6 +185,11 @@ def build_parser() -> argparse.ArgumentParser:
     filter_specs.add_argument("--spreadsheet-id", required=True)
     filter_specs.add_argument("--out", required=True)
     filter_specs.set_defaults(func=cmd_filter_specs)
+    coverage = sub.add_parser("source-coverage")
+    coverage.add_argument("--specs", required=True)
+    coverage.add_argument("--spreadsheet-id", required=True)
+    coverage.add_argument("--out", required=True)
+    coverage.set_defaults(func=cmd_source_coverage)
     export_state = sub.add_parser("export-state")
     export_state.add_argument("--state", required=True)
     export_state.add_argument("--out")
