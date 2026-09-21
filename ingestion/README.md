@@ -38,11 +38,13 @@ Full semantic eligibility still requires canonical employer/ATS verification; th
 
 `review-ack.json` contains only technical acknowledgement keys and migration markers. It does not contain candidate policy or scoring. The ChatGPT review workflow should acknowledge every handled queue item, including cheap obvious non-relevant rejects, only after its intended review action has completed. A technical row already existing in `Runs` must never be treated as semantic acknowledgement.
 
+Before persistence, the live workflow now applies a Config-owned technical priority triage. The triage reads `ingestion_review_priority_terms`, `ingestion_review_priority_employers`, `ingestion_review_auto_ack_nonpriority` and `ingestion_review_triage_policy_version` from the live Vacature Register. Items with a priority hint stay pending for semantic review. Nonpriority ingestion hints are acknowledged only from this optimization queue; they are not marked ineligible and do not suppress the mandatory fast-lane, Google/direct discovery or full active-source expansion routes. Missing review keys fail closed and stay pending. The triage writes `review-triage.json` with counts and policy version.
+
 The intended handoff is:
 
-`GitHub ingestion -> review-queue-index.json -> bounded review-queue-pages/* -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output -> review-ack.json`
+`GitHub ingestion -> persistent review queue -> Config-owned priority triage -> bounded priority queue -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output -> review-ack.json`
 
-No candidate scoring happens inside ingestion.
+No authenticity, eligibility, candidate fit, scoring, source-priority or application decision happens inside ingestion.
 
 ## Recovery
 
