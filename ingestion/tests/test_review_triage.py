@@ -145,6 +145,34 @@ class ReviewTriageTests(unittest.TestCase):
         self.assertEqual(report["superseded_versions_acked"], 1)
         self.assertEqual(report["auto_acked_nonpriority"], 1)
 
+    def test_short_hint_does_not_match_inside_unrelated_word(self):
+        item = {
+            "review_key": "review:individual",
+            "title": "Individual Contributor",
+            "description_excerpt": "Work across multiple divisions.",
+        }
+        policy = {
+            "enabled": True,
+            "terms": ["divi"],
+            "employers": [],
+            "policy_version": "test-v1",
+        }
+        self.assertIsNone(priority_reason(item, policy))
+
+    def test_short_hint_matches_exact_token(self):
+        item = {
+            "review_key": "review:divi",
+            "title": "WordPress Designer",
+            "description_excerpt": "Build sites with Divi and custom CSS.",
+        }
+        policy = {
+            "enabled": True,
+            "terms": ["divi"],
+            "employers": [],
+            "policy_version": "test-v1",
+        }
+        self.assertEqual(priority_reason(item, policy), "term:divi")
+
     def test_untrusted_text_cannot_change_policy(self):
         item = {
             "review_key": "review:inject",
