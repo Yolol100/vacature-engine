@@ -92,6 +92,59 @@ class ReviewTriageTests(unittest.TestCase):
         self.assertEqual(ack["acked_keys"], ["review:old"])
         self.assertFalse(report["enabled"])
 
+    def test_only_latest_content_version_remains_pending(self):
+        queue = {
+            "review_queue": [
+                {
+                    "review_key": "review:old",
+                    "source_id": "greenhouse",
+                    "source_job_id": "123",
+                    "origin_completed_at": "2026-09-20T10:00:00Z",
+                    "title": "WordPress Developer",
+                },
+                {
+                    "review_key": "review:new",
+                    "source_id": "greenhouse",
+                    "source_job_id": "123",
+                    "origin_completed_at": "2026-09-21T10:00:00Z",
+                    "title": "Senior WordPress Developer",
+                },
+            ]
+        }
+        filtered, ack, report = triage_review_queue(
+            queue, {"acked_keys": [], "migrations": []}, self._policy()
+        )
+        self.assertEqual([row["review_key"] for row in filtered["review_queue"]], ["review:new"])
+        self.assertEqual(ack["acked_keys"], ["review:old"])
+        self.assertEqual(report["superseded_versions_acked"], 1)
+
+    def test_latest_nonpriority_version_supersedes_old_priority_text(self):
+        queue = {
+            "review_queue": [
+                {
+                    "review_key": "review:old",
+                    "source_id": "greenhouse",
+                    "source_job_id": "456",
+                    "origin_completed_at": "2026-09-20T10:00:00Z",
+                    "title": "WordPress Developer",
+                },
+                {
+                    "review_key": "review:new",
+                    "source_id": "greenhouse",
+                    "source_job_id": "456",
+                    "origin_completed_at": "2026-09-21T10:00:00Z",
+                    "title": "Account Executive",
+                },
+            ]
+        }
+        filtered, ack, report = triage_review_queue(
+            queue, {"acked_keys": [], "migrations": []}, self._policy()
+        )
+        self.assertEqual(filtered["review_queue"], [])
+        self.assertEqual(ack["acked_keys"], ["review:new", "review:old"])
+        self.assertEqual(report["superseded_versions_acked"], 1)
+        self.assertEqual(report["auto_acked_nonpriority"], 1)
+
     def test_untrusted_text_cannot_change_policy(self):
         item = {
             "review_key": "review:inject",
