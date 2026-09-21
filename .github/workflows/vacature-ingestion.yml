@@ -112,6 +112,17 @@ jobs:
           --out .runtime/review-queue.json
           --pages-dir .runtime/review-queue-pages
           --index-out .runtime/review-queue-index.json
+      - name: Triage review handoff with live Config-owned priority hints
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: >-
+          python -m vacature_ingestion.review_triage
+          --queue .runtime/review-queue.json
+          --ack .runtime/review-ack.json
+          --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0
+          --report .runtime/review-triage.json
+          --pages-dir .runtime/review-queue-pages
+          --index-out .runtime/review-queue-index.json
       - name: Export source health
         run: python -m vacature_ingestion export-state --state .runtime/state.sqlite3 --health-out .runtime/source-health.json
       - name: Sync compact health to Vacature Register when configured
@@ -141,11 +152,12 @@ jobs:
             cp "$GITHUB_WORKSPACE/.runtime/review-queue-index.json" review-queue-index.json
             cp -R "$GITHUB_WORKSPACE/.runtime/review-queue-pages" review-queue-pages
             cp "$GITHUB_WORKSPACE/.runtime/review-ack.json" review-ack.json
+            cp "$GITHUB_WORKSPACE/.runtime/review-triage.json" review-triage.json
             cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
             cp "$GITHUB_WORKSPACE/.runtime/source-coverage.json" source-coverage.json
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add state.sqlite3 latest.json review-queue.json review-queue-index.json review-queue-pages review-ack.json source-health.json source-coverage.json
+            git add state.sqlite3 latest.json review-queue.json review-queue-index.json review-queue-pages review-ack.json review-triage.json source-health.json source-coverage.json
             git commit -m "chore: persist vacancy ingestion snapshot"
             git push origin HEAD:ingestion-state
             exit 0
@@ -164,6 +176,7 @@ jobs:
             cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
             cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
             cp "$GITHUB_WORKSPACE/.runtime/source-coverage.json" source-coverage.json
+            cp "$GITHUB_WORKSPACE/.runtime/review-triage.json" review-triage.json
             python -m vacature_ingestion.snapshot_merge --state-dir . --runtime-dir "$GITHUB_WORKSPACE/.runtime"
 
             git config user.name "github-actions[bot]"
