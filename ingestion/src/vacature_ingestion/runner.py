@@ -12,12 +12,23 @@ from .models import SourceSpec
 from .state import StateStore
 
 
+def _registry_source_ids(spec: SourceSpec) -> list[str]:
+    source_ids = {str(spec.source_id or "").strip()}
+    extra = spec.options.get("registry_source_id") if isinstance(spec.options, dict) else None
+    if isinstance(extra, str) and extra.strip():
+        source_ids.add(extra.strip())
+    elif isinstance(extra, list):
+        source_ids.update(str(value).strip() for value in extra if str(value).strip())
+    return sorted(value for value in source_ids if value)
+
+
 @dataclass
 class SourceRunResult:
     source_instance: str
     success: bool
     fetched: int
     normalized: int
+    registry_source_ids: list[str] | None = None
     new: int = 0
     updated: int = 0
     unchanged: int = 0
@@ -80,6 +91,7 @@ class IngestionRunner:
             self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
             return SourceRunResult(
                 source_instance=spec.instance_id, success=True, fetched=len(records), normalized=len(observations),
+                registry_source_ids=_registry_source_ids(spec),
                 new=counts.new, updated=counts.updated, unchanged=counts.unchanged,
                 duplicate_observations=counts.duplicate_observations, missing=counts.missing, closed=counts.closed,
                 duration_seconds=time.perf_counter() - t0, observations=observations,
@@ -91,6 +103,7 @@ class IngestionRunner:
                                   failure_category=category, failure_message=str(exc))
             return SourceRunResult(
                 source_instance=spec.instance_id, success=False, fetched=0, normalized=0,
+                registry_source_ids=_registry_source_ids(spec),
                 failure_category=category, failure_message=str(exc), duration_seconds=time.perf_counter() - t0,
                 observations=[], review_observations=[],
             )
@@ -118,6 +131,7 @@ class IngestionRunner:
         self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
         return SourceRunResult(
             source_instance=spec.instance_id, success=True, fetched=len(records), normalized=len(observations),
+            registry_source_ids=_registry_source_ids(spec),
             new=counts.new, updated=counts.updated, unchanged=counts.unchanged,
             duplicate_observations=counts.duplicate_observations, missing=counts.missing, closed=counts.closed,
             duration_seconds=time.perf_counter() - t0, observations=observations,

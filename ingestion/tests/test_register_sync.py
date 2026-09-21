@@ -31,6 +31,24 @@ class RegisterTests(unittest.TestCase):
         self.assertEqual(x["greenhouse"]["consecutive_failures"], 0)
         self.assertIsNone(x["greenhouse"]["failure_category"])
 
+    def test_aggregate_propagates_health_to_bound_registry_source(self):
+        x = _aggregate_health(
+            {
+                "workable:humanmade": {
+                    "last_success_at": "2026-09-20T21:21:24Z",
+                    "last_result_count": 17,
+                    "consecutive_failures": 0,
+                },
+            },
+            allowed_instances={"workable:humanmade"},
+            source_ids_by_instance={
+                "workable:humanmade": {"workable", "company-human-made"},
+            },
+        )
+        self.assertEqual(x["workable"]["last_success_at"], "2026-09-20T21:21:24Z")
+        self.assertEqual(x["company-human-made"]["last_success_at"], "2026-09-20T21:21:24Z")
+        self.assertEqual(x["company-human-made"]["last_result_count"], 17)
+
 
 if __name__ == "__main__":
     unittest.main()
