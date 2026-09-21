@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
@@ -102,6 +103,13 @@ def _text_blob(item: dict[str, Any]) -> str:
     return " ".join(parts).casefold()
 
 
+def _contains_term(blob: str, term: str) -> bool:
+    if not term:
+        return False
+    pattern = rf"(?<![a-z0-9]){re.escape(term)}(?![a-z0-9])"
+    return re.search(pattern, blob) is not None
+
+
 def priority_reason(item: dict[str, Any], policy: dict[str, Any]) -> str | None:
     employer = str(item.get("employer") or "").strip().casefold()
     for configured in policy.get("employers", []):
@@ -110,7 +118,7 @@ def priority_reason(item: dict[str, Any], policy: dict[str, Any]) -> str | None:
 
     blob = _text_blob(item)
     for term in policy.get("terms", []):
-        if term and term in blob:
+        if _contains_term(blob, term):
             return f"term:{term}"
     return None
 
