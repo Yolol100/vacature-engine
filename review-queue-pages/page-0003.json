@@ -1,1346 +1,8 @@
 {
-  "completed_at": "2026-09-21T02:43:11.786281+00:00",
+  "completed_at": "2026-09-21T02:48:29.063920+00:00",
   "page": 3,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
-      "canonical_url": "https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
-      "content_hash": "2c8dc681084a81b07c65dfcdd99c4792c791c074f1d68838887ae07de3a1d073",
-      "description_excerpt": "Responsibilities: The Senior Middleware Administrator role is responsible for managing third party applications used to support the various products used at Mortgage Cadence. This includes, but is not limited to, Redis administration, RabbitMQ administration, Citrix XenApp administration, and Azure Service Bus. This role is expected to perform troubleshooting tasks, parse log files, patch third party products, and perform a subset of server administration tasks. Requirements Mandatory Requirements: 7+ years of experience managing third party products Strong troubleshooting capabilities Strong English fluency Redis administration RabbitMQ administration Citrix Xenapp administration Apache Tomcat administration Windows Server administration Linux Server administration Azure Service Bus administration Preferred Skills: Citrix PVS patching experience PowerShell script writing WordPress Administration (or experience managing LAMP stacks) IIS administration Elastic Stack administration and report writing JScape or other SFTP experience Originally posted on Himalayas",
-      "employer": "Partner One Capital",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Colombia",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788669072",
-      "remote": true,
-      "review_key": "review:340e52c568c736b56ee3e5a0c9459a5a6c413fb8ed024794b8f1f1c7181d627d",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
-      "source_metadata": {
-        "categories": [
-          "Middleware-Administration",
-          "Middleware-Administrator",
-          "Systems-Administrator",
-          "Infrastructure-Engineering",
-          "DevOps-Engineer",
-          "Senior-Middleware-Engineer",
-          "Middleware-Infrastructure-Specialist",
-          "Middleware-Specialist",
-          "Middleware-Engineer",
-          "Middleware-Integration-Engineer",
-          "Java-Middleware-Engineer"
-        ],
-        "company_slug": "partner-one-capital",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Colombia"
-        ],
-        "location_restrictions": [
-          "Colombia"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
-        "timezone_restrictions": [
-          -5
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Senior Middleware Administrator",
-      "url": "https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
-      "valid_through": "1793853070",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
-      "canonical_url": "https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
-      "content_hash": "beb13b52327df3e35afc4c5183efc74d16c95bae80471b084a030f197ce02339",
-      "description_excerpt": "Role Summary: We are looking for a Level 1 Full Stack & Mobile App Developer who can work independently on assigned tasks while collaborating with the team to develop and maintain web and mobile applications. You will contribute to building mobile and web applications from initial requirements through deployment, enhance existing systems, and deliver functional solutions, with guidance and review from senior developers when needed. Key Responsibilities: Communicate with stakeholders and team members to understand requirements and project expectations Work collaboratively with other engineers across the stack to deliver assigned features Coordinate with graphic designers to implement UI and design elements Develop and implement product features with guidance, following best practices for performance and security Assist in setting up and maintaining basic CI/CD processes using established standards Help maintain and improve existing applications and systems Deliver assigned tasks ranging from front-end UI enhancements to back-end feature development Research and apply new tools or technologies as needed to support development tasks Assist in creating and maintaining databases and ser",
-      "employer": "Concert8 Solutions Inc",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Philippines",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788589959",
-      "remote": true,
-      "review_key": "review:481373c851d315c2448225ffdf946d4f7e4fa78f7382679fdc9dd72387c772bf",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
-      "source_metadata": {
-        "categories": [
-          "Fullstack-Development",
-          "Mobile-Application-Developer",
-          "Web-Development",
-          "Frontend-Development",
-          "Backend-Development",
-          "Entry-Level-Full-Stack-Developer-(React-Native-and-Node.Js)",
-          "Entry-Level-Full-Stack-Developer",
-          "Entry-Level-Full-Stack-Developer-(React-Node.Js)",
-          "Junior-Full-Stack-Developer",
-          "Full-Stack-Mobile-Engineer",
-          "Full-Stack-Mobile-Development"
-        ],
-        "company_slug": "concert8-solutions-inc",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Philippines"
-        ],
-        "location_restrictions": [
-          "Philippines"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
-        "timezone_restrictions": [
-          8
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Level 1 Full Stack and Mobile App Developer",
-      "url": "https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
-      "valid_through": "1793773958",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
-      "canonical_url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
-      "content_hash": "fdf3add4ce20d38fadf14651d35561be32f0a7f7122b62ccd2221eac609066a2",
-      "description_excerpt": "Department Overview: This position in the UW–Madison Office of Human Resources (OHR) develops and maintains websites and web applications used by UW employees and campus HR professionals. We are looking for an undergraduate student with a passion for programming and a desire to learn. Anticipated Start Date: Fall 2026 Anticipated End Date (If Applicable): Remote Work Eligibility Detail: All Remote Anticipated Hours Per Week: Minimum: 8 Schedule: 8-12 hours per week, while classes are in session. Additional hours may be available during breaks. Salary/Wage Range/Lump Sum: Minimum: $16.25 Number of Positions: 1 Qualifications: Qualified applicants must have access to reliable internet service. Knowledge, Skills & Abilities : Minimum: Proficiency with HTML, CSS, and JavaScript - Some familiarity with Git or other version control systems - Ability to work independently for extended periods of time Preferred: Working knowledge of modern web standards, including accessibility and responsive design - Modern JavaScript frameworks (e.g. Vue, React, Angular) - PHP / MySQL - WordPress or other content management systems - JSON / Consuming data from an API - Writing and reading technical docum",
-      "employer": "University of Wisconsin-Madison",
-      "employment_type": "Part Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788637362",
-      "remote": true,
-      "review_key": "review:603c01489a0f90b309b7b6ca6eaeec77899f01f605a85643422be452df2f76a7",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
-      "source_metadata": {
-        "categories": [
-          "Computers",
-          "Web-Development",
-          "Software-Development",
-          "Digital-Technology",
-          "Teamwork",
-          "Junior-Web-Developer",
-          "Web-Developer-Intern",
-          "Web-Development-Intern",
-          "Junior-Web-Development",
-          "Entry-Level-Web-Developer",
-          "Jr-Web-Developer",
-          "Entry-Level-Web-Development"
-        ],
-        "company_slug": "university-of-wisconsin-madison",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Student Web Developer",
-      "url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
-      "valid_through": "1793821362",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
-      "canonical_url": "https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
-      "content_hash": "a61a308ce975f91d0aea8c66c2170ab9c3e9530a98b2c65a89606a9ae74b249a",
-      "description_excerpt": "ABOUT THE ROLE: The Web Development Manager leads Pandoblox 's embedded web development team, owning the technical standards, delivery quality, and day-to-day management that keep our client web projects on track and our developers growing. This is a hands-on leadership role for someone who can set direction across a modern web stack, coach a distributed team, and represent that team confidently in front of clients. Strong technical judgment, people-management ability, and excellent communication are the key abilities for the role. RESPONSIBILITIES: In this role, you'll get to... Lead and manage a distributed team of web developers working across WordPress, headless WordPress, and Webflow Own the team's technical standards, coding conventions, peer-review practices, and tooling decisions Run regular 1:1s, set clear role expectations, and support the team's growth and performance Lead upskilling across the team, with a particular focus on Webflow adoption and modern CMS/JAMstack practices Conduct a top-to-bottom review of current development processes and drive improvements Oversee weekly workload and capacity planning to keep the team appropriately utilized Support delivery operati",
-      "employer": "Pandoblox",
-      "employment_type": "Part Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Philippines",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788668261",
-      "remote": true,
-      "review_key": "review:60480b3a6b5ab08dbf936c2d3adc5388bf86847825619a88191fe5b0b0602503",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
-      "source_metadata": {
-        "categories": [
-          "Web-Development-Manager",
-          "Development-Team-Lead",
-          "Technical-Manager",
-          "Web-Development-Leadership",
-          "Agency-Development-Manager",
-          "Manager-Of-Web-Development",
-          "Web-Development-Management",
-          "Web-Development-Team-Lead",
-          "Web-Design-Manager",
-          "Web-Development-Lead"
-        ],
-        "company_slug": "pandoblox",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Philippines"
-        ],
-        "location_restrictions": [
-          "Philippines"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
-        "timezone_restrictions": [
-          8
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Web Development Manager - PH",
-      "url": "https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
-      "valid_through": "1793852261",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
-      "canonical_url": "https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
-      "content_hash": "dc0d281635e8a0a3ac1565b2d17f4716a443f86bc9caa63252bf609365b194d8",
-      "description_excerpt": "THIS IS WHO YOU ARE… You are our front line in the battle for exceptional customer experience at the 24/7/365 help desk. Ideally, you have experienced terrible web hosting customer service and have vowed that will never happen on your watch! You are responsible for seeing that our customers have excellent customer service by doing what you do every day -> exceeding customer expectations. WHAT DO WE NEED FROM YOU? Well, you should be customer focused, great under pressure, and ready to engage a problem with your superior analytic skills. Can you do several things at a time with amazing efficiency? Good! If you are a super ninja with web hosting applications and platforms -> we need to talk. MORE ABOUT THE POSITION . These will be your primary responsibilities in your daily goal to fight bad web hosting: Hiring for day shift employees CST. Provide customers support via our 24/7 helpdesk. Troubleshooting email delivery issues Troubleshooting cPanel, Plesk, and DirectAdmin related issues Troubleshooting DNS, FTP, SSL, Apache, and other service-related issues. Ensuring customer satisfaction You must know Linux like your favorite cheeseburger and fries’ combo! Here are your other amazing",
-      "employer": "KnownHost",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788439912",
-      "remote": true,
-      "review_key": "review:739b6305c4020357387c617bbb1f6db2ee5d4c608c26b3654278e50229c9bf5c",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
-      "source_metadata": {
-        "categories": [
-          "Technical-Support",
-          "Customer-Service",
-          "Help-Desk",
-          "Web-Hosting-Support",
-          "Technical-Support-Operator",
-          "Remote-Support-Technician",
-          "Remote-Support-Representative",
-          "Remote-IT-Support-Technician",
-          "Remote-Technical-Support",
-          "Remote-Support-Specialist"
-        ],
-        "company_slug": "knownhost",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Technical Support Operator - Remote",
-      "url": "https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
-      "valid_through": "1793623912",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
-      "canonical_url": "https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
-      "content_hash": "4ac25c0021a3db4f9de56f65e9beb8d17b9a15c39e9c5e09595dbb3513b14053",
-      "description_excerpt": "The Web Design Specialist plays an important role in the organization by performing a number of activities directly related to the company’s marketing functions. The role is primarily responsible, under moderate to intermittent direction, for the conceptual development, direction, delivery, buy-in, and production of visual design. Key Responsibilities Design digital materials including websites, landing pages, microsites, email campaigns, and social media assets. Create user-centered, conversion-focused UX/UI designs for responsive web and marketing experiences. Translate business goals, audience insights, and marketing objectives into intuitive and engaging digital solutions. Apply conceptual thinking and design strategy to develop creative concepts based on user needs, market research, and technical constraints. Present design concepts, rationale, and solutions clearly to stakeholders and secure buy-in when required. Collaborate with designers, copywriters, project managers, and front-end developers to deliver cohesive digital experiences. Work within CMS environments (WordPress preferred) to design and support digital implementations. Assist with front-end development for small",
-      "employer": "NightOwl Consulting",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Worldwide",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788671103",
-      "remote": true,
-      "review_key": "review:79db0fc26c67530682f8d507dfe64de336fdbdcfe86abbe78cb1582bd8a9a532",
-      "salary": {
-        "currency": "PHP",
-        "max": 65000,
-        "min": 45000,
-        "period": "monthly"
-      },
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
-      "source_metadata": {
-        "categories": [
-          "Web-Design",
-          "Digital-Marketing",
-          "Graphic-Design",
-          "Email-Marketing",
-          "UI-UX-Design",
-          "Senior-Web-Design-Specialist",
-          "Marketing-Web-Specialist",
-          "Web-Specialist",
-          "Website-Specialist",
-          "Lead-Web-Designer",
-          "Web-Project-Specialist",
-          "Design"
-        ],
-        "company_slug": "nightowl-consulting",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [],
-        "location_restrictions": [],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
-        "timezone_restrictions": [
-          -11,
-          -10,
-          -9.5,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          -4,
-          -3.5,
-          -3,
-          -2,
-          -1,
-          0,
-          1,
-          2,
-          3,
-          3.5,
-          4,
-          4.5,
-          5,
-          5.5,
-          5.75,
-          6,
-          6.5,
-          7,
-          8,
-          8.75,
-          9,
-          9.5,
-          10,
-          10.5,
-          11,
-          12,
-          12.75,
-          13,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Web Design Specialist (with Pardot experience)",
-      "url": "https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
-      "valid_through": "1793855103",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
-      "canonical_url": "https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
-      "content_hash": "cd42e6f93932604ed4eecbc4b9105c2c4e8d0860ed8671ec06b67fee723c6070",
-      "description_excerpt": "We engage the most inspired minds to do their best work wherever they work best—powering the freedom to create worldwide. WP Engine empowers companies and agencies of all sizes to build, power, manage, and optimize their WordPress websites and applications with confidence. Serving 1.5 million customers across 150+ countries, the global technology company provides premium, enterprise-grade solutions, tools, and services, including specialized platforms for WordPress, industry-tailored eCommerce and agency solution suites, and developer-centric tools like Local, Advanced Custom Fields, and more. WP Engine ’s innovative technology and industry-leading expertise are why 8% of the web visits a WP Engine -powered site daily. Learn more at wpengine.com. Job Description In this role, you will architect and implement backend capabilities that drive our global, high-scale cloud infrastructure services.This position transcends standard backend development and pure DevOps; you will operate at the intersection of software engineering, distributed systems, and production reliability, maintaining full ownership of services from initial design through observability and technical support. Your work",
-      "employer": "WP Engine",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Poland",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788621704",
-      "remote": true,
-      "review_key": "review:8083591f263869aa24860263755d40bba571b37fd26a2eb42594a7f2e3be8f3b",
-      "salary": {
-        "currency": "PLN",
-        "max": 335500,
-        "min": 244000,
-        "period": "annual"
-      },
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
-      "source_metadata": {
-        "categories": [
-          "Software-Engineer",
-          "Backend-Engineer",
-          "Cloud-Engineer",
-          "DevOps-Engineer",
-          "Platform-Engineer",
-          "Senior-Software-Developer",
-          "Senior-Software-Engineer-Jobs",
-          "Senior-Engineer"
-        ],
-        "company_slug": "wp-engine",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Poland"
-        ],
-        "location_restrictions": [
-          "Poland"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
-        "timezone_restrictions": [
-          1
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Senior Software Engineer",
-      "url": "https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
-      "valid_through": "1793805704",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
-      "canonical_url": "https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
-      "content_hash": "e4bc4a7f9a0938437f3afa9c4d068705eeb9e4b6d519a8feb45f00950a992955",
-      "description_excerpt": "SEO Content Writer – Construction & Joinery | AU Market (Remote) Work From Home | Full-Time | AU Hours | PH-Based OutsourcedIn is partnering with a NSW-based business specialising in custom kitchens, cabinetry & joinery, CNC machining services, cut-to-size panels, and DIY building materials to hire an experienced SEO Content Writer . This role is focused on driving organic traffic, improving Google rankings, and increasing qualified enquiries through structured SEO strategy and high-converting website content. The ideal candidate has strong experience writing SEO content for Australian businesses and understands Australian search behaviour, local SEO strategy, and construction/trade industry language . Mandatory Requirement Minimum 2–3 years experience writing SEO content for Australian businesses (ESSENTIAL) About the Role You will be responsible for developing and executing SEO strategies that increase visibility across NSW and drive high-intent enquiries within the construction and joinery sector. This is a performance-driven role focused on organic growth and conversion optimisation. Key Responsibilities SEO Strategy & Keyword Research Conduct keyword research targeting Austral",
-      "employer": "OutsourcedIn",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Philippines",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788668284",
-      "remote": true,
-      "review_key": "review:8957a7f78d0d7251b7e258fd7a618bdacf1745fa8aa21b807d662d546f21f4b2",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
-      "source_metadata": {
-        "categories": [
-          "SEO-Content-Writer",
-          "Content-Writer",
-          "SEO-Specialist",
-          "Digital-Marketing-Copywriting",
-          "Remote-Content-Writer",
-          "SEO-Writer",
-          "SEO-Content-Writing",
-          "SEO-Content-Specialist",
-          "seo-writing",
-          "SEO-Content-Creation",
-          "Marketing-Content-Writer",
-          "SEO-Copywriter"
-        ],
-        "company_slug": "outsourcedin",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Philippines"
-        ],
-        "location_restrictions": [
-          "Philippines"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
-        "timezone_restrictions": [
-          8
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "SEO Content Writer - Construction & Joinery | AU Market",
-      "url": "https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
-      "valid_through": "1793852283",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
-      "canonical_url": "https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
-      "content_hash": "42fb11ce0335a80e3b35508e26118c8e1580b5e7c368890cb7786ca44c992be6",
-      "description_excerpt": "Job Description Title: Growth Marketing Manager – Testing & Certification EMEA Location: Remote Department: Marketing Reports To: Growth Marketing Director Division: Technical Services About FoodChain ID FoodChain ID is a global leader in food safety, quality, sustainability, and regulatory compliance solutions. Through our Testing & Certification division, we help businesses across the food and related industries demonstrate compliance, manage risk, protect their brands, and build trust throughout their supply chains. Our Testing & Certification division in EMEA provides a broad portfolio of laboratory testing, inspection, auditing, and certification services, supporting customers in meeting regulatory, industry, retailer, and customer requirements across diverse markets. As we continue to strengthen and grow our presence across the region, we are seeking a Growth Marketing Manager to drive demand generation, pipeline growth, and lead conversion across our Testing & Certification business in EMEA. About the Role We are looking for a commercially-minded, data-driven Growth Marketing Manager to lead demand generation and marketing activation activities. Working closely with Product",
-      "employer": "FoodChain ID Group, Inc",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Spain",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788632496",
-      "remote": true,
-      "review_key": "review:8c70fe7d942bd87b3e1d1ec5b424d42e975d9cdba934d0d206da15f3b4bdb4c2",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
-      "source_metadata": {
-        "categories": [
-          "Growth-Marketing",
-          "Demand-Generation",
-          "B2B-Marketing",
-          "Marketing-Manager",
-          "Digital-Marketing",
-          "Growth-Marketing-Manager",
-          "Growth-Marketer-Manager",
-          "B2B-Growth-Marketing-Manager"
-        ],
-        "company_slug": "foodchain-id-group-inc",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Spain"
-        ],
-        "location_restrictions": [
-          "Spain"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
-        "timezone_restrictions": [
-          0,
-          1
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Growth Marketing Manager",
-      "url": "https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
-      "valid_through": "1793816495",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
-      "canonical_url": "https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
-      "content_hash": "cb4b8cd40b7607d9684e8949dd2f5bec69dd1102e48726b73c69ee449b398a19",
-      "description_excerpt": "SpecterOps is seeking an experienced Web Developer with deep WordPress expertise to support the ongoing development, optimization, and maintenance of our public-facing web presence. You will work closely with our Marketing team to build and refine web pages, implement new functionality, and ensure our WordPress environment is well-maintained and scalable. We're looking for a self-directed developer who communicates clearly, manages their own workload effectively, and takes ownership of deliverables from start to finish. You should be equally comfortable building new features from scratch and jumping into an existing codebase to troubleshoot and improve it. The ideal candidate will bring both technical depth and an eye for design to every engagement. Hourly Range: $75 – $85/hour, commensurate with experience Location: This position is remote, based in the U.S. with optional travel quarterly for in-person company events and other ad hoc meetings. Candidate must be authorized to work and reside in the United States; we do not currently sponsor immigration visas. Responsibilities Design, develop, and maintain WordPress-based web properties, including custom themes and plugins Build and",
-      "employer": "SpecterOps",
-      "employment_type": "Contractor",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788486059",
-      "remote": true,
-      "review_key": "review:9caa8c899a366ab6a788d569ddeac2b8a027ec2636c658309d887936150be303",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
-      "source_metadata": {
-        "categories": [
-          "WordPress-Development",
-          "Web-Development",
-          "Frontend-Development",
-          "Contract-Web-Developer",
-          "Remote-Web-Developer",
-          "Fullstack-Development",
-          "Contract-Web-Development",
-          "Web-Developer",
-          "Web-Developer-Jobs"
-        ],
-        "company_slug": "specterops",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Web Developer-Contract",
-      "url": "https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
-      "valid_through": "1793670058",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/staritas/jobs/marketing-specialist",
-      "canonical_url": "https://himalayas.app/companies/staritas/jobs/marketing-specialist",
-      "content_hash": "534684a3e58e5b595e14a3864aea9688440e98e574e838551aec0fb28bbfbe85",
-      "description_excerpt": "About the Role The Marketing Specialist is a hands-on role responsible for executing demand generation programs that drive inbound leads, engagement, and pipeline growth for Staritas . This individual will build, launch, measure, and optimize multi-channel campaigns across email, web, digital advertising, social media, webinars, and other channels. The role combines demand generation with strong marketing operations capabilities, including CRM/marketing automation, campaign reporting, lead nurturing, website management, SEO, and conversion optimization. The ideal candidate is a data-driven marketer who can translate campaign performance into actionable insights and continuously improve programs to increase qualified demand and support Sales. Essential Functions Demand Generation & Campaign Execution Develop and execute multi-channel demand generation campaigns designed to generate, nurture, and convert qualified leads across email, web, social, digital advertising, webinars, and other channels. Build, test, and optimize campaigns within CRM/marketing automation platforms, including emails, forms, landing pages, segmentation, workflows, lead nurturing, and calls to action. Identify",
-      "employer": "Staritas",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788680571",
-      "remote": true,
-      "review_key": "review:9f40a477e2b1542140b84d7ca691ec04158a6abae2bac4aa116b1b3af79b8a37",
-      "salary": {
-        "currency": "USD",
-        "max": 110000,
-        "min": 90000,
-        "period": "annual"
-      },
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/staritas/jobs/marketing-specialist",
-      "source_metadata": {
-        "categories": [
-          "Marketing-Specialist",
-          "Demand-Generation",
-          "B2B-Marketing",
-          "Digital-Marketing",
-          "Marketing-Operations",
-          "Marketing-Communications-Specialist",
-          "Sales-and-Marketing-Specialist",
-          "Digital-Marketing-Specialist",
-          "Marketing-Web-Specialist",
-          "SEO-Marketing-Specialist",
-          "Marketing-Strategy-Specialist",
-          "Marketing"
-        ],
-        "company_slug": "staritas",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/staritas/jobs/marketing-specialist",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Marketing Specialist",
-      "url": "https://himalayas.app/companies/staritas/jobs/marketing-specialist",
-      "valid_through": "1793864571",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
-      "canonical_url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
-      "content_hash": "37232f8bfae4e81e838d78f416f7fdc2cc709815664149c327c7525ad070a266",
-      "description_excerpt": "Department Overview: The UW Carbone Cancer Center is committed to defeating cancer through the rapid application of groundbreaking research, prevention, and treatment. UW Carbone is an integral part of the UW School of Medicine and Public Health and UW Health, bringing together more than 330 physicians and scientists from 50 departments and nine schools across campus to conduct research and translate laboratory discoveries into new cancer patient treatments. UW Carbone builds community by creating a collaborative, respectful, and welcoming environment in which all faculty, students, and staff will thrive. Anticipated Start Date: Fall 2026 Anticipated End Date (If Applicable): Remote Work Eligibility Detail: All Remote Anticipated Hours Per Week: Minimum: 10 Maximum: 25 Schedule: This paid position is anticipated to begin during Fall 2026 semester and can continue for as long as the student is enrolled at UW-Madison. We expect the student to work at least 10 hours per week, with flexibility around exams and school breaks. Employment over the summer break is available based on student's interest. Salary/Wage Range/Lump Sum: Minimum: $15.00 Number of Positions: 1 Qualifications: The i",
-      "employer": "University of Wisconsin-Madison",
-      "employment_type": "Part Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788640768",
-      "remote": true,
-      "review_key": "review:a7f82138bc729811cf6dfb49c236f767d2b198bd76e37d2965057de7301dcfcb",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
-      "source_metadata": {
-        "categories": [
-          "Communications-Assistant",
-          "Student-Communications",
-          "Marketing-Communications-Coordinator",
-          "Public-Relations-Assistant",
-          "Content-Creator",
-          "Student-Assistant",
-          "Student-Marketing-Assistant",
-          "Communications-Intern",
-          "Communication-Internship",
-          "Communications-Trainee",
-          "Internship-In-Communication"
-        ],
-        "company_slug": "university-of-wisconsin-madison",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Communications Student Assistant",
-      "url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
-      "valid_through": "1793824767",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/applaudo/jobs/web-designer",
-      "canonical_url": "https://himalayas.app/companies/applaudo/jobs/web-designer",
-      "content_hash": "574355a7003f9e707992c7550325fd04cd11a49315bf2b9d28c47e00d4246793",
-      "description_excerpt": "About You You are a visually driven Web Designer who enjoys transforming product requirements, user needs, and brand direction into polished, engaging digital experiences. You have a strong eye for visual hierarchy, typography, composition, spacing, and detail, while understanding how your design decisions translate across responsive products and different digital touchpoints. You are comfortable taking ideas from early visual exploration through high-fidelity, development-ready designs, working within established design systems and brand standards. You collaborate effectively with product, UX, and engineering teams, bring consistency to complex digital experiences, and maintain a high bar for visual quality, usability, and execution. You Bring to Applaudo the Following Competencies Bachelor’s Degree in Graphic Design, Web Design, Visual Communication, Interaction Design, or a related field is desired, or equivalent professional experience. 4+ years of professional experience in web, visual, UI, or digital experience design. Strong portfolio demonstrating high-quality visual and interface design for responsive digital products. Advanced proficiency in Figma, including components, v",
-      "employer": "Applaudo",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "El Salvador",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788669678",
-      "remote": true,
-      "review_key": "review:bd9e67d8c275f02c53befab12ff26a8b47474ef5f7719426707e855f5285c13d",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/applaudo/jobs/web-designer",
-      "source_metadata": {
-        "categories": [
-          "Web-Design",
-          "UI-Design",
-          "Visual-Design",
-          "Digital-Experience-Design",
-          "Front-End-Design",
-          "Web-Designer",
-          "Website-Designer",
-          "Graphic-Web-Designer",
-          "Freelance-Web-Designer",
-          "Web-App-Designer",
-          "Site-Designer",
-          "WordPress-Designer",
-          "WordPress-Web-Designer"
-        ],
-        "company_slug": "applaudo",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "El Salvador"
-        ],
-        "location_restrictions": [
-          "El Salvador"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/applaudo/jobs/web-designer",
-        "timezone_restrictions": [
-          -6
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Web Designer",
-      "url": "https://himalayas.app/companies/applaudo/jobs/web-designer",
-      "valid_through": "1793853677",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
-      "canonical_url": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
-      "content_hash": "6d2b16653ce181aacbb27c6733190252e17bf445a7b3abd98f883f667522f3fa",
-      "description_excerpt": "We are looking for a proactive and experienced Senior Full-Stack Developer to join the Application team at the partner company. Their mission is to provide businesses with easy access to high-quality web data, allowing clients to focus on data analysis rather than data collection. In this role, you will build, refine, and maintain core features across the full stack, delivering high-performance, pixel-perfect web applications while developing secure back-end systems and intuitive user experiences. The ideal candidate is passionate about writing clean, scalable code, collaborating closely with cross-functional teams, and leveraging modern AI tools to accelerate development. Excited? Let’s see what it takes 💛 What you will do: Build, refine, and maintain core features across the full stack, ensuring a polished, high-performance user experience; Develop and optimize both the company's main application and internal Admin Interfaces (including user management and billing systems); Implement high-fidelity UI/UX, ensuring pixel-perfect execution of product designs down to the smallest detail; Cooperate closely with Product Managers and Designers, translating Figma designs into seamless pr",
-      "employer": "SupportYourApp",
-      "employment_type": "Contractor",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Poland",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788626627",
-      "remote": true,
-      "review_key": "review:cd4165e951868cef2c317a16c18dcb7d5b7eb624aae457745b9783458bdc5635",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
-      "source_metadata": {
-        "categories": [
-          "Full-Stack-Developer",
-          "Software-Engineer",
-          "Python-Developer",
-          "Java-Developer",
-          "React-Developer",
-          "Senior-Full-Stack-Developer-(JavaScript-Python)",
-          "Senior-Full-Stack-Developer-React-And-Java",
-          "Senior-Full-Stack-Engineer-(JavaScript-Python)",
-          "Senior-Full-Stack-Developer-(Java-+-React)"
-        ],
-        "company_slug": "supportyourapp",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Poland"
-        ],
-        "location_restrictions": [
-          "Poland"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
-        "timezone_restrictions": [
-          1
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "(fluent English) Full-Stack Developer (Python/Java/React)",
-      "url": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
-      "valid_through": "1793810627",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
-      "canonical_url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
-      "content_hash": "634b2510683dc7a777fcc94be95fe14517418e78792a76a93cebea99f50ddb22",
-      "description_excerpt": "Senior Marketing Manager – SEO, Growth & Marketing Operations Full-Time | Remote | U.S. Business Hours About the Role At Pavago , one of our clients is hiring a Senior Marketing Manager to own and execute high-impact marketing initiatives across SEO, content, digital growth, website optimization, and marketing operations . This is a senior, hands-on role for someone who combines strategic thinking with strong execution. You’ll drive organic growth, manage marketing systems and campaigns, coordinate across design and development, and use AI and automation to improve marketing speed and scalability. What You’ll Own SEO & Organic Growth Lead technical SEO, on-page optimization, audits, backlink strategies, and keyword planning Drive measurable organic traffic and search visibility growth Monitor SEO performance and identify optimization opportunities Stay current with SEO, AIO, and AI-driven search trends Use SEO and analytics tools to guide strategy and execution Content & Digital Marketing Oversee content across Instagram, Facebook, X, blogs, articles, PR, and promotional campaigns Maintain consistent brand voice and messaging Coordinate with designers and developers on marketing as",
-      "employer": "Pavago",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Mexico",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788676201",
-      "remote": true,
-      "review_key": "review:ce9c57d4d1eb614813f7f1ff21cbac222004d4026107f57c49ca8cb1a0fbb858",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
-      "source_metadata": {
-        "categories": [
-          "Marketing-Manager",
-          "Growth-Marketing",
-          "Technical-SEO",
-          "Marketing-Operations",
-          "Content-Marketing",
-          "SEO",
-          "AI-Marketing",
-          "Digital-Marketing",
-          "Organic-Growth",
-          "Senior-Marketing-Management",
-          "Marketing"
-        ],
-        "company_slug": "pavago",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Mexico"
-        ],
-        "location_restrictions": [
-          "Mexico"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
-        "timezone_restrictions": [
-          -8,
-          -7,
-          -6,
-          -5
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Senior Marketing Manager",
-      "url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
-      "valid_through": "1793860200",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
-      "canonical_url": "https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
-      "content_hash": "111c37d533c2b44ebcce3598cc0e7123625d6a42838c7b2f3ffce6101c9d6db7",
-      "description_excerpt": "Who We Are The Boutique COO works with business owners and founders who are looking to expand their network of expertise and grow their businesses. We match intentionally and filter both clients and professionals, making sure they are serious, reliable and collaborative. Our network members aren’t competing with dozens of others for the same clients. Who Our Clients Are Looking For Brand Builders: You have a demonstrated history of creating cohesive brand identities, including logos, color palettes, typography, and overall visual language, with a portfolio that showcases your branding and web design work. Tech-Savvy Doers: You are proficient in designing user-friendly websites across platforms like Squarespace, WordPress, or Wix, and skilled in Adobe Creative Suite including Photoshop, Illustrator, and InDesign. Creative Problem-Solvers: You are comfortable approaching design challenges with innovative solutions that align with client goals, backed by a background in Design, Visual Arts, or a related field. Detail-Oriented Collaborators: You have a keen eye for aesthetics, strong communication skills, and a willingness to work alongside other professionals and clients to deliver hi",
-      "employer": "The Boutique COO",
-      "employment_type": "Contractor",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788169785",
-      "remote": true,
-      "review_key": "review:df6da35361a64bc7d5f00c7652a53c27049959490d082a17764e28fed6ec7a5e",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
-      "source_metadata": {
-        "categories": [
-          "Brand-Designer",
-          "Web-Designer",
-          "Visual-Designer",
-          "Freelance-Designer",
-          "Creative-Designer",
-          "Digital-Brand-Designer",
-          "Brand-Identity-Designer",
-          "Brand-Design-Specialist",
-          "Brand-Marketing-Designer",
-          "Digital-Graphic-Designer",
-          "Website-Designer",
-          "Design"
-        ],
-        "company_slug": "the-boutique-coo",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Brand and Web Designer",
-      "url": "https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
-      "valid_through": "1793353784",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
-      "canonical_url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
-      "content_hash": "088cca9fc939ecca39ebb58752861ccc56e92ea21e83f3929cf40f81f6d10ccf",
-      "description_excerpt": "Marketing Account Manager (Email Marketing, SEO & Client Success) – Remote Position Type: Full-Time, Remote Working Hours: U.S. Business Hours About the Role At Pavago , one of our clients is hiring a Marketing Account Manager to manage client relationships, oversee marketing execution, and ensure projects are delivered accurately and on time. This is more than an account management role. You’ll serve as the primary point of contact for multiple client accounts while coordinating email marketing campaigns, WordPress updates, SEO initiatives, reporting, and cross-functional marketing projects. You’ll work closely with leadership and internal marketing teams to keep campaigns moving, maintain clear client communication, and deliver an exceptional client experience. If you’re highly organized, client-focused, and enjoy balancing marketing execution with relationship management, this role is a strong fit. What You’ll Own Client Relationship Management Serve as the primary point of contact for assigned client accounts. Manage communication via email, Slack, WhatsApp, Zoom, and other collaboration tools. Lead recurring client meetings, status updates, and performance reviews. Keep client",
-      "employer": "Pavago",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Kenya",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788677699",
-      "remote": true,
-      "review_key": "review:e24bbde0791356cd16d5fed3f8a7caf823b4421f121b09a0c0b3eb2ca693ba57",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
-      "source_metadata": {
-        "categories": [
-          "Marketing-Account-Manager",
-          "Account-Management",
-          "Customer-Success-Manager",
-          "Email-Marketing",
-          "SEO-Specialist",
-          "Marketing-Account-Management",
-          "Digital-Marketing-Account-Manager",
-          "Advertising-Account-Manager",
-          "Account-Manager",
-          "Marketing"
-        ],
-        "company_slug": "pavago",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Kenya"
-        ],
-        "location_restrictions": [
-          "Kenya"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
-        "timezone_restrictions": [
-          3
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Marketing Account Manager",
-      "url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
-      "valid_through": "1793861698",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
-      "canonical_url": "https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
-      "content_hash": "16c340d5beae17bd5058c3e6d32b8674c469d1a1647b581705b4055c97de1224",
-      "description_excerpt": "Join Hire Hangar and work with fast-growing global companies while building a long-term career. Job Title: Video Content Producer Location: Remote Working Hours: US Time Zone (PST - EST) We’re hiring a Podcast & Video Content Producer to manage the coordination, production, and publishing of video and podcast content. You’ll drive execution behind the scenes—running interviews, managing editors, publishing content, and ensuring a smooth, professional experience from recording to release. This role is ideal for a production-minded doer who thrives on process, details, and deadlines, with a creative eye and digital fluency. What You’ll Handle Own podcast production logistics: guest management, scheduling, pre/post coordination Work with editors to ensure video/audio content is polished and on brand Publish and optimize content on platforms like YouTube, Spotify, and Apple Podcasts Write show notes, social posts, and blog content to support SEO and discoverability Use tools like HubSpot, WordPress, BuzzSprout, and Canva to support ongoing publishing Track content performance and coordinate with marketing on improvement loops Support internal SaaS content development (onboarding videos",
-      "employer": "Hire Hangar",
-      "employment_type": "Contractor",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Argentina, Bolivia, Colombia, Dominican Republic, Ecuador, Egypt, Honduras, Jamaica, Mexico, Nicaragua, Panama, Peru, South Africa",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788400429",
-      "remote": true,
-      "review_key": "review:e26685dee69feed8214f9a01d7596b793c8399fc2ab3ce5850f7e408ae499ed8",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
-      "source_metadata": {
-        "categories": [
-          "Video-Content-Producer",
-          "Video-Content-Creator",
-          "Content-Producer",
-          "Video-Producer",
-          "Video-Content-Production",
-          "Creative-Content-Producer",
-          "YouTube-Content-Producer",
-          "Video-Content-Creation",
-          "Creative-Video-Producer",
-          "Content-Production-Specialist",
-          "Content-Creator"
-        ],
-        "company_slug": "hire-hangar",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Argentina",
-          "Bolivia",
-          "Colombia",
-          "Dominican Republic",
-          "Ecuador",
-          "Egypt",
-          "Honduras",
-          "Jamaica",
-          "Mexico",
-          "Nicaragua",
-          "Panama",
-          "Peru",
-          "South Africa"
-        ],
-        "location_restrictions": [
-          "Argentina",
-          "Bolivia",
-          "Colombia",
-          "Dominican Republic",
-          "Ecuador",
-          "Egypt",
-          "Honduras",
-          "Jamaica",
-          "Mexico",
-          "Nicaragua",
-          "Panama",
-          "Peru",
-          "South Africa"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
-        "timezone_restrictions": [
-          -8,
-          -7,
-          -6,
-          -5,
-          -4,
-          -3,
-          2
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Video Content Producer",
-      "url": "https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
-      "valid_through": "1793584428",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
-      "canonical_url": "https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
-      "content_hash": "6b6b8b06e888aa30a6de6abb4824d263a488143dceb358cf6b08c82f6f2a4952",
-      "description_excerpt": "Organization Overview: Chief Executives for Corporate Purpose® ( CECP ) is the only nonpartisan business counsel and network dedicated to driving measurable returns on purpose. We promote responsible purpose-driven business as it increases customer loyalty, builds employee engagement, improves brand trust, attracts top talent, connects with strategic investors, and contributes to the bottom line. More than 200 of the world’s leading companies seek to improve their return on purpose through access to CECP 's solutions in insights and benchmarking. With our companies, we harness the power of purpose for business, stakeholders, and society. CECP commits to and promotes anti-racism, anti-discrimination, and diversity, equity, and inclusion in our organization and with our affiliated companies and their leaders. We prohibit discrimination and provide equal opportunities in a respectful environment for all individuals and partnerships, regardless of race, color, ethnicity, ancestry, national origin, sex, gender, gender identity, sexual orientation, age, mental health, disability, religious beliefs, marital status, genetic information, pregnancy, veteran status, citizenship, or any other",
-      "employer": "CECP",
-      "employment_type": "Intern",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "updated",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788551921",
-      "remote": true,
-      "review_key": "review:ecccc60d5e4a7e04676db76676cfd6f1260c5c85abc418378f603334b05cc33e",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
-      "source_metadata": {
-        "categories": [
-          "Digital-Marketing",
-          "Marketing-Communications",
-          "Content-Marketing",
-          "Social-Media-Marketing",
-          "Marketing-Internships",
-          "Marketing-Intern",
-          "Internship-In-Marketing"
-        ],
-        "company_slug": "cecp",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "CECP Marketing Intern",
-      "url": "https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
-      "valid_through": "1793735921",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
-      "canonical_url": "https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
-      "content_hash": "6fe9f7218692e4011cc28a36cdb23a3efd64fe04c49636edd24c0c60966cb9d4",
-      "description_excerpt": "We engage the most inspired minds to do their best work wherever they work best—powering the freedom to create worldwide. WP Engine empowers companies and agencies of all sizes to build, power, manage, and optimize their WordPress websites and applications with confidence. Serving 1.5 million customers across 150+ countries, the global technology company provides premium, enterprise-grade solutions, tools, and services, including specialized platforms for WordPress, industry-tailored eCommerce and agency solution suites, and developer-centric tools like Local, Advanced Custom Fields, and more. WP Engine ’s innovative technology and industry-leading expertise are why 8% of the web visits a WP Engine -powered site daily. Learn more at wpengine.com. Senior Production Engineer What is Cool About This Job At WP Engine , we are on a mission to help our customers win online. Whether we're enabling an aspiring entrepreneur to turn a hobby into an online business or a multinational corporation to launch a new campaign in weeks instead of months, our platform elevates our customers toward success. By focusing on the customer experience, WP Engine has enjoyed spectacular growth, becoming the",
-      "employer": "WP Engine",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Australia",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788627379",
-      "remote": true,
-      "review_key": "review:ece61e698584e470616da3dd4346e82bef25ee2d736e960c98be9a4e8a7dda3a",
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
-      "source_metadata": {
-        "categories": [
-          "Site-Reliability-Engineering",
-          "Production-Engineering",
-          "DevOps-Engineer",
-          "Cloud-Infrastructure-Engineering",
-          "Platform-Engineering",
-          "Senior-Production-Engineer",
-          "Manufacturing-Engineer",
-          "Production-Engineer",
-          "Senior-Production-Control-Engineer",
-          "Production-Operations-Engineer",
-          "Production-Technology-Engineer",
-          "Production-Engineering-Manager"
-        ],
-        "company_slug": "wp-engine",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Australia"
-        ],
-        "location_restrictions": [
-          "Australia"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
-        "timezone_restrictions": [
-          8,
-          8.75,
-          9,
-          9.5,
-          10,
-          10.5
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Senior Production Engineer",
-      "url": "https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
-      "valid_through": "1793811379",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/etna-interactive/jobs/web-designer",
-      "canonical_url": "https://himalayas.app/companies/etna-interactive/jobs/web-designer",
-      "content_hash": "c6d9a097bf4f7ab6323ab4a33a236b3a821e53f45e84515e59a66a1e8d7d4a9e",
-      "description_excerpt": "Do you have a mind for creativity, a desire to help small businesses grow and mastery to create uncommonly good work? Etna Interactive , a leading digital marketing agency, seeks a remote Sr. Web Designer with excellent communication skills that is interested in the intersection between design, content, business, and marketing. *While this is a remote role, candidates must reside in California, Arizona, Michigan, Washington, Colorado, or Georgia. The Senior Web Designer plays a pivotal role in shaping our clients’ digital presence by delivering high-caliber, visually engaging web designs. This position supports the Creative Department and our clients through expertly crafted visual solutions that not only look stunning but also serve the functional needs of users. As a creative and analytical designer, you’ll work with the creative team to ensure pixel-perfect designs across desktop and mobile platforms, with a strong emphasis on UI/UX best practices. Your ability to translate complex concepts into seamless, intuitive designs will be key to effectively communicating our diverse clients' messages to their target audiences. In this role, exceptional technical skills in web design are",
-      "employer": "Etna Interactive",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
-      "location": "Azerbaijan, United States",
-      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
-      "origin_run_id": "ingestion-1788682055",
-      "published_at": "1788658373",
-      "remote": true,
-      "review_key": "review:f5b693fea93b42f68150ab3aa9af5d25ed800061c263767a25f5be4497e36c82",
-      "salary": {
-        "currency": "USD",
-        "max": 90000,
-        "min": 75000,
-        "period": "annual"
-      },
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/etna-interactive/jobs/web-designer",
-      "source_metadata": {
-        "categories": [
-          "Web-Designer",
-          "Senior-Web-Designer",
-          "UI-UX-Designer",
-          "Front-End-Design",
-          "Web-Development",
-          "Website-Designer",
-          "Web-Design",
-          "Graphic-Web-Designer",
-          "Freelance-Web-Designer",
-          "Web-App-Designer",
-          "Site-Designer",
-          "WordPress-Designer",
-          "WordPress-Web-Designer"
-        ],
-        "company_slug": "etna-interactive",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "Azerbaijan",
-          "United States"
-        ],
-        "location_restrictions": [
-          "Azerbaijan",
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/etna-interactive/jobs/web-designer",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          4,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Web Designer",
-      "url": "https://himalayas.app/companies/etna-interactive/jobs/web-designer",
-      "valid_through": "1793842372",
-      "workplace_type": "remote"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
-      "canonical_url": "https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
-      "content_hash": "60938ba5a79616017c48b7d3daf6efe3757cd2fe11c554cd40a9596d94823ace",
-      "description_excerpt": "About Walker Advertising Since 1984, Walker Advertising has bridged the gap between a law firm's need to grow and an underserved community's need for trustworthy legal services. Our teams lead with empathy and without ego to serve others through integrity and trust. We dare to think differently and work to consistently raise the bar, creating a workplace environment based on respect. We believe that our employees are not just numbers; they are people. People with families and lives outside of work. We understand that a career is just one piece of the puzzle that makes people successful, happy individuals. That's why as we grow our teams, we focus on the whole person. About the role We are looking for a Senior GEO/SEO Content Strategist to lead content development for Walker Advertising 's organic ecosystem, with a primary mandate: earning visibility and citation in AI Overviews, answer engines, and AI assistants (ChatGPT, Google AI Overviews, Perplexity, Claude, etc.), alongside strong performance in traditional search. This role is a GEO-first content function that shapes how audiences and the AI systems increasingly mediating their searches find, understand, and trust our brands,",
-      "employer": "Walker Advertising",
-      "employment_type": "Full Time",
-      "first_seen_at": "2026-09-06T15:11:38.215458+00:00",
-      "ingestion_change": "new",
-      "last_seen_at": "2026-09-06T15:11:38.215458+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-06T15:11:44.237732+00:00",
-      "origin_run_id": "ingestion-1788707504",
-      "published_at": "1788689576",
-      "remote": true,
-      "review_key": "review:dc93edf86a01b99b2287878eaf27ff4cc3afd219f90aae2c7edc65485c3b31be",
-      "salary": {
-        "currency": "USD",
-        "max": 95000,
-        "min": 73000,
-        "period": "annual"
-      },
-      "source_id": "himalayas",
-      "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
-      "source_metadata": {
-        "categories": [
-          "GEO-Strategist",
-          "SEO-Content-Strategist",
-          "Content-Marketing",
-          "Digital-Content-Strategist",
-          "AI-Content-Optimization",
-          "Senior-SEO-and-GEO-Specialist",
-          "Senior-Web-Content-Strategist",
-          "Senior-Content-Strategy",
-          "Senior-SEO-Strategist",
-          "Geospatial-Content-Specialist"
-        ],
-        "company_slug": "walker-advertising",
-        "discovery_query": "wordpress",
-        "location_restriction_names": [
-          "United States"
-        ],
-        "location_restrictions": [
-          "United States"
-        ],
-        "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
-        "timezone_restrictions": [
-          -10,
-          -9,
-          -8,
-          -7,
-          -6,
-          -5,
-          14
-        ]
-      },
-      "source_type": "discovery_api",
-      "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Senior GEO/SEO Content Strategist",
-      "url": "https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
-      "valid_through": "1793873576",
-      "workplace_type": "remote"
-    },
     {
       "apply_url": "https://himalayas.app/companies/decisionpoint-corporation/jobs/software-product-management-lead-military-onesource-website",
       "canonical_url": "https://himalayas.app/companies/decisionpoint-corporation/jobs/software-product-management-lead-military-onesource-website",
@@ -1460,41 +122,1387 @@
       "workplace_type": "remote"
     },
     {
-      "apply_url": "https://weworkremotely.com/remote-jobs/zeta-global-senior-product-designer-ai",
-      "canonical_url": "https://weworkremotely.com/remote-jobs/zeta-global-senior-product-designer-ai",
-      "content_hash": "2b0a44734c21293f41814e0a4e27f8bf7e41b8c181649d299f00ea849312a1e5",
-      "description_excerpt": "Headquarters: Remote - United States WHO WE ARE Zeta Global (NYSE: ZETA) is the AI-Powered Marketing Cloud that leverages advanced artificial intelligence (AI) and trillions of consumer signals to make it easier for marketers to acquire, grow, and retain customers more efficiently. Through the Zeta Marketing Platform (ZMP), our vision is to make sophisticated marketing simple by unifying identity, intelligence, and omnichannel activation into a single platform – powered by one of the industry’s largest proprietary databases and AI. Our enterprise customers across multiple verticals are empowered to personalize experiences with consumers at an individual level across every channel, delivering better results for marketing programs. Zeta was founded in 2007 by David A. Steinberg and John Sculley and is headquartered in New York City with offices around the world. To learn more, go to www.zetaglobal.com . THE ROLE We're building Zeta Developer Platform , our next-generation Marketing Operating System, and we need a Senior Product Designer who will be instrumental to its success. This role is a pillar position that bridges design and engineering to create the core foundation of the Agen",
-      "employer": "Zeta Global",
-      "first_seen_at": "2026-09-08T10:40:57.138813+00:00",
+      "apply_url": "https://himalayas.app/companies/automattic/jobs/senior-counsel",
+      "canonical_url": "https://himalayas.app/companies/automattic/jobs/senior-counsel",
+      "content_hash": "ee4f2b918189f319c0f51983a8e7d999c993c2d796ca8dfbad336bff8b163fcf",
+      "description_excerpt": "Automattic , the company behind , Jetpack, WooCommerce, Tumblr and more, is seeking a talented attorney to support our product, privacy, and regulatory work. We’re looking for a versatile lawyer who gets things done with minimum friction, makes the complex seem simple, and can provide actionable advice to help business teams launch great products for our vibrant community of users. You’ll advise product, engineering, and marketing teams to launch new products that delight our users; untangle the complex web of global regulations that apply to Automattic ’s business; and protect free expression and the open web. Responsibilities: Advise product, engineering, and trust & safety teams on implementation of a broad assortment of regulations and industry standards, with a focus on content safety, consumer protection, intellectual property, privacy, and data security. Familiarity with laws like DSA, the UK and Australian Online Safety Acts, EU AI Act, and worldwide age-assurance laws is a major plus. Provide product counseling on a wide array of products relating to web hosting, site creation, content publication, ecommerce, social media, and more, using a business-forward approach that p",
+      "employer": "Automattic",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
       "ingestion_change": "new",
-      "last_seen_at": "2026-09-08T10:40:57.138813+00:00",
-      "listing_language": "en",
-      "location": "Anywhere in the World",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
       "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
       "origin_run_id": "ingestion-1788864064",
-      "published_at": "2026-08-18T20:32:19+00:00",
+      "published_at": "1788712814",
       "remote": true,
-      "review_key": "review:0597054c745f96b9daaaa00b3cd929f7ea620923c0b11dc0ced468752f3dd9d3",
-      "source_id": "we-work-remotely",
-      "source_instance": "we-work-remotely:programming",
-      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/zeta-global-senior-product-designer-ai",
+      "review_key": "review:13e0d1ac70a07d06c2dc0322f1feb5ee1103cab51a47525196f54c2e58d6dc7c",
+      "salary": {
+        "currency": "USD",
+        "max": 300000,
+        "min": 180000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/automattic/jobs/senior-counsel",
+      "source_metadata": {
+        "categories": [
+          "Legal-Counsel",
+          "Senior-Counsel",
+          "Privacy-Counsel",
+          "Regulatory-Affairs",
+          "Product-Counsel",
+          "Senior-Legal-Counsel",
+          "Senior-Associate-Counsel",
+          "Senior-Attorney",
+          "Senior-Lawyer",
+          "Senior-Corporate-Counsel",
+          "Senior-Litigation-Counsel",
+          "Senior-Staff-Attorney",
+          "Senior-Legal-Director",
+          "Senior-Legal-Advisor"
+        ],
+        "company_slug": "automattic",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/automattic/jobs/senior-counsel",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Counsel",
+      "url": "https://himalayas.app/companies/automattic/jobs/senior-counsel",
+      "valid_through": "1793896813",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pantheon/jobs/software-engineer-ii-collaborative-web-platform",
+      "canonical_url": "https://himalayas.app/companies/pantheon/jobs/software-engineer-ii-collaborative-web-platform",
+      "content_hash": "071116f0372d3833aa2582ec3d483eb0fb1426236296271d1db45b0ca8a0f1a0",
+      "description_excerpt": "About Pantheon Pantheon brings together exceptional builders who take ownership, drive meaningful impact, and shape what's next for the web. We power more than 300,000 websites globally for organizations including Google, Princeton, Salesloft, Clorox, and the United Nations. Every day, thousands of developers and marketers use our WebOps platform to build, iterate, and scale WordPress, Drupal, and Next.js sites that reach billions of people worldwide. As an employer, we operate with the same philosophy that drives our product: foundation and freedom. Pantheon is a vibrant, remote-forward team of experts who care deeply about their craft and results. Here, you take ownership of work that matters, contribute alongside exceptional people, and see the impact you create. The Opportunity Pantheon is building the next generation of web content infrastructure — a real-time, collaborative platform that redefines how teams create, publish, and manage content on the modern web. Content management has been largely unchanged for two decades. We are changing that. As a Software Engineer II on this team, you will be an early engineer on a founding-stage product with real momentum behind it. You w",
+      "employer": "Pantheon",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788716941",
+      "remote": true,
+      "review_key": "review:1c41fa6a7c8339ace994bc0cdbd4f5c5aa9a38c6e401ca04564b17685ab59ec5",
+      "salary": {
+        "currency": "USD",
+        "max": 145800,
+        "min": 116640,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pantheon/jobs/software-engineer-ii-collaborative-web-platform",
+      "source_metadata": {
+        "categories": [
+          "Software-Engineer",
+          "Fullstack-Development",
+          "Backend-Engineering",
+          "Frontend-Engineer",
+          "Web-Development",
+          "Software-Engineer-II",
+          "Collaboration-Platform-Engineer",
+          "Web-Platform-Engineer",
+          "Software-Engineer-Level-II",
+          "Developer"
+        ],
+        "company_slug": "pantheon",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pantheon/jobs/software-engineer-ii-collaborative-web-platform",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Software Engineer II - Collaborative Web Platform",
+      "url": "https://himalayas.app/companies/pantheon/jobs/software-engineer-ii-collaborative-web-platform",
+      "valid_through": "1793900940",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager-9067340267",
+      "canonical_url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager-9067340267",
+      "content_hash": "6f39fb7ff9669be6a986b1944ffd60cb1b1106e183167e790ec331193b396998",
+      "description_excerpt": "Senior Marketing Manager – Technical SEO, Growth & Marketing Operations Full-Time | Remote | U.S. Business Hours About the Role At Pavago , one of our clients is hiring a Senior Marketing Manager to lead and execute high-impact initiatives across Technical SEO, content, organic growth, website management, and marketing operations . This is a high-ownership role that combines strategic marketing thinking with hands-on execution. You’ll be responsible for driving organic growth, managing marketing systems and workflows, overseeing SEO and website initiatives, coordinating campaigns, and leveraging AI to improve marketing speed and scalability. If you’re an experienced marketer who can build the strategy and execute it independently , this role is a strong fit. What You’ll Own Technical SEO & Organic Growth Lead Technical SEO strategy and execution across: On-page optimization Technical audits Backlink strategies Keyword and organic growth planning Identify and resolve technical issues affecting rankings and organic visibility Monitor SEO performance and translate data into actionable improvements Stay current with evolving SEO, AIO, and AI-driven search strategies Collaborate with co",
+      "employer": "Pavago",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Philippines",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788731323",
+      "remote": true,
+      "review_key": "review:1d785dfc22d23f70d467c9c4458b91aa37c0bef8fef19d193b697ab463da2cb0",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/senior-marketing-manager-9067340267",
+      "source_metadata": {
+        "categories": [
+          "Senior-Marketing-Management",
+          "Marketing-Operations",
+          "SEO-Management",
+          "Growth-Marketing",
+          "Digital-Marketing",
+          "Technical-SEO",
+          "Content-Marketing",
+          "Senior-Marketing",
+          "Marketing-Manager"
+        ],
+        "company_slug": "pavago",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Philippines"
+        ],
+        "location_restrictions": [
+          "Philippines"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager-9067340267",
+        "timezone_restrictions": [
+          8
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Marketing Manager",
+      "url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager-9067340267",
+      "valid_through": "1793915322",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-2507751775",
+      "canonical_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-2507751775",
+      "content_hash": "48066dafd90c9c20ffe45f72dd8a60bcef637792fc59aefb1ac1ad654c7f0c5d",
+      "description_excerpt": "Description TripleTen is a career learning platform for people in a world being reshaped by AI. We help people learn the tech and AI skills to move into higher-paying roles and keep up as the economy shifts. Established in 2019, we are part of Nebius Group, a global leader in AI infrastructure. We work remotely across the US, Europe, LatAm, and beyond. About the role ﻿ Our brand and marketing team ships a lot with few people across several zones, and the small work has outgrown us: pages to update, articles to republish, tickets going stale, finished work nobody can find. This role picks that up and puts a system under it. The biggest recurring piece is the blog. Search engines were happy to leave a good article alone for a year; AI assistants are not, so everything we publish gets refreshed regularly. You’ll report to our Brand Director and work closely with a strong team of brand, organic and social media marketers, designers, and copywriter. What you will do Blog refresh: Work closely with our SEO/GEO Growth Engineer to update roughly 10-20 published articles a month with Claude. Update facts, tighten structure, put finished text live and check if its formatting, links, images,",
+      "employer": "TripleTen",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Portugal",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788752759",
+      "remote": true,
+      "review_key": "review:2e03e32a2443bb7ce4cf83cd43cfc4fde705753c026c76c680b7f6250dba70b1",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-2507751775",
+      "source_metadata": {
+        "categories": [
+          "Marketing",
+          "Brand-Marketing",
+          "Organic-Marketing",
+          "Content-Marketing",
+          "SEO",
+          "Marketing-Assistant",
+          "Marketing-and-Content-Assistant",
+          "Digital-Marketing-Assistant",
+          "Entry-Level-Marketing-Assistant",
+          "Marketing-Creative-Assistant",
+          "Social-Media-Marketing-Assistant",
+          "Marketing-Associate"
+        ],
+        "company_slug": "tripleten",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Portugal"
+        ],
+        "location_restrictions": [
+          "Portugal"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-2507751775",
+        "timezone_restrictions": [
+          -1,
+          0
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Assistant (Brand & Organic Marketing)",
+      "url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-2507751775",
+      "valid_through": "1793936758",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/ispeedtolead/jobs/seo-manager-6690247204",
+      "canonical_url": "https://himalayas.app/companies/ispeedtolead/jobs/seo-manager-6690247204",
+      "content_hash": "06c77a1c98c85736280b68ce81779974e66962953511e45cad97a60422cb3d45",
+      "description_excerpt": "About the company Turning marketing into a market-domination weapon, iSpeedToLead created a new category — the marketplace for future customers. Businesses shop for leads as they shop for products in e-commerce: they can see key details before buying, with more transparency, control, and predictable outcomes. iSpeedToLead helps real estate wholesalers, investors, flippers, and increasingly agents buy motivated home-seller leads — homeowners who want to sell their property — through a live lead marketplace. Why this role exists iSpeedToLead ranks well for its own brand name, but has very limited visibility beyond branded search today. The company currently ranks for roughly 50 keywords, while direct competitors rank for around 3,900, and that gap is especially visible in the non-branded real estate lead-generation terms that bring in new customers. We need someone who treats SEO as a strategy discipline, not a link-buying function — someone who can build a real keyword strategy for our niche, close the gap against named competitors, and get technical fixes actually shipped, not just recommended. Role overview We are looking for a Senior SEO Manager to own the search growth layer of",
+      "employer": "iSpeedtoLead",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Armenia, Azerbaijan, Bulgaria, Egypt, Georgia, Germany, Hungary, Indonesia, Kazakhstan, Moldova, Netherlands, Poland, Romania, Serbia, Spain, Ukraine",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788748169",
+      "remote": true,
+      "review_key": "review:2fa508b2f447f2257962f4ebc9d4fec81f1d9fba7eb633be35db6917ef6a7ae4",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/ispeedtolead/jobs/seo-manager-6690247204",
+      "source_metadata": {
+        "categories": [
+          "SEO-Manager",
+          "SEO-Marketing-Manager",
+          "SEO-SEM-Manager",
+          "SEO-Content-Manager",
+          "SEO-Strategy-Manager",
+          "SEO-Management",
+          "Freelance-SEO-Manager",
+          "Senior-SEO-Manager",
+          "SEO-Account-Manager"
+        ],
+        "company_slug": "ispeedtolead",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Armenia",
+          "Azerbaijan",
+          "Bulgaria",
+          "Egypt",
+          "Georgia",
+          "Germany",
+          "Hungary",
+          "Indonesia",
+          "Kazakhstan",
+          "Moldova",
+          "Netherlands",
+          "Poland",
+          "Romania",
+          "Serbia",
+          "Spain",
+          "Ukraine"
+        ],
+        "location_restrictions": [
+          "Armenia",
+          "Azerbaijan",
+          "Bulgaria",
+          "Egypt",
+          "Georgia",
+          "Germany",
+          "Hungary",
+          "Indonesia",
+          "Kazakhstan",
+          "Moldova",
+          "Netherlands",
+          "Poland",
+          "Romania",
+          "Serbia",
+          "Spain",
+          "Ukraine"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/ispeedtolead/jobs/seo-manager-6690247204",
+        "timezone_restrictions": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          8,
+          9
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "SEO Manager",
+      "url": "https://himalayas.app/companies/ispeedtolead/jobs/seo-manager-6690247204",
+      "valid_through": "1793932168",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/dms-international/jobs/ui-ux-design-intern",
+      "canonical_url": "https://himalayas.app/companies/dms-international/jobs/ui-ux-design-intern",
+      "content_hash": "cb517ba3307b1c5a2b8bcdd266e5c7623635feec86e5edd647d808eee71f1be8",
+      "description_excerpt": "Data Management Services, Inc. ( DMS International ) is a professional services firm headquartered in Silver Spring, Maryland, with work locations throughout the continental United States. We prepare managers and executives to lead their workforce through customized learning solutions that drive the standards of an ever-changing world. We build creative, unique, and engaging learning experiences for commercial, civilian and defense organizations. Our high-caliber talent, delivery methodology and innovative solutions contribute to preparing a workforce that is ready for the future. You can join us on this journey to bring efficiency and creativity to our customers. At DMS, we are the catalyst for effective workforce transformation. To achieve this, we hire professionals who take pride in doing quality work and who are excited about contributing to the professional development of tomorrow's leaders. DMS seeks candidates that possess and display the attributes that reflect our Core Values of: Quality in delivering solutions Leadership Teamwork Innovation Integrity in conduct Responsiveness to our customer’s mission. DMS International is an Equal Opportunity Employer. We make employmen",
+      "employer": "DMS International",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788854708",
+      "remote": true,
+      "review_key": "review:5684cfbc573c700d6a4038b119093564b998cb22dd51b770af1c671eb902f53a",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/dms-international/jobs/ui-ux-design-intern",
+      "source_metadata": {
+        "categories": [
+          "UI-UX-Design",
+          "Graphic-Design",
+          "Web-Design",
+          "Digital-Design",
+          "UX-Research",
+          "UI-UX-Design-Intern",
+          "UX-UI-Design-Intern",
+          "UX-Design-Intern",
+          "UX-Design-Internship",
+          "User-Experience-Intern",
+          "Summer-Internship-In-UI-UX-Design",
+          "UX-Internship",
+          "Experience-Design-Intern",
+          "Product-Design-Intern",
+          "UX-Research-Intern"
+        ],
+        "company_slug": "dms-international",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/dms-international/jobs/ui-ux-design-intern",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "UI/UX Design Intern",
+      "url": "https://himalayas.app/companies/dms-international/jobs/ui-ux-design-intern",
+      "valid_through": "1794038706",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/incupresa-gmbh/jobs/werkstudent-m-w-d-digital-marketing-content-creation-133509109",
+      "canonical_url": "https://himalayas.app/companies/incupresa-gmbh/jobs/werkstudent-m-w-d-digital-marketing-content-creation-133509109",
+      "content_hash": "d5db2db911cd896f752aa611cd7871374d5a3128ccd940034396d5aea68d3714",
+      "description_excerpt": "Du hast Lust, wirklich was zu bewegen? Du suchst eine Möglichkeit, massiv zu lernen und Deine Komfortzone zu verlassen? Du brauchst kreative Freiheit und bist proaktiv? Du willst vielleicht selbst mal eine Firma aufbauen? Dann bist Du bei uns genau richtig. Wir, die incupresa GmbH , bauen profitable Unternehmen von Grund auf. Das hier ist keine normale Stelle in einem Konzern oder Mittelständler, wo man sich verstecken kann oder vorgefertigten Wegen folgt. Hier kannst und musst Du erfinderisch sein, um die Ecke denken und eigene Ideen haben. Entrepreneurship ist unsere DNA! Viele suchen Intrapreneur:innen, haben aber Angst vor echten Entrepreneur:innen im eigenen Unternehmen. Wir nicht. Wir sehen es als Chance! Wir glauben, dass man nur dann wirklich gut wird, wenn man versteht, wie man Dinge von Grund auf aufbaut. Deshalb fördern wir Eigeninitiative: Wenn Du eigene Projekte hast oder nebenher etwas aufbauen willst, blockieren wir das nicht, sondern unterstützen Dich dabei und wachsen gemeinsam. Warum wir das tun, erzählen wir Dir gerne im Bewerbungsgespräch, wenn Du danach fragst. Aufgaben Deine primäre Mission Wir suchen jemanden für den Aufbau unserer Sichtbarkeit und den einhei",
+      "employer": "incupresa GmbH",
+      "employment_type": "Intern",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Germany",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788757341",
+      "remote": true,
+      "review_key": "review:79dbdded88133d8802a5645a60b334cd84611da2e9b2f6488aca0e7dfadf3e43",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/incupresa-gmbh/jobs/werkstudent-m-w-d-digital-marketing-content-creation-133509109",
+      "source_metadata": {
+        "categories": [
+          "Digital-Marketing",
+          "Content-Creation",
+          "Social-Media-Marketing",
+          "Marketing-Communications",
+          "Video-Content-Creation",
+          "Marketing-Werkstudent",
+          "Content-Marketing-Intern",
+          "Digital-Marketing-Intern",
+          "Working-Student-Digital-Marketing",
+          "Digital-Content-Intern",
+          "Marketing",
+          "Content-Creator"
+        ],
+        "company_slug": "incupresa-gmbh",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Germany"
+        ],
+        "location_restrictions": [
+          "Germany"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/incupresa-gmbh/jobs/werkstudent-m-w-d-digital-marketing-content-creation-133509109",
+        "timezone_restrictions": [
+          1
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Werkstudent (m/w/d) Digital Marketing & Content Creation",
+      "url": "https://himalayas.app/companies/incupresa-gmbh/jobs/werkstudent-m-w-d-digital-marketing-content-creation-133509109",
+      "valid_through": "1793941340",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/progroupx/jobs/web-designer",
+      "canonical_url": "https://himalayas.app/companies/progroupx/jobs/web-designer",
+      "content_hash": "fdd4d69a2a4a7993f39700831fb30f3ae70c334e710a6f7f7ce51bdd44a3de04",
+      "description_excerpt": "proGROUPX is looking for a passionate, proactive, and inventive Web Designer to join our Design department. The Web Designer will primarily work on pGX’s network of job search brands. The Web Designer will work directly on our products by prototyping, designing, and building user interfaces for our web brands using some of the latest frameworks, techniques, and best practices. In the Web Designer role, you’ll tackle complex tasks and transform them into intuitive, accessible, and easy-to-use designs. Achieving this goal requires collaboration with other Designers, Software Engineers, and Product Managers throughout the design process, as well as communicating your design ideas to project stakeholders. Please include URLs for an online portfolio in addition to resume. Submissions without a portfolio included will not be considered. Responsibilities Create and update existing corporate and product websites Advanced understanding of design tools such as Adobe Creative Suite, Figma, or Sketch Create responsive HTML email templates Create brand collateral for corporate properties Prioritize projects, communicate progress, and meet milestones and deadlines Translate analytical data into",
+      "employer": "proGroupX",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788774361",
+      "remote": true,
+      "review_key": "review:829085d47a5e8b8aaea1fc97de2cd3e75ca6db73b4e070bdc6c396236c04fafc",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/progroupx/jobs/web-designer",
+      "source_metadata": {
+        "categories": [
+          "Web-Design",
+          "UI-UX-Design",
+          "Product-Design",
+          "Graphic-Design",
+          "Frontend-Development",
+          "Web-Designer",
+          "Website-Designer",
+          "Graphic-Web-Designer",
+          "Freelance-Web-Designer",
+          "Web-App-Designer",
+          "Site-Designer",
+          "WordPress-Designer",
+          "WordPress-Web-Designer"
+        ],
+        "company_slug": "progroupx",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/progroupx/jobs/web-designer",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Web Designer",
+      "url": "https://himalayas.app/companies/progroupx/jobs/web-designer",
+      "valid_through": "1793958360",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/hip/jobs/director-of-web",
+      "canonical_url": "https://himalayas.app/companies/hip/jobs/director-of-web",
+      "content_hash": "d71f0a9784db2a102465cdcafb66a8b7573048ea99b08b8772007f3c4fa92335",
+      "description_excerpt": "ION is looking for a Director of Web to own web strategy and delivery end-to-end across HIP and Neon Canvas: partner website design, development, launches, and maintenance, including coordination of third-party vendors. If you've led web delivery at scale, unified two brands under one operating model, and want a seat where you set the standard instead of following one, we want to talk to you. This is not a hands-on-keyboard build or QA role. The best fit has already run a web function at a similar-size agency, managing multi-client web delivery across 500-plus accounts, and has personally unified two brands or logos under one umbrella into a single operating model. You won't be building or QA'ing sites; your Team Leads and their specialists own that. Your job is to lead the leaders, set the strategy, own the numbers, and keep HIP and Neon Canvas ahead of every competing agency. As Director of Web, you'll lead the Web Team Leads across both brands, unify HIP and Neon Canvas's web ways of working into one operating model, and own on-time delivery, quality, client retention, delivery margin, and growth. You'll also own innovation for the seat: scouting emerging build and design practi",
+      "employer": "HIP",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788849159",
+      "remote": true,
+      "review_key": "review:840b4ca850cb652e527905cf37b4fd8892baa7edfb08726716a7acb8894a2372",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/hip/jobs/director-of-web",
+      "source_metadata": {
+        "categories": [
+          "Web-Strategy",
+          "Digital-Operations",
+          "Agency-Management",
+          "Web-Leadership",
+          "Digital-Leadership",
+          "Web-Development-Director",
+          "Head-Of-Web",
+          "Director-Of-Digital"
+        ],
+        "company_slug": "hip",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/hip/jobs/director-of-web",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Director of Web",
+      "url": "https://himalayas.app/companies/hip/jobs/director-of-web",
+      "valid_through": "1794033159",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing",
+      "canonical_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing",
+      "content_hash": "4a40bbdb64539506a31e5a2b9b693c80875c0528dd05a08574ff47e85400ac63",
+      "description_excerpt": "Description TripleTen is a career learning platform for people in a world being reshaped by AI. We help people learn the tech and AI skills to move into higher-paying roles and keep up as the economy shifts. Established in 2019, we are part of Nebius Group, a global leader in AI infrastructure. We work remotely across the US, Europe, LatAm, and beyond. About the role ﻿ Our brand and marketing team ships a lot with few people across several zones, and the small work has outgrown us: pages to update, articles to republish, tickets going stale, finished work nobody can find. This role picks that up and puts a system under it. The biggest recurring piece is the blog. Search engines were happy to leave a good article alone for a year; AI assistants are not, so everything we publish gets refreshed regularly. You’ll report to our Brand Director and work closely with a strong team of brand, organic and social media marketers, designers, and copywriter. What you will do Blog refresh: Work closely with our SEO/GEO Growth Engineer to update roughly 10-20 published articles a month with Claude. Update facts, tighten structure, put finished text live and check if its formatting, links, images,",
+      "employer": "TripleTen",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Serbia",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788750621",
+      "remote": true,
+      "review_key": "review:9f88e5ccb5573ddfa3b24991f637e3ed1c2791f7b7e78700155ad4ae0cccb682",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Assistant",
+          "Brand-Marketing",
+          "Content-Marketing",
+          "Organic-Marketing",
+          "Digital-Marketing",
+          "Marketing-and-Content-Assistant",
+          "Digital-Marketing-Assistant",
+          "Entry-Level-Marketing-Assistant",
+          "Marketing-Creative-Assistant",
+          "Social-Media-Marketing-Assistant",
+          "Marketing-Associate"
+        ],
+        "company_slug": "tripleten",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Serbia"
+        ],
+        "location_restrictions": [
+          "Serbia"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing",
+        "timezone_restrictions": [
+          1
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Assistant (Brand & Organic Marketing)",
+      "url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing",
+      "valid_through": "1793934621",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-368022916",
+      "canonical_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-368022916",
+      "content_hash": "ab8f9efe6c34d775b23a3627ed4f2e32d541bee107027ebf89425babe43a5ec5",
+      "description_excerpt": "Description TripleTen is a career learning platform for people in a world being reshaped by AI. We help people learn the tech and AI skills to move into higher-paying roles and keep up as the economy shifts. Established in 2019, we are part of Nebius Group, a global leader in AI infrastructure. We work remotely across the US, Europe, LatAm, and beyond. About the role ﻿ Our brand and marketing team ships a lot with few people across several zones, and the small work has outgrown us: pages to update, articles to republish, tickets going stale, finished work nobody can find. This role picks that up and puts a system under it. The biggest recurring piece is the blog. Search engines were happy to leave a good article alone for a year; AI assistants are not, so everything we publish gets refreshed regularly. You’ll report to our Brand Director and work closely with a strong team of brand, organic and social media marketers, designers, and copywriter. What you will do Blog refresh: Work closely with our SEO/GEO Growth Engineer to update roughly 10-20 published articles a month with Claude. Update facts, tighten structure, put finished text live and check if its formatting, links, images,",
+      "employer": "TripleTen",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Georgia",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788807722",
+      "remote": true,
+      "review_key": "review:aca2ab3d85d0094ec0143e8441331b5b524d80f4ba1867b332eb4cc6f7a705ae",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-368022916",
+      "source_metadata": {
+        "categories": [
+          "Marketing",
+          "Brand-Marketing",
+          "Organic-Marketing",
+          "Content-Marketing",
+          "Digital-Marketing",
+          "Marketing-Assistant",
+          "Marketing-and-Content-Assistant",
+          "Digital-Marketing-Assistant",
+          "Entry-Level-Marketing-Assistant",
+          "Marketing-Creative-Assistant",
+          "Social-Media-Marketing-Assistant",
+          "Marketing-Associate"
+        ],
+        "company_slug": "tripleten",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Georgia"
+        ],
+        "location_restrictions": [
+          "Georgia"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-368022916",
+        "timezone_restrictions": [
+          4
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Assistant (Brand & Organic Marketing)",
+      "url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-368022916",
+      "valid_through": "1793991720",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/clearstar-inc/jobs/senior-marketing-specialist",
+      "canonical_url": "https://himalayas.app/companies/clearstar-inc/jobs/senior-marketing-specialist",
+      "content_hash": "9bc73d6b134402df8c38bb2730758f7df9d65144105eee702caedd5db7ab57c5",
+      "description_excerpt": "ClearStar offers employers valuable employment intelligence to better support their recruiting and decision-making by increasing the quality, reliability, and visibility of information through background and medical screening. A seven-time Inc. 5000 honoree and founding member of the Professional Background Screening Association (PBSA, formerly NAPBS), ClearStar has provided innovative technology solutions to businesses in the human capital management industry from its corporate offices in Alpharetta, Georgia, since 1995. Since 2020, ClearStar has been a portfolio company of Hanover Investor Management, a London-based private equity firm. By joining ClearStar, you will have the unique opportunity to learn from industry leaders while making an impact on the lives of others. No matter where you are located, you're a valued member of the team. In our remote-first culture, we value trust, flexibility, outcomes and results. You will have access to digital tools and resources that keep everyone connected and collaboration at the forefront. We believe that success comes from empowered individuals working together, and we're committed to ensuring you feel supported, engaged, and set up for",
+      "employer": "ClearStar, Inc.",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788720439",
+      "remote": true,
+      "review_key": "review:aea4889e5d3218548d5a91ae15145fe16d9838738612562fab04326686f92d03",
+      "salary": {
+        "currency": "USD",
+        "max": 77500,
+        "min": 65000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/clearstar-inc/jobs/senior-marketing-specialist",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Specialist",
+          "Digital-Marketing",
+          "Content-Marketing",
+          "SEO-SEM",
+          "Social-Media-Marketing",
+          "Senior-Marketing-Specialist",
+          "Senior-B2B-Marketing-Specialist",
+          "Senior-Marketing-Associate",
+          "Senior-Associate-Marketing",
+          "Senior-Marketing-Analytics-Specialist",
+          "Senior-Marketing",
+          "Senior-Developer-Marketing-Specialist",
+          "Senior-SaaS-Marketing-Specialist"
+        ],
+        "company_slug": "clearstar-inc",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/clearstar-inc/jobs/senior-marketing-specialist",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Marketing Specialist",
+      "url": "https://himalayas.app/companies/clearstar-inc/jobs/senior-marketing-specialist",
+      "valid_through": "1793904438",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/great-minds/jobs/senior-web-developer-8426026419",
+      "canonical_url": "https://himalayas.app/companies/great-minds/jobs/senior-web-developer-8426026419",
+      "content_hash": "133531448faf6c38b152b5a9e7a9b61818faf18f3c80442c2f70ac44dd3909c3",
+      "description_excerpt": "Who We Are Great Minds is a high-growth, mission-driven organization founded by educators in 2007. As a for-profit, Public Benefit Corporation, we believe all students deserve access to meaningful, challenging content—and all teachers deserve tools that are intuitive, effective, and built for the realities of today’s classrooms. We develop high-quality, knowledge-rich math, science and ELA curricula grounded in research and designed in collaboration with educators. Our materials reflect real classroom needs and are built to drive lasting student outcomes. We are committed to usability, coherence, and practical implementation—supporting teachers not just through curriculum, but with professional learning, purposeful technology, and responsive service that enable strong adoption and impact. What We Build Our products— Eureka Math and Eureka Math², Wit & Wisdom , PhD Science, Geodes , and the newly launched Arts & Letters ELA —are trusted by thousands of schools and districts nationwide. Eureka Math is the most widely used math curriculum in the U.S., and is focused on balancing conceptual understanding, procedural fluency, and application. Wit & Wisdom® and Arts & Letters ELA™ anchor",
+      "employer": "Great Minds",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788726485",
+      "remote": true,
+      "review_key": "review:c62dd404c327673bdcfca7c1b9565ba33328d7b97b489640bc50cf8bc239d443",
+      "salary": {
+        "currency": "USD",
+        "max": 114000,
+        "min": 104000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/great-minds/jobs/senior-web-developer-8426026419",
+      "source_metadata": {
+        "categories": [
+          "Senior-Web-Developer",
+          "Frontend-Development",
+          "Web-Development",
+          "WordPress-Development",
+          "CMS-Development",
+          "Senior-Web-Development",
+          "Senior-Web-Engineer",
+          "Senior-Front-End-Developer",
+          "Senior-Web-Engineering",
+          "Senior-Developer",
+          "Senior-Frontend-Development",
+          "Senior-JavaScript-Developer",
+          "Senior-Fullstack-Web-Application-Developer",
+          "Web-Developer"
+        ],
+        "company_slug": "great-minds",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/great-minds/jobs/senior-web-developer-8426026419",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Web Developer",
+      "url": "https://himalayas.app/companies/great-minds/jobs/senior-web-developer-8426026419",
+      "valid_through": "1793910484",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/committee-to-protect-journalists/jobs/specialist-editor-asia-pacific",
+      "canonical_url": "https://himalayas.app/companies/committee-to-protect-journalists/jobs/specialist-editor-asia-pacific",
+      "content_hash": "11a81ac0506b5cb96146775e784c0afee083398ab3bbf6e55bf088b6d19928ca",
+      "description_excerpt": "Job Title: Specialist Editor, Asia-Pacific Department: Programs, Asia-Pacific Compensation: Determined based on skills and experience and local market ranges. See below for more information. Location/Workspace Designation: Remote, based in the Asia-Pacific region. Country/city is flexible. Reports to Title: Regional Director, Asia-Pacific Closing Date: September 20, 2026 Organization Overview: Founded in 1981, the Committee to Protect Journalists (“CPJ”) is an independent, non-profit organization defending journalists worldwide without regard to their political ideology. Through its work to safeguard journalists, CPJ protects the rights of all people to have access to diverse and independent sources of information. For over four decades, CPJ has helped win the early release of imprisoned journalists, secure convictions in journalist murders, and enable legal reform in countries where free expression has deteriorated. CPJ’s widely cited database and reports have raised global awareness of attacks on press freedom. Learn more about CPJ’s fight to defend freedom of the press here At CPJ, we are dedicated to upholding values of equity and free expression in both our internal operations",
+      "employer": "Committee to Protect Journalists",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Taiwan",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788711727",
+      "remote": true,
+      "review_key": "review:cbb958c4534fdcb4ba7f7ac4e7fd94c1970d524ad59ec4cd024e6ac3f08680e0",
+      "salary": {
+        "currency": "TWD",
+        "max": 1630000,
+        "min": 1395000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/committee-to-protect-journalists/jobs/specialist-editor-asia-pacific",
+      "source_metadata": {
+        "categories": [
+          "Editorial",
+          "News-Editor",
+          "Content-Editing",
+          "Asia-Pacific-Programs",
+          "Publishing",
+          "Editorial-Specialist",
+          "Regional-Content-Specialist"
+        ],
+        "company_slug": "committee-to-protect-journalists",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Taiwan"
+        ],
+        "location_restrictions": [
+          "Taiwan"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/committee-to-protect-journalists/jobs/specialist-editor-asia-pacific",
+        "timezone_restrictions": [
+          8
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Specialist Editor, Asia-Pacific",
+      "url": "https://himalayas.app/companies/committee-to-protect-journalists/jobs/specialist-editor-asia-pacific",
+      "valid_through": "1793895726",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-wireperson-trant-engineering-limited-1137221",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-wireperson-trant-engineering-limited-1137221",
+      "content_hash": "e70590971c3c78b6bf03091fa38199f223e076170299915d3efe59d27e91ebd3",
+      "description_excerpt": "Description Trant Te-Tech design, custom build and install a wide range of high quality control panels, motor control centres (MCCs) and automation systems, offering conventional, intelligent and withdrawable systems with outstanding reliability and functionality. We are currently looking for a proven Wireperson to join our workshop based near Totton, Southampton. The Role The Wire Person is responsible for the accurate assembly and wiring of control panels, MCCs, and automation systems in accordance with electrical drawings, specifications, and applicable standards. The role plays a key part in ensuring assemblies meet quality, safety, and compliance requirements prior to inspection and testing. What Youll Be Doing Technical Responsibilities - Panel & MCC Wiring Carry out wiring of control panels, MCCs, and automation systems to approved schematics and wiring diagrams. Install and terminate power, control, and instrumentation cabling. Assemble and wire MCCs and control panels. Ensure correct segregation, routing and termination in line with design and compliance requirements. Technical Support & Collaboration Accurately interpret electrical schematics, wiring diagrams, BOMs, and g",
+      "employer": "TRANT ENGINEERING LIMITED",
+      "first_seen_at": "2026-09-08T10:40:57.394748+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-08T10:40:57.394748+00:00",
+      "listing_language": "en",
+      "location": "Southampton,",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "2026-08-30T03:30:01+00:00",
+      "remote": true,
+      "review_key": "review:cd3be93223e386b2a75a9c40a219885d61259401b58dc2de694a821d7dff6626",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137221",
       "source_metadata": {
         "attribution_required": true,
         "canonical_verification_required": true,
-        "categories": [
-          "Full-Stack Programming"
-        ],
-        "provider": "weworkremotely"
+        "epoch": 1788060601,
+        "provider": "remoteok",
+        "provider_job_id": "1137221",
+        "slug": "remote-wireperson-trant-engineering-limited-1137221",
+        "tags": [
+          "testing",
+          "sys admin",
+          "education",
+          "finance",
+          "scheme",
+          "non tech",
+          "customer support",
+          "marketing",
+          "admin",
+          "ops",
+          "exec",
+          "virtual assistant",
+          "microsoft",
+          "sales",
+          "design",
+          "technical",
+          "supervisor",
+          "assembly",
+          "engineer",
+          "digital nomad"
+        ]
       },
       "source_type": "job_board",
-      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
-      "title": "Senior Product Designer, AI",
-      "url": "https://weworkremotely.com/remote-jobs/zeta-global-senior-product-designer-ai",
+      "source_url": "https://remoteok.com/api",
+      "title": "Wireperson",
+      "url": "https://remoteOK.com/remote-jobs/remote-wireperson-trant-engineering-limited-1137221",
       "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-366035806",
+      "canonical_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-366035806",
+      "content_hash": "f977f397356dcdbb973f67a735de79894bbdd6c9dd706f6c3a72c0bbe96990da",
+      "description_excerpt": "Description TripleTen is a career learning platform for people in a world being reshaped by AI. We help people learn the tech and AI skills to move into higher-paying roles and keep up as the economy shifts. Established in 2019, we are part of Nebius Group, a global leader in AI infrastructure. We work remotely across the US, Europe, LatAm, and beyond. About the role ﻿ Our brand and marketing team ships a lot with few people across several zones, and the small work has outgrown us: pages to update, articles to republish, tickets going stale, finished work nobody can find. This role picks that up and puts a system under it. The biggest recurring piece is the blog. Search engines were happy to leave a good article alone for a year; AI assistants are not, so everything we publish gets refreshed regularly. You’ll report to our Brand Director and work closely with a strong team of brand, organic and social media marketers, designers, and copywriter. What you will do Blog refresh: Work closely with our SEO/GEO Growth Engineer to update roughly 10-20 published articles a month with Claude. Update facts, tighten structure, put finished text live and check if its formatting, links, images,",
+      "employer": "TripleTen",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788762078",
+      "remote": true,
+      "review_key": "review:d1ae49080ac244e8147ecbf5bd5c3077013284d8d24234d6bd587f5a6e4b9479",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-366035806",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Assistant",
+          "Brand-Marketing",
+          "Content-Marketing",
+          "Digital-Marketing",
+          "Marketing-Operations",
+          "Marketing-and-Content-Assistant",
+          "Digital-Marketing-Assistant",
+          "Entry-Level-Marketing-Assistant",
+          "Marketing-Creative-Assistant",
+          "Social-Media-Marketing-Assistant",
+          "Marketing-Associate",
+          "Marketing"
+        ],
+        "company_slug": "tripleten",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-366035806",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Assistant (Brand & Organic Marketing)",
+      "url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-366035806",
+      "valid_through": "1793946077",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-8037023627",
+      "canonical_url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-8037023627",
+      "content_hash": "3f2b39c9af7e111197f537506630d5a9b54b74d1b68fa8738cdabe9c82e95c12",
+      "description_excerpt": "Description TripleTen is a career learning platform for people in a world being reshaped by AI. We help people learn the tech and AI skills to move into higher-paying roles and keep up as the economy shifts. Established in 2019, we are part of Nebius Group, a global leader in AI infrastructure. We work remotely across the US, Europe, LatAm, and beyond. About the role ﻿ Our brand and marketing team ships a lot with few people across several zones, and the small work has outgrown us: pages to update, articles to republish, tickets going stale, finished work nobody can find. This role picks that up and puts a system under it. The biggest recurring piece is the blog. Search engines were happy to leave a good article alone for a year; AI assistants are not, so everything we publish gets refreshed regularly. You’ll report to our Brand Director and work closely with a strong team of brand, organic and social media marketers, designers, and copywriter. What you will do Blog refresh: Work closely with our SEO/GEO Growth Engineer to update roughly 10-20 published articles a month with Claude. Update facts, tighten structure, put finished text live and check if its formatting, links, images,",
+      "employer": "TripleTen",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Spain",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788781020",
+      "remote": true,
+      "review_key": "review:d88e8913155d28b56cdba5c9c83ff162e89b1328c02d329d96faaeac8f84c271",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-8037023627",
+      "source_metadata": {
+        "categories": [
+          "Marketing",
+          "Brand-Marketing",
+          "Marketing-Operations",
+          "Content-Marketing",
+          "Digital-Marketing",
+          "Marketing-Assistant",
+          "Marketing-and-Content-Assistant",
+          "Digital-Marketing-Assistant",
+          "Entry-Level-Marketing-Assistant",
+          "Marketing-Creative-Assistant",
+          "Social-Media-Marketing-Assistant",
+          "Marketing-Associate"
+        ],
+        "company_slug": "tripleten",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Spain"
+        ],
+        "location_restrictions": [
+          "Spain"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-8037023627",
+        "timezone_restrictions": [
+          0,
+          1
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Assistant (Brand & Organic Marketing)",
+      "url": "https://himalayas.app/companies/tripleten/jobs/marketing-assistant-brand-organic-marketing-8037023627",
+      "valid_through": "1793965019",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/seamless-assist/jobs/automation-ai-developer-53330973",
+      "canonical_url": "https://himalayas.app/companies/seamless-assist/jobs/automation-ai-developer-53330973",
+      "content_hash": "7fb318ecad8d7dc8371b2c8228b77b3a1a9d1d7657365f98d9edcb4932cd02c0",
+      "description_excerpt": "Automation & AI Developer (Remote) Location: Remote Type: Full-time (40 hrs/week) Hours: Must overlap with US Pacific Time Role Overview We are hiring an Automation & AI Developer to design and build AI-powered systems that improve business operations. This role combines technical execution with strategic thinking. You will assess workflows, identify automation opportunities, and build scalable solutions using AI tools and automation platforms. You'll also create clear documentation and enable non-technical teams to operate systems independently. This is a client-facing role requiring both strong technical ability and the ability to communicate solutions clearly. Key Responsibilities AI Strategy & Solution Design Analyze business operations and identify automation opportunities Define clear automation hypotheses and expected outcomes Design scalable AI and automation architectures Present recommendations to stakeholders Automation Development Build end-to-end automations using tools like Zapier or Make Integrate AI tools (e.g., ChatGPT, Claude) into workflows Test, deploy, and optimize automation systems Create reusable templates and systems Systems & Infrastructure Manage and main",
+      "employer": "Seamless Assist",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "India",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788726422",
+      "remote": true,
+      "review_key": "review:daf94710dcda4c59c46590d57284f0554fa38bfab49e7ca314da82b0b31bff58",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/seamless-assist/jobs/automation-ai-developer-53330973",
+      "source_metadata": {
+        "categories": [
+          "Automation-Development",
+          "AI-Development",
+          "Workflow-Automation",
+          "No-Code-Automation",
+          "Process-Automation",
+          "AI-Automation-Developer",
+          "Automation-Developer",
+          "AI-And-Automation-Specialist",
+          "AI-Automation-Engineer",
+          "AI-Automations-Engineer",
+          "Intelligent-Automation-Developer",
+          "AI-Automation-Specialist"
+        ],
+        "company_slug": "seamless-assist",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "India"
+        ],
+        "location_restrictions": [
+          "India"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/seamless-assist/jobs/automation-ai-developer-53330973",
+        "timezone_restrictions": [
+          5.5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Automation & AI Developer",
+      "url": "https://himalayas.app/companies/seamless-assist/jobs/automation-ai-developer-53330973",
+      "valid_through": "1793910421",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/thinkmotive/jobs/marketing-project-manager-web-operations",
+      "canonical_url": "https://himalayas.app/companies/thinkmotive/jobs/marketing-project-manager-web-operations",
+      "content_hash": "057fcbbbbba5f4ae5ce8a9b1f855c0b6e69e20e960330819ffa934fa1588c51b",
+      "description_excerpt": "Who we are: Motive empowers the people who run physical operations with tools to make their work safer, more productive, and more profitable. For the first time ever, safety, operations and finance teams can manage their drivers, vehicles, equipment, and fleet related spend in a single system. Combined with industry leading AI, the Motive platform gives you complete visibility and control, and significantly reduces manual workloads by automating and simplifying tasks. Motive serves nearly 100,000 customers – from Fortune 500 enterprises to small businesses – across a wide range of industries, including transportation and logistics, construction, energy, field service, manufacturing, agriculture, food and beverage, retail, and the public sector. Visit to learn more. About the Role As a Web & Operations Project Manager at Motive , you will help drive the execution of high-impact marketing initiatives by bringing structure, clarity, and momentum to cross-functional technical work. You will own project plans for programs and lead key components of larger web, ops, and search initiatives, ensuring stakeholders stay aligned on scope, timelines, dependencies, and delivery expectations. In",
+      "employer": "Motive",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Pakistan",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788731793",
+      "remote": true,
+      "review_key": "review:e285f3e3a34264b9aaac47381a304827dd79cbea088ef14de47f0b398c796e32",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/thinkmotive/jobs/marketing-project-manager-web-operations",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Project-Management",
+          "Web-:-Project-Management",
+          "Marketing-Operations",
+          "SEO-Project-Management",
+          "Technical-Project-Management",
+          "Digital-Marketing-Project-Manager",
+          "Marketing-Project-Lead",
+          "Marketing-Operations-Manager",
+          "Marketing-Project-Leader",
+          "B2B-Marketing-Project-Manager",
+          "Marketing-Project-Managers",
+          "Digital-Marketing-Operations-Manager",
+          "Operations-And-Marketing-Manager",
+          "Project-Manager",
+          "Operations",
+          "Marketing"
+        ],
+        "company_slug": "thinkmotive",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Pakistan"
+        ],
+        "location_restrictions": [
+          "Pakistan"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/thinkmotive/jobs/marketing-project-manager-web-operations",
+        "timezone_restrictions": [
+          5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Project Manager - Web & Operations",
+      "url": "https://himalayas.app/companies/thinkmotive/jobs/marketing-project-manager-web-operations",
+      "valid_through": "1793915792",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/wp-engine/jobs/sr-director-digital-experience-and-channels",
+      "canonical_url": "https://himalayas.app/companies/wp-engine/jobs/sr-director-digital-experience-and-channels",
+      "content_hash": "713293ecea4b2fb33dc9c57ffa6f3993e1f3a070f47f56556b76d8a84b204e57",
+      "description_excerpt": "We engage the most inspired minds to do their best work wherever they work best—powering the freedom to create worldwide. WP Engine empowers companies and agencies of all sizes to build, power, manage, and optimize their WordPress websites and applications with confidence. Serving 1.5 million customers across 150+ countries, the global technology company provides premium, enterprise-grade solutions, tools, and services, including specialized platforms for WordPress, industry-tailored eCommerce and agency solution suites, and developer-centric tools like Local, Advanced Custom Fields, and more. WP Engine ’s innovative technology and industry-leading expertise are why 8% of the web visits a WP Engine -powered site daily. Learn more at wpengine.com. What is Cool About This Job Customers experience a company through the combined effect of its website, search presence, paid media, social channels, email, events, and digital journeys. As the Sr. Director, Digital Experience and Channels, you will own that connected execution system for WP Engine . You will lead the website as a product and bring together digital experience, conversion, SEO and GEO, paid media, prospect nurture, organic c",
+      "employer": "WP Engine",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788827294",
+      "remote": true,
+      "review_key": "review:f1c402ca84ede0cddd87fb2069dfdfb91ff892556fac6c580d1325bbe7fbe14e",
+      "salary": {
+        "currency": "USD",
+        "max": 253000,
+        "min": 184000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/wp-engine/jobs/sr-director-digital-experience-and-channels",
+      "source_metadata": {
+        "categories": [
+          "Digital-Experience",
+          "Digital-Marketing-Leadership",
+          "Growth-Leadership",
+          "Channel-Strategy",
+          "Performance-Marketing",
+          "Senior-Digital-Experience-Manager",
+          "Senior-Digital-Channel-Manager",
+          "Digital-Experience-Design-Director",
+          "Director-of-Experience-Platforms",
+          "Director-Of-Experience-Design",
+          "Director-Of-Digital-Product-Strategy"
+        ],
+        "company_slug": "wp-engine",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/wp-engine/jobs/sr-director-digital-experience-and-channels",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Sr. Director, Digital Experience and Channels",
+      "url": "https://himalayas.app/companies/wp-engine/jobs/sr-director-digital-experience-and-channels",
+      "valid_through": "1794011293",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/jfdi-recruitment/jobs/back-end-web-developer-woo-commerce-45k",
+      "canonical_url": "https://himalayas.app/companies/jfdi-recruitment/jobs/back-end-web-developer-woo-commerce-45k",
+      "content_hash": "9e504c92ccd203071ebadebf61211e91d7d84c129d0820ea9b1e705afe62ce35",
+      "description_excerpt": "100% remote working, must be UK based. Back-End Web Developer - PHP Remote - Based in the UK only Salary: 40k - 45K WordPress & WooCommerce and various 3rd party systems on the Google Cloud Platform. As a Back-end Web Developer you will have a big influence on our technical platforms. Responsibilities: • PHP within WordPress, WordPress Plugins and Cloud Functions • Writing and modifying Javascript and Jquery code • Writing and modifying and maintaining the integrations with 3rd party systems via google Cloud Platform • Troubleshoot and resolve application issues, providing diagnostic, and analytical support • Plan and implement model data structures for scalability • Write secure code • Participate in all phases of the development life cycle • Work on the maintenance and improvement of existing data structures • Research, evaluate and analyse technical and design requirements • Troubleshoot and fix bugs/flaws to ensure servers are running optimally. Required Skills & Experience: • Proficient in PHP and PHP frameworks, HTML5, JavaScript, JQuery, SQL • Excellent relational database skills with MySQL • Version control (Git) • Composer and Package Control • Exposure to Google Cloud Pla",
+      "employer": "JFDI Recruitment",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United Kingdom",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788772581",
+      "remote": true,
+      "review_key": "review:f21aaffbe0ccd4361ddb56eb709df6cfc61506b0ac0cf106dae600f439934407",
+      "salary": {
+        "currency": "GBP",
+        "max": 45000,
+        "min": 40000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/jfdi-recruitment/jobs/back-end-web-developer-woo-commerce-45k",
+      "source_metadata": {
+        "categories": [
+          "Backend-Development",
+          "Web-Development",
+          "PHP-Development",
+          "WordPress-Development",
+          "E-commerce-Development",
+          "WooCommerce",
+          "Backend-Web-Developer",
+          "WooCommerce-Developer",
+          "E-Commerce-Backend-Developer",
+          "Backend-PHP-Developer",
+          "E-Commerce-Backend-Engineer",
+          "Web-Developer"
+        ],
+        "company_slug": "jfdi-recruitment",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United Kingdom"
+        ],
+        "location_restrictions": [
+          "United Kingdom"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/jfdi-recruitment/jobs/back-end-web-developer-woo-commerce-45k",
+        "timezone_restrictions": [
+          0
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Back-End (Web) Developer, Woo commerce 45K+",
+      "url": "https://himalayas.app/companies/jfdi-recruitment/jobs/back-end-web-developer-woo-commerce-45k",
+      "valid_through": "1793956580",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-7223495063",
+      "canonical_url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-7223495063",
+      "content_hash": "75236c306ba3d5943f4f4cb27b39f6aea91dda5c647675f433fa5cbd006c2447",
+      "description_excerpt": "Marketing Account Manager – Email Marketing, Client Success & Campaign Operations Full-Time | Remote | U.S. Business Hours About the Role At Pavago , one of our clients is hiring a Marketing Account Manager to manage client relationships and coordinate marketing execution across multiple accounts. You’ll serve as the primary point of contact for clients while overseeing email marketing, website updates, SEO support, analytics, reporting, and campaign coordination . This role is ideal for someone with agency or client-facing marketing experience who is highly organized, communicates confidently, and knows how to keep multiple campaigns and stakeholders moving forward. What You’ll Own Client & Account Management Serve as the primary point of contact for assigned clients Manage communication through email, Slack, WhatsApp, and video calls Lead client meetings, updates, and strategy check-ins Build strong relationships with executive-level stakeholders Turn client feedback into clear priorities and action items Email Marketing Build and manage campaigns using Mailchimp, HubSpot, or Klaviyo Write and edit email copy, subject lines, and campaign messaging Manage segmentation, scheduling,",
+      "employer": "Pavago",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Colombia",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788731753",
+      "remote": true,
+      "review_key": "review:f3d64372471716e5b45805a9c204a7ea26ffb9335959a6eb26952c8affbecfb1",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/marketing-account-manager-7223495063",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Account-Management",
+          "Email-Marketing",
+          "Client-Success",
+          "Digital-Marketing",
+          "Campaign-Management",
+          "Marketing-Account-Manager",
+          "Digital-Marketing-Account-Manager"
+        ],
+        "company_slug": "pavago",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Colombia"
+        ],
+        "location_restrictions": [
+          "Colombia"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-7223495063",
+        "timezone_restrictions": [
+          -5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Account Manager",
+      "url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-7223495063",
+      "valid_through": "1793915752",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8177092",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8177092",
+      "content_hash": "f3b6af100418d271bc035dd8afe1e1ce8881462fa7474e0568db015ffcd56da8",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are hiring people who wish to grow in a dynamic Technical Support environment. Our ideal candidate is a customer-focused individual who leverages their technical expertise to give best-in-class support that benefits our users. Above all, we need individuals who are enthusiastic about working in a fast-paced, highly dynamic, and rewarding cross-functional setting. What You'll Do: Provide best-in-class support and solutions to our customers through tickets and emails with empathy. Collaborate in a 24/7 team environment, working a flexible schedule with rotating shifts (including nights and weekends). Monitor and respond to multi-channel communications and monitoring alerts on Slack. Innovate at work",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-08T10:40:54.762300+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:54.762300+00:00",
+      "location": "Karachi",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "review_key": "review:ffc98698335ee7fe7c19417ddcc869f279ba59fe7d5555ce6149424402e59d19",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8177092",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 84598,
+            "name": "Cloudways",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3538807,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 258058,
+            "location": "Karachi, Sindh, Pakistan",
+            "name": "Karachi",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8177092
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Cloud Support Engineer (Platform Migration)",
+      "updated_at": "2026-09-07T12:48:05-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8177092"
     }
   ],
-  "review_queue_count": 332,
-  "run_id": "ingestion-1789958591",
+  "review_queue_count": 293,
+  "run_id": "ingestion-1789958909",
   "schema_version": 1,
-  "total_pages": 14
+  "total_pages": 12
 }

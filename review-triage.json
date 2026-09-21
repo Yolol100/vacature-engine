@@ -1,14 +1,14 @@
 {
-  "auto_acked_nonpriority": 579,
+  "auto_acked_nonpriority": 125,
   "decision_boundary": "technical priority-hint triage only; no authenticity, eligibility, fit, score, source-priority or application decision is made here",
   "enabled": true,
-  "input_count": 2834,
+  "input_count": 431,
   "missing_review_key": 0,
   "normal_discovery_fallback_required": true,
   "oldest_priority_pending_at": "2026-09-05T15:07:37.197533+00:00",
-  "output_pages": 14,
+  "output_pages": 12,
   "policy_version": "2026-09-21-v1",
-  "priority_pending": 332,
+  "priority_pending": 293,
   "priority_reason_counts": {
     "employer:automattic": 9,
     "employer:awesome motive": 1,
@@ -19,19 +19,20 @@
     "term:acf": 4,
     "term:advanced custom fields": 4,
     "term:cms developer": 1,
-    "term:divi": 56,
+    "term:divi": 1,
     "term:elementor": 4,
-    "term:front-end developer": 3,
+    "term:front-end developer": 1,
     "term:gutenberg": 4,
-    "term:seo specialist": 11,
+    "term:php developer": 1,
+    "term:seo specialist": 9,
     "term:technical seo": 8,
-    "term:technical support": 9,
+    "term:technical support": 10,
     "term:web designer": 8,
-    "term:web developer": 12,
+    "term:web developer": 11,
     "term:website developer": 1,
     "term:woocommerce": 3,
-    "term:wordpress": 157
+    "term:wordpress": 176
   },
   "schema_version": 1,
-  "superseded_versions_acked": 1923
+  "superseded_versions_acked": 13
 }
