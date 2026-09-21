@@ -115,6 +115,38 @@ def priority_reason(item: dict[str, Any], policy: dict[str, Any]) -> str | None:
     return None
 
 
+def _identity_key(item: dict[str, Any]) -> str:
+    source_id = str(item.get("source_id") or "").strip()
+    source_job_id = str(item.get("source_job_id") or "").strip()
+    if source_id and source_job_id:
+        return f"source:{source_id}:{source_job_id}"
+    for field in ("canonical_url", "url", "source_url"):
+        value = str(item.get(field) or "").strip()
+        if value:
+            return f"url:{value}"
+    return f"review:{str(item.get('review_key') or '').strip()}"
+
+
+def _latest_items(items: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    grouped: dict[str, list[tuple[int, dict[str, Any]]]] = {}
+    for index, item in enumerate(items):
+        grouped.setdefault(_identity_key(item), []).append((index, item))
+
+    latest: list[dict[str, Any]] = []
+    superseded: list[dict[str, Any]] = []
+    for group in grouped.values():
+        ordered = sorted(
+            group,
+            key=lambda pair: (
+                str(pair[1].get("origin_completed_at") or ""),
+                pair[0],
+            ),
+        )
+        latest.append(ordered[-1][1])
+        superseded.extend(item for _, item in ordered[:-1])
+    return latest, superseded
+
+
 def triage_review_queue(
     queue_doc: dict[str, Any],
     ack_doc: dict[str, Any],
@@ -141,10 +173,20 @@ def triage_review_queue(
 
     pending: list[dict[str, Any]] = []
     auto_acked: list[str] = []
+    superseded_acked: list[str] = []
     missing_key = 0
     reason_counts: dict[str, int] = {}
 
-    for item in items:
+    latest_items, superseded_items = _latest_items(items)
+    for item in superseded_items:
+        key = str(item.get("review_key") or "").strip()
+        if key:
+            superseded_acked.append(key)
+        else:
+            missing_key += 1
+            pending.append(item)
+
+    for item in latest_items:
         key = str(item.get("review_key") or "").strip()
         if not key:
             missing_key += 1
@@ -159,7 +201,9 @@ def triage_review_queue(
 
         auto_acked.append(key)
 
-    ack["acked_keys"] = sorted(set(ack.get("acked_keys", [])) | set(auto_acked))
+    ack["acked_keys"] = sorted(
+        set(ack.get("acked_keys", [])) | set(auto_acked) | set(superseded_acked)
+    )
     queue["review_queue"] = pending
     queue["review_queue_count"] = len(pending)
     queue.setdefault("schema_version", 1)
@@ -171,6 +215,7 @@ def triage_review_queue(
         "input_count": len(items),
         "priority_pending": len(pending),
         "auto_acked_nonpriority": len(auto_acked),
+        "superseded_versions_acked": len(superseded_acked),
         "missing_review_key": missing_key,
         "priority_reason_counts": dict(sorted(reason_counts.items())),
         "normal_discovery_fallback_required": True,
