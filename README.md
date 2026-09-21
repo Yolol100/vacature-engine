@@ -60,6 +60,10 @@ artifact_id = cv_artifact_identity(manifest)
 
 Dit contract beslist nooit welke ervaring relevant is, schrijft nooit CV-tekst, verandert geen vacaturegates en voert geen sollicitatie uit.
 
+### Career presentation evidence boundary
+
+CV/portfolio presentation heuristics remain caller-owned and are documented in [docs/CAREER-PRESENTATION-HANDOFF.md](docs/CAREER-PRESENTATION-HANDOFF.md). This includes brief-scan guidance, official-title integrity, project/case-study evidence, visual proof and the separation of project facts from candidate-attributable outcomes. None of these rules changes engine scoring or runtime candidate inference.
+
 ## Observatiecontract v1.1
 
 Gebruik `canonicalize_observations()` op door de Skill verzamelde `JobObservation`-records.
