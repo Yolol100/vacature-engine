@@ -1,181 +1,151 @@
 {
-  "completed_at": "2026-09-21T02:29:36.290866+00:00",
+  "completed_at": "2026-09-21T02:43:11.786281+00:00",
   "page": 3,
   "page_item_count": 25,
   "review_queue": [
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8162688",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8162688",
-      "content_hash": "0874b661ffa0ca3b6a9b5c4561aa9b547d3364bfbac4a6a85dffe4604dbf71f0",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Senior Manager of Design and Deployment who is passionate about data center layouts, rack elevations, BOMs, cable design, point-to-point installation documentation, deployment execution, contractor coordination, commissioning, and operational readiness for global AI/GPU infrastructure. As Senior Manager of Design & Deployment, you will lead a specialized team of design engineers and a dedicated deployment organization (deployment engineers and deployment managers) responsible for turning approved data center designs into physically installed, commissioned, production-ready infrastructure — on schedule, to spec, and to a repeatable global standard. You own the full path from floor",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:91f467eb6942ab22feaf51168ec60343cfeb9decf3850a05edff1683df1eecb1",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8162688",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 365101,
-            "name": "Physical Infrastructure",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3532629,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 396968,
-            "location": null,
-            "name": "DigitalOcean Seattle Office",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8162688
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Manager Datacenter Design & Deployment",
-      "updated_at": "2026-09-02T17:53:27-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8162688"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8749946002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8749946002",
-      "content_hash": "7fb499cc85fdf36dcb8b736acbf7cd5e74996bcd197d658dd34d6be557bab833",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Poland",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:920cae8f961c943bd1611c07faf7a7ab3779951b63674d20f30a3d4e365b1590",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8749946002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4012212002,
-              4118841002,
-              4096122002,
-              4115238002,
-              4011053002,
-              4135581002,
-              4135580002,
-              4115239002,
-              4115240002,
-              4034706002,
-              4061741002,
-              4016843002,
-              4099701002,
-              4099700002
-            ],
-            "id": 4011044002,
-            "name": "Engineering",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 6483846002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8749946002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Backend Engineer, Poland",
-      "updated_at": "2026-09-02T12:55:14-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8749946002"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987138",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7987138",
-      "content_hash": "dffa5e81b209b86a36ee3070294b46e55dd590332b06671dc8619d6b5edae08a",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Position Overview We are looking for a Senior Forward Deployed Engineer I (FDE) who is passionate about operationalizing and collaborating closely with strategic AI enterprises and high-growth startups. As AI-native startups scale, serving large generative AI models at low latency without blowing up infrastructure budgets is their biggest hurdle. That’s where you come in. As a Sr. Forward Deployed AI Inference Engineer (FDE) I , you won't just optimize benchmarks in a lab—you will embed directly with high-growth AI founders to solve high-throughput, cluster-scale LLM serving challenges on DigitalOcean’s GPU cloud. You operate at the intersection of distributed systems, specialized AI hardware, and rea",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Bengaluru",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:925e0902d9d18137f2239e591c26049065850f1e0ae0deb05dc472cbb97bc3e8",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7987138",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 365098,
-            "name": "Agentic AI",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3465603,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 276737,
-            "location": null,
-            "name": "Bangalore Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7987138
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Forward Deployed Engineer I (AI Inference)",
-      "updated_at": "2026-09-01T23:52:00-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987138"
-    },
-    {
-      "apply_url": "https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
-      "canonical_url": "https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
-      "content_hash": "60044640fd37fcb2034d97b1a8ac22ddf5c69b3763cf5c29092b0835ce9207cc",
-      "description_excerpt": "﻿ NAXCON GmbH , located in the heart of Freiburg, is at the forefront of the German IT and engineering industry. Our experts have extensive knowledge in software and hardware development, state-of-the-art electronics, and future-oriented technologies such as artificial intelligence and virtual reality. We are not only dedicated to project work for our customers, but also intensively pursue in-house innovation projects as well as research & development. Renowned companies from a wide range of German industries place their trust in us - demonstrating the outstanding expertise and commitment of our engineers. Position : Senior Full-Stack Developer & IT Maintenance Specialist Type : Full-time/Remote Field : IT Prequalification Requirement Relevant project references are mandatory for this role. Applications will be evaluated based on how closely the submitted reference projects match the required experience areas listed below. Please make sure that each reference project clearly states which experience areas it covers. Please include previous projects related to one or more of the following areas: Ongoing maintenance, support, and/or further development of an existing live web applicat",
-      "employer": "NAXCON GmbH",
+      "apply_url": "https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
+      "canonical_url": "https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
+      "content_hash": "2c8dc681084a81b07c65dfcdd99c4792c791c074f1d68838887ae07de3a1d073",
+      "description_excerpt": "Responsibilities: The Senior Middleware Administrator role is responsible for managing third party applications used to support the various products used at Mortgage Cadence. This includes, but is not limited to, Redis administration, RabbitMQ administration, Citrix XenApp administration, and Azure Service Bus. This role is expected to perform troubleshooting tasks, parse log files, patch third party products, and perform a subset of server administration tasks. Requirements Mandatory Requirements: 7+ years of experience managing third party products Strong troubleshooting capabilities Strong English fluency Redis administration RabbitMQ administration Citrix Xenapp administration Apache Tomcat administration Windows Server administration Linux Server administration Azure Service Bus administration Preferred Skills: Citrix PVS patching experience PowerShell script writing WordPress Administration (or experience managing LAMP stacks) IIS administration Elastic Stack administration and report writing JScape or other SFTP experience Originally posted on Himalayas",
+      "employer": "Partner One Capital",
       "employment_type": "Full Time",
-      "first_seen_at": "2026-09-05T13:34:13.461539+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:32.440664+00:00",
-      "location": "United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "published_at": "1788596183",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Colombia",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788669072",
       "remote": true,
-      "review_key": "review:92f6124b93445fb7165a960ef603037622ed71cf2661273d37892bbf91d35ba9",
+      "review_key": "review:340e52c568c736b56ee3e5a0c9459a5a6c413fb8ed024794b8f1f1c7181d627d",
       "source_id": "himalayas",
       "source_instance": "himalayas:global",
-      "source_job_id": "global:https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
+      "source_job_id": "global:https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
+      "source_metadata": {
+        "categories": [
+          "Middleware-Administration",
+          "Middleware-Administrator",
+          "Systems-Administrator",
+          "Infrastructure-Engineering",
+          "DevOps-Engineer",
+          "Senior-Middleware-Engineer",
+          "Middleware-Infrastructure-Specialist",
+          "Middleware-Specialist",
+          "Middleware-Engineer",
+          "Middleware-Integration-Engineer",
+          "Java-Middleware-Engineer"
+        ],
+        "company_slug": "partner-one-capital",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Colombia"
+        ],
+        "location_restrictions": [
+          "Colombia"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
+        "timezone_restrictions": [
+          -5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Middleware Administrator",
+      "url": "https://himalayas.app/companies/partner-one-capital/jobs/senior-middleware-administrator-1077684481",
+      "valid_through": "1793853070",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
+      "canonical_url": "https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
+      "content_hash": "beb13b52327df3e35afc4c5183efc74d16c95bae80471b084a030f197ce02339",
+      "description_excerpt": "Role Summary: We are looking for a Level 1 Full Stack & Mobile App Developer who can work independently on assigned tasks while collaborating with the team to develop and maintain web and mobile applications. You will contribute to building mobile and web applications from initial requirements through deployment, enhance existing systems, and deliver functional solutions, with guidance and review from senior developers when needed. Key Responsibilities: Communicate with stakeholders and team members to understand requirements and project expectations Work collaboratively with other engineers across the stack to deliver assigned features Coordinate with graphic designers to implement UI and design elements Develop and implement product features with guidance, following best practices for performance and security Assist in setting up and maintaining basic CI/CD processes using established standards Help maintain and improve existing applications and systems Deliver assigned tasks ranging from front-end UI enhancements to back-end feature development Research and apply new tools or technologies as needed to support development tasks Assist in creating and maintaining databases and ser",
+      "employer": "Concert8 Solutions Inc",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Philippines",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788589959",
+      "remote": true,
+      "review_key": "review:481373c851d315c2448225ffdf946d4f7e4fa78f7382679fdc9dd72387c772bf",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
       "source_metadata": {
         "categories": [
           "Fullstack-Development",
-          "IT-Maintenance-Specialist",
-          "Software-Engineer",
-          "Backend-Development",
+          "Mobile-Application-Developer",
+          "Web-Development",
           "Frontend-Development",
-          "Senior-Fullstack-Developer",
-          "Senior-Full-Stack-Developer-(React-Node.Js)",
-          "Senior-Fullstack-Web-Application-Developer",
-          "Senior-Full-Stack-Development",
-          "Senior-Full-Stack-Developer-(JavaScript-Python)",
-          "Full-Stack-Engineer"
+          "Backend-Development",
+          "Entry-Level-Full-Stack-Developer-(React-Native-and-Node.Js)",
+          "Entry-Level-Full-Stack-Developer",
+          "Entry-Level-Full-Stack-Developer-(React-Node.Js)",
+          "Junior-Full-Stack-Developer",
+          "Full-Stack-Mobile-Engineer",
+          "Full-Stack-Mobile-Development"
         ],
-        "company_slug": "naxcon-gmbh",
+        "company_slug": "concert8-solutions-inc",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Philippines"
+        ],
+        "location_restrictions": [
+          "Philippines"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
+        "timezone_restrictions": [
+          8
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Level 1 Full Stack and Mobile App Developer",
+      "url": "https://himalayas.app/companies/concert8-solutions-inc/jobs/level-1-full-stack-and-mobile-app-developer",
+      "valid_through": "1793773958",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
+      "canonical_url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
+      "content_hash": "fdf3add4ce20d38fadf14651d35561be32f0a7f7122b62ccd2221eac609066a2",
+      "description_excerpt": "Department Overview: This position in the UW–Madison Office of Human Resources (OHR) develops and maintains websites and web applications used by UW employees and campus HR professionals. We are looking for an undergraduate student with a passion for programming and a desire to learn. Anticipated Start Date: Fall 2026 Anticipated End Date (If Applicable): Remote Work Eligibility Detail: All Remote Anticipated Hours Per Week: Minimum: 8 Schedule: 8-12 hours per week, while classes are in session. Additional hours may be available during breaks. Salary/Wage Range/Lump Sum: Minimum: $16.25 Number of Positions: 1 Qualifications: Qualified applicants must have access to reliable internet service. Knowledge, Skills & Abilities : Minimum: Proficiency with HTML, CSS, and JavaScript - Some familiarity with Git or other version control systems - Ability to work independently for extended periods of time Preferred: Working knowledge of modern web standards, including accessibility and responsive design - Modern JavaScript frameworks (e.g. Vue, React, Angular) - PHP / MySQL - WordPress or other content management systems - JSON / Consuming data from an API - Writing and reading technical docum",
+      "employer": "University of Wisconsin-Madison",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788637362",
+      "remote": true,
+      "review_key": "review:603c01489a0f90b309b7b6ca6eaeec77899f01f605a85643422be452df2f76a7",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
+      "source_metadata": {
+        "categories": [
+          "Computers",
+          "Web-Development",
+          "Software-Development",
+          "Digital-Technology",
+          "Teamwork",
+          "Junior-Web-Developer",
+          "Web-Developer-Intern",
+          "Web-Development-Intern",
+          "Junior-Web-Development",
+          "Entry-Level-Web-Developer",
+          "Jr-Web-Developer",
+          "Entry-Level-Web-Development"
+        ],
+        "company_slug": "university-of-wisconsin-madison",
         "discovery_query": "wordpress",
         "location_restriction_names": [
           "United States"
@@ -184,7 +154,7 @@
           "United States"
         ],
         "provider": "himalayas",
-        "provider_job_id": "https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
+        "provider_job_id": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
         "timezone_restrictions": [
           -10,
           -9,
@@ -197,948 +167,1334 @@
       },
       "source_type": "discovery_api",
       "source_url": "https://himalayas.app/jobs/api/search",
-      "title": "Senior Full-Stack Developer & IT Maintenance Specialist",
-      "url": "https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
-      "valid_through": "1793780183",
+      "title": "Student Web Developer",
+      "url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/student-web-developer",
+      "valid_through": "1793821362",
       "workplace_type": "remote"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8027190",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8027190",
-      "content_hash": "f6e1dd609ee23f9740a014455131751bb42e562714c38e64f653fc3de5eef287",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a master media strategist to unify, elevate, and lead our global narrative and storytelling. Reporting to the Chief Marketing Officer, you will be a key player in transforming our cross-functional public relations, corporate communications, and analyst and influencer relations into a unified power engine that accelerates market awareness and adoption and inspires community trust. What You’ll Do: Define and author the overarching global communication strategy in order to align long-term enterprise goals with a compelling public voice that elevates our corporate authority. Cultivate and leverage deep relationships with Tier-1 tech journalists and industry influencers in order to secur",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "San Francisco",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:93429fc81d2544b55bcbb8efc20b0edbbaa5293919ce22470b10bcbbedaa90f2",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8027190",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 341237,
-            "name": "Growth & Marketing",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3479854,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213034,
-            "location": "Bay Area Metro",
-            "name": "Bay Area Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8027190
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Director, Marketing Communications",
-      "updated_at": "2026-08-04T13:47:06-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8027190"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975169",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7975169",
-      "content_hash": "1a6469fa415e299ea719dadb13a01b2cb98be7d24f055f4076affb8ac57e9cc8",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Come build the datacenter footprint that powers the AI-Native Cloud. This role is a Principal Datacenter Sourcer on the Strategic Sourcing team that will lead the sourcing, selection, and procurement of datacenter space and power across the globe. You will be the primary commercial owner of our global colocation footprint, driving complex, multi-million dollar negotiations and ensuring our physical infrastructure scales seamlessly to meet customer demand. What You’ll Do: Drive Global Strategy : Develop and execute DigitalOcean's global datacenter site selection and acquisition strategy in alignment with business goals. End-to-End Deal Execution : Lead the entire lifecycle of datacenter acquisition, fr",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "San Francisco",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:93b112024663afa7b6bba0b72daba3fec0b25641ffb3a73a30f93f3c5d361a12",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7975169",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 365101,
-            "name": "Physical Infrastructure",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3461447,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213281,
-            "location": "Seattle Metro",
-            "name": "Seattle Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7975169
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Principal Sourcer, Data Center",
-      "updated_at": "2026-08-25T13:47:25-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7975169"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8164812",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8164812",
-      "content_hash": "08835ce4905486de493a31fe5b4e39bfa6bd8ee19a944782f894efa4405b3b2f",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Compensation Partner who is a high performing team player, who can take on new challenges, and go the extra mile. As a Compensation Partner reporting to the Head of Total Rewards at DigitalOcean, you will join a dynamic team dedicated to revolutionizing cloud computing and AI. You will serve as a compensation advisor for Talent Acquisition and People Business Partners, maintaining core compensation structures and modeling range refreshes. In this role, you will evolve into a key driver of our annual and mid-year performance compensation cycles, ensuring internal equity and market competitiveness across our global organization. What You’ll Do: Partner with Talent Acquisition and People",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Denver",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:93d01dd716ea49ff1bbbdb05599f0253ad3c5c1809afd338060147ad0a145c25",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8164812",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 8052,
-            "name": "Finance",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3533462,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213280,
-            "location": "Denver Metro",
-            "name": "Denver Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8164812
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Compensation Partner",
-      "updated_at": "2026-08-31T16:02:05-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8164812"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7826696",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7826696",
-      "content_hash": "7eb953e862a1bbdab046d03ac0b8543ee793938902d180fff3825441caee0d43",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Strategy Leader who is passionate about translating high-level corporate vision into rigorous, executable growth initiatives. As a Strategy Leader at DigitalOcean, you will join a dynamic team dedicated to revolutionizing cloud computing and AI. This is a high-output strategy role, not a planning function—we are looking for a driver, not a slide deck wonk. You will operate as an embedded strategic advisor to the CEO, CFO, SVP of Corp Dev & IR, and the CPTO . The ideal person will become a primary engine for the company's evolution, responsible for translating ambiguous business questions into structured analyses with clear recommendations and execution plans that you will personal",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "San Francisco",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9415e84bcbb5bf48251f97d27e2f00b3e194f12e2b4f8402a393c3b3f3a68cb5",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7826696",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 33573,
-            "name": "Business Operations",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3415706,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213034,
-            "location": "Bay Area Metro",
-            "name": "Bay Area Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7826696
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Strategy Director",
-      "updated_at": "2026-07-31T17:46:50-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7826696"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987358",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7987358",
-      "content_hash": "be02f9a6a682ff23479e888c126cc4b36a1636883371864393b3195f5ec38173",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Software Engineer II to join our Customer Trust & Engineering team working on Identity and Access Management. IAM is the bedrock of trust at DigitalOcean; our services sit in the critical path of every request, authorizing billions of transactions per second with single-digit millisecond latency. In this role, you will contribute meaningfully to building and maintaining the systems that power DigitalOcean's identity platform. You will work within established technical frameworks, implement features against well-scoped designs, and grow your expertise in distributed systems and security engineering. If you are passionate about writing clean, reliable code and want to develop deep exper",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Bengaluru",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9553e9b3b405d3114a41c4ff25dba8684110e5b460d06a52401f87dc3a304d1d",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7987358",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 45958,
-            "name": "Security",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3465623,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 276737,
-            "location": null,
-            "name": "Bangalore Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7987358
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Software Engineer II - Identity & Access Management",
-      "updated_at": "2026-09-01T23:52:12-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987358"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8753656002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8753656002",
-      "content_hash": "665522720dbb9532177f0d2ce0ce0fb60e08f21384d00bd9e77870975b307d99",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote; Remote, Canada; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:95a6efb1216d1ba7884f4014b892ab68cde6f2701adffe37f22276ea69d735f5",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8753656002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4011065002,
-            "name": "Talent Acquisition",
-            "parent_id": 4111246002
-          }
-        ],
-        "internal_job_id": 6501207002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8753656002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Talent Brand Manager",
-      "updated_at": "2026-09-03T20:35:51-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8753656002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8615811002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8615811002",
-      "content_hash": "f200e41b2fd5fb70584a4e7b18aa8850341f771cb87ed76e5398657530dccaaa",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, US",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9680d4f4b1657a1bd5721f64354e2c1363b7f86ae1c2055ae3dcba35bbf7f421",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8615811002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4111248002,
-            "name": "Corporate Affairs",
-            "parent_id": 4043188002
-          }
-        ],
-        "internal_job_id": 6441048002,
-        "offices": [
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8615811002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Director, Strategic Partnerships",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8615811002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8722304002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8722304002",
-      "content_hash": "3e79fb7d52bbb6897e4882f202b341748a7fb6147bb0eacfcc09f8c67beac04b",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Bangalore, India",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:96cfdc33a015091493d6085bef71e07d3bfe8016fdb148b43cdf2b6c8ba99693",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8722304002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4115239002,
-            "name": "Data Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6486733002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4112140002,
-            "location": null,
-            "name": "India",
-            "parent_id": 4019590002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8722304002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Intermediate Backend Engineer - Database Change Management",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8722304002"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8099105",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8099105",
-      "content_hash": "e5ebb3aa6bc42c2c57c894950e0436f0268f989e2051f639afc8ed11b9996527",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking to add a Senior Corporate Counsel, Product, who is passionate about solving complex legal challenges at the leading edge of artificial intelligence and cloud computing. As a Senior Corporate Counsel, Product, reporting to the Associate General Counsel at DigitalOcean, you will join a small and dynamic team dedicated to revolutionizing cloud computing and AI. DigitalOcean's mission is to simplify cloud computing and AI so that builders and businesses can spend more time creating software that changes the world. In this role, you will act as a versatile, full-stack product counsel who advises product, engineering, and go-to-market teams across the entire product lifecycle from first conce",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Boston",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9735cae5cadde827f46bde5daab63190006d13a3ddc97eb18c07c10485095457",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8099105",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 35130,
-            "name": "Legal",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3508705,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 215167,
-            "location": "All Other Locations",
-            "name": "All Other Locations",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8099105
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Corporate Counsel, Product",
-      "updated_at": "2026-08-06T17:40:17-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8099105"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8637549002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8637549002",
-      "content_hash": "e9d128e139e6993119c60e218c06f36e90defc612bbdd5b74e6a98381d68179b",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Bangalore, India; Remote, Canada; Remote, Israel; Remote, United Kingdom; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:980199ad5f8f52303a0a9bce1cc7c4c4537f77c65f557ff482d3a03e938a6580",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8637549002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4099706002,
-            "name": "Security Operations",
-            "parent_id": 4011054002
-          }
-        ],
-        "internal_job_id": 6449718002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8637549002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Software Security Engineer",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8637549002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8770689002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8770689002",
-      "content_hash": "177a74619ad03ea02e1c150027f8fa19930b9d62bb8b2c6587b081d68672513f",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United Kingdom; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:980675ada6e4e1500df8f75407ae902d299a964853e1d4e00441bb50519f0f04",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8770689002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4099705002,
-            "name": "Security Assurance",
-            "parent_id": 4011054002
-          }
-        ],
-        "internal_job_id": 6509084002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8770689002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Principal Security Awareness & Human Risk Engineer",
-      "updated_at": "2026-09-02T17:07:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8770689002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8710061002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8710061002",
-      "content_hash": "71436b8aafc89d1416a928ef0c381615565d3e8e5f0f4c3aebb0b80fda7a7088",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:984c57af45a2f443020d359e85a4fe5edb4c3d1d70abe3e8e9139678e039ec5b",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8710061002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4118841002,
-            "name": "Dedicated Migrations",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6480900002,
-        "offices": [
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8710061002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Migration Engineer - GitLab Dedicated",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8710061002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8648306002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8648306002",
-      "content_hash": "230351bc82dc4fd2127408917011fb28cd492ac0e40f7fba13e14649abb21e40",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, India; Remote, Phillipines",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:990b036d7e031cdfe66f5b35828bb8d927dcaec08e68ca51a0ebc3e161190076",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8648306002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4109795002
-            ],
-            "id": 4021652002,
-            "name": "Field Operations",
-            "parent_id": 4011049002
-          }
-        ],
-        "internal_job_id": 6453818002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4112141002,
-            "location": null,
-            "name": "Philippines",
-            "parent_id": 4019590002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8648306002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Deal Desk Strategist, Philippines or India",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8648306002"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8029216",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8029216",
-      "content_hash": "44c7b1707a457f1d8548e3fb7329ecc416922fc77b4ec5e7fc84936afcb30524",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Manager, Revenue Enablement to own and build our Go-To-Market enablement function. Reporting to the Head of Revenue, you will be the connective tissue between product knowledge, sales process, and rep performance — the person who makes sure our team has everything they need to close deals with confidence. The defining characteristic of the right candidate is curiosity. This person must genuinely want to master our products, customers, and industry. They will develop deep fluency in AI by working closely with product and engineering, then translate that fluency into training, coaching, and programs that make reps measurably better. This is a builder role. The successful hire will c",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9a89fe6e873d84ba84524c8c6116fff70b77cc4021a094bb8337a681284cb0ba",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8029216",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 7727,
-            "name": "Revenue Operations",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3474709,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213282,
-            "location": "Austin Metro",
-            "name": "Austin Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8029216
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Revenue Enablement Manager",
-      "updated_at": "2026-09-03T20:17:45-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8029216"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8016542",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8016542",
-      "content_hash": "dc91af8632d7fe18661bc56088375fade338aefe41e208cab9d0b703781d131a",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We're looking for a Director of Field & Event Marketing to own how DigitalOcean shows up in the world. Reporting to the Head of Marketing, you'll define and drive our global event strategy and operating model, with a major focus on San Francisco and the Bay Area. This role will span the full event mix, from our flagship DigitalOcean Deploy conference to creative startup events that engage founders and VCs, and priority AI industry events, hands-on hackathons and workshops, customer programs, and everything in between. This isn't a logistics role and it isn’t about running a vanilla B2B event playbook. We're looking for a strategic marketing leader who knows how to execute what works, but is also willi",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "San Francisco",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9a93492fa5a5ab08bf9b4fcbd320b28032f2c2d89c10db05cc9dd1653934b005",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8016542",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 341236,
-            "name": "Events & Field Marketing",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3475552,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 213034,
-            "location": "Bay Area Metro",
-            "name": "Bay Area Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8016542
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Director, Field & Event Marketing",
-      "updated_at": "2026-08-28T16:32:12-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8016542"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8103678",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8103678",
-      "content_hash": "1783c15481bc6ad9bfde3bfcacebbd6a4fe7202048472e0714cc32c1a459cfad",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. The Senior Business Internal Auditor will support SOX testing and operational audits, working with DO teams to help mature the company's control environment. The ideal candidate for this position will be someone who has some relevant prior experience (such as Operational/Financial Audits & SOX) and is comfortable working in a dynamic, fast-paced environment. This position reports directly to the Manager Internal Audit. We value winning together and your work will have an impact on the future success of this rapidly growing company. What You'll Do: Be part of the team, collaborating with the company to maintain and mature the internal control environment and SOX compliance. Support the SOX PMO and cont",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Karachi",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9b56d4256028b845f0c28bf78d45404e646de5e93486da41ce6daec1b9fb3f57",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8103678",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 8052,
-            "name": "Finance",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3510680,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 214079,
-            "location": "Karachi, Sindh, Pakistan",
-            "name": "Karachi Metro",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8103678
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Business Internal Auditor",
-      "updated_at": "2026-09-01T23:53:04-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8103678"
-    },
-    {
-      "apply_url": "https://jobs.ashbyhq.com/zapier/1767482d-de23-460c-80eb-6d0a3caa72ab/application",
-      "canonical_url": "https://jobs.ashbyhq.com/zapier/1767482d-de23-460c-80eb-6d0a3caa72ab",
-      "content_hash": "c931875bfdfa6a7a18c71e2fcb8cbcc8de49bcecd3a453976d3e1ba8ea877efe",
-      "description_excerpt": "AI AT ZAPIER At Zapier https://zapier.com/about, we build and use automation every day to make work more efficient, creative, and human. So if you’re using AI tools while applying here - that’s great! We just ask that you use them responsibly and transparently. Check out our guidance on How to Collaborate with AI During Zapier’s Hiring Process https://zapier.com/l/jobs/ai-at-zapier, including how to use AI tools like ChatGPT, Claude, Gemini, or others during our hiring process - and when not to. Job Posted: April 29, 2026 Updated: June 19, 2026 Location: Americas - North, Central and South America, EMEA, APAC HI THERE! Zapier's mission is to make automation work for everyone. That mission is funded by revenue — and every dollar of it flows through our Commerce Zone. We build and operate the infrastructure behind billing, subscriptions, payments, pricing, entitlements, and checkout across everything Zapier ships: self-serve plans, enterprise contracts, and ecosystem offerings. When a customer upgrades, renews, changes plans, or pays an invoice, our systems make it happen — correctly, instantly, and at scale. We're hiring a Staff Engineer to own the technical vision and long-term arc",
-      "employer": "Zapier",
-      "employment_type": "FullTime",
-      "first_seen_at": "2026-09-05T13:34:12.660818+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:31.040157+00:00",
-      "location": "NAMER",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "published_at": "2026-06-30T21:30:07.895+00:00",
+      "apply_url": "https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
+      "canonical_url": "https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
+      "content_hash": "a61a308ce975f91d0aea8c66c2170ab9c3e9530a98b2c65a89606a9ae74b249a",
+      "description_excerpt": "ABOUT THE ROLE: The Web Development Manager leads Pandoblox 's embedded web development team, owning the technical standards, delivery quality, and day-to-day management that keep our client web projects on track and our developers growing. This is a hands-on leadership role for someone who can set direction across a modern web stack, coach a distributed team, and represent that team confidently in front of clients. Strong technical judgment, people-management ability, and excellent communication are the key abilities for the role. RESPONSIBILITIES: In this role, you'll get to... Lead and manage a distributed team of web developers working across WordPress, headless WordPress, and Webflow Own the team's technical standards, coding conventions, peer-review practices, and tooling decisions Run regular 1:1s, set clear role expectations, and support the team's growth and performance Lead upskilling across the team, with a particular focus on Webflow adoption and modern CMS/JAMstack practices Conduct a top-to-bottom review of current development processes and drive improvements Oversee weekly workload and capacity planning to keep the team appropriately utilized Support delivery operati",
+      "employer": "Pandoblox",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Philippines",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788668261",
       "remote": true,
-      "review_key": "review:9c1ba871b1e1c24971aab7c1408f868fb5ee3a9c73df9730c9bcbbc7c80581bb",
+      "review_key": "review:60480b3a6b5ab08dbf936c2d3adc5388bf86847825619a88191fe5b0b0602503",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
+      "source_metadata": {
+        "categories": [
+          "Web-Development-Manager",
+          "Development-Team-Lead",
+          "Technical-Manager",
+          "Web-Development-Leadership",
+          "Agency-Development-Manager",
+          "Manager-Of-Web-Development",
+          "Web-Development-Management",
+          "Web-Development-Team-Lead",
+          "Web-Design-Manager",
+          "Web-Development-Lead"
+        ],
+        "company_slug": "pandoblox",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Philippines"
+        ],
+        "location_restrictions": [
+          "Philippines"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
+        "timezone_restrictions": [
+          8
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Web Development Manager - PH",
+      "url": "https://himalayas.app/companies/pandoblox/jobs/web-development-manager-ph",
+      "valid_through": "1793852261",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
+      "canonical_url": "https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
+      "content_hash": "dc0d281635e8a0a3ac1565b2d17f4716a443f86bc9caa63252bf609365b194d8",
+      "description_excerpt": "THIS IS WHO YOU ARE… You are our front line in the battle for exceptional customer experience at the 24/7/365 help desk. Ideally, you have experienced terrible web hosting customer service and have vowed that will never happen on your watch! You are responsible for seeing that our customers have excellent customer service by doing what you do every day -> exceeding customer expectations. WHAT DO WE NEED FROM YOU? Well, you should be customer focused, great under pressure, and ready to engage a problem with your superior analytic skills. Can you do several things at a time with amazing efficiency? Good! If you are a super ninja with web hosting applications and platforms -> we need to talk. MORE ABOUT THE POSITION . These will be your primary responsibilities in your daily goal to fight bad web hosting: Hiring for day shift employees CST. Provide customers support via our 24/7 helpdesk. Troubleshooting email delivery issues Troubleshooting cPanel, Plesk, and DirectAdmin related issues Troubleshooting DNS, FTP, SSL, Apache, and other service-related issues. Ensuring customer satisfaction You must know Linux like your favorite cheeseburger and fries’ combo! Here are your other amazing",
+      "employer": "KnownHost",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788439912",
+      "remote": true,
+      "review_key": "review:739b6305c4020357387c617bbb1f6db2ee5d4c608c26b3654278e50229c9bf5c",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
+      "source_metadata": {
+        "categories": [
+          "Technical-Support",
+          "Customer-Service",
+          "Help-Desk",
+          "Web-Hosting-Support",
+          "Technical-Support-Operator",
+          "Remote-Support-Technician",
+          "Remote-Support-Representative",
+          "Remote-IT-Support-Technician",
+          "Remote-Technical-Support",
+          "Remote-Support-Specialist"
+        ],
+        "company_slug": "knownhost",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Technical Support Operator - Remote",
+      "url": "https://himalayas.app/companies/knownhost/jobs/technical-support-operator-remote-9635393408",
+      "valid_through": "1793623912",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
+      "canonical_url": "https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
+      "content_hash": "4ac25c0021a3db4f9de56f65e9beb8d17b9a15c39e9c5e09595dbb3513b14053",
+      "description_excerpt": "The Web Design Specialist plays an important role in the organization by performing a number of activities directly related to the company’s marketing functions. The role is primarily responsible, under moderate to intermittent direction, for the conceptual development, direction, delivery, buy-in, and production of visual design. Key Responsibilities Design digital materials including websites, landing pages, microsites, email campaigns, and social media assets. Create user-centered, conversion-focused UX/UI designs for responsive web and marketing experiences. Translate business goals, audience insights, and marketing objectives into intuitive and engaging digital solutions. Apply conceptual thinking and design strategy to develop creative concepts based on user needs, market research, and technical constraints. Present design concepts, rationale, and solutions clearly to stakeholders and secure buy-in when required. Collaborate with designers, copywriters, project managers, and front-end developers to deliver cohesive digital experiences. Work within CMS environments (WordPress preferred) to design and support digital implementations. Assist with front-end development for small",
+      "employer": "NightOwl Consulting",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Worldwide",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788671103",
+      "remote": true,
+      "review_key": "review:79db0fc26c67530682f8d507dfe64de336fdbdcfe86abbe78cb1582bd8a9a532",
       "salary": {
-        "components": [
-          {
-            "compensationType": "EquityPercentage",
-            "interval": "1 YEAR",
-            "maxValue": null,
-            "minValue": null
-          },
-          {
-            "compensationType": "Bonus",
-            "interval": "1 YEAR",
-            "maxValue": null,
-            "minValue": null
-          },
-          {
-            "compensationType": "Salary",
-            "currencyCode": "USD",
-            "interval": "1 YEAR",
-            "maxValue": 316100,
-            "minValue": 210700
-          }
-        ],
-        "summary": "$210,700 - $316,100"
+        "currency": "PHP",
+        "max": 65000,
+        "min": 45000,
+        "period": "monthly"
       },
-      "source_id": "ashby",
-      "source_instance": "ashby:zapier",
-      "source_job_id": "zapier:1767482d-de23-460c-80eb-6d0a3caa72ab",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
       "source_metadata": {
-        "address": {
-          "postalAddress": {
-            "addressCountry": "United States",
-            "addressLocality": "San Francisco",
-            "addressRegion": "California"
-          }
-        },
-        "department": "Engineering",
-        "is_listed": true,
-        "provider": "ashby",
-        "secondary_locations": [
-          {
-            "address": {
-              "postalAddress": {}
-            },
-            "location": "APAC"
-          },
-          {
-            "address": {
-              "postalAddress": {}
-            },
-            "location": "EMEA"
-          }
+        "categories": [
+          "Web-Design",
+          "Digital-Marketing",
+          "Graphic-Design",
+          "Email-Marketing",
+          "UI-UX-Design",
+          "Senior-Web-Design-Specialist",
+          "Marketing-Web-Specialist",
+          "Web-Specialist",
+          "Website-Specialist",
+          "Lead-Web-Designer",
+          "Web-Project-Specialist",
+          "Design"
         ],
-        "team": "Engineering"
+        "company_slug": "nightowl-consulting",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [],
+        "location_restrictions": [],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
+        "timezone_restrictions": [
+          -11,
+          -10,
+          -9.5,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3.5,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          3.5,
+          4,
+          4.5,
+          5,
+          5.5,
+          5.75,
+          6,
+          6.5,
+          7,
+          8,
+          8.75,
+          9,
+          9.5,
+          10,
+          10.5,
+          11,
+          12,
+          12.75,
+          13,
+          14
+        ]
       },
-      "source_type": "ats",
-      "source_url": "ashby://zapier",
-      "title": "Staff Backend Engineer, Commerce",
-      "url": "https://jobs.ashbyhq.com/zapier/1767482d-de23-460c-80eb-6d0a3caa72ab",
-      "workplace_type": "Remote"
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Web Design Specialist (with Pardot experience)",
+      "url": "https://himalayas.app/companies/nightowl-consulting/jobs/web-design-specialist-with-pardot-experience-7956986013",
+      "valid_through": "1793855103",
+      "workplace_type": "remote"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8642786002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8642786002",
-      "content_hash": "0e49161663163b84ca9f0ac2cf7e7ce20251fc690d9aa6f37b8ea0aa604966b3",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9c6f6ad7784d2d8782ed28a26db63f0aa76ce4d32542465ac73749f27cfa2e10",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8642786002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4069216002,
-            "name": "Procurement",
-            "parent_id": 4011063002
-          }
-        ],
-        "internal_job_id": 6451704002,
-        "offices": [
-          {
-            "child_ids": [
-              4040901002,
-              4040904002,
-              4040902002
-            ],
-            "id": 4019551002,
-            "location": null,
-            "name": "NA",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8642786002
+      "apply_url": "https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
+      "canonical_url": "https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
+      "content_hash": "cd42e6f93932604ed4eecbc4b9105c2c4e8d0860ed8671ec06b67fee723c6070",
+      "description_excerpt": "We engage the most inspired minds to do their best work wherever they work best—powering the freedom to create worldwide. WP Engine empowers companies and agencies of all sizes to build, power, manage, and optimize their WordPress websites and applications with confidence. Serving 1.5 million customers across 150+ countries, the global technology company provides premium, enterprise-grade solutions, tools, and services, including specialized platforms for WordPress, industry-tailored eCommerce and agency solution suites, and developer-centric tools like Local, Advanced Custom Fields, and more. WP Engine ’s innovative technology and industry-leading expertise are why 8% of the web visits a WP Engine -powered site daily. Learn more at wpengine.com. Job Description In this role, you will architect and implement backend capabilities that drive our global, high-scale cloud infrastructure services.This position transcends standard backend development and pure DevOps; you will operate at the intersection of software engineering, distributed systems, and production reliability, maintaining full ownership of services from initial design through observability and technical support. Your work",
+      "employer": "WP Engine",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Poland",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788621704",
+      "remote": true,
+      "review_key": "review:8083591f263869aa24860263755d40bba571b37fd26a2eb42594a7f2e3be8f3b",
+      "salary": {
+        "currency": "PLN",
+        "max": 335500,
+        "min": 244000,
+        "period": "annual"
       },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Manager, Procurement",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8642786002"
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
+      "source_metadata": {
+        "categories": [
+          "Software-Engineer",
+          "Backend-Engineer",
+          "Cloud-Engineer",
+          "DevOps-Engineer",
+          "Platform-Engineer",
+          "Senior-Software-Developer",
+          "Senior-Software-Engineer-Jobs",
+          "Senior-Engineer"
+        ],
+        "company_slug": "wp-engine",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Poland"
+        ],
+        "location_restrictions": [
+          "Poland"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
+        "timezone_restrictions": [
+          1
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Software Engineer",
+      "url": "https://himalayas.app/companies/wp-engine/jobs/senior-software-engineer",
+      "valid_through": "1793805704",
+      "workplace_type": "remote"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986946",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7986946",
-      "content_hash": "35bd3c9d9366a73ccdc0245d124097ad7d40a1fd2fc01283e84ae4a4ac2cea1f",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. The Billing Engineering team is responsible for managing a broad and complex platform, with a range of functions, comprising 70 services. As DigitalOcean continues its rapid growth and moves upmarket, the demands on the platform have significantly increased. This team will focus on operational enablement for the business and our customers, by focusing on platform resiliency and operational excellence.We are seeking highly motivated and skilled engineers in Bengaluru. You will play a critical role in ensuring the smooth operation of our control plane platform, providing technical support, managing operations, and driving efficiency through automation. This is an exciting opportunity to be a part of bui",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Bengaluru",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9d11c46fa39c56471dae9c14ea5093cbbaa9c8488e5034cfcc899b6763f965c2",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7986946",
+      "apply_url": "https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
+      "canonical_url": "https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
+      "content_hash": "e4bc4a7f9a0938437f3afa9c4d068705eeb9e4b6d519a8feb45f00950a992955",
+      "description_excerpt": "SEO Content Writer – Construction & Joinery | AU Market (Remote) Work From Home | Full-Time | AU Hours | PH-Based OutsourcedIn is partnering with a NSW-based business specialising in custom kitchens, cabinetry & joinery, CNC machining services, cut-to-size panels, and DIY building materials to hire an experienced SEO Content Writer . This role is focused on driving organic traffic, improving Google rankings, and increasing qualified enquiries through structured SEO strategy and high-converting website content. The ideal candidate has strong experience writing SEO content for Australian businesses and understands Australian search behaviour, local SEO strategy, and construction/trade industry language . Mandatory Requirement Minimum 2–3 years experience writing SEO content for Australian businesses (ESSENTIAL) About the Role You will be responsible for developing and executing SEO strategies that increase visibility across NSW and drive high-intent enquiries within the construction and joinery sector. This is a performance-driven role focused on organic growth and conversion optimisation. Key Responsibilities SEO Strategy & Keyword Research Conduct keyword research targeting Austral",
+      "employer": "OutsourcedIn",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Philippines",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788668284",
+      "remote": true,
+      "review_key": "review:8957a7f78d0d7251b7e258fd7a618bdacf1745fa8aa21b807d662d546f21f4b2",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
       "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 45958,
-            "name": "Security",
-            "parent_id": null
-          }
+        "categories": [
+          "SEO-Content-Writer",
+          "Content-Writer",
+          "SEO-Specialist",
+          "Digital-Marketing-Copywriting",
+          "Remote-Content-Writer",
+          "SEO-Writer",
+          "SEO-Content-Writing",
+          "SEO-Content-Specialist",
+          "seo-writing",
+          "SEO-Content-Creation",
+          "Marketing-Content-Writer",
+          "SEO-Copywriter"
         ],
-        "internal_job_id": 3465587,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 276737,
-            "location": null,
-            "name": "Bangalore Metro",
-            "parent_id": null
-          }
+        "company_slug": "outsourcedin",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Philippines"
         ],
-        "provider": "greenhouse",
-        "provider_job_id": 7986946
+        "location_restrictions": [
+          "Philippines"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
+        "timezone_restrictions": [
+          8
+        ]
       },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Software Engineer II - Billing Engineering",
-      "updated_at": "2026-09-01T23:51:46-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986946"
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "SEO Content Writer - Construction & Joinery | AU Market",
+      "url": "https://himalayas.app/companies/outsourcedin/jobs/seo-content-writer-construction-joinery-au-market",
+      "valid_through": "1793852283",
+      "workplace_type": "remote"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7775994",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7775994",
-      "content_hash": "a26150f1b477cca2270a01d1d63d678ce0f300f61a9a6385a8557a29ea7cc6c9",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Position Overview We are looking for a Cloud Support Engineer - Database who is passionate about cloud infrastructure, database technologies, and delivering exceptional customer experiences, while providing high-touch, white-glove support to strategic accounts. As a Cloud Support Engineer (IC2) at DigitalOcean, you will join a dynamic team dedicated to supporting and empowering customers to successfully run their workloads on our platform. You will work closely with customers to troubleshoot issues, optimize database performance, and guide them in adopting best practices across managed databases and cloud infrastructure. In this role, you will build strong technical depth across database systems and D",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Bengaluru",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9d6d242d1387607b2ac7acde8524c492f66f33420fc6f8fb5509274b9743d65b",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7775994",
+      "apply_url": "https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
+      "canonical_url": "https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
+      "content_hash": "42fb11ce0335a80e3b35508e26118c8e1580b5e7c368890cb7786ca44c992be6",
+      "description_excerpt": "Job Description Title: Growth Marketing Manager – Testing & Certification EMEA Location: Remote Department: Marketing Reports To: Growth Marketing Director Division: Technical Services About FoodChain ID FoodChain ID is a global leader in food safety, quality, sustainability, and regulatory compliance solutions. Through our Testing & Certification division, we help businesses across the food and related industries demonstrate compliance, manage risk, protect their brands, and build trust throughout their supply chains. Our Testing & Certification division in EMEA provides a broad portfolio of laboratory testing, inspection, auditing, and certification services, supporting customers in meeting regulatory, industry, retailer, and customer requirements across diverse markets. As we continue to strengthen and grow our presence across the region, we are seeking a Growth Marketing Manager to drive demand generation, pipeline growth, and lead conversion across our Testing & Certification business in EMEA. About the Role We are looking for a commercially-minded, data-driven Growth Marketing Manager to lead demand generation and marketing activation activities. Working closely with Product",
+      "employer": "FoodChain ID Group, Inc",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Spain",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788632496",
+      "remote": true,
+      "review_key": "review:8c70fe7d942bd87b3e1d1ec5b424d42e975d9cdba934d0d206da15f3b4bdb4c2",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
       "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 229653,
-            "name": "Customer Support",
-            "parent_id": null
-          }
+        "categories": [
+          "Growth-Marketing",
+          "Demand-Generation",
+          "B2B-Marketing",
+          "Marketing-Manager",
+          "Digital-Marketing",
+          "Growth-Marketing-Manager",
+          "Growth-Marketer-Manager",
+          "B2B-Growth-Marketing-Manager"
         ],
-        "internal_job_id": 3404655,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 276693,
-            "location": null,
-            "name": "DigitalOcean Hyderabad Office",
-            "parent_id": null
-          }
+        "company_slug": "foodchain-id-group-inc",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Spain"
         ],
-        "provider": "greenhouse",
-        "provider_job_id": 7775994
+        "location_restrictions": [
+          "Spain"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
+        "timezone_restrictions": [
+          0,
+          1
+        ]
       },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Sr. Cloud Support Engineer-Database",
-      "updated_at": "2026-09-03T20:17:14-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7775994"
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Growth Marketing Manager",
+      "url": "https://himalayas.app/companies/foodchain-id-group-inc/jobs/growth-marketing-manager",
+      "valid_through": "1793816495",
+      "workplace_type": "remote"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8658878002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8658878002",
-      "content_hash": "0ca9da2b5926b3980741a20fd42c53771c1c13e54f691514ed684010ecefc023",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:9d8bc5f1855b5eab4cfb0ade26ffbe96f510293731fbd59d2db1b347710490ff",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8658878002",
+      "apply_url": "https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
+      "canonical_url": "https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
+      "content_hash": "cb4b8cd40b7607d9684e8949dd2f5bec69dd1102e48726b73c69ee449b398a19",
+      "description_excerpt": "SpecterOps is seeking an experienced Web Developer with deep WordPress expertise to support the ongoing development, optimization, and maintenance of our public-facing web presence. You will work closely with our Marketing team to build and refine web pages, implement new functionality, and ensure our WordPress environment is well-maintained and scalable. We're looking for a self-directed developer who communicates clearly, manages their own workload effectively, and takes ownership of deliverables from start to finish. You should be equally comfortable building new features from scratch and jumping into an existing codebase to troubleshoot and improve it. The ideal candidate will bring both technical depth and an eye for design to every engagement. Hourly Range: $75 – $85/hour, commensurate with experience Location: This position is remote, based in the U.S. with optional travel quarterly for in-person company events and other ad hoc meetings. Candidate must be authorized to work and reside in the United States; we do not currently sponsor immigration visas. Responsibilities Design, develop, and maintain WordPress-based web properties, including custom themes and plugins Build and",
+      "employer": "SpecterOps",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788486059",
+      "remote": true,
+      "review_key": "review:9caa8c899a366ab6a788d569ddeac2b8a027ec2636c658309d887936150be303",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
       "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4115236002,
-            "name": "AI",
-            "parent_id": 4043190002
-          }
+        "categories": [
+          "WordPress-Development",
+          "Web-Development",
+          "Frontend-Development",
+          "Contract-Web-Developer",
+          "Remote-Web-Developer",
+          "Fullstack-Development",
+          "Contract-Web-Development",
+          "Web-Developer",
+          "Web-Developer-Jobs"
         ],
-        "internal_job_id": 6457566002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8658878002
+        "company_slug": "specterops",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
       },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Principal Product Manager, AI Software Factory",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8658878002"
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Web Developer-Contract",
+      "url": "https://himalayas.app/companies/specterops/jobs/web-developer-contract-6766783632",
+      "valid_through": "1793670058",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/staritas/jobs/marketing-specialist",
+      "canonical_url": "https://himalayas.app/companies/staritas/jobs/marketing-specialist",
+      "content_hash": "534684a3e58e5b595e14a3864aea9688440e98e574e838551aec0fb28bbfbe85",
+      "description_excerpt": "About the Role The Marketing Specialist is a hands-on role responsible for executing demand generation programs that drive inbound leads, engagement, and pipeline growth for Staritas . This individual will build, launch, measure, and optimize multi-channel campaigns across email, web, digital advertising, social media, webinars, and other channels. The role combines demand generation with strong marketing operations capabilities, including CRM/marketing automation, campaign reporting, lead nurturing, website management, SEO, and conversion optimization. The ideal candidate is a data-driven marketer who can translate campaign performance into actionable insights and continuously improve programs to increase qualified demand and support Sales. Essential Functions Demand Generation & Campaign Execution Develop and execute multi-channel demand generation campaigns designed to generate, nurture, and convert qualified leads across email, web, social, digital advertising, webinars, and other channels. Build, test, and optimize campaigns within CRM/marketing automation platforms, including emails, forms, landing pages, segmentation, workflows, lead nurturing, and calls to action. Identify",
+      "employer": "Staritas",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788680571",
+      "remote": true,
+      "review_key": "review:9f40a477e2b1542140b84d7ca691ec04158a6abae2bac4aa116b1b3af79b8a37",
+      "salary": {
+        "currency": "USD",
+        "max": 110000,
+        "min": 90000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/staritas/jobs/marketing-specialist",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Specialist",
+          "Demand-Generation",
+          "B2B-Marketing",
+          "Digital-Marketing",
+          "Marketing-Operations",
+          "Marketing-Communications-Specialist",
+          "Sales-and-Marketing-Specialist",
+          "Digital-Marketing-Specialist",
+          "Marketing-Web-Specialist",
+          "SEO-Marketing-Specialist",
+          "Marketing-Strategy-Specialist",
+          "Marketing"
+        ],
+        "company_slug": "staritas",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/staritas/jobs/marketing-specialist",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Specialist",
+      "url": "https://himalayas.app/companies/staritas/jobs/marketing-specialist",
+      "valid_through": "1793864571",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
+      "canonical_url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
+      "content_hash": "37232f8bfae4e81e838d78f416f7fdc2cc709815664149c327c7525ad070a266",
+      "description_excerpt": "Department Overview: The UW Carbone Cancer Center is committed to defeating cancer through the rapid application of groundbreaking research, prevention, and treatment. UW Carbone is an integral part of the UW School of Medicine and Public Health and UW Health, bringing together more than 330 physicians and scientists from 50 departments and nine schools across campus to conduct research and translate laboratory discoveries into new cancer patient treatments. UW Carbone builds community by creating a collaborative, respectful, and welcoming environment in which all faculty, students, and staff will thrive. Anticipated Start Date: Fall 2026 Anticipated End Date (If Applicable): Remote Work Eligibility Detail: All Remote Anticipated Hours Per Week: Minimum: 10 Maximum: 25 Schedule: This paid position is anticipated to begin during Fall 2026 semester and can continue for as long as the student is enrolled at UW-Madison. We expect the student to work at least 10 hours per week, with flexibility around exams and school breaks. Employment over the summer break is available based on student's interest. Salary/Wage Range/Lump Sum: Minimum: $15.00 Number of Positions: 1 Qualifications: The i",
+      "employer": "University of Wisconsin-Madison",
+      "employment_type": "Part Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788640768",
+      "remote": true,
+      "review_key": "review:a7f82138bc729811cf6dfb49c236f767d2b198bd76e37d2965057de7301dcfcb",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
+      "source_metadata": {
+        "categories": [
+          "Communications-Assistant",
+          "Student-Communications",
+          "Marketing-Communications-Coordinator",
+          "Public-Relations-Assistant",
+          "Content-Creator",
+          "Student-Assistant",
+          "Student-Marketing-Assistant",
+          "Communications-Intern",
+          "Communication-Internship",
+          "Communications-Trainee",
+          "Internship-In-Communication"
+        ],
+        "company_slug": "university-of-wisconsin-madison",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Communications Student Assistant",
+      "url": "https://himalayas.app/companies/university-of-wisconsin-madison/jobs/communications-student-assistant",
+      "valid_through": "1793824767",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/applaudo/jobs/web-designer",
+      "canonical_url": "https://himalayas.app/companies/applaudo/jobs/web-designer",
+      "content_hash": "574355a7003f9e707992c7550325fd04cd11a49315bf2b9d28c47e00d4246793",
+      "description_excerpt": "About You You are a visually driven Web Designer who enjoys transforming product requirements, user needs, and brand direction into polished, engaging digital experiences. You have a strong eye for visual hierarchy, typography, composition, spacing, and detail, while understanding how your design decisions translate across responsive products and different digital touchpoints. You are comfortable taking ideas from early visual exploration through high-fidelity, development-ready designs, working within established design systems and brand standards. You collaborate effectively with product, UX, and engineering teams, bring consistency to complex digital experiences, and maintain a high bar for visual quality, usability, and execution. You Bring to Applaudo the Following Competencies Bachelor’s Degree in Graphic Design, Web Design, Visual Communication, Interaction Design, or a related field is desired, or equivalent professional experience. 4+ years of professional experience in web, visual, UI, or digital experience design. Strong portfolio demonstrating high-quality visual and interface design for responsive digital products. Advanced proficiency in Figma, including components, v",
+      "employer": "Applaudo",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "El Salvador",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788669678",
+      "remote": true,
+      "review_key": "review:bd9e67d8c275f02c53befab12ff26a8b47474ef5f7719426707e855f5285c13d",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/applaudo/jobs/web-designer",
+      "source_metadata": {
+        "categories": [
+          "Web-Design",
+          "UI-Design",
+          "Visual-Design",
+          "Digital-Experience-Design",
+          "Front-End-Design",
+          "Web-Designer",
+          "Website-Designer",
+          "Graphic-Web-Designer",
+          "Freelance-Web-Designer",
+          "Web-App-Designer",
+          "Site-Designer",
+          "WordPress-Designer",
+          "WordPress-Web-Designer"
+        ],
+        "company_slug": "applaudo",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "El Salvador"
+        ],
+        "location_restrictions": [
+          "El Salvador"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/applaudo/jobs/web-designer",
+        "timezone_restrictions": [
+          -6
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Web Designer",
+      "url": "https://himalayas.app/companies/applaudo/jobs/web-designer",
+      "valid_through": "1793853677",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
+      "canonical_url": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
+      "content_hash": "6d2b16653ce181aacbb27c6733190252e17bf445a7b3abd98f883f667522f3fa",
+      "description_excerpt": "We are looking for a proactive and experienced Senior Full-Stack Developer to join the Application team at the partner company. Their mission is to provide businesses with easy access to high-quality web data, allowing clients to focus on data analysis rather than data collection. In this role, you will build, refine, and maintain core features across the full stack, delivering high-performance, pixel-perfect web applications while developing secure back-end systems and intuitive user experiences. The ideal candidate is passionate about writing clean, scalable code, collaborating closely with cross-functional teams, and leveraging modern AI tools to accelerate development. Excited? Let’s see what it takes 💛 What you will do: Build, refine, and maintain core features across the full stack, ensuring a polished, high-performance user experience; Develop and optimize both the company's main application and internal Admin Interfaces (including user management and billing systems); Implement high-fidelity UI/UX, ensuring pixel-perfect execution of product designs down to the smallest detail; Cooperate closely with Product Managers and Designers, translating Figma designs into seamless pr",
+      "employer": "SupportYourApp",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Poland",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788626627",
+      "remote": true,
+      "review_key": "review:cd4165e951868cef2c317a16c18dcb7d5b7eb624aae457745b9783458bdc5635",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
+      "source_metadata": {
+        "categories": [
+          "Full-Stack-Developer",
+          "Software-Engineer",
+          "Python-Developer",
+          "Java-Developer",
+          "React-Developer",
+          "Senior-Full-Stack-Developer-(JavaScript-Python)",
+          "Senior-Full-Stack-Developer-React-And-Java",
+          "Senior-Full-Stack-Engineer-(JavaScript-Python)",
+          "Senior-Full-Stack-Developer-(Java-+-React)"
+        ],
+        "company_slug": "supportyourapp",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Poland"
+        ],
+        "location_restrictions": [
+          "Poland"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
+        "timezone_restrictions": [
+          1
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "(fluent English) Full-Stack Developer (Python/Java/React)",
+      "url": "https://himalayas.app/companies/supportyourapp/jobs/fluent-english-full-stack-developer-python-java-react-6701400523",
+      "valid_through": "1793810627",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
+      "canonical_url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
+      "content_hash": "634b2510683dc7a777fcc94be95fe14517418e78792a76a93cebea99f50ddb22",
+      "description_excerpt": "Senior Marketing Manager – SEO, Growth & Marketing Operations Full-Time | Remote | U.S. Business Hours About the Role At Pavago , one of our clients is hiring a Senior Marketing Manager to own and execute high-impact marketing initiatives across SEO, content, digital growth, website optimization, and marketing operations . This is a senior, hands-on role for someone who combines strategic thinking with strong execution. You’ll drive organic growth, manage marketing systems and campaigns, coordinate across design and development, and use AI and automation to improve marketing speed and scalability. What You’ll Own SEO & Organic Growth Lead technical SEO, on-page optimization, audits, backlink strategies, and keyword planning Drive measurable organic traffic and search visibility growth Monitor SEO performance and identify optimization opportunities Stay current with SEO, AIO, and AI-driven search trends Use SEO and analytics tools to guide strategy and execution Content & Digital Marketing Oversee content across Instagram, Facebook, X, blogs, articles, PR, and promotional campaigns Maintain consistent brand voice and messaging Coordinate with designers and developers on marketing as",
+      "employer": "Pavago",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Mexico",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788676201",
+      "remote": true,
+      "review_key": "review:ce9c57d4d1eb614813f7f1ff21cbac222004d4026107f57c49ca8cb1a0fbb858",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Manager",
+          "Growth-Marketing",
+          "Technical-SEO",
+          "Marketing-Operations",
+          "Content-Marketing",
+          "SEO",
+          "AI-Marketing",
+          "Digital-Marketing",
+          "Organic-Growth",
+          "Senior-Marketing-Management",
+          "Marketing"
+        ],
+        "company_slug": "pavago",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Mexico"
+        ],
+        "location_restrictions": [
+          "Mexico"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
+        "timezone_restrictions": [
+          -8,
+          -7,
+          -6,
+          -5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Marketing Manager",
+      "url": "https://himalayas.app/companies/pavago/jobs/senior-marketing-manager",
+      "valid_through": "1793860200",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
+      "canonical_url": "https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
+      "content_hash": "111c37d533c2b44ebcce3598cc0e7123625d6a42838c7b2f3ffce6101c9d6db7",
+      "description_excerpt": "Who We Are The Boutique COO works with business owners and founders who are looking to expand their network of expertise and grow their businesses. We match intentionally and filter both clients and professionals, making sure they are serious, reliable and collaborative. Our network members aren’t competing with dozens of others for the same clients. Who Our Clients Are Looking For Brand Builders: You have a demonstrated history of creating cohesive brand identities, including logos, color palettes, typography, and overall visual language, with a portfolio that showcases your branding and web design work. Tech-Savvy Doers: You are proficient in designing user-friendly websites across platforms like Squarespace, WordPress, or Wix, and skilled in Adobe Creative Suite including Photoshop, Illustrator, and InDesign. Creative Problem-Solvers: You are comfortable approaching design challenges with innovative solutions that align with client goals, backed by a background in Design, Visual Arts, or a related field. Detail-Oriented Collaborators: You have a keen eye for aesthetics, strong communication skills, and a willingness to work alongside other professionals and clients to deliver hi",
+      "employer": "The Boutique COO",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788169785",
+      "remote": true,
+      "review_key": "review:df6da35361a64bc7d5f00c7652a53c27049959490d082a17764e28fed6ec7a5e",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
+      "source_metadata": {
+        "categories": [
+          "Brand-Designer",
+          "Web-Designer",
+          "Visual-Designer",
+          "Freelance-Designer",
+          "Creative-Designer",
+          "Digital-Brand-Designer",
+          "Brand-Identity-Designer",
+          "Brand-Design-Specialist",
+          "Brand-Marketing-Designer",
+          "Digital-Graphic-Designer",
+          "Website-Designer",
+          "Design"
+        ],
+        "company_slug": "the-boutique-coo",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Brand and Web Designer",
+      "url": "https://himalayas.app/companies/the-boutique-coo/jobs/brand-and-web-designer",
+      "valid_through": "1793353784",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
+      "canonical_url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
+      "content_hash": "088cca9fc939ecca39ebb58752861ccc56e92ea21e83f3929cf40f81f6d10ccf",
+      "description_excerpt": "Marketing Account Manager (Email Marketing, SEO & Client Success) – Remote Position Type: Full-Time, Remote Working Hours: U.S. Business Hours About the Role At Pavago , one of our clients is hiring a Marketing Account Manager to manage client relationships, oversee marketing execution, and ensure projects are delivered accurately and on time. This is more than an account management role. You’ll serve as the primary point of contact for multiple client accounts while coordinating email marketing campaigns, WordPress updates, SEO initiatives, reporting, and cross-functional marketing projects. You’ll work closely with leadership and internal marketing teams to keep campaigns moving, maintain clear client communication, and deliver an exceptional client experience. If you’re highly organized, client-focused, and enjoy balancing marketing execution with relationship management, this role is a strong fit. What You’ll Own Client Relationship Management Serve as the primary point of contact for assigned client accounts. Manage communication via email, Slack, WhatsApp, Zoom, and other collaboration tools. Lead recurring client meetings, status updates, and performance reviews. Keep client",
+      "employer": "Pavago",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Kenya",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788677699",
+      "remote": true,
+      "review_key": "review:e24bbde0791356cd16d5fed3f8a7caf823b4421f121b09a0c0b3eb2ca693ba57",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
+      "source_metadata": {
+        "categories": [
+          "Marketing-Account-Manager",
+          "Account-Management",
+          "Customer-Success-Manager",
+          "Email-Marketing",
+          "SEO-Specialist",
+          "Marketing-Account-Management",
+          "Digital-Marketing-Account-Manager",
+          "Advertising-Account-Manager",
+          "Account-Manager",
+          "Marketing"
+        ],
+        "company_slug": "pavago",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Kenya"
+        ],
+        "location_restrictions": [
+          "Kenya"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
+        "timezone_restrictions": [
+          3
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Marketing Account Manager",
+      "url": "https://himalayas.app/companies/pavago/jobs/marketing-account-manager-2473296508",
+      "valid_through": "1793861698",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
+      "canonical_url": "https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
+      "content_hash": "16c340d5beae17bd5058c3e6d32b8674c469d1a1647b581705b4055c97de1224",
+      "description_excerpt": "Join Hire Hangar and work with fast-growing global companies while building a long-term career. Job Title: Video Content Producer Location: Remote Working Hours: US Time Zone (PST - EST) We’re hiring a Podcast & Video Content Producer to manage the coordination, production, and publishing of video and podcast content. You’ll drive execution behind the scenes—running interviews, managing editors, publishing content, and ensuring a smooth, professional experience from recording to release. This role is ideal for a production-minded doer who thrives on process, details, and deadlines, with a creative eye and digital fluency. What You’ll Handle Own podcast production logistics: guest management, scheduling, pre/post coordination Work with editors to ensure video/audio content is polished and on brand Publish and optimize content on platforms like YouTube, Spotify, and Apple Podcasts Write show notes, social posts, and blog content to support SEO and discoverability Use tools like HubSpot, WordPress, BuzzSprout, and Canva to support ongoing publishing Track content performance and coordinate with marketing on improvement loops Support internal SaaS content development (onboarding videos",
+      "employer": "Hire Hangar",
+      "employment_type": "Contractor",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Argentina, Bolivia, Colombia, Dominican Republic, Ecuador, Egypt, Honduras, Jamaica, Mexico, Nicaragua, Panama, Peru, South Africa",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788400429",
+      "remote": true,
+      "review_key": "review:e26685dee69feed8214f9a01d7596b793c8399fc2ab3ce5850f7e408ae499ed8",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
+      "source_metadata": {
+        "categories": [
+          "Video-Content-Producer",
+          "Video-Content-Creator",
+          "Content-Producer",
+          "Video-Producer",
+          "Video-Content-Production",
+          "Creative-Content-Producer",
+          "YouTube-Content-Producer",
+          "Video-Content-Creation",
+          "Creative-Video-Producer",
+          "Content-Production-Specialist",
+          "Content-Creator"
+        ],
+        "company_slug": "hire-hangar",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Argentina",
+          "Bolivia",
+          "Colombia",
+          "Dominican Republic",
+          "Ecuador",
+          "Egypt",
+          "Honduras",
+          "Jamaica",
+          "Mexico",
+          "Nicaragua",
+          "Panama",
+          "Peru",
+          "South Africa"
+        ],
+        "location_restrictions": [
+          "Argentina",
+          "Bolivia",
+          "Colombia",
+          "Dominican Republic",
+          "Ecuador",
+          "Egypt",
+          "Honduras",
+          "Jamaica",
+          "Mexico",
+          "Nicaragua",
+          "Panama",
+          "Peru",
+          "South Africa"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
+        "timezone_restrictions": [
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          2
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Video Content Producer",
+      "url": "https://himalayas.app/companies/hire-hangar/jobs/video-content-producer-1212899111",
+      "valid_through": "1793584428",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
+      "canonical_url": "https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
+      "content_hash": "6b6b8b06e888aa30a6de6abb4824d263a488143dceb358cf6b08c82f6f2a4952",
+      "description_excerpt": "Organization Overview: Chief Executives for Corporate Purpose® ( CECP ) is the only nonpartisan business counsel and network dedicated to driving measurable returns on purpose. We promote responsible purpose-driven business as it increases customer loyalty, builds employee engagement, improves brand trust, attracts top talent, connects with strategic investors, and contributes to the bottom line. More than 200 of the world’s leading companies seek to improve their return on purpose through access to CECP 's solutions in insights and benchmarking. With our companies, we harness the power of purpose for business, stakeholders, and society. CECP commits to and promotes anti-racism, anti-discrimination, and diversity, equity, and inclusion in our organization and with our affiliated companies and their leaders. We prohibit discrimination and provide equal opportunities in a respectful environment for all individuals and partnerships, regardless of race, color, ethnicity, ancestry, national origin, sex, gender, gender identity, sexual orientation, age, mental health, disability, religious beliefs, marital status, genetic information, pregnancy, veteran status, citizenship, or any other",
+      "employer": "CECP",
+      "employment_type": "Intern",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788551921",
+      "remote": true,
+      "review_key": "review:ecccc60d5e4a7e04676db76676cfd6f1260c5c85abc418378f603334b05cc33e",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
+      "source_metadata": {
+        "categories": [
+          "Digital-Marketing",
+          "Marketing-Communications",
+          "Content-Marketing",
+          "Social-Media-Marketing",
+          "Marketing-Internships",
+          "Marketing-Intern",
+          "Internship-In-Marketing"
+        ],
+        "company_slug": "cecp",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "CECP Marketing Intern",
+      "url": "https://himalayas.app/companies/cecp/jobs/cecp-marketing-intern",
+      "valid_through": "1793735921",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
+      "canonical_url": "https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
+      "content_hash": "6fe9f7218692e4011cc28a36cdb23a3efd64fe04c49636edd24c0c60966cb9d4",
+      "description_excerpt": "We engage the most inspired minds to do their best work wherever they work best—powering the freedom to create worldwide. WP Engine empowers companies and agencies of all sizes to build, power, manage, and optimize their WordPress websites and applications with confidence. Serving 1.5 million customers across 150+ countries, the global technology company provides premium, enterprise-grade solutions, tools, and services, including specialized platforms for WordPress, industry-tailored eCommerce and agency solution suites, and developer-centric tools like Local, Advanced Custom Fields, and more. WP Engine ’s innovative technology and industry-leading expertise are why 8% of the web visits a WP Engine -powered site daily. Learn more at wpengine.com. Senior Production Engineer What is Cool About This Job At WP Engine , we are on a mission to help our customers win online. Whether we're enabling an aspiring entrepreneur to turn a hobby into an online business or a multinational corporation to launch a new campaign in weeks instead of months, our platform elevates our customers toward success. By focusing on the customer experience, WP Engine has enjoyed spectacular growth, becoming the",
+      "employer": "WP Engine",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Australia",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788627379",
+      "remote": true,
+      "review_key": "review:ece61e698584e470616da3dd4346e82bef25ee2d736e960c98be9a4e8a7dda3a",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
+      "source_metadata": {
+        "categories": [
+          "Site-Reliability-Engineering",
+          "Production-Engineering",
+          "DevOps-Engineer",
+          "Cloud-Infrastructure-Engineering",
+          "Platform-Engineering",
+          "Senior-Production-Engineer",
+          "Manufacturing-Engineer",
+          "Production-Engineer",
+          "Senior-Production-Control-Engineer",
+          "Production-Operations-Engineer",
+          "Production-Technology-Engineer",
+          "Production-Engineering-Manager"
+        ],
+        "company_slug": "wp-engine",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Australia"
+        ],
+        "location_restrictions": [
+          "Australia"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
+        "timezone_restrictions": [
+          8,
+          8.75,
+          9,
+          9.5,
+          10,
+          10.5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Production Engineer",
+      "url": "https://himalayas.app/companies/wp-engine/jobs/senior-production-engineer",
+      "valid_through": "1793811379",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/etna-interactive/jobs/web-designer",
+      "canonical_url": "https://himalayas.app/companies/etna-interactive/jobs/web-designer",
+      "content_hash": "c6d9a097bf4f7ab6323ab4a33a236b3a821e53f45e84515e59a66a1e8d7d4a9e",
+      "description_excerpt": "Do you have a mind for creativity, a desire to help small businesses grow and mastery to create uncommonly good work? Etna Interactive , a leading digital marketing agency, seeks a remote Sr. Web Designer with excellent communication skills that is interested in the intersection between design, content, business, and marketing. *While this is a remote role, candidates must reside in California, Arizona, Michigan, Washington, Colorado, or Georgia. The Senior Web Designer plays a pivotal role in shaping our clients’ digital presence by delivering high-caliber, visually engaging web designs. This position supports the Creative Department and our clients through expertly crafted visual solutions that not only look stunning but also serve the functional needs of users. As a creative and analytical designer, you’ll work with the creative team to ensure pixel-perfect designs across desktop and mobile platforms, with a strong emphasis on UI/UX best practices. Your ability to translate complex concepts into seamless, intuitive designs will be key to effectively communicating our diverse clients' messages to their target audiences. In this role, exceptional technical skills in web design are",
+      "employer": "Etna Interactive",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T08:07:29.805683+00:00",
+      "location": "Azerbaijan, United States",
+      "origin_completed_at": "2026-09-06T08:07:35.407107+00:00",
+      "origin_run_id": "ingestion-1788682055",
+      "published_at": "1788658373",
+      "remote": true,
+      "review_key": "review:f5b693fea93b42f68150ab3aa9af5d25ed800061c263767a25f5be4497e36c82",
+      "salary": {
+        "currency": "USD",
+        "max": 90000,
+        "min": 75000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/etna-interactive/jobs/web-designer",
+      "source_metadata": {
+        "categories": [
+          "Web-Designer",
+          "Senior-Web-Designer",
+          "UI-UX-Designer",
+          "Front-End-Design",
+          "Web-Development",
+          "Website-Designer",
+          "Web-Design",
+          "Graphic-Web-Designer",
+          "Freelance-Web-Designer",
+          "Web-App-Designer",
+          "Site-Designer",
+          "WordPress-Designer",
+          "WordPress-Web-Designer"
+        ],
+        "company_slug": "etna-interactive",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Azerbaijan",
+          "United States"
+        ],
+        "location_restrictions": [
+          "Azerbaijan",
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/etna-interactive/jobs/web-designer",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          4,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Web Designer",
+      "url": "https://himalayas.app/companies/etna-interactive/jobs/web-designer",
+      "valid_through": "1793842372",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
+      "canonical_url": "https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
+      "content_hash": "60938ba5a79616017c48b7d3daf6efe3757cd2fe11c554cd40a9596d94823ace",
+      "description_excerpt": "About Walker Advertising Since 1984, Walker Advertising has bridged the gap between a law firm's need to grow and an underserved community's need for trustworthy legal services. Our teams lead with empathy and without ego to serve others through integrity and trust. We dare to think differently and work to consistently raise the bar, creating a workplace environment based on respect. We believe that our employees are not just numbers; they are people. People with families and lives outside of work. We understand that a career is just one piece of the puzzle that makes people successful, happy individuals. That's why as we grow our teams, we focus on the whole person. About the role We are looking for a Senior GEO/SEO Content Strategist to lead content development for Walker Advertising 's organic ecosystem, with a primary mandate: earning visibility and citation in AI Overviews, answer engines, and AI assistants (ChatGPT, Google AI Overviews, Perplexity, Claude, etc.), alongside strong performance in traditional search. This role is a GEO-first content function that shapes how audiences and the AI systems increasingly mediating their searches find, understand, and trust our brands,",
+      "employer": "Walker Advertising",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-06T15:11:38.215458+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-06T15:11:38.215458+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-06T15:11:44.237732+00:00",
+      "origin_run_id": "ingestion-1788707504",
+      "published_at": "1788689576",
+      "remote": true,
+      "review_key": "review:dc93edf86a01b99b2287878eaf27ff4cc3afd219f90aae2c7edc65485c3b31be",
+      "salary": {
+        "currency": "USD",
+        "max": 95000,
+        "min": 73000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
+      "source_metadata": {
+        "categories": [
+          "GEO-Strategist",
+          "SEO-Content-Strategist",
+          "Content-Marketing",
+          "Digital-Content-Strategist",
+          "AI-Content-Optimization",
+          "Senior-SEO-and-GEO-Specialist",
+          "Senior-Web-Content-Strategist",
+          "Senior-Content-Strategy",
+          "Senior-SEO-Strategist",
+          "Geospatial-Content-Specialist"
+        ],
+        "company_slug": "walker-advertising",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior GEO/SEO Content Strategist",
+      "url": "https://himalayas.app/companies/walker-advertising/jobs/senior-geo-seo-content-strategist",
+      "valid_through": "1793873576",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/decisionpoint-corporation/jobs/software-product-management-lead-military-onesource-website",
+      "canonical_url": "https://himalayas.app/companies/decisionpoint-corporation/jobs/software-product-management-lead-military-onesource-website",
+      "content_hash": "6ff3e077531ff790bb750902965181c59a7f2d8cbb980d733d01ac2842125d51",
+      "description_excerpt": "Overview DecisionPoint Corporation is seeking an experienced Software Product Management Lead to drive the vision, strategy, modernization, and delivery of the Military OneSource public-facing website and its WordPress-based digital experience under the MODES III program. This leader will translate the needs of Service Members, military families, government stakeholders, content teams, and program partners into secure, accessible, user-centered product capabilities. The ideal candidate combines strong Agile product leadership with practical knowledge of WordPress, web content platforms, custom software development, cloud-native services, low-code/no-code solutions, and responsible use of AI-assisted and AI-generated applications. This position is fully remote. Duties & Responsibilities Product Vision, Strategy, and Roadmap Define and execute the product vision, strategy, outcomes, and roadmap for the Military OneSource website and supporting digital services. Align product priorities with mission objectives, customer needs, contract requirements, technical feasibility, security, accessibility, and available resources. Establish measurable product goals and use analytics, user feedb",
+      "employer": "DecisionPoint Corporation",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788806959",
+      "remote": true,
+      "review_key": "review:04809587880f69e527492de9a1b39508dc3bb7f6ddb4a799676ac0e9dadf07c0",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/decisionpoint-corporation/jobs/software-product-management-lead-military-onesource-website",
+      "source_metadata": {
+        "categories": [
+          "Software-Product-Management",
+          "Agile-Product-Management",
+          "WordPress",
+          "Digital-Product-Management",
+          "Product-Owner",
+          "Lead-Software-Product-Manager",
+          "Software-Product-Manager",
+          "Government-and-Defense-Product-Management",
+          "Defense-Product-Management",
+          "Federal-IT-Product-Management",
+          "Product-Manager",
+          "Product"
+        ],
+        "company_slug": "decisionpoint-corporation",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/decisionpoint-corporation/jobs/software-product-management-lead-military-onesource-website",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Software Product Management Lead, Military OneSource Website",
+      "url": "https://himalayas.app/companies/decisionpoint-corporation/jobs/software-product-management-lead-military-onesource-website",
+      "valid_through": "1793990958",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/integriti/jobs/graphic-design-ui-ux-trainee",
+      "canonical_url": "https://himalayas.app/companies/integriti/jobs/graphic-design-ui-ux-trainee",
+      "content_hash": "1f21edae3cb4beb7733fd44e5e9f08177f8b94ecedec2878282d710c948d4a22",
+      "description_excerpt": "We are looking for a Graphic Design / UI-UX Trainee to join our design team and get hands-on experience designing for real websites, digital products, and marketing materials. This is a training role for someone early in their design career who wants to learn how to design for the web and modern product interfaces, guided by senior designers.﻿ Key Responsibilities﻿﻿ Assist in designing website layouts, landing pages, and digital storefronts under senior designer guidance. Support the creation of UI components, wireframes, and mockups for websites and web applications. Help design marketing assets: social media graphics, banners, email templates, and presentation materials. Participate in design reviews and incorporate feedback into revised design iterations. Assist with basic UX research and usability considerations when designing pages and flows. Maintain consistency with brand guidelines and design systems across projects. Collaborate closely with developers and content writers to ensure designs translate accurately into finished pages. Organize and prepare design files/assets for handoff to development. Qualifications A portfolio (academic, personal, or freelance projects) showi",
+      "employer": "Integriti",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:58.059328+00:00",
+      "location": "Pakistan",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "1788716651",
+      "remote": true,
+      "review_key": "review:04f275f7d816633745785a7d5c72804bd0688dad5b89ee0fbcb6ab32879511c5",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/integriti/jobs/graphic-design-ui-ux-trainee",
+      "source_metadata": {
+        "categories": [
+          "Graphic-Design",
+          "UI-UX-Design",
+          "Visual-Design",
+          "Web-Design",
+          "Design-Trainee",
+          "Trainee-Graphic-Designer",
+          "UX-UI-Trainee",
+          "UX-UI-Design-Intern",
+          "UI-UX-Design-Intern",
+          "Graphic-Design-Intern",
+          "UX-Design-Intern",
+          "Junior-Graphic-Designer",
+          "Junior-UI-UX-Designer",
+          "Visual-Design-Intern"
+        ],
+        "company_slug": "integriti",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "Pakistan"
+        ],
+        "location_restrictions": [
+          "Pakistan"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/integriti/jobs/graphic-design-ui-ux-trainee",
+        "timezone_restrictions": [
+          5
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Graphic Design / UI-UX Trainee",
+      "url": "https://himalayas.app/companies/integriti/jobs/graphic-design-ui-ux-trainee",
+      "valid_through": "1793900651",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://weworkremotely.com/remote-jobs/zeta-global-senior-product-designer-ai",
+      "canonical_url": "https://weworkremotely.com/remote-jobs/zeta-global-senior-product-designer-ai",
+      "content_hash": "2b0a44734c21293f41814e0a4e27f8bf7e41b8c181649d299f00ea849312a1e5",
+      "description_excerpt": "Headquarters: Remote - United States WHO WE ARE Zeta Global (NYSE: ZETA) is the AI-Powered Marketing Cloud that leverages advanced artificial intelligence (AI) and trillions of consumer signals to make it easier for marketers to acquire, grow, and retain customers more efficiently. Through the Zeta Marketing Platform (ZMP), our vision is to make sophisticated marketing simple by unifying identity, intelligence, and omnichannel activation into a single platform – powered by one of the industry’s largest proprietary databases and AI. Our enterprise customers across multiple verticals are empowered to personalize experiences with consumers at an individual level across every channel, delivering better results for marketing programs. Zeta was founded in 2007 by David A. Steinberg and John Sculley and is headquartered in New York City with offices around the world. To learn more, go to www.zetaglobal.com . THE ROLE We're building Zeta Developer Platform , our next-generation Marketing Operating System, and we need a Senior Product Designer who will be instrumental to its success. This role is a pillar position that bridges design and engineering to create the core foundation of the Agen",
+      "employer": "Zeta Global",
+      "first_seen_at": "2026-09-08T10:40:57.138813+00:00",
+      "ingestion_change": "new",
+      "last_seen_at": "2026-09-08T10:40:57.138813+00:00",
+      "listing_language": "en",
+      "location": "Anywhere in the World",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "2026-08-18T20:32:19+00:00",
+      "remote": true,
+      "review_key": "review:0597054c745f96b9daaaa00b3cd929f7ea620923c0b11dc0ced468752f3dd9d3",
+      "source_id": "we-work-remotely",
+      "source_instance": "we-work-remotely:programming",
+      "source_job_id": "programming:https://weworkremotely.com/remote-jobs/zeta-global-senior-product-designer-ai",
+      "source_metadata": {
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "categories": [
+          "Full-Stack Programming"
+        ],
+        "provider": "weworkremotely"
+      },
+      "source_type": "job_board",
+      "source_url": "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+      "title": "Senior Product Designer, AI",
+      "url": "https://weworkremotely.com/remote-jobs/zeta-global-senior-product-designer-ai",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2735,
-  "run_id": "ingestion-1789957776",
+  "review_queue_count": 332,
+  "run_id": "ingestion-1789958591",
   "schema_version": 1,
-  "total_pages": 110
+  "total_pages": 14
 }

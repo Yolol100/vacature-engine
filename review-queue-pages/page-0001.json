@@ -1,88 +1,8 @@
 {
-  "completed_at": "2026-09-21T02:29:36.290866+00:00",
+  "completed_at": "2026-09-21T02:43:11.786281+00:00",
   "page": 1,
   "page_item_count": 25,
   "review_queue": [
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987220",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7987220",
-      "content_hash": "797d3c631b0ba906e64dbb01434493a1faa76933f196fd7f8a9e802513b06be5",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. Building AI agents that take real actions is the easy part. Building agents that get better over time — that learn from feedback, correct mistakes, and optimize toward outcomes users actually care about — is one of the hardest open problems in production AI today. That's what this team works on. As a Staff AI/ML Engineer on our Applied Research team, you'll own the technical direction for feedback-driven learning in DigitalOcean's agentic systems: reward modeling, preference optimization, reinforcement learning, and the evaluation infrastructure needed to measure whether any of it is actually working. This is a senior IC role with broad technical scope. You'll set direction, run experiments at scale,",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:79f5543da6c3ce3fdcfd485c766a8cfc7e398018b9380e5c5ac6a207e75439dc",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7987220",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 365098,
-            "name": "Agentic AI",
-            "parent_id": null
-          }
-        ],
-        "internal_job_id": 3465612,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 396968,
-            "location": null,
-            "name": "DigitalOcean Seattle Office",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 7987220
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Staff Software Engineer, AI/ML",
-      "updated_at": "2026-07-15T18:53:00-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7987220"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8637995002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8637995002",
-      "content_hash": "a6a8172024b02e8fdf0c91fdf2397c8ae5efb664d20e07cf3067f2dca2165efe",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, KSA; Remote, UAE",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7a4394ea0d1c33ce2c3b2e423ebc091c876583fea8e26ac9ea8459b7db84ccc3",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8637995002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4096747002,
-            "name": "EMEA - Enterprise",
-            "parent_id": 4096735002
-          }
-        ],
-        "internal_job_id": 6449918002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8637995002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Strategic Account Executive - MENA",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8637995002"
-    },
     {
       "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=7998059",
       "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=7998059",
@@ -128,186 +48,18 @@
       "url": "https://pantheon.io/about/careers/detail?gh_jid=7998059"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8615319002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8615319002",
-      "content_hash": "f4902042b6e01b8abe16da667c9756ff91d8c7cdb4bd00b0162a5a7ed8a7de81",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Bangalore, India",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7adb3bfb3538d142b35f2af89ae94af3ab7dd53421aa4b5678484f1a19aa1b62",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8615319002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4115239002,
-            "name": "Data Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6440848002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4112140002,
-            "location": null,
-            "name": "India",
-            "parent_id": 4019590002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8615319002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Site Reliability Engineer - Monitoring and Anomaly Detection (Monetization)",
-      "updated_at": "2026-09-02T11:24:53-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8615319002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8503792002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8503792002",
-      "content_hash": "9aafd97657c97f264b1eadae3604ba585edb9503edee4249b855ba1325586493",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Italy",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7b3d100ac622235c648ed98394817861dca28dfa0bd00954e4da80ea005f4402",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8503792002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4096748002,
-            "name": "EMEA - Commercial",
-            "parent_id": 4096735002
-          }
-        ],
-        "internal_job_id": 6396658002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4112149002,
-            "location": null,
-            "name": "Italy",
-            "parent_id": 4019553002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8503792002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Account Executive - Italy",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8503792002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8761409002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8761409002",
-      "content_hash": "a6303d3323fb00ea5f71681c48da417f3a8abd09e644c2b6bcb495c2295bda18",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7bca1aa3091d666d4b8a7acfd228d5d3dd3a89d15c9517d7dbe437c2a3a49ad1",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8761409002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4099703002,
-            "name": "Corporate Security",
-            "parent_id": 4011054002
-          }
-        ],
-        "internal_job_id": 6504704002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8761409002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Staff Security Engineer, IAM",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8761409002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8721124002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8721124002",
-      "content_hash": "b347b1ef64c17d3903058a6337ed8949535a733b366a70217b6946c94ffe7536",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Bangalore, India",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7c5c03392e8f79cb3f08a52040ef2de07f088be93d176a284c6b49c668190db9",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8721124002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4061741002,
-            "name": "Sec Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6486212002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4112140002,
-            "location": null,
-            "name": "India",
-            "parent_id": 4019590002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8721124002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Software Engineer",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8721124002"
-    },
-    {
       "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=7843250",
       "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=7843250",
-      "content_hash": "dc6d5704090c3d049d05c4b6f41380c994d8d984a2063f0986716e4b017d9d57",
+      "content_hash": "e059db0640461b58cc0d918c4eeff2b55e59880c26426ba09e3b12c6857bdce9",
       "description_excerpt": "About Pantheon Pantheon brings together exceptional builders who take ownership, drive meaningful impact, and shape what's next for the web. We power more than 300,000 websites globally for organizations including Google, Princeton, Salesloft, Clorox, and the United Nations. Every day, thousands of developers and marketers use our WebOps platform to build, iterate, and scale WordPress, Drupal, and Next.js sites that reach billions of people worldwide. As an employer, we operate with the same philosophy that drives our product: foundation and freedom. Pantheon is a vibrant, remote-forward team of experts who care deeply about their craft and results. Here, you take ownership of work that matters, contribute alongside exceptional people, and see the impact you create. The Opportunity Pantheon is building the next generation of web content infrastructure — a real-time, collaborative platform that redefines how teams create, publish, and manage content on the modern web. Content management has been largely unchanged for two decades. Pantheon is uniquely positioned — with deep roots in the web platform, a global CDN, and a sophisticated branching model trusted by thousands of organizati",
       "employer": "Pantheon",
-      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "first_seen_at": "2026-09-17T19:46:14.232190+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-17T19:46:14.232190+00:00",
       "location": "United States (Remote)",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7c61e6f36d9968eb1f892f9e3f10780bf804201011a244570e88d6ce381b08b3",
+      "origin_completed_at": "2026-09-17T19:46:20.342284+00:00",
+      "origin_run_id": "ingestion-1789674380",
+      "review_key": "review:9bbdbd2dfc8076ccabffb87b95027a8bef5dc3712297a02c6b6816822051cbd0",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:pantheon",
       "source_job_id": "pantheon:7843250",
@@ -336,501 +88,752 @@
       "source_type": "ats",
       "source_url": "greenhouse://pantheon",
       "title": "Senior Software Engineer - Collaborative Web Platform",
-      "updated_at": "2026-07-30T12:20:45-04:00",
+      "updated_at": "2026-09-15T15:21:31-04:00",
       "url": "https://pantheon.io/about/careers/detail?gh_jid=7843250"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8162270",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8162270",
-      "content_hash": "c7ed35d6ffe22343b5f846ad501ba039e96e178369bd776bd517005e56c76ef6",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We want people who are passionate about operational excellence and scaling infrastructure that powers the cloud. At DigitalOcean, our Data Center Managers are critical to the success of our business. They are hands-on technical leaders who own the end-to-end operations of our physical infrastructure—ensuring we meet customer expectations for reliability, performance, and scale. You will lead a talented team of technicians and engineers, support data center initiatives in ATL, and work closely with our architects and infrastructure product teams to bring new solutions online at lightning speed. This position is based in the Atlanta area and requires you to be onsite. You must also be willing to travel",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8029559",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8029559",
+      "content_hash": "c9ef0307cc2c37d78dc8e98418a3e0ad6146c2d4681a390fdd94b7e7349f4f88",
+      "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft, and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations, including Clorox and the United Nations, drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. The Role We're looking for a Senior GTM Growth Marketer to join a team that operates with the pace and mindset of a startup within Pantheon. You'll help identify, develop, and scale growth opportunities while bringing innovative, differentiated solutions to market. This role is ideal for someone who thrives in ambiguity, thinks in hypotheses, and enjoys turning market signals into actionable GTM strategies. As a member of this small, startup-style growth team, you'll partner closely with Product Marketing, Sales, and Product to better understand customers, test new a",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Atlanta",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (Remote)",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7c979f790cd57b0718787941bf357b0d71452e0cc2170bafec9567a11ac3ceae",
+      "review_key": "review:87ea5dac601419da48ab27389bb40a3d6cf6279642e618c5f4accd181256b0a5",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:8162270",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8029559",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 296559,
-            "name": "IaaS & Data Centers",
+            "id": 2648,
+            "name": "Sales",
             "parent_id": null
           }
         ],
-        "internal_job_id": 3529303,
+        "internal_job_id": 3480865,
         "offices": [
           {
             "child_ids": [],
-            "id": 186705,
-            "location": null,
-            "name": "*United States",
-            "parent_id": null
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8162270
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Data Center Manager ATL",
-      "updated_at": "2026-08-27T13:28:17-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8162270"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8626772002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8626772002",
-      "content_hash": "642cb847e7dc24c97fb0763175fb8e1de61cee38809487697618404184165876",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Bangalore, India",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7cd70a358ea00851c8f0952f038ded170c65aa14a278ba14d8dfe53ae58b0513",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8626772002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4135580002,
-            "name": "Architecture Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6445355002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4112140002,
-            "location": null,
-            "name": "India",
-            "parent_id": 4019590002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8626772002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Director, Engineering, Platform Operations & Productivity",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8626772002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8782040002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8782040002",
-      "content_hash": "1358a79d6090a29f70ffeec885f018e70edba6b541435d1d2bfa0378b6281d9c",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Poland",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7dda1a7af0383fc245ba6b250e5361a083fbd2187a1b42297d5f18b5d7aa6179",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8782040002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4016843002,
-            "name": "Platforms Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6513283002,
-        "offices": [
-          {
-            "child_ids": [
-              4042500002,
-              4040905002,
-              4040903002,
-              4112146002,
-              4112147002,
-              4112148002,
-              4040908002,
-              4112149002,
-              4112150002,
-              4040907002,
-              4112151002,
-              4112152002,
-              4112153002,
-              4112154002,
-              4041064002
-            ],
-            "id": 4019553002,
-            "location": null,
-            "name": "EMEA",
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
             "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 8782040002
+        "provider_job_id": 8029559
       },
       "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Engineering Manager, Trusted Agentic Development",
-      "updated_at": "2026-09-03T17:22:41-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8782040002"
+      "source_url": "greenhouse://pantheon",
+      "title": "Senior GTM Growth Marketer",
+      "updated_at": "2026-08-13T14:46:57-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8029559"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8640151002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8640151002",
-      "content_hash": "7e0726b35e9291391ef6101f2cbdbb9bd91c2d56a2666892f647883bbbd9733d",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8172179",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8172179",
+      "content_hash": "863a54c477e91c69e10a8bc8d1f682bb4fcfa6fa19846a5766f0ad5ebafc7332",
+      "description_excerpt": "About Pantheon Pantheon's WebOps Platform powers the open web, running more than 700,000 websites in the cloud for customers including Google, Princeton, Salesloft, and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon's multi-tenant, container-based platform enables organizations to manage all of their websites from a single dashboard. The Role Pantheon is seeking a Staff Product Manager to lead how Pantheon delivers monetization and billing in the product, owning the infrastructure that turns pricing and packaging decisions into what customers actually experience — and using that ownership to move the metrics that matter with a high degree of independence. You'll build and run the billing, metering, and entitlement systems that make Pantheon's plans, tiers, and add-ons real, and use that platform to optimize what customers buy: driving upsell and expansion, and reducing downsell and churn. You'll operate with minimal oversight, owning how Pantheon delivers and monetizes through the product — including how we enable partner and agency monetization — while pa",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Singapore",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (Remote), Canada (Remote)",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:7eb3c84d6b6c00a7779c00f544abf908641e9e12a46ee39309b8cfa163c38740",
+      "review_key": "review:87f15a3a122f2bf0929d7c1cc9fbf8d60b1d683241a1858ca25f68f5f17d5680",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8640151002",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8172179",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 4096750002,
-            "name": "APAC - Enterprise",
-            "parent_id": 4096736002
+            "id": 3528,
+            "name": "Product",
+            "parent_id": null
           }
         ],
-        "internal_job_id": 6450799002,
+        "internal_job_id": 3524020,
         "offices": [
           {
             "child_ids": [],
-            "id": 4042805002,
-            "location": "Singapore",
-            "name": "Singapore",
-            "parent_id": 4019590002
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 8640151002
+        "provider_job_id": 8172179
       },
       "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Enterprise Account Executive - Singapore",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8640151002"
+      "source_url": "greenhouse://pantheon",
+      "title": "Staff Product Manager, Monetization & Billing",
+      "updated_at": "2026-09-01T19:48:00-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8172179"
     },
     {
-      "apply_url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff/application",
-      "canonical_url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff",
-      "content_hash": "c6e1ff66e33bfe63fb6ebef3a9f9a722de68750a2f2208679faf9180e516a9be",
-      "description_excerpt": "AI AT ZAPIER At Zapier https://zapier.com/about, we build and use automation every day to make work more efficient, creative, and human. So if you’re using AI tools while applying here - that’s great! We just ask that you use them responsibly and transparently. Check out our guidance on How to Collaborate with AI During Zapier’s Hiring Process https://zapier.com/l/jobs/ai-at-zapier, including how to use AI tools like ChatGPT, Claude, Gemini, or others during our hiring process - and when not to. Job Posted: 08/26 Location: Americas (North, Central and South America) Hi there! Zapier is hiring a Manager, Analytics & Strategy to lead our newly formed GTM Analytics team. This team is the central analytics home for Marketing, Sales, RevOps, and Customer Ops, with a mandate to deliver trusted GTM insights, improve the quality and speed of decision-making, and turn repeated questions into durable self-service analytics assets. You will manage a team of embedded analysts supporting Marketing, Sales, and Support/Customer Ops. Your team will own the day-to-day analytics interface for GTM leaders: funnel reporting, campaign performance, sales and support analytics, forecasting inputs, recurr",
-      "employer": "Zapier",
-      "employment_type": "FullTime",
-      "first_seen_at": "2026-09-05T13:34:12.660818+00:00",
+      "apply_url": "https://himalayas.app/companies/hire-overseas/jobs/sales-closer",
+      "canonical_url": "https://himalayas.app/companies/hire-overseas/jobs/sales-closer",
+      "content_hash": "a485b2b87908713f2ef842c84abfebc3f468fab46b8b671ff61710e837cbcc26",
+      "description_excerpt": "We're looking for a Sales Closer to run sales calls and proposals alongside an existing sales partner at a senior-only digital studio that builds high-performance websites and digital platforms for clients across higher education, government, aerospace, healthcare, and eCommerce. This is a closing role. You will be joining an existing sales motion, not building one from scratch. You will run discovery and closing calls, prepare and present proposals, and own the final stages of the sales cycle from qualified lead through signed contract. The studio has a strong track record, a differentiated positioning, and a clear value proposition — your job is to present it compellingly and close. If you have strong B2B sales experience in digital services, agencies, or web development, can hold your own in a consultative sales conversation with sophisticated buyers, and take genuine ownership of closing outcomes, this role is a strong fit. Why You'll Want to Join You will be paid in USD (bi-monthly: every 15th and 30th) Paid Time Off in accordance with company policy Observance of Holidays per company guidelines 100% remote setup so you can work wherever you're most productive This role requir",
+      "employer": "Hire Overseas",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-05T13:34:13.461539+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:31.040157+00:00",
-      "location": "NAMER",
+      "last_seen_at": "2026-09-05T15:07:32.440664+00:00",
+      "location": "South Africa",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "published_at": "2026-08-26T15:46:24.987+00:00",
+      "published_at": "1788609467",
       "remote": true,
-      "review_key": "review:80703b464dd9fd4473635e0ebca683cdb2f390aa2503b8ca93e122c63754d8ff",
-      "salary": {
-        "components": [
-          {
-            "compensationType": "Salary",
-            "currencyCode": "USD",
-            "interval": "1 YEAR",
-            "maxValue": 261300,
-            "minValue": 174200
-          },
-          {
-            "compensationType": "EquityPercentage",
-            "interval": "1 YEAR",
-            "maxValue": null,
-            "minValue": null
-          },
-          {
-            "compensationType": "Bonus",
-            "interval": "1 YEAR",
-            "maxValue": null,
-            "minValue": null
-          }
-        ],
-        "summary": "$174.2K - $261.3K"
-      },
-      "source_id": "ashby",
-      "source_instance": "ashby:zapier",
-      "source_job_id": "zapier:7dd68291-3696-4fd0-a5d0-24ab73d22fff",
+      "review_key": "review:8d6a8053ba77d386a42ea684fbbcc8906e0b1a3fa28efbcbb770eb443eba08d2",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/hire-overseas/jobs/sales-closer",
       "source_metadata": {
-        "address": {
-          "postalAddress": {
-            "addressCountry": "United States",
-            "addressLocality": "San Francisco",
-            "addressRegion": "California"
-          }
-        },
-        "department": "Data",
-        "is_listed": true,
-        "provider": "ashby",
-        "secondary_locations": [],
-        "team": "Data"
+        "categories": [
+          "SalesCloser",
+          "B2B-Sales",
+          "Digital-Services-Sales",
+          "Agency-Sales",
+          "Business-Development",
+          "Closer-Sales-Closer",
+          "Remote-Sales-Closer",
+          "Closer-De-Ventas",
+          "Sales-Closing",
+          "Lead-Closer",
+          "Closing-Specialist",
+          "Sales"
+        ],
+        "company_slug": "hire-overseas",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "South Africa"
+        ],
+        "location_restrictions": [
+          "South Africa"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/hire-overseas/jobs/sales-closer",
+        "timezone_restrictions": [
+          2
+        ]
       },
-      "source_type": "ats",
-      "source_url": "ashby://zapier",
-      "title": "Manager, GTM Analytics",
-      "url": "https://jobs.ashbyhq.com/zapier/7dd68291-3696-4fd0-a5d0-24ab73d22fff",
-      "workplace_type": "Remote"
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Sales Closer",
+      "url": "https://himalayas.app/companies/hire-overseas/jobs/sales-closer",
+      "valid_through": "1793793467",
+      "workplace_type": "remote"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8617751002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8617751002",
-      "content_hash": "62403b8eca86c6a48dd07b87ce6931d3c743f46424e4a036e9b924d52dcdaf45",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote Ireland; Remote, France; Remote, Germany; Remote, Italy; Remote, Spain; Remote, United Kingdom",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:80e7054c0b823a7f9c53623e13415592d5b9dc5f411e3af25103e2f9b03f62b8",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8617751002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4096748002,
-            "name": "EMEA - Commercial",
-            "parent_id": 4096735002
-          }
-        ],
-        "internal_job_id": 6441776002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4042500002,
-            "location": "France",
-            "name": "France",
-            "parent_id": 4019553002
-          },
-          {
-            "child_ids": [],
-            "id": 4040903002,
-            "location": null,
-            "name": "Germany",
-            "parent_id": 4019553002
-          },
-          {
-            "child_ids": [],
-            "id": 4040907002,
-            "location": null,
-            "name": "Netherlands",
-            "parent_id": 4019553002
-          },
-          {
-            "child_ids": [],
-            "id": 4112152002,
-            "location": null,
-            "name": "Spain",
-            "parent_id": 4019553002
-          },
-          {
-            "child_ids": [],
-            "id": 4040908002,
-            "location": null,
-            "name": "United Kingdom",
-            "parent_id": 4019553002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8617751002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Strategic Account Executive - Turkey",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8617751002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8781246002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8781246002",
-      "content_hash": "e6d9a6ba5653549a7e71fabe0fe81cb294a65afbe1251ea4ac85d7ba54f9cc92",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Netherlands",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:80f735d951ae7aab95698eb18fa7ef29803446bb260cc8f36106047353305d59",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8781246002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4121532002,
-            "name": "New Business - EMEA",
-            "parent_id": 4121530002
-          }
-        ],
-        "internal_job_id": 6512926002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4040907002,
-            "location": null,
-            "name": "Netherlands",
-            "parent_id": 4019553002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8781246002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "New Business Account Executive - Netherlands",
-      "updated_at": "2026-09-04T02:18:59-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8781246002"
-    },
-    {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7904346",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7904346",
-      "content_hash": "0e21faa89244530f9e8de8146dfa4ffa7982a828f1ee07efa120a022178b9c3c",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We want people who are passionate about building features that you and your peers will love. At DigitalOcean, Data Center Engineers play a massive role in the success of our business. Our amazing Data Center team is responsible for maintaining and growing the physical infrastructure of the DigitalOcean cloud, past, present and future. They own everything related to the physical servers and networking gear that enables our company, and our customers to scale. Day to day duties may include everything from replacing a faulty drive in one of our servers, to flying overseas to set up a brand new Data Center from scratch. In exchange for your expertise and enthusiastic interest in DigitalOcean, we can offer",
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7612843",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7612843",
+      "content_hash": "9f0c1fe6d1e65dd49a6ca9f3a6f42f65358251c3d236b3576af471c984622286",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Senior Software Engineer who is passionate about startups fueling the next wave of AI innovation. We are seeking a highly experienced and motivated Senior Software Engineer to join our Security Products team. In this pivotal role, you will be instrumental in designing, building, and maintaining robust security products and infrastructure that protect Digital Ocean's platform and our customers' data. This is an exciting opportunity for an individual who thrives in a fast-paced environment and is passionate about solving complex security challenges at scale. What you’ll do Design and develop real-time security detection engines using Apache Flink and Kafka for threat detection at cl",
       "employer": "DigitalOcean",
       "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
       "ingestion_change": "recovered_pending_review",
       "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Atlanta",
+      "location": "Boston",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:81b3855eba0bf268c1ec66e23b621148bece61f7df94c88755b900932cea1036",
+      "review_key": "review:8e1cb3a6c1320b9846f08780030a35e714733c31720859576237631e19b9887b",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7904346",
+      "source_job_id": "digitalocean98:7612843",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 296559,
-            "name": "IaaS & Data Centers",
+            "id": 45958,
+            "name": "Security",
             "parent_id": null
           }
         ],
-        "internal_job_id": 3434171,
+        "internal_job_id": 3361666,
         "offices": [
           {
             "child_ids": [],
-            "id": 215167,
-            "location": "All Other Locations",
-            "name": "All Other Locations",
+            "id": 213279,
+            "location": "Boston Metro",
+            "name": "Boston Metro",
             "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 7904346
+        "provider_job_id": 7612843
       },
       "source_type": "ats",
       "source_url": "greenhouse://digitalocean98",
-      "title": "Data Center Engineer II",
-      "updated_at": "2026-07-31T16:01:59-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7904346"
+      "title": "Senior Software Engineer, Security Products",
+      "updated_at": "2026-08-31T11:03:07-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7612843"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8697215002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8697215002",
-      "content_hash": "ce9991b3cd840ff2c9ae687c061b0b4c3ffd83f54569c776b76f5888ef6c224c",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "apply_url": "https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
+      "canonical_url": "https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
+      "content_hash": "60044640fd37fcb2034d97b1a8ac22ddf5c69b3763cf5c29092b0835ce9207cc",
+      "description_excerpt": "﻿ NAXCON GmbH , located in the heart of Freiburg, is at the forefront of the German IT and engineering industry. Our experts have extensive knowledge in software and hardware development, state-of-the-art electronics, and future-oriented technologies such as artificial intelligence and virtual reality. We are not only dedicated to project work for our customers, but also intensively pursue in-house innovation projects as well as research & development. Renowned companies from a wide range of German industries place their trust in us - demonstrating the outstanding expertise and commitment of our engineers. Position : Senior Full-Stack Developer & IT Maintenance Specialist Type : Full-time/Remote Field : IT Prequalification Requirement Relevant project references are mandatory for this role. Applications will be evaluated based on how closely the submitted reference projects match the required experience areas listed below. Please make sure that each reference project clearly states which experience areas it covers. Please include previous projects related to one or more of the following areas: Ongoing maintenance, support, and/or further development of an existing live web applicat",
+      "employer": "NAXCON GmbH",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-05T13:34:13.461539+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United States",
+      "last_seen_at": "2026-09-05T15:07:32.440664+00:00",
+      "location": "United States",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:81b9f8c97979c4df924694fd6f620c3ce5ea4021b7b6b3af88bd2b4e2c86fd66",
+      "published_at": "1788596183",
+      "remote": true,
+      "review_key": "review:92f6124b93445fb7165a960ef603037622ed71cf2661273d37892bbf91d35ba9",
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
+      "source_metadata": {
+        "categories": [
+          "Fullstack-Development",
+          "IT-Maintenance-Specialist",
+          "Software-Engineer",
+          "Backend-Development",
+          "Frontend-Development",
+          "Senior-Fullstack-Developer",
+          "Senior-Full-Stack-Developer-(React-Node.Js)",
+          "Senior-Fullstack-Web-Application-Developer",
+          "Senior-Full-Stack-Development",
+          "Senior-Full-Stack-Developer-(JavaScript-Python)",
+          "Full-Stack-Engineer"
+        ],
+        "company_slug": "naxcon-gmbh",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Senior Full-Stack Developer & IT Maintenance Specialist",
+      "url": "https://himalayas.app/companies/naxcon-gmbh/jobs/senior-full-stack-developer-it-maintenance-specialist",
+      "valid_through": "1793780183",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986946",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7986946",
+      "content_hash": "35bd3c9d9366a73ccdc0245d124097ad7d40a1fd2fc01283e84ae4a4ac2cea1f",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. The Billing Engineering team is responsible for managing a broad and complex platform, with a range of functions, comprising 70 services. As DigitalOcean continues its rapid growth and moves upmarket, the demands on the platform have significantly increased. This team will focus on operational enablement for the business and our customers, by focusing on platform resiliency and operational excellence.We are seeking highly motivated and skilled engineers in Bengaluru. You will play a critical role in ensuring the smooth operation of our control plane platform, providing technical support, managing operations, and driving efficiency through automation. This is an exciting opportunity to be a part of bui",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Bengaluru",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:9d11c46fa39c56471dae9c14ea5093cbbaa9c8488e5034cfcc899b6763f965c2",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8697215002",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:7986946",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 4011061002,
-            "name": "Product Marketing",
-            "parent_id": 4011045002
+            "id": 45958,
+            "name": "Security",
+            "parent_id": null
           }
         ],
-        "internal_job_id": 6475188002,
-        "offices": [],
+        "internal_job_id": 3465587,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 276737,
+            "location": null,
+            "name": "Bangalore Metro",
+            "parent_id": null
+          }
+        ],
         "provider": "greenhouse",
-        "provider_job_id": 8697215002
+        "provider_job_id": 7986946
       },
       "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Principal Program Manager, Go-To-Market",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8697215002"
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Software Engineer II - Billing Engineering",
+      "updated_at": "2026-09-01T23:51:46-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986946"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8705017002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8705017002",
-      "content_hash": "47036e546d7ffcc5537e082f728ca083dc02b63d989d31d4476ff52335b09065",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8056102",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8056102",
+      "content_hash": "787d3f9f2aab8d7c607859542e23ed6f768b67da95c1d4caa37bca85ef377eca",
+      "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations including Clorox and the United Nations drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. The Role The Data Platform team powers Pantheon’s data infrastructure and delivers analytics across the company. We’ve built a robust, configuration-driven data platform that handles extraction, ingestion, curation, compliance, security, and enterprise-wide access to data — and we’re looking for a Staff Software Engineer to take it to the next level. In this role, you’ll extend the platform beyond its current foundation to surface data insights directly within our Product experience, and to power the infrastructure behind Machine Learning and LLM-driven insights. As the",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, United States",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "Canada (Remote)",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:81bb0b10f5e31b9c0e21f162f50f89e8c2d467b3e2d6923d59209f8b8000c212",
+      "review_key": "review:a28dd99fb404368e81b309940e44eb6693693be13b675f68856337eaf1820770",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8705017002",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8056102",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 4069214002,
-            "name": "Corporate IT",
-            "parent_id": 4118834002
+            "id": 2645,
+            "name": "Engineering",
+            "parent_id": null
           }
         ],
-        "internal_job_id": 6478724002,
-        "offices": [],
+        "internal_job_id": 3490790,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
+          }
+        ],
         "provider": "greenhouse",
-        "provider_job_id": 8705017002
+        "provider_job_id": 8056102
       },
       "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Staff Systems Engineer, IT",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8705017002"
+      "source_url": "greenhouse://pantheon",
+      "title": "Staff Software Engineer - Data Platform",
+      "updated_at": "2026-08-18T19:28:39-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8056102"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986414",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7986414",
-      "content_hash": "617c6b66ff4f02ae1bcd815daf25f2c389316e392f4b12d6f83300aaf69f582c",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. About the Role DigitalOcean's Agentic AI organization provides a powerful inference cloud, Managed Agents, and robust Feedback systems that enable customers to run AI inference confidently at scale. We are looking for a Staff Software Engineer to serve as a technical leader within our Feedback Systems team, driving the architecture for the massive-scale infrastructure that simulates, tests, and evaluates AI agents. As an IC5 Staff Engineer, you will define the architectural vision for systems that simulate multi-agent, multi-turn deployments complete with tool integration. This enables customers to run and analyze \"what-if\" scenarios to evaluate alternative configurations for their AI agents. This is",
+      "apply_url": "https://syde.jobs.personio.com/job/2725481",
+      "canonical_url": "https://syde.jobs.personio.com/job/2725481",
+      "content_hash": "74691493d9669fb85a94066648cba19ca7780cb7ac2bdf757f0ee6eeb5645a70",
+      "employer": "Syde",
+      "employment_type": "full-time",
+      "first_seen_at": "2026-09-05T13:34:12.690587+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:31.100544+00:00",
+      "listing_language": "en",
+      "location": "Remote",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "published_at": "2026-07-23T10:08:17+00:00",
+      "remote": true,
+      "review_key": "review:a7cb6ad874a81c87ddf671a18e9c0ac1fc84d3b37aa6c8b4d4bd77baa140a6b9",
+      "source_id": "personio",
+      "source_instance": "personio:syde",
+      "source_job_id": "syde:2725481",
+      "source_metadata": {
+        "department": "People Operations",
+        "employment_type": "temporary",
+        "keywords": "HR,Human Resources,Personal,Personalabteilung,Remote,100% Remote,Home-Office,Homeoffice,Team Lead,Head of,Agentur,Agency,WordPress",
+        "occupation": "general_and_other_human_resources",
+        "occupation_category": "human_resources",
+        "provider": "personio",
+        "provider_job_id": "2725481",
+        "recruiting_category": "People Operations",
+        "schedule": "full-time",
+        "seniority": "experienced",
+        "subcompany": null,
+        "years_of_experience": "5-7"
+      },
+      "source_type": "ats",
+      "source_url": "https://syde.jobs.personio.com/xml?language=en",
+      "title": "Team Lead People Operations (m/w/d) - 100% Remote",
+      "url": "https://syde.jobs.personio.com/job/2725481",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=7829354",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=7829354",
+      "content_hash": "1154e8b47c9d8eb7c1953c5a786ecc1308e3fff93db90fd1c9e9aeb97640dafc",
+      "description_excerpt": "About Pantheon Pantheon brings together exceptional builders who take ownership, drive meaningful impact, and shape what's next for the web. We power more than 300,000 websites globally for organizations including Google, Princeton, Salesloft, Clorox, and the United Nations. Every day, thousands of developers and marketers use our WebOps platform to build, iterate, and scale WordPress, Drupal, and Next.js sites that reach billions of people worldwide. As an employer, we operate with the same philosophy that drives our product: foundation and freedom. Pantheon is a vibrant, remote-forward team of experts who care deeply about their craft and results. Here, you take ownership of work that matters, contribute alongside exceptional people, and see the impact you create. The Opportunity This is a rare chance to be at the ground floor of something genuinely new. Pantheon is building the next generation of web content infrastructure: a real-time, collaborative platform that redefines how teams create, publish, and manage content on the modern web. This is a zero-to-one role. The product is early, the architecture is being defined, and the decisions you make will shape how thousands of dev",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (Remote)",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:b89535aa5bb2d601375cfc651110b0dda6aaa1b5f491b6319cc766add3e0ddc8",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:7829354",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 2645,
+            "name": "Engineering",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3416481,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7829354
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Staff Software Engineer - Collaborative Web Platform",
+      "updated_at": "2026-07-30T12:20:45-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=7829354"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8144542",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8144542",
+      "content_hash": "ecff2d5a6a915786037f15f1d41b2f285c97bf15ea003c1ca4078633f8d1eb99",
+      "description_excerpt": "About Pantheon Pantheon brings together exceptional builders who take ownership, drive meaningful impact, and shape what's next for the web. We power more than 300,000 websites globally for organizations including Google, Princeton, Salesloft, Clorox, and the United Nations. Every day, thousands of developers and marketers use our WebOps platform to build, iterate, and scale WordPress, Drupal, and Next.js sites that reach billions of people worldwide. As an employer, we operate with the same philosophy that drives our product: foundation and freedom. Pantheon is a vibrant, remote-forward team of experts who care deeply about their craft and results. Here, you take ownership of work that matters, contribute alongside exceptional people, and see the impact you create. The Role Pantheon is looking for an experienced Engineering Manager to grow our account management and identity services to the next level. In our evolving developer ecosystem, we need to support traditional user access patterns as well as AI agents as primary use cases. This rethinking of how our customers work is at the heart of the team’s mission. We are looking for a hands-on people manager that has experience build",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (remote)",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:bd1c0dda4803e49e659011bdc2e874512e77d69a9b89d5cb5509cc010a3bd4b9",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8144542",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 2645,
+            "name": "Engineering",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3512877,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8144542
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Engineering Manager",
+      "updated_at": "2026-08-20T12:45:17-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8144542"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8039985",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8039985",
+      "content_hash": "b8153da37fd606e1ed63ac595ccffc0f5e5e7cbe82cc00f75563454c5711365e",
+      "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations including Clorox and the United Nations drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. The Role The Data Platform team powers Pantheon's data infrastructure and delivers analytics across the company. We are dedicated to providing reliable, scalable, and high-performance data solutions that drive business intelligence and operational excellence across the entire company. We are currently seeking a highly motivated and experienced Software Engineer II to join our dynamic team and play a pivotal role in shaping the future of data at Pantheon. What You Will Do Build scalable, reliable data systems while maintaining SLOs for business-critical pipelines. Partne",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (Remote)",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:bf15b196adf5dc7f40bb2111ccafaba1f4504de2fa0007295a9db178bb31cb62",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8039985",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 2645,
+            "name": "Engineering",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3369064,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8039985
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Software Engineer II - Data Platform",
+      "updated_at": "2026-09-03T17:36:52-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8039985"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=7736696",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=7736696",
+      "content_hash": "b426de13e6c625b5f1b6968ec177ad712b0d7234e1d6bf9da0551ddd7753dcc4",
+      "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations including Clorox and the United Nations drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. The Role We are growing and evolving, and we're looking for sharp, capable people who are ready to step in and make an impact. In this role, you will provide comprehensive, high-level support to C-Level executives, managing a range of projects, coordinating meeting logistics, overseeing travel and accommodations, and handling expense reporting. In addition to keeping our executives' days running smoothly, there are a few other superpowers needed to be successful at Pantheon. As part of our working culture, we find real value in our teams meeting and collaborating in per",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "Chicago, IL, USA",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:c32e13fa56e041e070cf16532442cb7a8118ca090a78740228b4bacb2dab6227",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:7736696",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 2895,
+            "name": "General & Administrative",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3394375,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7736696
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Executive Assistant",
+      "updated_at": "2026-08-13T13:15:44-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=7736696"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8142095",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8142095",
+      "content_hash": "9837c3f24d57a8f86a4dd0a8e92a7a51ec86cc4ff66699304e707ba8c508a745",
+      "description_excerpt": "About Pantheon Pantheon is the WebOps platform for websites that deliver extraordinary results. We believe in putting the magic of the internet in everyone's hands. That's why we're so passionate about helping developers, IT, and marketing develop, test, and release website changes faster and more reliably. Pantheon's core values are Trust, Teamwork, Passion, and Customers First. We value individuality, humour, and balance, and we actively contribute to open-source communities. If you're ready to be the incident authority for a platform that ships critical infrastructure for hundreds of thousands of sites, this is your role. The Role As a Staff Security Engineer, SecOps, you are the technical anchor of Pantheon's security operations function — and above all, the person we trust to command our hardest incidents. When something serious happens, you set the tempo: scoping, severity, containment strategy, stakeholder communication, and the post-incident work that makes us stronger every time. This is a staff-level role, which means your impact extends well beyond your own queue. You define the incident response methodology the whole team runs on, you turn every incident and hunt into b",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United Kingdom",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:c4498f01e3e3a17b8716abe104e24df14b72f1014875f5f6bce0a17ccbad7d5e",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8142095",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 312014,
+            "name": "Information Security",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3483957,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 114546,
+            "location": "Ireland, England, United Kingdom",
+            "name": "Ireland",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 398389,
+            "location": "Ireland (Remote)",
+            "name": "Ireland (Remote)",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 81689,
+            "location": "London, England, United Kingdom",
+            "name": "United Kingdom (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8142095
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Staff Security Engineer - Security Operations",
+      "updated_at": "2026-09-04T18:30:37-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8142095"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=7647311",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=7647311",
+      "content_hash": "03f5b7e43517a970ee18f3d1b8e53bf5084cbe8abdc2e223fe722f300338514c",
+      "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations including Clorox and the United Nations drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. The Role The Data Platform team powers Pantheon's data infrastructure and delivers analytics across the company. We are dedicated to providing reliable, scalable, and high-performance data solutions that drive business intelligence and operational excellence across the entire company. We are currently seeking a highly motivated and experienced Software Engineer II to join our dynamic team and play a pivotal role in shaping the future of data at Pantheon. What You Will Do Build scalable, reliable data systems while maintaining SLOs for business-critical pipelines. Partne",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "Canada (Remote)",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:cf4c265736bca08af5d5745f74934b938f96078ea6b7173b0f9db7cf6aba9166",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:7647311",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 2645,
+            "name": "Engineering",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3369064,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7647311
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Software Engineer II - Data Platform",
+      "updated_at": "2026-09-03T17:36:52-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=7647311"
+    },
+    {
+      "apply_url": "https://himalayas.app/companies/inmarket/jobs/content-marketing-manager",
+      "canonical_url": "https://himalayas.app/companies/inmarket/jobs/content-marketing-manager",
+      "content_hash": "15cc414bcb411884bd8ab1bd6dd28e052754ab202d105be2260e795487eb70d2",
+      "description_excerpt": "Title: Content Marketing Manager Location: Remote, US-only About InMarket Since 2010, InMarket has been the leader in 360-degree consumer intelligence and real-time activation for thousands of today’s top brands. Through InMarket 's data-driven marketing platform, brands can build targeted audiences, activate media in real time, and measure success in driving return on ad spend. InMarket 's proprietary Moments offering outperforms traditional mobile advertising by 6x.* Our LCI attribution platform, which won the MarTech Breakthrough Award for Best Advertising Measurement Platform, was validated by Forrester to drive an average of $40 ROAS for our clients. *Source: Wordstream US Google Display Benchmarks for Mobile Media About the role Are you a great writer who knows how to make people stop scrolling? InMarket is looking for a Content Marketing Manager who can turn complex ideas into clear, compelling content that people actually want to read. We’re looking for someone who understands what makes a strong LinkedIn post, can write a hook that grabs a busy marketer’s attention, and can take a technical AdTech product or industry insight and turn it into a blog post, report, or story t",
+      "employer": "InMarket",
+      "employment_type": "Full Time",
+      "first_seen_at": "2026-09-05T13:34:13.461539+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:32.440664+00:00",
+      "location": "United States",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "published_at": "1788609459",
+      "remote": true,
+      "review_key": "review:d1aed7d7904b412d004e08ec0c786a0f8fa7dcb79d5d1196b73e5e9e1a2f3309",
+      "salary": {
+        "currency": "USD",
+        "max": 85900,
+        "min": 75000,
+        "period": "annual"
+      },
+      "source_id": "himalayas",
+      "source_instance": "himalayas:global",
+      "source_job_id": "global:https://himalayas.app/companies/inmarket/jobs/content-marketing-manager",
+      "source_metadata": {
+        "categories": [
+          "Content-Marketing",
+          "Marketing-Management",
+          "B2B-Marketing",
+          "Copywriting",
+          "Digital-Marketing",
+          "Content-Marketing-Manager",
+          "Digital-Content-Marketing-Manager",
+          "Content-Strategy-Manager",
+          "Content-Marketing-Lead",
+          "Social-Media-and-Content-Marketing-Manager"
+        ],
+        "company_slug": "inmarket",
+        "discovery_query": "wordpress",
+        "location_restriction_names": [
+          "United States"
+        ],
+        "location_restrictions": [
+          "United States"
+        ],
+        "provider": "himalayas",
+        "provider_job_id": "https://himalayas.app/companies/inmarket/jobs/content-marketing-manager",
+        "timezone_restrictions": [
+          -10,
+          -9,
+          -8,
+          -7,
+          -6,
+          -5,
+          14
+        ]
+      },
+      "source_type": "discovery_api",
+      "source_url": "https://himalayas.app/jobs/api/search",
+      "title": "Content Marketing Manager",
+      "url": "https://himalayas.app/companies/inmarket/jobs/content-marketing-manager",
+      "valid_through": "1793793459",
+      "workplace_type": "remote"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986966",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7986966",
+      "content_hash": "0ac7471b087a43ce568aecd926f90a96019cb31ec302954947e4aa14ee31446a",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. About the Team The Billing Engineering team is responsible for managing a broad and complex platform, with a range of functions, comprising 70 services. As DigitalOcean continues its rapid growth and moves upmarket, the demands on the platform have significantly increased. This team will focus on operational enablement for the business and our customers, by focusing on platform resiliency and operational excellence. The Opportunity We are seeking highly motivated and skilled engineers in Hyderabad. You will play a critical role in ensuring the smooth operation of our control plane platform, providing technical support, managing operations, and driving efficiency through automation. This is an exciting",
       "employer": "DigitalOcean",
       "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
       "ingestion_change": "recovered_pending_review",
@@ -838,10 +841,202 @@
       "location": "Hyderabad",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:81e9da22b29b255913750b4543fe96e42f0a7fc45d0c8d710716a453300b4d3d",
+      "review_key": "review:d5eb5f71ef7dcfe6d3c6c9157395f679cb63d1ea619c78bb86a7de697aef8065",
       "source_id": "greenhouse",
       "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7986414",
+      "source_job_id": "digitalocean98:7986966",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 45958,
+            "name": "Security",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3465589,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 276737,
+            "location": null,
+            "name": "Bangalore Metro",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 7986966
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://digitalocean98",
+      "title": "Senior Software Engineer I - Billing Engineering",
+      "updated_at": "2026-09-01T23:51:48-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986966"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8024927",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8024927",
+      "content_hash": "d0bfa2b965bd289bbb80271179535bc6e583f71c074e2f29046c800b742019cf",
+      "description_excerpt": "About Pantheon Pantheon brings together exceptional builders who take ownership, drive meaningful impact, and shape what's next for the web. We power more than 300,000 websites globally for organizations including Google, Princeton, Salesloft, Clorox, and the United Nations. Every day, thousands of developers and marketers use our WebOps platform to build, iterate, and scale WordPress, Drupal, and Next.js sites that reach billions of people worldwide. As an employer, we operate with the same philosophy that drives our product: foundation and freedom. Pantheon is a vibrant, remote-forward team of experts who care deeply about their craft and results. Here, you take ownership of work that matters, contribute alongside exceptional people, and see the impact you create. The Role The New Customer Experience team is looking for a software engineer focused on improving the end-to-end experience for new customers adopting the Pantheon platform. Our team interfaces with almost every department at the company on one of the highest priority initiatives at Pantheon: completely revamping how customers discover, evaluate, onboard, and get value from our product. You will work on a variety of tec",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (Remote)",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:d5ec64e8d91da26744f1add1372bebfbcc4265a157f81f7bb120e62e1a79e440",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8024927",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 2645,
+            "name": "Engineering",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3472571,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8024927
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Senior Software Engineer - New Customer Experience",
+      "updated_at": "2026-09-03T13:46:38-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8024927"
+    },
+    {
+      "apply_url": "https://apply.workable.com/j/426BC71356/apply",
+      "canonical_url": "https://apply.workable.com/j/426BC71356",
+      "content_hash": "8dc05734d2b9c038274bce8bfb31b4b0262f1a5d0c1c341bf0e28e6ada98cbc4",
+      "description_excerpt": "As a Growth Manager, you're responsible for owning the growth motion for one of our brands end to end. You will set the strategy, ship the work, measure the outcomes, and decide what to build next. This is a hands-on operator role, not a manager-of-managers role. You will not be briefing agencies or waiting for tickets. You will be doing the work, with AI as your leverage. The brand you join is an established product with a real audience and channels already in place, so this is not a launch. Email and lifecycle marketing sits at the center of the work, with conversion rate optimization alongside it, and content, social, and automation around both. 💡 Interested in applying? 🔍 Please read/follow the next steps outlined in \"How to Apply\" at the bottom of this listing. Attention to detail is one of our core values ! This is your chance to stand out :) To love this role, here’s the type of person you are: Hands-on operator. You enjoy doing the work yourself rather than briefing it out. AI-first workflow is your bar. A campaign that used to take a small team a week should ship in a day or two through your AI workflow, without the output looking generic. Velocity matters to you. Success",
+      "employer": "Awesome Motive",
+      "employment_type": "Full-time",
+      "first_seen_at": "2026-09-05T13:38:46.457202+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:32.102239+00:00",
+      "listing_language": "en",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "published_at": "2026-08-05",
+      "review_key": "review:dfa5c0c92f12082971d5a903e68eed936f11bef13a4a4b570fdc7b492ea37beb",
+      "source_id": "workable",
+      "source_instance": "workable:awesomemotive",
+      "source_job_id": "awesomemotive:426BC71356",
+      "source_metadata": {
+        "department": "Growth",
+        "experience": "Mid-Senior level",
+        "locations": [
+          {
+            "city": "",
+            "country": "United Kingdom",
+            "countryCode": "GB",
+            "hidden": false,
+            "region": null
+          }
+        ],
+        "provider": "workable",
+        "provider_job_id": "426BC71356",
+        "shortcode": "426BC71356"
+      },
+      "source_type": "ats",
+      "source_url": "https://www.workable.com/api/accounts/awesomemotive?details=true",
+      "title": "Growth Manager",
+      "url": "https://apply.workable.com/j/426BC71356"
+    },
+    {
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8037598",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8037598",
+      "content_hash": "47a2e71ec64f35d0bc81af5ea42b5f40c9c9b1415a608368b1736b7dd695bf74",
+      "description_excerpt": "About Pantheon Pantheon is the WebOps platform for websites that deliver extraordinary results. We believe in putting the magic of the internet in everyone's hands. That's why we're so passionate about helping developers, IT, and marketing develop, test, and release website changes faster and more reliably. Pantheon's core values are Trust, Teamwork, Passion, and Customers First. We value individuality, humour, and balance, and we actively contribute to open-source communities. If you're ready to be the incident authority for a platform that ships critical infrastructure for hundreds of thousands of sites, this is your role. The Role As a Staff Security Engineer, SecOps, you are the technical anchor of Pantheon's security operations function — and above all, the person we trust to command our hardest incidents. When something serious happens, you set the tempo: scoping, severity, containment strategy, stakeholder communication, and the post-incident work that makes us stronger every time. This is a staff-level role, which means your impact extends well beyond your own queue. You define the incident response methodology the whole team runs on, you turn every incident and hunt into b",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "Dublin, Ireland",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:eabddfb1dd42b298971207cca4233e8e4cb8b689d4c06b76b979f1ab5b0d91c6",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8037598",
+      "source_metadata": {
+        "departments": [
+          {
+            "child_ids": [],
+            "id": 312014,
+            "name": "Information Security",
+            "parent_id": null
+          }
+        ],
+        "internal_job_id": 3483957,
+        "offices": [
+          {
+            "child_ids": [],
+            "id": 114546,
+            "location": "Ireland, England, United Kingdom",
+            "name": "Ireland",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 398389,
+            "location": "Ireland (Remote)",
+            "name": "Ireland (Remote)",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 81689,
+            "location": "London, England, United Kingdom",
+            "name": "United Kingdom (Remote)",
+            "parent_id": null
+          }
+        ],
+        "provider": "greenhouse",
+        "provider_job_id": 8037598
+      },
+      "source_type": "ats",
+      "source_url": "greenhouse://pantheon",
+      "title": "Staff Security Engineer - Security Operations",
+      "updated_at": "2026-09-04T18:32:07-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8037598"
+    },
+    {
+      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8059278",
+      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=8059278",
+      "content_hash": "f9ded69d61c7cb6de4a4722a0beebb23b266278f12b4d66bf08e6d272ff7e91b",
+      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are looking for a Senior Software Engineer II for the Action Runtime team. This team's mission is to build the execution layer for AI agents: tool execution environments and orchestration systems that let agents run code and take actions safely, fast, and at scale. You will help define what \"good\" looks like for agent execution at DigitalOcean — isolation guarantees, cold-start latency, throughput under concurrent agent load — then design, build, ship, measure, and operate those systems end to end. This is a senior individual contributor role for a builder who can independently move from ambiguous customer and business needs to product planning, design and UX collaboration, technical design, produc",
+      "employer": "DigitalOcean",
+      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "ingestion_change": "recovered_pending_review",
+      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
+      "location": "Seattle",
+      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
+      "origin_run_id": "recovery:ingestion-1788615257",
+      "review_key": "review:f6ff1e4f727ee17d373f338a8126335c24455db08b89b458064067390298b35f",
+      "source_id": "greenhouse",
+      "source_instance": "greenhouse:digitalocean98",
+      "source_job_id": "digitalocean98:8059278",
       "source_metadata": {
         "departments": [
           {
@@ -851,309 +1046,174 @@
             "parent_id": null
           }
         ],
-        "internal_job_id": 3465543,
+        "internal_job_id": 3492842,
         "offices": [
           {
             "child_ids": [],
-            "id": 276693,
-            "location": null,
-            "name": "DigitalOcean Hyderabad Office",
+            "id": 213281,
+            "location": "Seattle Metro",
+            "name": "Seattle Metro",
             "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 7986414
+        "provider_job_id": 8059278
       },
       "source_type": "ats",
       "source_url": "greenhouse://digitalocean98",
-      "title": "Staff Software Engineer-AI",
-      "updated_at": "2026-09-01T23:50:26-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7986414"
+      "title": "Senior Software Engineer II - Action Infrastructure - Action Runtime",
+      "updated_at": "2026-07-17T14:46:24-04:00",
+      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=8059278"
     },
     {
-      "apply_url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7749108",
-      "canonical_url": "https://www.digitalocean.com/careers/position/apply?gh_jid=7749108",
-      "content_hash": "dfd992afcae3fbcfe8a4a08594fe6a648daef4d024e0f65b72293e2fa88f96f9",
-      "description_excerpt": "Dive in and do the best work of your career at DigitalOcean. Journey alongside a strong community of top talent who are relentless in their drive to build the simplest scalable cloud. If you have a growth mindset, naturally like to think big and bold, and are energized by the fast-paced environment of a true industry disruptor, you’ll find your place here. We value winning together—while learning, having fun, and making a profound difference for the dreamers and builders in the world. We are seeking a Senior Engineering Manager to lead our Inference Orchestration team, driving the strategy, execution, and scaling of our Kubernetes-based AI infrastructure. You will be responsible for balancing business needs with technical excellence, ensuring high throughput, optimal GPU utilization, and robust fault tolerance for our next-generation disaggregated inference, fine-tuning, and training workloads. What You'll Do: Team Leadership & Development: Recruit, mentor, and coach engineers on the team, fostering a culture of ownership, technical excellence, and continuous improvement. Execution & Delivery: Own the team's project execution, translating high-level business goals into clear techni",
-      "employer": "DigitalOcean",
-      "first_seen_at": "2026-09-05T13:34:12.376312+00:00",
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8177795",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8177795",
+      "content_hash": "9d7dd24b2817fc70ab630fdd3b645147f25649856c6b0bc068785317fdf79161",
+      "description_excerpt": "About Pantheon Pantheon’s WebOps Platform powers more than 300,000 websites for organizations including Google, Princeton, Salesloft, and Doctors Without Borders. Our platform helps developers and marketers build, manage, and scale WordPress and Drupal websites faster. The Role Our BDRs create the first meaningful connection between Pantheon and future customers. You’ll research priority accounts, find the right people, understand their business challenges, and create qualified pipeline for our Account Executive team. This is not a generic, high-volume outreach role. It’s a research-led, account-based role for someone who can turn insight into relevant conversations. You’ll use phone, email, social selling, referrals, and events to reach decision-makers and build relationships across strategic accounts. What You Need to Succeed Own a portfolio of target accounts and prioritize where to focus. Research companies, technologies, organizational changes, business priorities, and buying signals. Map stakeholders and multi-thread conversations across strategic accounts. Write and deliver concise, personalized outreach across multiple channels. Cold call prospects and lead initial qualific",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.660879+00:00",
-      "location": "Seattle",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (Remote)",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:8329a465063462810443f7c092b0905bdc33a2a20ead5bdda4a910fa1be0d983",
+      "review_key": "review:f8662f684669c07495349c5051e0a49f2581485b4ac5b775046c2382c552eee2",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:digitalocean98",
-      "source_job_id": "digitalocean98:7749108",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8177795",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 296559,
-            "name": "IaaS & Data Centers",
+            "id": 2646,
+            "name": "Marketing",
             "parent_id": null
           }
         ],
-        "internal_job_id": 3397951,
+        "internal_job_id": 3539043,
         "offices": [
           {
             "child_ids": [],
-            "id": 396968,
-            "location": null,
-            "name": "DigitalOcean Seattle Office",
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
+            "parent_id": null
+          },
+          {
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
             "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 7749108
+        "provider_job_id": 8177795
       },
       "source_type": "ats",
-      "source_url": "greenhouse://digitalocean98",
-      "title": "Senior Engineering Manager, Kernel and Virt",
-      "updated_at": "2026-07-20T15:34:00-04:00",
-      "url": "https://www.digitalocean.com/careers/position/apply/?gh_jid=7749108"
+      "source_url": "greenhouse://pantheon",
+      "title": "Business Development Representative",
+      "updated_at": "2026-09-03T16:01:09-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8177795"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8646556002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8646556002",
-      "content_hash": "30d161d5c6cb3ed3de5fcca99209c46ee8b83df3afb182b351c2c4dac53eb249",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
+      "apply_url": "https://pantheon.io/about/careers/detail?gh_jid=8054337",
+      "canonical_url": "https://pantheon.io/about/careers/detail?gh_jid=8054337",
+      "content_hash": "dfe37a49700a0fd3ce841f1880906d2b2071654618d6438622be324135f7f4de",
+      "description_excerpt": "About Pantheon Pantheon WebOps Platform powers the open web, running more than 300,000 sites in the cloud for customers including Google, Princeton, Salesloft and Doctors Without Borders. Every day, thousands of developers and marketers create, iterate, and scale WordPress and Drupal sites to reach billions of people globally. Pantheon’s multitenant, container-based platform enables organizations to manage all of their websites from a single dashboard. Organizations including Clorox and the United Nations drive results through accelerated development and real-time publishing using Pantheon’s collaborative workflows. The Role The Data Platform team powers Pantheon’s data infrastructure and delivers analytics across the company. We’ve built a robust, configuration-driven data platform that handles extraction, ingestion, curation, compliance, security, and enterprise-wide access to data — and we’re looking for a Staff Software Engineer to take it to the next level. In this role, you’ll extend the platform beyond its current foundation to surface data insights directly within our Product experience, and to power the infrastructure behind Machine Learning and LLM-driven insights. As the",
+      "employer": "Pantheon",
+      "first_seen_at": "2026-09-05T13:34:12.574840+00:00",
       "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United States",
+      "last_seen_at": "2026-09-05T15:07:30.935496+00:00",
+      "location": "United States (Remote)",
       "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
       "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:838510b3550bd8e7e241d32abb84ee5c8c5f9f9f65055b8fc55a4df06e06eb87",
+      "review_key": "review:fb38a927eff071780b32b36b475b4c5a2e18b5c90dfc0fb68d63bd54c4e4f6f5",
       "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8646556002",
+      "source_instance": "greenhouse:pantheon",
+      "source_job_id": "pantheon:8054337",
       "source_metadata": {
         "departments": [
           {
             "child_ids": [],
-            "id": 4135580002,
-            "name": "Architecture Engineering",
-            "parent_id": 4011044002
+            "id": 2645,
+            "name": "Engineering",
+            "parent_id": null
           }
         ],
-        "internal_job_id": 6453126002,
+        "internal_job_id": 3490790,
         "offices": [
           {
             "child_ids": [],
-            "id": 4040901002,
-            "location": null,
-            "name": "Canada",
-            "parent_id": 4019551002
+            "id": 398388,
+            "location": "Canada (Remote)",
+            "name": "Canada (Remote)",
+            "parent_id": null
           },
           {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
+            "child_ids": [],
+            "id": 398387,
+            "location": "United States (Remote)",
+            "name": "United States (Remote)",
+            "parent_id": null
           }
         ],
         "provider": "greenhouse",
-        "provider_job_id": 8646556002
+        "provider_job_id": 8054337
       },
       "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Backend Engineer, Architecture Engineering: Nonlinear Productivity",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8646556002"
+      "source_url": "greenhouse://pantheon",
+      "title": "Staff Software Engineer - Data Platform",
+      "updated_at": "2026-08-18T19:28:20-04:00",
+      "url": "https://pantheon.io/about/careers/detail?gh_jid=8054337"
     },
     {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8707385002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8707385002",
-      "content_hash": "3e618e1a0047cf6f57f478b055bfff3381b1450249e596a408ad7fdf823ccb4f",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:84281ab8838ecc02da17f2f07021abf4c157408158cd27919a094b28a2a068ed",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8707385002",
+      "apply_url": "https://remoteOK.com/remote-jobs/remote-kitchen-technician-four-seasons-1137265",
+      "canonical_url": "https://remoteok.com/remote-jobs/remote-kitchen-technician-four-seasons-1137265",
+      "content_hash": "41a362fe38a7ad6fb297b4197ea448548e6b722afce103b57af6ee68a1d4e360",
+      "description_excerpt": "About Four Seasons Four Seasons is powered by our people. We are a collective of individuals who crave to become better, to push ourselves to new heights and to treat each other as we wish to be treated in return. Our team members around the world create amazing experiences for our guests, residents, and partners through a commitment to luxury with genuine heart. We know that the best way to enable our people to deliver these exceptional guest experiences is through a world-class employee experience and company culture. At Four Seasons, we believe in recognizing a familiar face, welcoming a new one and treating everyone we meet the way we would want to be treated ourselves. Whether you work with us, stay with us, live with us or discover with us, we believe our purpose is to create impressions that will stay with you for a lifetime. It comes from our belief that life is richer when we truly connect to the people and the world around us. About the location: Since opening in 1962, The Ocean Club, A Four Seasons Resort, Bahamas has been a playground for celebrities and discerning travellers set along an 8-kilometre (5-mile) stretch of natural, white-sand beach on Paradise Island. Conn",
+      "employer": "Four Seasons",
+      "first_seen_at": "2026-09-08T10:40:57.394748+00:00",
+      "ingestion_change": "updated",
+      "last_seen_at": "2026-09-08T10:40:57.394748+00:00",
+      "listing_language": "en",
+      "location": "Nassau,",
+      "origin_completed_at": "2026-09-08T10:41:04.607199+00:00",
+      "origin_run_id": "ingestion-1788864064",
+      "published_at": "2026-09-01T22:55:08+00:00",
+      "remote": true,
+      "review_key": "review:3ef677fb745d4b74dc39f4103f76bf8534a347ff8bc1be3683db137756056e5c",
+      "source_id": "remote-ok",
+      "source_instance": "remote-ok:global",
+      "source_job_id": "global:1137265",
       "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4109796002,
-            "name": "Customer Success - PubSec",
-            "parent_id": 4011043002
-          }
-        ],
-        "internal_job_id": 6479658002,
-        "offices": [
-          {
-            "child_ids": [],
-            "id": 4040902002,
-            "location": null,
-            "name": "Federal",
-            "parent_id": 4040904002
-          },
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8707385002
+        "attribution_required": true,
+        "canonical_verification_required": true,
+        "epoch": 1788303308,
+        "provider": "remoteok",
+        "provider_job_id": "1137265",
+        "slug": "remote-kitchen-technician-four-seasons-1137265",
+        "tags": [
+          "payroll",
+          "vfx",
+          "customer support",
+          "dev",
+          "non tech",
+          "digital nomad",
+          "exec",
+          "legal",
+          "engineer"
+        ]
       },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Manager, Support Engineering, US Government",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8707385002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8565469002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8565469002",
-      "content_hash": "062d13753016c2cf699513270908f6e46720e21b38fe28e9e4cee9baf2bf6449",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, US",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:843f1738cd3fd3a15ce523af7730a816f644606bc2614bd8a741cfabadebc731",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8565469002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4069215002,
-            "name": "Enterprise Applications",
-            "parent_id": 4118834002
-          }
-        ],
-        "internal_job_id": 6421347002,
-        "offices": [
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8565469002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior AI Engineer",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8565469002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8614945002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8614945002",
-      "content_hash": "952ac5239c46b01fbc8780709a88058340f0d2694b435dbbb9be2ec3e532b559",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, Canada; Remote, United States",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:84cf94b953013e5e18d7be29f4a68b3abd37e816b613c9c9312bc66cb9d40378",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8614945002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [],
-            "id": 4061741002,
-            "name": "Sec Engineering",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6440692002,
-        "offices": [
-          {
-            "child_ids": [
-              4040902002
-            ],
-            "id": 4040904002,
-            "location": null,
-            "name": "United States of America",
-            "parent_id": 4019551002
-          }
-        ],
-        "provider": "greenhouse",
-        "provider_job_id": 8614945002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Senior Software Engineer (RoR/Go), SSCS: Authentication",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8614945002"
-    },
-    {
-      "apply_url": "https://job-boards.greenhouse.io/gitlab/jobs/8684078002",
-      "canonical_url": "https://job-boards.greenhouse.io/gitlab/jobs/8684078002",
-      "content_hash": "a66c847e6f37813a8b356faae2054efe1a6937e8e58c81036ff4786ac8549d95",
-      "description_excerpt": "GitLab is the intelligent orchestration platform for DevSecOps. GitLab enables organizations to increase developer productivity, improve operational efficiency, reduce security and compliance risk, and accelerate digital transformation. More than 50 million registered users and more than 50% of the Fortune 100* trust GitLab to ship better, more secure software faster. The same principles built into our products are reflected in how our team works: we embrace AI as a core productivity multiplier, with all team members expected to incorporate AI into their daily workflows to drive efficiency, innovation, and impact. GitLab is where careers accelerate, innovation flourishes, and every voice is valued. Our high-performance culture is driven by our values and continuous knowledge exchange, enabling our team members to reach their full potential while collaborating with industry leaders to solve complex problems. Co-create the future with us as we build technology that transforms how the world develops software. * Fortune 500® is a registered trademark of Fortune Media IP Limited, used under license. Claim based on GitLab data. Fortune 100 refers to the top 20% ranked companies in the 20",
-      "employer": "GitLab",
-      "first_seen_at": "2026-09-05T13:34:12.043641+00:00",
-      "ingestion_change": "recovered_pending_review",
-      "last_seen_at": "2026-09-05T15:07:30.272276+00:00",
-      "location": "Remote, United Kingdom",
-      "origin_completed_at": "2026-09-05T15:07:37.197533+00:00",
-      "origin_run_id": "recovery:ingestion-1788615257",
-      "review_key": "review:8523ed86540a7071c675b738e1e32d96a6ed524d8f0118b4f23cb2157536e0ae",
-      "source_id": "greenhouse",
-      "source_instance": "greenhouse:gitlab",
-      "source_job_id": "gitlab:8684078002",
-      "source_metadata": {
-        "departments": [
-          {
-            "child_ids": [
-              4099701002,
-              4099700002
-            ],
-            "id": 4011053002,
-            "name": "Customer Support",
-            "parent_id": 4011044002
-          }
-        ],
-        "internal_job_id": 6469365002,
-        "offices": [],
-        "provider": "greenhouse",
-        "provider_job_id": 8684078002
-      },
-      "source_type": "ats",
-      "source_url": "greenhouse://gitlab",
-      "title": "Intermediate Support Engineer (SHIFT)",
-      "updated_at": "2026-08-31T17:56:36-04:00",
-      "url": "https://job-boards.greenhouse.io/gitlab/jobs/8684078002"
+      "source_type": "job_board",
+      "source_url": "https://remoteok.com/api",
+      "title": "Kitchen Technician",
+      "url": "https://remoteOK.com/remote-jobs/remote-kitchen-technician-four-seasons-1137265",
+      "workplace_type": "remote"
     }
   ],
-  "review_queue_count": 2735,
-  "run_id": "ingestion-1789957776",
+  "review_queue_count": 332,
+  "run_id": "ingestion-1789958591",
   "schema_version": 1,
-  "total_pages": 110
+  "total_pages": 14
 }
