@@ -1,7 +1,7 @@
 {
   "artifact": "vacature-ingestion",
-  "version": "0.10.5",
-  "created_date": "2026-09-17",
+  "version": "0.11.0",
+  "created_date": "2026-09-21",
   "python": ">=3.11",
   "runtime_dependencies": [
     "extruct==0.18.0",
@@ -35,9 +35,11 @@
   "technical_state": "separate GitHub radar-state and ingestion-state branches + SQLite; shared workflow_state helper owns ACK normalization/merge and review queue handoff preparation",
   "first_seen_radar": "isolated direct employer/ATS first-seen workflow available on relevant push/manual dispatch + persistent ingestion_change=new semantics + bootstrap-safe 72-hour ACK queue",
   "vacancy_snapshot_history": "SQLite job_snapshots keyed by job_id + content_hash",
-  "semantic_review_handoff": "at-least-once persistent ACK queue + bounded 25-item pages + backlog telemetry",
-  "queue_workers_included": false,
+  "semantic_review_handoff": "at-least-once persistent ACK queue + Config-owned priority-hint triage + bounded 25-item pages + backlog telemetry; final semantic verification remains vacature-search-owned",
+  "queue_workers_included": true,
   "register_sync": "configured service-account read gate + ingestion Bronnen source-health + compact Runs row; radar state stays isolated",
   "target_runtime_gate": "GitHub Actions live ingestion and first-seen radar after repository-triggered or manually dispatched run",
-  "release_evidence": "deterministic source bundle + SPDX SBOM + GitHub provenance/SBOM attestations"
+  "release_evidence": "deterministic source bundle + SPDX SBOM + GitHub provenance/SBOM attestations",
+  "queue_worker_scope": "Technical priority-hint triage only. Live Config owns terms/employers; nonpriority ingestion hints are acknowledged only from this optimization queue while mandatory normal discovery/expansion remains unchanged. No authenticity, hard-gate, fit, score, source-priority or application decision is made by ingestion.",
+  "review_triage_evidence": "review-triage.json persisted on ingestion-state with input, priority-pending, auto-acked nonpriority, policy version and fail-closed missing-key counts."
 }
