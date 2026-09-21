@@ -87,6 +87,7 @@ def _aggregate_health(
     health: dict[str, Any],
     *,
     allowed_instances: set[str] | None = None,
+    source_ids_by_instance: dict[str, set[str]] | None = None,
 ) -> dict[str, dict[str, Any]]:
     grouped: dict[str, list[dict[str, Any]]] = {}
     for instance, value in health.items():
@@ -95,8 +96,11 @@ def _aggregate_health(
             continue
         if not isinstance(value, dict):
             continue
-        source_id = instance.split(":", 1)[0]
-        grouped.setdefault(source_id, []).append(value)
+        source_ids = (source_ids_by_instance or {}).get(instance)
+        if not source_ids:
+            source_ids = {instance.split(":", 1)[0]}
+        for source_id in source_ids:
+            grouped.setdefault(source_id, []).append(value)
     out: dict[str, dict[str, Any]] = {}
     for source_id, rows in grouped.items():
         successes = sorted([str(row.get("last_success_at")) for row in rows if row.get("last_success_at")])
@@ -133,10 +137,23 @@ def sync_register(*, spreadsheet_id: str, summary_path: str | Path, health_path:
         for run in runs
         if isinstance(run, dict) and run.get("source_instance")
     }
+    source_ids_by_instance: dict[str, set[str]] = {}
+    for run in runs:
+        if not isinstance(run, dict) or not run.get("source_instance"):
+            continue
+        instance = str(run["source_instance"])
+        raw_ids = run.get("registry_source_ids")
+        mapped = {
+            str(value).strip()
+            for value in raw_ids
+            if str(value).strip()
+        } if isinstance(raw_ids, list) else set()
+        source_ids_by_instance[instance] = mapped or {instance.split(":", 1)[0]}
     health = health_doc.get("source_health", health_doc) if isinstance(health_doc, dict) else {}
     aggregated = _aggregate_health(
         health if isinstance(health, dict) else {},
         allowed_instances=current_instances,
+        source_ids_by_instance=source_ids_by_instance,
     )
 
     base = f"https://sheets.googleapis.com/v4/spreadsheets/{quote(spreadsheet_id)}"
