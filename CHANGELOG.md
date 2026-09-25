@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased - 2026-09-25
+- Documenteert het caller-owned tweetalige sollicitatiepakket: NL+EN CV/motivatie uit één bewijskaart, officiële sollicitatietaal primair.
+- Named projecten/cases/repos blijven uit het CV; maximaal drie geverifieerde work-sample links mogen alleen in de motivatie wanneer relevant of gevraagd.
+- Canonieke portfolio-index is `https://andrewbaeten.nl/category/cases`; case-slugs/repos mogen nooit worden gegokt.
+- Standaard sign-off gebruikt alleen `Andrew`: NL `Vriendelijke groet,`, EN `Kind regards,`.
+- Geen wijziging aan eligibility, ranking, source priority, candidate inference of auto-submitgrenzen.
+
 ## 5.6.1 - 2026-09-15
 - Documenteert de caller-owned Form Application Pack-boundary voor geverifieerde werkgever-/ATS-formulieren.
 - Vacature Search mag de exacte vacaturenaam, zichtbare formulier-vragen met bewijsgebonden conceptantwoorden en een vacature-specifieke CV voorbereiden.
