@@ -11,7 +11,7 @@ permissions:
 jobs:
   assurance:
     name: assurance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -36,7 +36,7 @@ jobs:
       security-events: write
       packages: read
       pull-requests: read
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4.37.9
@@ -44,11 +44,11 @@ jobs:
           languages: python
       - uses: github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938 # v4.37.9
 
-  unit-tests:
-    name: unit-tests (Python ${{ matrix.python-version }})
+  matrix-tests:
+    name: matrix-tests (Python ${{ matrix.python-version }})
     needs: [assurance, codeql-gate]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -78,3 +78,17 @@ jobs:
       - name: Benchmark ingestion for required gate
         if: matrix.python-version == '3.12'
         run: python -m vacature_ingestion benchmark --count 10000
+
+  required-gate:
+    name: unit-tests (Python 3.12)
+    needs: [assurance, codeql-gate, matrix-tests]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Enforce complete CI matrix and security gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ needs.assurance.result }}" = "success"
+          test "${{ needs.codeql-gate.result }}" = "success"
+          test "${{ needs.matrix-tests.result }}" = "success"
