@@ -1,6 +1,6 @@
 # Application pack best practices — online validation
 
-Last reviewed: 2026-09-15.
+Last reviewed: 2026-09-25.
 
 This document records external evidence used to validate the caller-owned form/email application-pack defaults. It does not move application policy into `vacature-engine`.
 
@@ -46,3 +46,13 @@ This document records external evidence used to validate the caller-owned form/e
 - Check supported extension and relevant file-size limits before readiness.
 - Official AI/disclosure/original-work instructions are checked before drafting prose.
 - Final QA covers route/recipient, exact role/employer, required fields/materials, field limits/options, file name/format/size, factual support, spelling and instruction compliance.
+## 2026-09-25 validation
+
+Current Harvard career guidance was rechecked for the caller-owned pack contract: cover letters should be specific, human and concise, connect role/employer needs to relevant evidence, and avoid simply restating the resume. Current resume guidance supports selective role-relevant content and clear action/result framing. GitHub's official profile guidance supports highlighting a small number of relevant projects on the GitHub/profile surface rather than turning the CV into a project catalog.
+
+Caller policy therefore prepares paired NL+EN CV/motivation variants from one evidence map, keeps named projects/cases/repos out of the CV, allows at most three verified vacancy-relevant work-sample links in the motivation when useful/requested, and uses plain language a nontechnical reader can follow. Exact employer instructions still override these defaults.
+
+Primary references:
+- https://careerservices.fas.harvard.edu/blog/2026/08/10/how-to-write-a-cover-letter-that-actually-gets-you-hired-in-2026/
+- https://careerservices.fas.harvard.edu/blog/2026/09/15/resumes-for-industry-grad-student-edition-2026/
+- https://docs.github.com/en/account-and-profile/tutorials/using-your-github-profile-to-enhance-your-resume
