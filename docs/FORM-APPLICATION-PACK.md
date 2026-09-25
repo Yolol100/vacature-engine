@@ -66,3 +66,6 @@ A pack is only ready when every visible required field is accounted for with a v
 The live `Vacature Register` owns feature switches, source/evidence registry, application state, approved reusable answers, and lifecycle evidence. The Skill owns form interpretation, field-constraint handling, answer drafting, evidence checks, user-action blockers, CV preparation and final pack presentation.
 
 See `docs/APPLICATION-PACK-BEST-PRACTICES.md` for the online evidence used to validate these defaults.
+## Bilingual CV and motivation companion
+
+The form answers themselves stay in the official form/application language and exact field structure. Separately, the caller prepares Dutch and English vacancy-specific CV + motivation variants for user review from the same verified evidence map. The official application language remains primary for the actual upload. Named project/case/repository sections stay out of the CV; relevant verified work samples may appear only in the motivation companion when useful/requested.
