@@ -30,6 +30,12 @@ Wanneer een geverifieerde vacature via een officieel werkgever-/ATS-formulier lo
 
 Herbruikbare antwoorden mogen alleen uit door de gebruiker goedgekeurde `ApplicationAnswers` komen. Salaris, work authorization, juridische/sensitieve/current-state velden vereisen menselijke bevestiging; assessments of expliciet AI-verboden antwoorden blijven handmatig. Zie [`docs/FORM-APPLICATION-PACK.md`](docs/FORM-APPLICATION-PACK.md).
 
+## Bilingual application-pack contract
+
+`vacature-search` owns the candidate-facing application prose and CV tailoring. For normal Dutch/English vacancy packs it prepares both Dutch and English CV + motivation variants from the same verified evidence map; the official application language is primary. Named projects/cases/repositories stay out of the CV and may appear only as verified work-sample links in the motivation when requested or materially useful. The stable public portfolio index is `https://andrewbaeten.nl/category/cases`; exact case/repository URLs must be verified and never guessed. Default motivation sign-offs use only the first name: Dutch `Vriendelijke groet,` + `Andrew`; English `Kind regards,` + `Andrew`.
+
+This remains caller-owned policy. `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience. See [docs/BILINGUAL-APPLICATION-PACK.md](docs/BILINGUAL-APPLICATION-PACK.md).
+
 ## Ingestion component
 
 `ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. GitHub Actions voert deze component alleen handmatig of bij relevante codewijzigingen uit; periodieke vacaturediscovery blijft caller-owned. In de eenvoudige modus is de ChatGPT-automation de enige scheduler. Source-health kan bij zo'n expliciete run compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
