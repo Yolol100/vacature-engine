@@ -4,12 +4,15 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import date
 import math
+import re
 from typing import Any
 
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-08-31-remote-first-relaxed-v12"
+LOGIC_VERSION = "2026-09-29-target-families-v13"
+SUPPORTED_TARGET_ROLE_FAMILIES = frozenset({"wordpress_ecosystem", "ai_workflow_automation"})
+DEFAULT_TARGET_ROLE_FAMILIES = frozenset({"wordpress_ecosystem"})
 
 _LANGUAGE_ALIASES = {
     "dutch": "nl",
@@ -30,6 +33,7 @@ class VacancyPolicy:
     min_core_fit: float
     min_evidence_fit: float
     allowed_listing_languages: frozenset[str] | None = None
+    target_role_families: frozenset[str] = DEFAULT_TARGET_ROLE_FAMILIES
 
 
 def _number(value: Any) -> float | None:
@@ -79,6 +83,13 @@ def _normalize_language(value: Any) -> str | None:
     return normalized
 
 
+def _normalize_role_family(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    normalized = re.sub(r"[^a-z0-9]+", "_", value.strip().lower()).strip("_")
+    return normalized or None
+
+
 def _policy_languages(config: Mapping[str, Any], key: str) -> frozenset[str]:
     value = config[key]
     if isinstance(value, str):
@@ -98,9 +109,36 @@ def _policy_languages(config: Mapping[str, Any], key: str) -> frozenset[str]:
     return frozenset(languages)
 
 
+def _policy_role_families(config: Mapping[str, Any], key: str) -> frozenset[str]:
+    value = config[key]
+    if isinstance(value, str):
+        raw_items = value.split(",")
+    elif isinstance(value, (list, tuple, set, frozenset)):
+        raw_items = list(value)
+    else:
+        raise ValueError(f"policy key {key} must be CSV text or a role-family list")
+    role_families: set[str] = set()
+    for item in raw_items:
+        normalized = _normalize_role_family(item)
+        if normalized is None:
+            raise ValueError(f"policy key {key} contains an invalid role family")
+        role_families.add(normalized)
+    if not role_families:
+        raise ValueError(f"policy key {key} must contain at least one role family")
+    unknown = role_families - SUPPORTED_TARGET_ROLE_FAMILIES
+    if unknown:
+        raise ValueError(f"policy key {key} contains unsupported role families: {sorted(unknown)}")
+    return frozenset(role_families)
+
+
 def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
     if "allowed_listing_languages" not in config:
         raise ValueError("policy missing required Config key: allowed_listing_languages")
+    target_role_families = (
+        _policy_role_families(config, "target_role_families")
+        if "target_role_families" in config
+        else DEFAULT_TARGET_ROLE_FAMILIES
+    )
     policy = VacancyPolicy(
         min_monthly_salary_eur=float(_policy_number(config, "min_monthly_salary_eur")),
         max_posting_age_days=int(_policy_number(config, "max_posting_age_days", integer=True)),
@@ -109,6 +147,7 @@ def policy_from_config(config: Mapping[str, Any]) -> VacancyPolicy:
         min_core_fit=float(_policy_number(config, "min_core_fit")),
         min_evidence_fit=float(_policy_number(config, "min_evidence_fit")),
         allowed_listing_languages=_policy_languages(config, "allowed_listing_languages"),
+        target_role_families=target_role_families,
     )
     if policy.min_monthly_salary_eur < 0:
         raise ValueError("min_monthly_salary_eur must be >= 0")
@@ -194,6 +233,26 @@ def _required_languages(value: Any) -> tuple[bool, set[str]]:
     return True, languages
 
 
+def _vacancy_role_families(vacancy: Mapping[str, Any]) -> set[str]:
+    role_families: set[str] = set()
+    raw = vacancy.get("role_families")
+    if isinstance(raw, str):
+        raw_items = raw.split(",")
+    elif isinstance(raw, (list, tuple, set, frozenset)):
+        raw_items = list(raw)
+    else:
+        raw_items = []
+    for item in raw_items:
+        normalized = _normalize_role_family(item)
+        if normalized in SUPPORTED_TARGET_ROLE_FAMILIES:
+            role_families.add(normalized)
+    if vacancy.get("wordpress_related") is True:
+        role_families.add("wordpress_ecosystem")
+    if vacancy.get("ai_workflow_related") is True:
+        role_families.add("ai_workflow_automation")
+    return role_families
+
+
 def _recency_points(age_days: int) -> float:
     if age_days <= 14:
         return 10.0
@@ -234,8 +293,12 @@ def eligibility(
         reasons.append("not_remote")
     if vacancy.get("geography_compatible") is not True:
         reasons.append("country_restriction")
-    if vacancy.get("wordpress_related") is not True:
-        reasons.append("not_wordpress_related")
+    vacancy_role_families = _vacancy_role_families(vacancy)
+    if not vacancy_role_families.intersection(runtime_policy.target_role_families):
+        if runtime_policy.target_role_families == DEFAULT_TARGET_ROLE_FAMILIES:
+            reasons.append("not_wordpress_related")
+        else:
+            reasons.append("not_target_role_family")
     if vacancy.get("central_hard_mismatch") is True:
         reasons.append("central_hard_mismatch")
 
