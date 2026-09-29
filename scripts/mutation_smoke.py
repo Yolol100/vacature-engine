@@ -27,9 +27,9 @@ MUTANTS = [
         'if vacancy.get("geography_compatible") is True:',
     ),
     (
-        "wordpress-hard-gate",
-        'if vacancy.get("wordpress_related") is not True:',
-        'if vacancy.get("wordpress_related") is True:',
+        "target-role-family-hard-gate",
+        "if not vacancy_role_families.intersection(runtime_policy.target_role_families):",
+        "if vacancy_role_families.intersection(runtime_policy.target_role_families):",
     ),
     (
         "score-boundary",
