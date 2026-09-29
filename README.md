@@ -126,9 +126,15 @@ Discovery is wereldwijd en gebeurt in de Skill. Nederland is alleen de uitvoerin
 Hard vereist:
 - `fully_remote=true`;
 - `geography_compatible=true`;
-- `wordpress_related=true`;
+- minstens één rol-familie uit live `target_role_families`;
 - geen centrale harde mismatch;
 - actieve taalpoort moet passeren.
+
+Live zijn nu twee families toegestaan:
+- `wordpress_ecosystem`: WordPress, WooCommerce, Elementor, Gutenberg, support, maintenance, performance, technical SEO en breder webdevelopment wanneer WordPress materieel is;
+- `ai_workflow_automation`: AI-workflow-, automation-, integration-, agentic- en GenAI-operationsrollen wanneer workflow/integratie materieel is.
+
+Generieke AI/ML/data-sciencefuncties zonder die workflow-/automationcomponent vallen niet automatisch binnen scope. Zonder `target_role_families` blijft de engine backward-compatible WordPress-only.
 
 Een werkgeverland, vacatureland of tijdzoneverschil is op zichzelf geen blocker. Alleen concrete country-only-, payroll-, work-authorization-, legal-, security-, fysieke-aanwezigheids- of aantoonbaar onuitvoerbare verplichte werkuren/overlap blokkeren.
 
@@ -144,6 +150,7 @@ De caller geeft per run expliciet deze live Config-waarden door:
 - `min_core_fit`
 - `min_evidence_fit`
 - `allowed_listing_languages`
+- optioneel `target_role_families` (default: `wordpress_ecosystem`)
 
 Voor de eenvoudige standaardzoekmodus staat `max_output_roles` live op `5`. De Skill blijft actieve bronlagen doorzoeken totdat vijf echte, geverifieerde, nog niet eerder getoonde kandidaten beschikbaar zijn of de toegestane zoekruimte is uitgeput. `vacature-engine` beperkt alleen de uiteindelijke geldige set tot `max_output_roles`; de engine verzint nooit filler en bezit geen bronlijst.
 
