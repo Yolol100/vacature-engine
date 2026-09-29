@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.7.0 - 2026-09-29
+- Voegt live configureerbare doelrolfamilies toe via `target_role_families`.
+- Activeert naast `wordpress_ecosystem` ook `ai_workflow_automation` voor AI-workflow-, automation-, integration-, agentic- en GenAI-operationsrollen.
+- Generieke AI/ML/data-sciencefuncties zonder materiële workflow-/automationcomponent blijven buiten scope.
+- Zonder `target_role_families` blijft de engine backward-compatible WordPress-only.
+- Fully remote, uitvoerbaarheid vanuit Nederland, taalpoort, salaris-/dataintegriteit, scoreankers en minimumfit blijven ongewijzigd.
+- Regressietests toegevoegd voor AI-workflowacceptatie, generieke-AI-afwijzing, expliciete rol-families, backward compatibility en onbekende rol-families.
+
 ## Unreleased - 2026-09-25
 - Documenteert het caller-owned tweetalige sollicitatiepakket: NL+EN CV/motivatie uit één bewijskaart, officiële sollicitatietaal primair.
 - Named projecten/cases/repos blijven uit het CV; maximaal drie geverifieerde work-sample links mogen alleen in de motivatie wanneer relevant of gevraagd.
