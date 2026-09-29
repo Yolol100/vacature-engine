@@ -22,7 +22,7 @@ Extra provenance remains internal unless it changes a decision or explains a war
 
 ## Safety
 
-Early blockers should stop downstream work. No layer may weaken remote/geography/language/WordPress/authenticity/evidence gates to fill the requested result count.
+Early blockers should stop downstream work. No layer may weaken remote/geography/language/target-role-family/authenticity/evidence gates to fill the requested result count. The live Register defines the accepted target role families; the engine only validates membership.
 
 ## Register integrity boundary
 
