@@ -13,6 +13,7 @@ POLICY = {
     "min_core_fit": 40,
     "min_evidence_fit": 10,
     "allowed_listing_languages": "nl,en",
+    "target_role_families": "wordpress_ecosystem,ai_workflow_automation",
 }
 
 
@@ -24,6 +25,7 @@ def vacancy(**overrides):
         "fully_remote": True,
         "geography_compatible": True,
         "wordpress_related": True,
+        "ai_workflow_related": False,
         "central_hard_mismatch": False,
         "listing_language": "en",
         "application_language": "en",
@@ -58,10 +60,67 @@ class RemoteFirstPolicyTests(unittest.TestCase):
         self.assertFalse(gate["pass"])
         self.assertIn("country_restriction", gate["reasons"])
 
-    def test_wordpress_relationship_remains_required(self):
-        gate = eligibility(vacancy(wordpress_related=False), today=TODAY, policy=POLICY)
+    def test_target_role_family_remains_required(self):
+        gate = eligibility(
+            vacancy(wordpress_related=False, ai_workflow_related=False),
+            today=TODAY,
+            policy=POLICY,
+        )
         self.assertFalse(gate["pass"])
-        self.assertIn("not_wordpress_related", gate["reasons"])
+        self.assertIn("not_target_role_family", gate["reasons"])
+
+    def test_ai_workflow_family_is_allowed(self):
+        gate = eligibility(
+            vacancy(
+                title="AI Workflow Automation Specialist",
+                wordpress_related=False,
+                ai_workflow_related=True,
+            ),
+            today=TODAY,
+            policy=POLICY,
+        )
+        self.assertTrue(gate["pass"])
+
+    def test_generic_ai_role_without_workflow_materiality_is_rejected(self):
+        gate = eligibility(
+            vacancy(
+                title="Machine Learning Engineer",
+                wordpress_related=False,
+                ai_workflow_related=False,
+            ),
+            today=TODAY,
+            policy=POLICY,
+        )
+        self.assertFalse(gate["pass"])
+        self.assertIn("not_target_role_family", gate["reasons"])
+
+    def test_explicit_normalized_ai_role_family_is_allowed(self):
+        gate = eligibility(
+            vacancy(
+                title="Generative AI Integration Specialist",
+                wordpress_related=False,
+                ai_workflow_related=False,
+                role_families=["ai_workflow_automation"],
+            ),
+            today=TODAY,
+            policy=POLICY,
+        )
+        self.assertTrue(gate["pass"])
+
+    def test_legacy_policy_remains_wordpress_only(self):
+        legacy_policy = {key: value for key, value in POLICY.items() if key != "target_role_families"}
+        ai_gate = eligibility(
+            vacancy(
+                title="AI Workflow Automation Specialist",
+                wordpress_related=False,
+                ai_workflow_related=True,
+            ),
+            today=TODAY,
+            policy=legacy_policy,
+        )
+        self.assertFalse(ai_gate["pass"])
+        self.assertIn("not_wordpress_related", ai_gate["reasons"])
+        self.assertTrue(eligibility(vacancy(), today=TODAY, policy=legacy_policy)["pass"])
 
     def test_broader_wordpress_title_is_allowed(self):
         self.assertTrue(eligibility(vacancy(title="Ecommerce Web Developer"), today=TODAY, policy=POLICY)["pass"])
@@ -178,6 +237,15 @@ class RemoteFirstPolicyTests(unittest.TestCase):
         parsed = policy_from_config({key: str(value) for key, value in POLICY.items()})
         self.assertEqual(0, parsed.max_posting_age_days)
         self.assertEqual(frozenset({"nl", "en"}), parsed.allowed_listing_languages)
+        self.assertEqual(
+            frozenset({"wordpress_ecosystem", "ai_workflow_automation"}),
+            parsed.target_role_families,
+        )
+
+    def test_unknown_target_role_family_fails_closed(self):
+        invalid = {**POLICY, "target_role_families": "wordpress_ecosystem,generic_ai"}
+        with self.assertRaises(ValueError):
+            policy_from_config(invalid)
 
 
 if __name__ == "__main__":
