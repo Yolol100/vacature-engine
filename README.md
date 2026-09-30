@@ -4,6 +4,19 @@
 
 `vacature-engine` ondersteunt `vacature-search`. De repo bezit geen discoverybeleid, kandidaatprofiel, bronprioriteiten of sollicitatiestatus. Veranderlijke runtimewaarheid blijft in het `Vacature Register`.
 
+**Developer profile:** [Andrew Baeten](https://github.com/Yolol100) · [Portfolio cases](https://andrewbaeten.nl/category/cases)
+
+## What it demonstrates
+
+| Area | Implementation |
+| --- | --- |
+| Deterministic selection | Hard vacancy gates, fixed scoring anchors and stable tie-breaking |
+| Data normalization | Conservative Schema.org JobPosting signal parsing and observation canonicalization |
+| Provenance | Vacancy-bound artifact identities, hashes and reproducible metadata validation |
+| Ingestion boundaries | Public-source acquisition isolated from candidate and ranking policy |
+| Reliability | Boundary, golden, property/metamorphic and adversarial tests |
+| Safety | No candidate inference, no form submission, no mailbox mutation and no filler results |
+
 Het `vacature_engine`-pakket doet alleen:
 1. deterministische same-run observatiecanonicalisatie;
 2. harde vacaturefilters;
