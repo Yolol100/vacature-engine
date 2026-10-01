@@ -31,16 +31,25 @@ def _is_job_posting(value: dict[str, Any]) -> bool:
     return False
 
 
+def _named_text(value: Any) -> str | None:
+    if isinstance(value, dict):
+        return clean_text(value.get("name") or value.get("value"))
+    return clean_text(value)
+
+
 def _address_text(value: Any) -> str | None:
     if not isinstance(value, dict):
         return clean_text(value)
     address = value.get("address") if isinstance(value.get("address"), dict) else value
     parts = [
-        clean_text(address.get("addressLocality")),
-        clean_text(address.get("addressRegion")),
-        clean_text(address.get("addressCountry")),
+        _named_text(address.get("addressLocality")),
+        _named_text(address.get("addressRegion")),
+        _named_text(address.get("addressCountry")),
     ]
-    return ", ".join(part for part in parts if part) or None
+    joined = ", ".join(part for part in parts if part)
+    if joined:
+        return joined
+    return _named_text(address)
 
 
 def _location_text(value: Any) -> str | None:
@@ -48,6 +57,13 @@ def _location_text(value: Any) -> str | None:
         parts = [_address_text(item) for item in value]
         return "; ".join(part for part in parts if part) or None
     return _address_text(value)
+
+
+def _text_values(value: Any) -> str | None:
+    if isinstance(value, list):
+        parts = [clean_text(item) for item in value]
+        return "; ".join(part for part in parts if part) or None
+    return clean_text(value)
 
 
 def _identifier(value: Any) -> str | None:
@@ -131,12 +147,12 @@ class JsonLdAdapter(Adapter):
             "url": url,
             "employer": spec.employer or clean_text(organization.get("name")) or spec.account,
             "title": title,
-            "location": _location_text(record.get("jobLocation")) or clean_text(record.get("applicantLocationRequirements")),
+            "location": _location_text(record.get("jobLocation")) or _location_text(record.get("applicantLocationRequirements")),
             "description": description,
             "published_at": clean_text(record.get("datePosted")),
             "updated_at": None,
             "valid_through": clean_text(record.get("validThrough")),
-            "employment_type": clean_text(record.get("employmentType")),
+            "employment_type": _text_values(record.get("employmentType")),
             "salary": record.get("baseSalary") if isinstance(record.get("baseSalary"), (dict, list)) else None,
             "listing_language": spec.listing_language,
             "apply_url": url,
