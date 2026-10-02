@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.8.0 - 2026-10-02
+- Voegt `web_design_development` toe als derde configureerbare target role family voor webdesign, website-UX/UI, frontend, accessibility, performance, technical SEO en breder webdevelopment wanneer de webcomponent materieel is.
+- Behoudt `wordpress_ecosystem` en `ai_workflow_automation`; generieke productdesign-, software- en AI/ML-rollen zonder materiële web- of workflowcomponent blijven buiten scope.
+- Ondersteunt `web_design_related=true` als caller-signaal naast expliciete `role_families`.
+- Fully remote, Nederland-compatibiliteit, taalpoort, salaris-/dataintegriteit, scoreankers en minimumfit blijven ongewijzigd.
+- Regressietests toegevoegd voor webdesign/webdevelopment-acceptatie en generieke productdesign-afwijzing.
+
 ## 5.7.0 - 2026-09-29
 - Voegt live configureerbare doelrolfamilies toe via `target_role_families`.
 - Activeert naast `wordpress_ecosystem` ook `ai_workflow_automation` voor AI-workflow-, automation-, integration-, agentic- en GenAI-operationsrollen.
