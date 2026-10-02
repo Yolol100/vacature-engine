@@ -143,11 +143,12 @@ Hard vereist:
 - geen centrale harde mismatch;
 - actieve taalpoort moet passeren.
 
-Live zijn nu twee families toegestaan:
+Live zijn nu drie families toegestaan:
 - `wordpress_ecosystem`: WordPress, WooCommerce, Elementor, Gutenberg, support, maintenance, performance, technical SEO en breder webdevelopment wanneer WordPress materieel is;
+- `web_design_development`: webdesign, UX/UI voor websites, frontend, design systems, toegankelijkheid, performance, technische SEO en breder webdevelopment wanneer het webproduct materieel is;
 - `ai_workflow_automation`: AI-workflow-, automation-, integration-, agentic- en GenAI-operationsrollen wanneer workflow/integratie materieel is.
 
-Generieke AI/ML/data-sciencefuncties zonder die workflow-/automationcomponent vallen niet automatisch binnen scope. Zonder `target_role_families` blijft de engine backward-compatible WordPress-only.
+Generieke AI/ML/data-sciencefuncties zonder workflow-/automationcomponent vallen niet automatisch binnen scope. Generieke productdesign- of softwarefuncties zonder materiële website/webinterfacecomponent vallen evenmin onder `web_design_development`. Zonder `target_role_families` blijft de engine backward-compatible WordPress-only.
 
 Een werkgeverland, vacatureland of tijdzoneverschil is op zichzelf geen blocker. Alleen concrete country-only-, payroll-, work-authorization-, legal-, security-, fysieke-aanwezigheids- of aantoonbaar onuitvoerbare verplichte werkuren/overlap blokkeren.
 
