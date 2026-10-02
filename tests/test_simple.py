@@ -13,7 +13,7 @@ POLICY = {
     "min_core_fit": 40,
     "min_evidence_fit": 10,
     "allowed_listing_languages": "nl,en",
-    "target_role_families": "wordpress_ecosystem,ai_workflow_automation",
+    "target_role_families": "wordpress_ecosystem,web_design_development,ai_workflow_automation",
 }
 
 
@@ -26,6 +26,7 @@ def vacancy(**overrides):
         "geography_compatible": True,
         "wordpress_related": True,
         "ai_workflow_related": False,
+        "web_design_related": False,
         "central_hard_mismatch": False,
         "listing_language": "en",
         "application_language": "en",
@@ -80,6 +81,46 @@ class RemoteFirstPolicyTests(unittest.TestCase):
             policy=POLICY,
         )
         self.assertTrue(gate["pass"])
+
+    def test_web_design_development_family_is_allowed(self):
+        gate = eligibility(
+            vacancy(
+                title="Web Designer / Frontend Developer",
+                wordpress_related=False,
+                ai_workflow_related=False,
+                web_design_related=True,
+            ),
+            today=TODAY,
+            policy=POLICY,
+        )
+        self.assertTrue(gate["pass"])
+
+    def test_explicit_web_design_family_is_allowed(self):
+        gate = eligibility(
+            vacancy(
+                title="UX Web Designer",
+                wordpress_related=False,
+                ai_workflow_related=False,
+                role_families=["web_design_development"],
+            ),
+            today=TODAY,
+            policy=POLICY,
+        )
+        self.assertTrue(gate["pass"])
+
+    def test_generic_product_design_without_web_materiality_is_rejected(self):
+        gate = eligibility(
+            vacancy(
+                title="Product Designer",
+                wordpress_related=False,
+                ai_workflow_related=False,
+                web_design_related=False,
+            ),
+            today=TODAY,
+            policy=POLICY,
+        )
+        self.assertFalse(gate["pass"])
+        self.assertIn("not_target_role_family", gate["reasons"])
 
     def test_generic_ai_role_without_workflow_materiality_is_rejected(self):
         gate = eligibility(
@@ -238,7 +279,7 @@ class RemoteFirstPolicyTests(unittest.TestCase):
         self.assertEqual(0, parsed.max_posting_age_days)
         self.assertEqual(frozenset({"nl", "en"}), parsed.allowed_listing_languages)
         self.assertEqual(
-            frozenset({"wordpress_ecosystem", "ai_workflow_automation"}),
+            frozenset({"wordpress_ecosystem", "web_design_development", "ai_workflow_automation"}),
             parsed.target_role_families,
         )
 
