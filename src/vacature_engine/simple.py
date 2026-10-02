@@ -10,8 +10,8 @@ from typing import Any
 CORE_FIT_ANCHORS = {0.0, 25.0, 40.0, 50.0}
 EVIDENCE_FIT_ANCHORS = {0.0, 10.0, 18.0, 25.0}
 WORKSTYLE_FIT_ANCHORS = {0.0, 5.0, 10.0, 15.0}
-LOGIC_VERSION = "2026-09-29-target-families-v13"
-SUPPORTED_TARGET_ROLE_FAMILIES = frozenset({"wordpress_ecosystem", "ai_workflow_automation"})
+LOGIC_VERSION = "2026-10-02-hybrid-web-focus-v14"
+SUPPORTED_TARGET_ROLE_FAMILIES = frozenset({"wordpress_ecosystem", "ai_workflow_automation", "web_design_development"})
 DEFAULT_TARGET_ROLE_FAMILIES = frozenset({"wordpress_ecosystem"})
 
 _LANGUAGE_ALIASES = {
@@ -250,6 +250,8 @@ def _vacancy_role_families(vacancy: Mapping[str, Any]) -> set[str]:
         role_families.add("wordpress_ecosystem")
     if vacancy.get("ai_workflow_related") is True:
         role_families.add("ai_workflow_automation")
+    if vacancy.get("web_design_related") is True:
+        role_families.add("web_design_development")
     return role_families
 
 
