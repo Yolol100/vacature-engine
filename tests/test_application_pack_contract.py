@@ -5,12 +5,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ApplicationPackContractTests(unittest.TestCase):
-    def test_bilingual_application_pack_contract_markers(self):
+    def test_application_pack_contract_markers(self):
         text = (ROOT / "docs" / "BILINGUAL-APPLICATION-PACK.md").read_text(encoding="utf-8")
         required = [
-            "Dutch vacancy-specific CV + motivation",
-            "English vacancy-specific CV + motivation",
-            "official vacancy/application language is primary",
+            "Prepare exactly one vacancy-specific CV and one motivation/cover letter",
+            "Create a second language only when the user explicitly asks for it or the employer requires it",
+            "same verified evidence map",
             "exactly two substantive paragraphs",
             "https://andrewbaeten.nl/category/cases",
             "Vriendelijke groet,",
