@@ -43,11 +43,11 @@ Wanneer een geverifieerde vacature via een officieel werkgever-/ATS-formulier lo
 
 Herbruikbare antwoorden mogen alleen uit door de gebruiker goedgekeurde `ApplicationAnswers` komen. Salaris, work authorization, juridische/sensitieve/current-state velden vereisen menselijke bevestiging; assessments of expliciet AI-verboden antwoorden blijven handmatig. Zie [`docs/FORM-APPLICATION-PACK.md`](docs/FORM-APPLICATION-PACK.md).
 
-## Bilingual application-pack contract
+## Application-pack contract
 
-`vacature-search` owns the candidate-facing application prose and CV tailoring. For normal Dutch/English vacancy packs it prepares both Dutch and English CV + motivation variants from the same verified evidence map; the official application language is primary. Named projects/cases/repositories stay out of the CV and may appear only as verified work-sample links in the motivation when requested or materially useful. The stable public portfolio index is `https://andrewbaeten.nl/category/cases`; exact case/repository URLs must be verified and never guessed. Default motivation sign-offs use only the first name: Dutch `Vriendelijke groet,` + `Andrew`; English `Kind regards,` + `Andrew`.
+`vacature-search` owns the candidate-facing application prose and CV tailoring. By default it prepares exactly one CV + motivation pair in the official vacancy/application language. A second Dutch/English variant is created only when the user explicitly asks for it or the employer requires it; when present, both versions use the same verified evidence map. Named projects/cases/repositories stay out of the CV and may appear only as verified work-sample links in the motivation when requested or materially useful. The stable public portfolio index is `https://andrewbaeten.nl/category/cases`; exact case/repository URLs must be verified and never guessed. Default motivation sign-offs use only the first name: Dutch `Vriendelijke groet,` + `Andrew`; English `Kind regards,` + `Andrew`.
 
-This remains caller-owned policy. `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience. See [docs/BILINGUAL-APPLICATION-PACK.md](docs/BILINGUAL-APPLICATION-PACK.md).
+This remains caller-owned policy. `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience. See [docs/BILINGUAL-APPLICATION-PACK.md](docs/BILINGUAL-APPLICATION-PACK.md); the legacy filename is retained for compatibility.
 
 ## Ingestion component
 
