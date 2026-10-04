@@ -1,18 +1,19 @@
-# Bilingual application pack boundary
+# Application pack boundary
 
-This repository does not generate candidate prose. The following is a caller-owned contract for `vacature-search` and the live Vacature Register.
+This repository does not generate candidate prose. The following is a caller-owned contract for `vacature-search` and the live Vacature Register. The legacy filename is retained to avoid breaking existing references.
 
 ## Input
 
 The caller may start from pasted vacancy text or an online-discovered vacancy. Before tailoring, it resolves one canonical vacancy snapshot and follows official employer/ATS application instructions.
 
-## Paired output
+## Default output language
 
-For normal allowed Dutch/English vacancy packs, prepare both:
-- Dutch vacancy-specific CV + motivation;
-- English vacancy-specific CV + motivation.
+Prepare exactly one vacancy-specific CV and one motivation/cover letter in the official vacancy/application language.
 
-The official vacancy/application language is primary. The other is a user-review variant. Both derive from one verified requirement-to-evidence map and may not diverge in facts, metrics, ownership, tools, seniority or results.
+- Dutch official vacancy/application flow -> Dutch CV + Dutch motivation.
+- English official vacancy/application flow -> English CV + English motivation.
+- Create a second language only when the user explicitly asks for it or the employer requires it.
+- When a second language is required, both versions must use the same verified evidence map and may not diverge in facts, metrics, ownership, tools, seniority or results.
 
 ## CV placement
 
@@ -20,7 +21,7 @@ Keep named projects, cases and repository lists out of the CV. Do not add Select
 
 ## Motivation placement
 
-Each language version contains a greeting, exactly two substantive paragraphs, optional 1-3 verified work-sample bullets only when requested/materially useful, the stable portfolio line, and a first-name-only sign-off.
+The motivation contains a greeting, exactly two substantive paragraphs, optional 1-3 verified work-sample bullets only when requested/materially useful, the stable portfolio line, and a first-name-only sign-off.
 
 Dutch: `Vriendelijke groet,` then `Andrew`.
 English: `Kind regards,` then `Andrew`.
