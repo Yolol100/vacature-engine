@@ -35,7 +35,7 @@ jobs:
         with:
           subject-path: release/vacature-engine-*.zip
           sbom-path: release/SBOM.spdx.json
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-evidence-${{ github.sha }}
           path: release/
@@ -74,7 +74,7 @@ jobs:
             --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/release-evidence.yml" \
             --format json > verified-release/attestation-verification.json
           test -s verified-release/attestation-verification.json
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: attestation-verification-${{ github.sha }}
           path: verified-release/attestation-verification.json
