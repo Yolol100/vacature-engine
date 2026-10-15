@@ -75,7 +75,7 @@ test('cooldown grows monotonically and honors rate-limit hints',()=>{
 test('title selection distinguishes technical candidates from unrelated general roles',()=>{
   const positive=['WordPress Developer','Web Designer','Web Developer','Senior PHP Engineer',
     'React Frontend Engineer','WooCommerce developer','Elementor Builder','Full Stack Developer',
-    'AI Workflow Automation Engineer','n8n Specialist','UX Designer',
+    'AI Workflow Automation Engineer','n8n Specialist','UX Designer','UI Designer','Design Systems Engineer','Core Web Vitals Specialist',
     'Experienced Software Engineer','Engineer, Applied AI','Senior Product Designer'];
   const negative=['VP Sales','Recruiting Manager','Executive Assistant','Accountant','Payroll Administrator','General Counsel'];
   for(const title of positive)assert.equal(preliminaryInterest({title,remote:'',location:''}),true,title);
