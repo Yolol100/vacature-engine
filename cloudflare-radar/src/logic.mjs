@@ -7,7 +7,7 @@ export const PILOT_SOURCES=Object.freeze([
 const TRACKING=new Set(['ref','source','campaign','gh_src','mc_cid','mc_eid','li_fat_id','referral']);
 const APPLIED=new Set(['submitted','applied','screen','interview','assessment','final','offer','rejected','withdrawn','closed']);
 const ALREADY_KNOWN=new Set(['seen','shown','submitted','applied','screen','interview','assessment','final','offer','rejected','withdrawn','closed','excluded_user_preference','excluded']);
-const INTEREST=/\b(wordpress|woocommerce|elementor|gutenberg|website|web[\s-]?(?:design(?:er|ing)?|develop(?:er|ment)?|engineer(?:ing)?|performance)|webdesign|webdevelopment|php[\s-]?(?:developer|engineer|programmer)|full[\s-]?stack|react|next\.js|front[\s-]?end|ui\/ux|ux\/ui|ux|accessibility|automation|automations|workflow|workflows|integrations?|n8n|zapier|make\.com|no[\s-]?code|cms|ai[\s-]?agent|technical[\s-]?seo)\b/i;
+const INTEREST=/\b(wordpress|woocommerce|elementor|gutenberg|website|web[\s-]?(?:design(?:er|ing)?|develop(?:er|ment)?|engineer(?:ing)?|performance)|webdesign|webdevelopment|php[\s-]?(?:developer|engineer|programmer)|full[\s-]?stack|software[\s-]?(?:engineer|developer)|applied[\s-]?ai|product[\s-]?design(?:er|ing)?|react|next\.js|front[\s-]?end|ui\/ux|ux\/ui|ux|accessibility|automation|automations|workflow|workflows|integrations?|n8n|zapier|make\.com|no[\s-]?code|cms|ai[\s-]?agent|technical[\s-]?seo)\b/i;
 
 export function canonicalUrl(raw) {
   if(typeof raw!=='string'||!raw.trim())return '';
