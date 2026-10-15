@@ -212,3 +212,58 @@ test('ambiguous Sheets append outcome is reconciled without a second vacancy row
     assert.equal(db.meta.get('exclusive_poll_lease'),'1970-01-01T00:00:00.000Z');
   }finally{globalThis.fetch=previousFetch;}
 });
+
+
+test('overlapping Cron run is skipped before network access',async()=>{
+  const db=new FakeD1();
+  db.meta.set('exclusive_poll_lease',new Date(Date.now()+60000).toISOString());
+  const original=globalThis.fetch;
+  globalThis.fetch=async()=>{throw new Error('no network should be attempted');};
+  try{
+    const outcome=await tick({RADAR_ENABLED:'1',RADAR_DB:db,
+      GOOGLE_SERVICE_ACCOUNT_JSON:'{}',VACATURE_REGISTER_ID:'register-demo',RADAR_RESULT_ID:'radar-demo'});
+    assert.equal(outcome.status,'overlap_skipped');
+    assert.equal(db.observations.size,0);
+  }finally{globalThis.fetch=original;}
+});
+
+test('schema corruption does not initialize baseline or generate false new jobs',async()=>{
+  const db=new FakeD1(),original=globalThis.fetch,updates=[];
+  let broken=true;
+  globalThis.fetch=async(input,options={})=>{
+    const url=String(input);
+    if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'test-token',expires_in:3600});
+    if(url.includes('/values:batchGet')&&url.includes('register-demo')){
+      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+    }
+    if(url.includes('/values:batchGet')&&url.includes('radar-demo')){
+      return Response.json({valueRanges:[{values:[['observation_key']]},{values:[['officiele_url']]},
+        {values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
+    }
+    if(url.includes('api.lever.co/v0/postings/kinsta')){
+      return broken?Response.json({error:'provider schema changed'}):Response.json([mkjob('existing')]);
+    }
+    if(url.includes(':append')){
+      if(url.includes('Nieuwe%20vacatures'))updates.push(...JSON.parse(options.body).values);
+      return Response.json({updates:{updatedRows:JSON.parse(options.body).values.length}});
+    }
+    throw new Error('Unexpected transport: '+url);
+  };
+  try{
+    const env={RADAR_ENABLED:'1',RADAR_DB:db,
+      GOOGLE_SERVICE_ACCOUNT_JSON:JSON.stringify({client_email:'test@example.org',private_key:privateKey}),
+      VACATURE_REGISTER_ID:'register-demo',RADAR_RESULT_ID:'radar-demo'};
+    const failure=await tick(env);
+    assert.equal(failure.status,'partial');
+    assert.equal(failure.errors,1);
+    assert.equal(db.meta.get('seeded:lever:kinsta'),undefined,'bad response cannot mark a source healthy');
+    assert.equal(db.observations.size,0);
+    broken=false;
+    // Reset only the mock cooldown to simulate the next eligible real poll.
+    db.meta.set('cooldown:lever:kinsta','1970-01-01T00:00:00.000Z');
+    const recovered=await tick(env);
+    assert.equal(recovered.new_records,0,'recovery must seed baseline, not alert historical positions');
+    assert.equal(db.observations.get('lever:kinsta:existing').status,'baseline');
+    assert.equal(updates.length,0);
+  }finally{globalThis.fetch=original;}
+});
