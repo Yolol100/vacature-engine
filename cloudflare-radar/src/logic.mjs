@@ -7,7 +7,7 @@ export const PILOT_SOURCES=Object.freeze([
 const TRACKING=new Set(['ref','source','campaign','gh_src','mc_cid','mc_eid','li_fat_id','referral']);
 const APPLIED=new Set(['submitted','applied','screen','interview','assessment','final','offer','rejected','withdrawn','closed']);
 const ALREADY_KNOWN=new Set(['seen','shown','submitted','applied','screen','interview','assessment','final','offer','rejected','withdrawn','closed','excluded_user_preference','excluded']);
-const INTEREST=/\b(wordpress|woocommerce|elementor|gutenberg|website|web[\s-]?(?:design|develop|engineer|performance)|front[\s-]?end|ui\/ux|ux\/ui|ux|accessibility|automation|automations|workflow|workflows|integrations?|n8n|zapier|make\.com|no[\s-]?code|cms|ai[\s-]?agent|technical[\s-]?seo)\b/i;
+const INTEREST=/\b(wordpress|woocommerce|elementor|gutenberg|website|web[\s-]?(?:design(?:er|ing)?|develop(?:er|ment)?|engineer(?:ing)?|performance)|webdesign|webdevelopment|php[\s-]?(?:developer|engineer|programmer)|full[\s-]?stack|react|next\.js|front[\s-]?end|ui\/ux|ux\/ui|ux|accessibility|automation|automations|workflow|workflows|integrations?|n8n|zapier|make\.com|no[\s-]?code|cms|ai[\s-]?agent|technical[\s-]?seo)\b/i;
 
 export function canonicalUrl(raw) {
   if(typeof raw!=='string'||!raw.trim())return '';
@@ -65,7 +65,7 @@ export function normalizeJobs(source,payload){
     const location=String(source.source_id==='lever'?job.categories?.location??'':typeof job.location==='string'?job.location:job.location?.name??'').trim();
     const remote=String(job.workplaceType??(job.isRemote===true?'remote':'')).trim();
     return {
-      identity:source.source_id+':'+source.account+':'+id,source_id:source.source_id,source_job_id:id,
+      identity:source.source_id+':'+source.account+':'+id,source_id:source.source_id,source_account:source.account,source_job_id:id,
       employer:source.employer,title,url,source_url:url,location,remote,language:'',
       // first-seen is NEVER employer publication evidence
       confirmed_published_at:''
@@ -127,10 +127,14 @@ export function adapterUrl(source){
 }
 export function isValidJob(job){
   if(!job.identity||!job.url||!job.title||!job.source_job_id)return false;
-  const host=new URL(job.url).hostname;
-  if(job.source_id==='greenhouse')return host==='boards.greenhouse.io'||host==='job-boards.greenhouse.io';
-  if(job.source_id==='lever')return host==='jobs.lever.co'||host==='jobs.eu.lever.co';
-  if(job.source_id==='ashby')return host==='jobs.ashbyhq.com';
+  const url=new URL(job.url);
+  const host=url.hostname, parts=url.pathname.split('/').filter(Boolean);
+  const expectedTenant=String(job.source_account||'').toLowerCase();
+  if(!expectedTenant||parts[0]?.toLowerCase()!==expectedTenant)return false;
+  if(job.source_id==='greenhouse')return (host==='boards.greenhouse.io'||host==='job-boards.greenhouse.io')&&
+    (parts.length>=2&&(parts[1]==='jobs'?parts.length>=3:true));
+  if(job.source_id==='lever')return (host==='jobs.lever.co'||host==='jobs.eu.lever.co')&&parts.length>=2;
+  if(job.source_id==='ashby')return host==='jobs.ashbyhq.com'&&parts.length>=2;
   return false;
 }
 export function chooseSource(sources,minuteIndex){return sources.length?sources[((minuteIndex%sources.length)+sources.length)%sources.length]:null;}
