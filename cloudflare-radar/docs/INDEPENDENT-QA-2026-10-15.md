@@ -79,3 +79,20 @@ Status contract: alleen geslaagde lokale/CI-QA; geen live-inrichting, geen nieuw
 - Nieuwe rol-ID-verificatie: zowel de officiële Lever- als Greenhouse-host, tenant en provider-job-ID moeten overeenkomen met de exacte vacaturelink, tegen provider-ID-spoofing.
 - Testbewijs blijft simulatie en echte Wrangler build-validation, **GEEN live Cloudflare-installatie, echte D1-operatie, Google Sheets API-write of garantiebewijs voor Free CPU**.
 - De publieke job-API's en de Cloudflare serviceaccount/rate-limit contracten moeten vóór activering echt worden gevalideerd. Formele status blijft `prepared_not_live`, `RADAR_ENABLED=0`, PR draft en NO-GO.
+
+
+## Hercontrole gehele chatscope — 2026-10-16
+
+**Doel**: freeze -> compare live project sources, skills, repo, Library/YouTube, official references -> inject new counterexample -> minimal repair -> GitHub CI/Wrangler dry-run -> readback. Alleen harde nieuwe regressies wijzigen de bestaande geldige code.
+
+- Actuele geldige baseline was commit `9f98525ba3c51c0ee59a5a992296bddc2bd2f2d5`, draft PR #80. Op die baseline waren de radar-CI en algemene CI groen.
+- Bronregister: 227 inhoudelijke bronregels, 219 active, 6 consolidated, 1 retired, 1 blocked. Geen dubbele `source_id` gevonden. Twee gedeelde officiële carrières-URL's horen bij hetzelfde concern en zijn geen bewijs van dubbele vacatures. Afgeleide radarbron blijft `blocked`.
+- Registerconfig: `radar_enabled=FALSE`, historisch GitHub-radar-interval 5 minuten, toekomstig Cloudflare-schema één Cron/minuut en pilot van drie bronnen met een rotatie van circa drie minuten per bron; dit is bewust niet hetzelfde configuratieobject.
+- Resultatensheet: alleen kolomkoppen in `Nieuwe vacatures` en `Runs`. **Geen** productieobservaties of Cloudflare-runs.
+- Gevonden nieuwe harde fout: voorlopige WordPress/web/AI ontdekking sloot legitieme doelrollen uit zoals **UI Designer**, **Design Systems Engineer** en **Core Web Vitals Specialist**. Negatieve regressietest op commit `87ff31711e0d2fe715ca55d56ec639112171e112` faalde; minimale titelherkenning uitgebreid op commit `387f68fd9ac372878ff277e747a1b79db00be2b3` en radar-CI herstelde naar groen (GitHub run 38818044817). Dit betreft uitsluitend discovery; definitieve vacature-fit, remote/NL en sollicitatiegates blijven bij `vacature-search`.
+- Reproductie via lokale Git-clone in de container was niet mogelijk vanwege DNS-toegang naar github.com. Daarom GitHub connector en gehoste Actions als bewijs; geen lokale volledige terminaltest claimen.
+- De oorspronkelijke bronsuggesties en de huidige uitvoer zijn nog **geen** gegarandeerde volledige realtime jobboarddekking. Drie ATS-tenants, maximaal 160 records per scan, publieke provider-ratelimits en echte Cloudflare Worker CPU/quotacontrole blijven open.
+- Beveiligingsgrenzen (API-toegang, legitimiteit werkgever, kandidaatprivacy, no-auto-submit, geen omzeiling van bronvoorwaarden) blijven intact. Toegangseisen zijn legitieme menselijke/onboardingacties, geen bugs die door bypass moeten verdwijnen.
+- Library bevat onder andere `Production-Grade Remote Job Ingestion and Matching System for vacature-engine`, plus het remote-recruiter YouTube-corpus (A Life After Layoff, Self Made Millennial, Work It Daily en Andrew LaCivita). Video's/comments zijn alleen aanvullend, niet zelfstandig bewijs van vacatures of API-specificaties.
+
+**Vrijgavebeslissing**: alleen de geteste code- en buildscope krijgt PASS; **Cloudflare-productie blijft NO-GO** tot echte D1/migratie, serviceaccountrechten, ATS-contracten, minimaal één volledige scheduled bootstrap/fresh/retry+Sheets readback en Worker CPU/Google Sheets quota zijn gemeten. PR niet mergen; `RADAR_ENABLED=0` aanhouden.
