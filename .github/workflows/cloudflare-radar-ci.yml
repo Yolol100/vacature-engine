@@ -22,3 +22,9 @@ jobs:
         working-directory: cloudflare-radar
       - run: node --test test/*.test.mjs
         working-directory: cloudflare-radar
+      - name: Install Wrangler for build-only verification
+        run: npm install --no-audit --no-fund
+        working-directory: cloudflare-radar
+      - name: Bundle Worker without deploying
+        run: npx wrangler deploy --dry-run --outdir /tmp/vacature-radar-bundle
+        working-directory: cloudflare-radar
