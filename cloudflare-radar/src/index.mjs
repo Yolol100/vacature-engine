@@ -208,6 +208,7 @@ export async function tick(env){
     const metrics={sources:0,observations:0,known:0,applied:0,skipped:0,delivered:0,errors:[]};
     // Reconcile pre-existing rows after the user submits an application later.
     const changes=reconcileApplied(radar.records,register);
+    metrics.applied += changes.filter(item=>item.range.startsWith("'Nieuwe vacatures'!N")).length;
     if(changes.length)await updateCells(env.RADAR_RESULT_ID,changes,token);
     const active=PILOT_SOURCES.filter(source=>sourceActive(sourcesRows,source));
     if(!active.length)throw new Error('No active ATS+employer source pairs');
