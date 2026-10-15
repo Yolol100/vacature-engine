@@ -6,7 +6,7 @@ Een **beperkte** Cloudflare Workers Cron-pilot die nieuwe openbare vacatures oph
 
 ## Bewaakte proefbronnen
 
-De eerste proef omvat precies drie bestaande, specifieke werkgever-/ATS-routes uit `ingestion/source-specs.radar.json`: Automattic/Greenhouse, Kinsta/Lever en Zapier/Ashby. Hun bron **en** werkgever moeten elke run `active` zijn in het live tabblad `Bronnen`. Andere bronnen worden *niet* stiekem op deze minuutschedule bevraagd. Als een publieke API wijzigt, wordt dit als fout gelogd; geen scraping/CAPTCHA/login-omzeiling.
+De pilot heeft precies drie geregistreerde werkgever-/ATS-routes uit `ingestion/source-specs.radar.json`: Automattic/Greenhouse, Kinsta/Lever en Zapier/Ashby. **Eén bron per cronuitvoering** wordt in een vaste rotatie gecontroleerd: bij drie actieve bronnen dus elke drie minuten per bron, terwijl de cron zelf elke minuut start. De bron én de werkgever moeten `active` zijn in live `Bronnen`. Status, headers en ATS-linkhost moeten geldig blijven. Buiten de whitelist worden geen andere bronnen bevraagd. Een API-fout, onbekende host, datalimiet of rate-limit wordt zichtbaar afgehandeld met source-specifieke cooldown. De radar gebruikt geen scraping, login of omzeiling.
 
 ## Resultaat
 
@@ -15,27 +15,28 @@ De eerste proef omvat precies drie bestaande, specifieke werkgever-/ATS-routes u
 - Nieuwe technische detecties zijn **geen** bevestigde geschikte vacatures. Alleen `vacature-search` controleert werkgever/ATS, volledig remote, uitvoerbaar vanuit Nederland, NL/EN en matchscore.
 - `eerste_detectie_utc` is observatietijd, **niet** publicatietijd. `publicatie_bevestigd_utc` blijft leeg zonder officiële publicatie-evidence.
 - Geen persoonlijk cv, sollicitatietekst of geadresseerde mailboxdata in Cloudflare; uitsluitend kandidaatvrije URL-/statushistorie uit het Register. Geen automatische verzending of sollicitatie.
+- Eerder ingediende sollicitaties worden uit `Vacatures`, `Applications` én `ApplicationEvents` herleid. Nieuwe detecties worden alleen op sterke rolidentiteit uitgesloten. Als je later op een reeds gevonden vacature solliciteert, wijzigen uitsluitend de velden `sollicitatiehistorie` en `actie` in de radarrij; bestaande handmatige beoordelingen blijven behouden.
 
 ## Wat nog moet worden gekoppeld — menselijke beheeractie
 
 1. Maak een gratis [Cloudflare-account](https://dash.cloudflare.com/sign-up) aan en autoriseer beheer via het gekozen veilige kanaal. Er is momenteel geen verbonden Cloudflare-connector.
 2. Maak in Cloudflare D1 een database `webactueel-vacature-radar-state` aan (`npx wrangler d1 create webactueel-vacature-radar-state`). Zet de toegewezen **database ID** in `wrangler.jsonc` in plaats van `REPLACE_WITH_D1_DATABASE_ID`.
-3. Gebruik een Google-serviceaccount dat in Google Cloud de Sheets API mag gebruiken en dat expliciet editorrechten heeft op **beide** Sheets: het oorspronkelijke Vacature Register en het aparte radarresultatenbestand. Maak geen serviceaccount-JSON openbaar en zet die nooit in Git, Google Sheets of ChatGPT-tekst.
+3. Gebruik een Google-serviceaccount dat in Google Cloud de Sheets API mag gebruiken. Geef dit serviceaccount uitsluitend **Lezer**-toegang op het oorspronkelijke Vacature Register en **Bewerker**-toegang op de aparte `Vacature Radar - Nieuwe Vacatures` Sheet. De Worker gebruikt Sheets OAuth; Google Drive bestandsrechten zorgen voor het onderscheid tussen lezen en schrijven. Maak geen serviceaccount-JSON openbaar en plaats sleutels nooit in Git, Sheets of ChatGPT-tekst.
 4. Configureer de Cloudflare Worker-secret, bij voorkeur lokaal met `npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_JSON`. Secret bevat de JSON van het serviceaccount. Verifieer de rechten op de twee exacte spreadsheet-ID's.
 5. `cd cloudflare-radar && npm ci` (na commit van lockfile) of `npm install`; controleer `npm test` en `npm run check`.
 6. Maak de D1-tabellen aan met `npx wrangler d1 execute webactueel-vacature-radar-state --remote --file ./schema.sql`.
 7. Deploy met `npx wrangler deploy` **met `RADAR_ENABLED=0`**. Controleer dat de Worker publieke HTTP-verzoeken met 404 afwijst.
 8. Voer een veilige proefrun uit in een gecontroleerde omgeving, eerst baselining van bestaande vacatures, dan een gecontroleerde nieuwe vermelding / testbron zonder echte gebruikersdata. Controleer D1-state, Drive-resultaat en fouten in `Runs`; maak geen fictieve productie-vacatures aan.
-9. Pas na aantoonbaar bewezen eindsucces en limietcontrole `RADAR_ENABLED` aan naar `1` en pas de eigen `Vacature Register:Config` productie- en activatiestatus aan. Houd de oude GitHub-radar uit om dubbele schedulers te voorkomen.
+9. Pas na aantoonbaar bewezen eindsucces, zichtbare `Runs`, D1-profiel en limietcontrole `RADAR_ENABLED` aan naar `1`. Pas dan ook `Vacature Register:Config` productie- en activatiestatus aan. Houd de oude GitHub-radar uit om dubbele schedulers te voorkomen. Koppel een alert op terugkerende errors; een één-minuutschema is niet gegarandeerd exact op tijd en de upstream publicatiedatum blijft onafhankelijk.
 
 ## Technisch contract
 
-- Cron: `* * * * *` UTC (doel 1 minuut, geen publicatie-SLA).
+- Cron: `* * * * *` UTC (één technische uitvoering per minuut, niet één controle per bron per minuut; bij drie actieve bronnen één controle per bron per circa drie minuten). Geen publicatie-SLA.
 - Schema: `schema.sql`. D1 vereist; de eerste geslaagde poll per bron doet uitsluitend baseline, **geen historische 'nieuwe vacatures'**.
-- Dubbelcheck: exacte canonieke rol-URL én technische bron/vacature-ID, plus bestaande `Vacatures`/`Applications` en reeds in de radar opgeslagen URL's. Zwakke titels/werkgevercombinaties worden niet automatisch weggefilterd.
+- Dubbelcheck: rol-specifieke officiële ATS-URL, provider-/job-ID, bestaande `Vacatures`/`Applications`/`ApplicationEvents`, en eerdere radarrecords. Generieke carrièresites en zwakke titel- of werkgevercombinaties worden niet als sterke duplicate-identity behandeld. Bekend in de zoekhistorie en daadwerkelijk ingediend worden afzonderlijk geteld.
 - D1 bewaart nieuwe nog niet geleverde resultaten in een persistent outbox; bij retry voorkomt Sheet-readback nogmaals toevoegen.
-- `Runs`: alleen ieder heel UTC-uur en bij nieuwe resultaten/fouten, zodat de Drive-sheet niet elke minuut groeit.
-- Geen betaalde API's, geen omzeilen van bronvoorwaarden. Cloudflare Free heeft o.a. 50 D1-querylimiet per invocatie en dagelijkse D1-limieten; de pilot is begrensd tot maximaal 160 banen per bron. Grotere of onduidelijke bronnen falen zichtbaar gesloten.
+- `Runs`: alleen ieder heel UTC-uur en bij nieuwe resultaten, fouten of later herkende sollicitaties; de kolommen `bekende_records` en `historische_sollicitaties` tellen onderscheiden categorieën.
+- Geen betaalde API's of omzeiling van bronvoorwaarden. De pilot is begrensd tot één bron per cron, maximaal 160 banen per bron en maximaal 16 D1-inserts (96 parameters) per query. Bronnen boven deze limiet falen zichtbaar zonder stil records te laten vallen. Een rate-limit (429) veroorzaakt een minimaal kwartier cooldown; 5xx/netwerkfouten krijgen oplopende cooldown. **Cloudflare Free CPU-tijd, D1-query-/rijlimieten, Google API-quota en echte officiële bronbeperkingen vereisen nog een geautoriseerde productieproef.**
 
 ## Aanroepen in ChatGPT
 
