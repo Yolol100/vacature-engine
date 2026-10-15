@@ -1,6 +1,6 @@
 import {
   PILOT_SOURCES,adapterUrl,buildRegisterIndex,canonicalUrl,chooseSource,cooldownMinutes,
-  isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,strongRoleKeys,toRadarRow
+  isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,sourceActive,strongRoleKeys,toRadarRow
 } from './logic.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
