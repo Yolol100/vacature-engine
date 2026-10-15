@@ -260,8 +260,7 @@ export async function tick(env){
       if(radar.listed.has(entry.identity)){
         delivered.push(entry.identity);continue;
       }
-      const reg=matchRegister(JSON.parse(entry.payload_json).reduce?
-        JSON.parse(entry.payload_json):{url,source_url:url},register);
+      const reg=matchRegister({url,source_url:url},register);
       const strong=strongRoleKeys(url);
       if(reg.applied||reg.known||strong.some(key=>radar.strongURLs.has(key)||planned.has(key))){
         duplicates.push(entry.identity);
