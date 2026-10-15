@@ -68,3 +68,14 @@ Er zijn geen sollicitatiescore, bron-API-feiten, publicatietijden of hard gates 
 - https://job-boards.greenhouse.io/automatticcareers
 
 Status contract: alleen geslaagde lokale/CI-QA; geen live-inrichting, geen nieuwe vacatureclaim, geen betaalde dienst geactiveerd.
+
+
+## Aanvullende adversariele fase: 28 van 28 tests + Wrangler dry-run
+
+- **27/27** tests op commit `10303b07514ae6e6e7026019ee122479d85b5c7c` inclusief gesimuleerde D1/Sheets-herstelroutes, ATS-tenant- en URL-spoofscenario's; Wrangler v4.151.0 kon de Worker zonder deployment bundelen.
+- **28/28** tests op commit `8feb3e7435c22f118fabdebe58ec99abe3b1b4f8`, GitHub Actions [38809873759](https://github.com/Yolol100/vacature-engine/actions/runs/38809873759) SUCCESS, `wrangler deploy --dry-run` PASS, 27.32 KiB Workerbundle (gzip 8.12 KiB).
+- Nieuw expliciet risico: een tijdelijk **lege eerste ATS-response** mocht niet als gezonde baseline worden bewaard. Nu wordt de bootstrap geweigerd en via een veilige cooldown opnieuw geprobeerd, zodat bij herstel geen historische banen onterecht als nieuw worden gemeld.
+- Nieuw expliciet risico: D1-wachtrijitems van een inmiddels **geblokkeerde of inactieve werkgever/ATS-bron** mogen nooit vanuit de outbox alsnog in de radar worden gepubliceerd. De Worker controleert de actuele bron- én werkgeversstatus bij aflevering.
+- Nieuwe rol-ID-verificatie: zowel de officiële Lever- als Greenhouse-host, tenant en provider-job-ID moeten overeenkomen met de exacte vacaturelink, tegen provider-ID-spoofing.
+- Testbewijs blijft simulatie en echte Wrangler build-validation, **GEEN live Cloudflare-installatie, echte D1-operatie, Google Sheets API-write of garantiebewijs voor Free CPU**.
+- De publieke job-API's en de Cloudflare serviceaccount/rate-limit contracten moeten vóór activering echt worden gevalideerd. Formele status blijft `prepared_not_live`, `RADAR_ENABLED=0`, PR draft en NO-GO.
