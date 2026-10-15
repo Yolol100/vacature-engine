@@ -1,178 +1,296 @@
-import {PILOT_SOURCES,adapterUrl,canonicalUrl,isValidJob,normalizeJobs,registerKnown,toRadarRow} from './logic.mjs';
+import {
+  PILOT_SOURCES,adapterUrl,buildRegisterIndex,canonicalUrl,chooseSource,cooldownMinutes,
+  isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,strongRoleKeys,toRadarRow
+} from './logic.mjs';
 
-// Isolated transport-only radar. No application, eligibility, scoring or user-mailbox access.
+// Standalone transport-only radar; no application submission and no eligibility claims.
 const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
-const GOOGLE_TOKEN='https://oauth2.googleapis.com/token';
-const MAX_JOBS=160;
-const OUTBOX_BATCH=20;
-let accessTokenCache;
-function b64url(bytes) {
+const TOKEN_URL='https://oauth2.googleapis.com/token';
+const MAX_SOURCE_JOBS=160;
+const OUTBOX_SIZE=20;
+const MAX_RECONCILIATIONS=20;
+const MAX_DB_INSERT_ROWS=16; // 16 * 6 bindings = 96 (under D1's 100 per statement).
+const POLL_LOCK_MS=180000;
+const TIMEOUT_MS=10000;
+let tokenCache;
+
+function b64url(bytes){
   let text='';
-  for(const byte of bytes) text+=String.fromCharCode(byte);
+  for(const byte of bytes)text+=String.fromCharCode(byte);
   return btoa(text).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
-function json64(value){return b64url(new TextEncoder().encode(JSON.stringify(value)));}
-function pemBytes(pem) {
-  const value=pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g,'');
-  return Uint8Array.from(atob(value),c=>c.charCodeAt(0));
+function encodeJSON(value){return b64url(new TextEncoder().encode(JSON.stringify(value)));}
+function privateKeyBytes(pem){
+  const stripped=pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g,'');
+  return Uint8Array.from(atob(stripped),c=>c.charCodeAt(0));
 }
-async function getGoogleToken(env) {
-  if(accessTokenCache && accessTokenCache.expires>Date.now()) return accessTokenCache.token;
-  const credentials=JSON.parse(env.GOOGLE_SERVICE_ACCOUNT_JSON||'{}');
-  if(!credentials.client_email||!credentials.private_key) throw new Error('Google service account is not configured');
-  const privateKey=await crypto.subtle.importKey('pkcs8',pemBytes(credentials.private_key),
+async function accessToken(env){
+  if(tokenCache&&tokenCache.expires>Date.now())return tokenCache.token;
+  const svc=JSON.parse(env.GOOGLE_SERVICE_ACCOUNT_JSON||'{}');
+  if(!svc.private_key||!svc.client_email)throw new Error('Missing Google Sheets service account secret');
+  const key=await crypto.subtle.importKey('pkcs8',privateKeyBytes(svc.private_key),
     {name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['sign']);
   const now=Math.floor(Date.now()/1000);
-  const unsigned=json64({alg:'RS256',typ:'JWT'})+'.'+json64({
-    iss:credentials.client_email,scope:GOOGLE_SCOPE,aud:GOOGLE_TOKEN,iat:now,exp:now+3300
+  const assertion=encodeJSON({alg:'RS256',typ:'JWT'})+'.'+encodeJSON({
+    iss:svc.client_email,scope:GOOGLE_SCOPE,aud:TOKEN_URL,iat:now,exp:now+3300
   });
-  const signature=await crypto.subtle.sign('RSASSA-PKCS1-v1_5',privateKey,new TextEncoder().encode(unsigned));
-  const form=new URLSearchParams({
-    grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',assertion:unsigned+'.'+b64url(new Uint8Array(signature))
+  const signature=await crypto.subtle.sign('RSASSA-PKCS1-v1_5',key,new TextEncoder().encode(assertion));
+  const reply=await fetch(TOKEN_URL,{
+    method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion:assertion+'.'+b64url(new Uint8Array(signature))}),signal:AbortSignal.timeout(TIMEOUT_MS)
   });
-  const response=await fetch(GOOGLE_TOKEN,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:form});
-  if(!response.ok) throw new Error('Google OAuth HTTP '+response.status);
-  const data=await response.json();
-  if(!data.access_token) throw new Error('Google OAuth response did not include an access token');
-  accessTokenCache={token:data.access_token,expires:Date.now()+Math.max(60,(Number(data.expires_in)||3600)-120)*1000};
-  return accessTokenCache.token;
+  if(!reply.ok)throw new Error('Google OAuth HTTP '+reply.status);
+  const payload=await reply.json();
+  if(!payload.access_token)throw new Error('Missing Google OAuth access token');
+  tokenCache={token:payload.access_token,expires:Date.now()+Math.max(60,(Number(payload.expires_in)||3600)-120)*1000};
+  return tokenCache.token;
 }
-async function getRanges(sheetId,ranges,token) {
-  const url=new URL('https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(sheetId)+'/values:batchGet');
-  for(const range of ranges) url.searchParams.append('ranges',range);
-  const response=await fetch(url.toString(),{headers:{Authorization:'Bearer '+token}});
-  if(!response.ok) throw new Error('Sheets read HTTP '+response.status);
-  const data=await response.json();
-  if(!Array.isArray(data.valueRanges)||data.valueRanges.length!==ranges.length) throw new Error('Sheets read incomplete');
-  return data.valueRanges.map(x=>x.values||[]);
+async function readRanges(id,ranges,token){
+  const url=new URL('https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(id)+'/values:batchGet');
+  for(const range of ranges)url.searchParams.append('ranges',range);
+  const response=await fetch(url,{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(TIMEOUT_MS)});
+  if(!response.ok)throw new Error('Sheets read HTTP '+response.status);
+  const body=await response.json();
+  if(!Array.isArray(body.valueRanges)||body.valueRanges.length!==ranges.length)throw new Error('Sheets response incomplete');
+  return body.valueRanges.map(item=>item.values||[]);
 }
-async function appendRows(sheetId,range,rows,token) {
-  if(!rows.length) return;
-  const url='https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(sheetId)+'/values/'+encodeURIComponent(range)+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS';
-  const response=await fetch(url,{method:'POST',headers:{
-    Authorization:'Bearer '+token,'Content-Type':'application/json'
-  },body:JSON.stringify({majorDimension:'ROWS',values:rows})});
-  if(!response.ok) throw new Error('Sheets append HTTP '+response.status);
-  const result=await response.json();
-  if(Number(result.updates?.updatedRows)!==rows.length) throw new Error('Sheets write incomplete');
+async function appendRows(id,range,rows,token){
+  if(!rows.length)return;
+  const uri='https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS';
+  const resp=await fetch(uri,{
+    method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify({majorDimension:'ROWS',values:rows}),signal:AbortSignal.timeout(TIMEOUT_MS)
+  });
+  if(!resp.ok)throw new Error('Sheets append HTTP '+resp.status);
+  const body=await resp.json();
+  if(Number(body.updates?.updatedRows)!==rows.length)throw new Error('Incomplete Sheets append');
 }
-async function getPublicJobs(source) {
-  const response=await fetch(adapterUrl(source),{headers:{Accept:'application/json'}});
-  if(!response.ok) throw new Error('Public API HTTP '+response.status);
-  const size=Number(response.headers.get('content-length')||0);
-  if(size>2_000_000) throw new Error('Public API response exceeded limit');
-  const jobs=normalizeJobs(source,await response.json());
-  if(jobs.length>MAX_JOBS) throw new Error('Source exceeds safe job count limit');
-  return jobs.filter(isValidJob);
+async function updateCells(id,changes,token){
+  if(!changes.length)return;
+  const uri='https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(id)+'/values:batchUpdate';
+  const resp=await fetch(uri,{
+    method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify({valueInputOption:'RAW',data:changes.map(({range,value})=>({range,majorDimension:'ROWS',values:[[value]]}))}),
+    signal:AbortSignal.timeout(TIMEOUT_MS)
+  });
+  if(!resp.ok)throw new Error('Sheets update HTTP '+resp.status);
+  const json=await resp.json();
+  if(Number(json.totalUpdatedCells)!==changes.length)throw new Error('Incomplete Sheets reconciliation');
 }
-function placeholders(count){return Array.from({length:count},()=>'?').join(',');}
-async function existingJobKeys(db,jobs) {
-  const seen=new Set();
-  for(let offset=0;offset<jobs.length;offset+=80) {
-    const keys=jobs.slice(offset,offset+80).map(job=>job.identity);
-    const query='SELECT identity FROM radar_observations WHERE identity IN ('+placeholders(keys.length)+')';
-    const found=await db.prepare(query).bind(...keys).all();
-    for(const row of found.results||[]) seen.add(row.identity);
-  }
-  return seen;
-}
-async function insertObservations(db,jobs) {
-  for(let i=0;i<jobs.length;i+=16){
-    const batch=jobs.slice(i,i+16);
-    const query='INSERT OR IGNORE INTO radar_observations (identity,source_instance,canonical_url,status,payload_json,first_seen_at) VALUES '+batch.map(()=>' (?,?,?,?,?,?)').join(',');
-    const params=batch.flatMap(j=>[j.identity,j.source_instance,j.url,j.status,JSON.stringify(j.row),j.first_seen_at]);
-    await db.prepare(query).bind(...params).run();
+function assertSheetHeaders(registry,vacancies,applications,events,keys,urls,statuses,actions){
+  if(registry?.[0]?.[0]!=='source_id'||vacancies?.[0]?.[0]!=='vacancy_id'||
+      applications?.[0]?.[0]!=='vacancy_id'||events?.[0]?.[0]!=='event_id'||
+      keys?.[0]?.[0]!=='observation_key'||urls?.[0]?.[0]!=='officiele_url'||
+      statuses?.[0]?.[0]!=='sollicitatiehistorie'||actions?.[0]?.[0]!=='actie'){
+    throw new Error('Spreadsheet header mismatch: stop before dedupe or writes');
   }
 }
-async function setStatuses(db,keys,status) {
-  for(let offset=0;offset<keys.length;offset+=60) {
-    const batch=keys.slice(offset,offset+60);
-    await db.prepare('UPDATE radar_observations SET status=? WHERE identity IN ('+placeholders(batch.length)+')').bind(status,...batch).run();
+function params(n){return Array.from({length:n},()=>'?').join(',');}
+async function pendingEntries(db){
+  return (await db.prepare('SELECT identity,canonical_url,payload_json FROM radar_observations WHERE status=? ORDER BY first_seen_at LIMIT ?')
+    .bind('pending',OUTBOX_SIZE).all()).results||[];
+}
+async function existingKeys(db,jobs){
+  const existing=new Set();
+  for(let i=0;i<jobs.length;i+=60){
+    const ids=jobs.slice(i,i+60).map(j=>j.identity);
+    if(!ids.length)continue;
+    const result=await db.prepare('SELECT identity FROM radar_observations WHERE identity IN ('+params(ids.length)+')')
+      .bind(...ids).all();
+    for(const row of result.results||[])existing.add(row.identity);
+  }
+  return existing;
+}
+async function insertJobs(db,items){
+  for(let i=0;i<items.length;i+=MAX_DB_INSERT_ROWS){
+    const part=items.slice(i,i+MAX_DB_INSERT_ROWS);
+    const sql='INSERT OR IGNORE INTO radar_observations(identity,source_instance,canonical_url,status,payload_json,first_seen_at) VALUES '+
+      part.map(()=>'(?,?,?,?,?,?)').join(',');
+    await db.prepare(sql).bind(...part.flatMap(item=>[
+      item.identity,item.source_instance,item.url,item.status,JSON.stringify(item.row),item.first_seen_at
+    ])).run();
   }
 }
-async function acquireLock(db){
-  const current=new Date().toISOString();
-  const until=new Date(Date.now()+180000).toISOString();
-  await db.prepare('INSERT OR IGNORE INTO radar_metadata(name,value) VALUES (?,?)').bind('exclusive_poll_lease','1970-01-01T00:00:00.000Z').run();
-  const change=await db.prepare('UPDATE radar_metadata SET value=? WHERE name=? AND value<?').bind(until,'exclusive_poll_lease',current).run();
-  return change.meta?.changes===1?until:null;
+async function setStatus(db,ids,status){
+  for(let i=0;i<ids.length;i+=60){
+    const chunk=ids.slice(i,i+60);
+    await db.prepare('UPDATE radar_observations SET status=? WHERE identity IN ('+params(chunk.length)+')')
+      .bind(status,...chunk).run();
+  }
 }
-async function releaseLock(db,token) {
-  await db.prepare('UPDATE radar_metadata SET value=? WHERE name=? AND value=?').bind('1970-01-01T00:00:00.000Z','exclusive_poll_lease',token).run();
+async function getMeta(db,name){
+  const result=await db.prepare('SELECT value FROM radar_metadata WHERE name=?').bind(name).first();
+  return result?.value??null;
+}
+async function putMeta(db,name,value){
+  await db.prepare('INSERT INTO radar_metadata(name,value) VALUES(?,?) ON CONFLICT(name) DO UPDATE SET value=excluded.value')
+    .bind(name,String(value)).run();
+}
+async function lock(db){
+  const start=new Date().toISOString(),end=new Date(Date.now()+POLL_LOCK_MS).toISOString();
+  await db.prepare('INSERT OR IGNORE INTO radar_metadata(name,value) VALUES(?,?)')
+    .bind('exclusive_poll_lease','1970-01-01T00:00:00.000Z').run();
+  const response=await db.prepare('UPDATE radar_metadata SET value=? WHERE name=? AND value<?')
+    .bind(end,'exclusive_poll_lease',start).run();
+  return response.meta?.changes===1?end:null;
+}
+async function unlock(db,token){
+  await db.prepare('UPDATE radar_metadata SET value=? WHERE name=? AND value=?')
+    .bind('1970-01-01T00:00:00.000Z','exclusive_poll_lease',token).run();
+}
+async function publicJobs(source){
+  const resp=await fetch(adapterUrl(source),{
+    headers:{Accept:'application/json'},signal:AbortSignal.timeout(TIMEOUT_MS)
+  });
+  if(!resp.ok){
+    const error=new Error('Public API HTTP '+resp.status);
+    error.status=resp.status;
+    const val=resp.headers.get('retry-after');
+    if(val){
+      const n=Number(val);
+      error.retryAfterSeconds=Number.isFinite(n)?n:Math.max(0,(Date.parse(val)-Date.now())/1000);
+    }
+    throw error;
+  }
+  const declared=Number(resp.headers.get('content-length')||0);
+  if(declared>2_000_000)throw new Error('Source payload too large');
+  const body=await resp.text();
+  if(body.length>2_000_000)throw new Error('Source payload too large');
+  const items=normalizeJobs(source,JSON.parse(body));
+  if(items.length>MAX_SOURCE_JOBS)throw new Error('Source exceeds safe job limit');
+  return items.filter(isValidJob);
+}
+function rowInfo(keyRows,urlRows,statusRows,actionRows){
+  const listed=new Set(),strongURLs=new Set(),records=[];
+  for(let i=1;i<keyRows.length;i++){
+    const identity=keyRows[i]?.[0]||'',url=canonicalUrl(urlRows[i]?.[0]||'');
+    if(identity)listed.add(identity);
+    for(const key of strongRoleKeys(url))strongURLs.add(key);
+    records.push({identity,url,row:i+1,status:statusRows[i]?.[0]||'',action:actionRows[i]?.[0]||''});
+  }
+  return {listed,strongURLs,records};
+}
+function reconcileApplied(records,regIndex){
+  const changes=[];let count=0;
+  for(const row of records){
+    if(!row.url||count>=MAX_RECONCILIATIONS)continue;
+    if(!strongRoleKeys(row.url).some(key=>regIndex.applied.has(key)))continue;
+    if(row.status!=='eerder_gesolliciteerd'){
+      changes.push({range:"'Nieuwe vacatures'!N"+row.row,value:'eerder_gesolliciteerd'});
+      count++;
+    }
+    if(row.action!=='niet_opnieuw_aanbevelen'){
+      changes.push({range:"'Nieuwe vacatures'!R"+row.row,value:'niet_opnieuw_aanbevelen'});
+    }
+  }
+  return changes;
 }
 export async function tick(env){
-  if(env.RADAR_ENABLED!=='1') return {status:'disabled'};
-  if(!env.RADAR_DB||!env.GOOGLE_SERVICE_ACCOUNT_JSON||!env.VACATURE_REGISTER_ID||!env.RADAR_RESULT_ID) throw new Error('Missing required Worker binding or secret');
-  const lease=await acquireLock(env.RADAR_DB);
-  if(!lease) return {status:'overlap_skipped'};
+  if(env.RADAR_ENABLED!=='1')return {status:'disabled'};
+  if(!env.RADAR_DB||!env.GOOGLE_SERVICE_ACCOUNT_JSON||!env.VACATURE_REGISTER_ID||!env.RADAR_RESULT_ID)
+    throw new Error('Missing required Worker bindings or secrets');
+  const lease=await lock(env.RADAR_DB);
+  if(!lease)return {status:'overlap_skipped'};
   try{
-    const start=new Date().toISOString(),runId='cloudflare-'+start;
-    const token=await getGoogleToken(env);
-    const [registry,vacancies,applications]=await getRanges(env.VACATURE_REGISTER_ID,[
-      "'Bronnen'!A1:M","'Vacatures'!A1:J","'Applications'!A1:E"
+    const start=new Date().toISOString(),runId='cloudflare-'+start,token=await accessToken(env);
+    const [sourcesRows,vacancyRows,applicationRows,eventRows]=await readRanges(env.VACATURE_REGISTER_ID,[
+      "'Bronnen'!A1:M","'Vacatures'!A1:H","'Applications'!A1:E","'ApplicationEvents'!A1:F"
     ],token);
-    const [radarKeys,radarLinks]=await getRanges(env.RADAR_RESULT_ID,[
-      "'Nieuwe vacatures'!A1:A","'Nieuwe vacatures'!F1:F"
+    const [keyRows,urlRows,statusRows,actionRows]=await readRanges(env.RADAR_RESULT_ID,[
+      "'Nieuwe vacatures'!A1:A","'Nieuwe vacatures'!F1:F",
+      "'Nieuwe vacatures'!N1:N","'Nieuwe vacatures'!R1:R"
     ],token);
-    const alreadyInSheet=new Set(radarKeys.slice(1).map(r=>r[0]).filter(Boolean));
-    const sheetLinks=new Set(radarLinks.slice(1).map(r=>canonicalUrl(r[0])).filter(Boolean));
-    const appliedOrKnown=registerKnown(vacancies,applications);
-    const statuses=new Map(registry.slice(1).filter(r=>r[0]).map(r=>[r[0],r[12]]));
-    const sources=PILOT_SOURCES.filter(s=>statuses.get(s.source_id)==='active'&&statuses.get(s.employer_source_id)==='active');
-    if(!sources.length) throw new Error('No active source and employer pairs');
-    const metrics={sources:0,observations:0,seeded:0,delivered:0,excluded:0,errors:[]};
-    for(const source of sources) {
-      const instance=source.source_id+':'+source.account;
-      let jobs;
-      try{jobs=await getPublicJobs(source);}
-      catch(error){metrics.errors.push(instance+': '+String(error.message).slice(0,100));continue;}
-      const previous=await env.RADAR_DB.prepare('SELECT value FROM radar_metadata WHERE name=?').bind('seeded:'+instance).first();
-      const bootstrap=!previous;
-      const oldKeys=await existingJobKeys(env.RADAR_DB,jobs);
-      const created=[];
-      for(const job of jobs){
-        if(oldKeys.has(job.identity)) continue;
-        const known=appliedOrKnown.has(job.url)||sheetLinks.has(job.url)||alreadyInSheet.has(job.identity);
-        if(known)metrics.excluded++;
-        const status=bootstrap?'baseline':known?'excluded':'pending';
-        created.push({...job,source_instance:instance,status,first_seen_at:start,row:toRadarRow(job,start,runId)});
+    assertSheetHeaders(sourcesRows,vacancyRows,applicationRows,eventRows,keyRows,urlRows,statusRows,actionRows);
+    const register=buildRegisterIndex(vacancyRows,applicationRows,eventRows);
+    const radar=rowInfo(keyRows,urlRows,statusRows,actionRows);
+    const metrics={sources:0,observations:0,known:0,applied:0,skipped:0,delivered:0,errors:[]};
+    // Reconcile pre-existing rows after the user submits an application later.
+    const changes=reconcileApplied(radar.records,register);
+    if(changes.length)await updateCells(env.RADAR_RESULT_ID,changes,token);
+    const active=PILOT_SOURCES.filter(source=>sourceActive(sourcesRows,source));
+    if(!active.length)throw new Error('No active ATS+employer source pairs');
+    // One bounded direct source per minute: each of 3 healthy sources every 3 minutes.
+    const source=chooseSource(active,Math.floor(Date.now()/60000));
+    const instance=source.source_id+':'+source.account;
+    const cooldown=await getMeta(env.RADAR_DB,'cooldown:'+instance);
+    if(cooldown&&Date.parse(cooldown)>Date.now()){
+      metrics.skipped++;
+    }else{
+      try{
+        const all=await publicJobs(source);
+        const now=new Date().toISOString();
+        const already=await existingKeys(env.RADAR_DB,all);
+        const bootstrap=!(await getMeta(env.RADAR_DB,'seeded:'+instance));
+        const fresh=[];
+        for(const job of all){
+          if(already.has(job.identity))continue;
+          const prev=matchRegister(job,register);
+          const sameRadar=radar.listed.has(job.identity)||
+            strongRoleKeys(job.url).some(key=>radar.strongURLs.has(key));
+          // Only job-role candidates from title receive radar alerts, not all developer roles.
+          const relevant=preliminaryInterest(job);
+          if(prev.applied)metrics.applied++;
+          if(prev.known||sameRadar)metrics.known++;
+          const status=bootstrap?'baseline':prev.applied||prev.known||sameRadar||!relevant?'excluded':'pending';
+          fresh.push({...job,source_instance:instance,status,first_seen_at:now,row:toRadarRow(job,now,runId)});
+        }
+        await insertJobs(env.RADAR_DB,fresh);
+        // Only acknowledge a successfully ingested source; do not bootstrap after an API failure.
+        if(bootstrap)await putMeta(env.RADAR_DB,'seeded:'+instance,now);
+        await putMeta(env.RADAR_DB,'failures:'+instance,0);
+        await putMeta(env.RADAR_DB,'cooldown:'+instance,'1970-01-01T00:00:00.000Z');
+        metrics.sources=1;
+        metrics.observations=all.length;
+        if(bootstrap)metrics.skipped+=fresh.length;
+      }catch(error){
+        const previous=Number(await getMeta(env.RADAR_DB,'failures:'+instance)||0);
+        const failures=Math.min(50,previous+1);
+        const delay=cooldownMinutes(failures,error.status,Number(error.retryAfterSeconds));
+        await putMeta(env.RADAR_DB,'failures:'+instance,failures);
+        await putMeta(env.RADAR_DB,'cooldown:'+instance,new Date(Date.now()+delay*60000).toISOString());
+        metrics.errors.push(instance+': '+String(error.message).slice(0,110));
       }
-      await insertObservations(env.RADAR_DB,created);
-      if(bootstrap){
-        await env.RADAR_DB.prepare('INSERT OR IGNORE INTO radar_metadata(name,value) VALUES (?,?)').bind('seeded:'+instance,start).run();
-        metrics.seeded+=created.length;
-      }
-      metrics.sources++;
-      metrics.observations+=jobs.length;
     }
-    // At-least-once durable outbox. Confirm existing sheet rows on retry before any append.
-    const pending=await env.RADAR_DB.prepare('SELECT identity,canonical_url,payload_json FROM radar_observations WHERE status=? ORDER BY first_seen_at LIMIT ?').bind('pending',OUTBOX_BATCH).all();
-    const exclude=[],append=[],plannedUrls=new Set();
-    for(const item of pending.results||[]){
-      if(alreadyInSheet.has(item.identity)||sheetLinks.has(item.canonical_url)||appliedOrKnown.has(item.canonical_url)||plannedUrls.has(item.canonical_url)){
-        exclude.push(item.identity); continue;
+    // Durable outbox; retry after errors. Readback-before-append prevents duplicate delivery.
+    const pending=await pendingEntries(env.RADAR_DB);
+    const duplicates=[],delivered=[],append=[],planned=new Set();
+    for(const entry of pending){
+      const url=canonicalUrl(entry.canonical_url);
+      if(radar.listed.has(entry.identity)){
+        delivered.push(entry.identity);continue;
       }
-      append.push(item); plannedUrls.add(item.canonical_url);
+      const reg=matchRegister(JSON.parse(entry.payload_json).reduce?
+        JSON.parse(entry.payload_json):{url,source_url:url},register);
+      const strong=strongRoleKeys(url);
+      if(reg.applied||reg.known||strong.some(key=>radar.strongURLs.has(key)||planned.has(key))){
+        duplicates.push(entry.identity);
+        continue;
+      }
+      append.push(entry);
+      for(const key of strong)planned.add(key);
     }
-    if(exclude.length) await setStatuses(env.RADAR_DB,exclude,'excluded');
+    if(delivered.length)await setStatus(env.RADAR_DB,delivered,'delivered');
+    if(duplicates.length)await setStatus(env.RADAR_DB,duplicates,'excluded');
     if(append.length){
-      await appendRows(env.RADAR_RESULT_ID,"'Nieuwe vacatures'!A:U",append.map(item=>JSON.parse(item.payload_json)),token);
-      await setStatuses(env.RADAR_DB,append.map(item=>item.identity),'delivered');
+      const values=append.map(entry=>JSON.parse(entry.payload_json));
+      await appendRows(env.RADAR_RESULT_ID,"'Nieuwe vacatures'!A:U",values,token);
+      await setStatus(env.RADAR_DB,append.map(entry=>entry.identity),'delivered');
       metrics.delivered=append.length;
     }
-    const completed=new Date().toISOString();
-    if(new Date(start).getUTCMinutes()===0||metrics.errors.length||metrics.delivered){
-      await appendRows(env.RADAR_RESULT_ID,'Runs!A:L',[[runId,start,completed,metrics.sources,metrics.observations,metrics.delivered,0,metrics.excluded,metrics.seeded,metrics.errors.length,metrics.errors.length?'partial':'ok',metrics.errors.join('; ').slice(0,500)]],token);
+    const end=new Date().toISOString();
+    // Bounded reporting: hourly heartbeat and every material event/failure.
+    if(new Date(start).getUTCMinutes()===0||changes.length||metrics.errors.length||metrics.delivered){
+      await appendRows(env.RADAR_RESULT_ID,'Runs!A:L',[runStatsRow(runId,start,end,metrics)],token);
     }
-    return {status:metrics.errors.length?'partial':'ok',sources:metrics.sources,new_records:metrics.delivered,errors:metrics.errors.length};
-  } finally {
-    await releaseLock(env.RADAR_DB,lease);
-  }
+    return {status:metrics.errors.length?'partial':'ok',sources:metrics.sources,new_records:metrics.delivered,
+      applied_reconciled:changes.filter(x=>x.range.includes('!N')).length,errors:metrics.errors.length};
+  }finally{await unlock(env.RADAR_DB,lease);}
 }
-export default {
-  async scheduled(_event,env,ctx) {
-    ctx.waitUntil(tick(env).then(result=>console.log(JSON.stringify(result))).catch(error=>{
-      console.error('vacature_radar_tick_failed:'+String(error.message).slice(0,160));
+export default{
+  async scheduled(_event,env,ctx){
+    ctx.waitUntil(tick(env).then(outcome=>console.log(JSON.stringify(outcome))).catch(error=>{
+      console.error('vacature_radar_poll_failed:'+String(error.message).slice(0,150));
       throw error;
     }));
   },
