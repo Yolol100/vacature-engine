@@ -120,6 +120,7 @@ test('bootstrap, role dedupe, subsequent application and API cooldown',async()=>
     events.push(['e-new','vnew','','submitted','','submitted']);
     const changed=await tick(env);
     assert.equal(changed.applied_reconciled,1);
+    assert.equal(logs.at(-1)?.[7],1,'later confirmed application must be counted in historical applications');
     assert.equal(results[0][13],'eerder_gesolliciteerd');
     assert.equal(results[0][17],'niet_opnieuw_aanbevelen');
     phase=3;
