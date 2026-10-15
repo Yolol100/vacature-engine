@@ -225,6 +225,8 @@ export async function tick(env){
         const now=new Date().toISOString();
         const already=await existingKeys(env.RADAR_DB,all);
         const bootstrap=!(await getMeta(env.RADAR_DB,'seeded:'+instance));
+        // A transient empty first response must not seed a baseline and turn recovered old jobs into fake new alerts.
+        if(bootstrap&&all.length===0)throw new Error('Empty first ATS snapshot: baseline remains unconfirmed');
         const fresh=[];
         for(const job of all){
           if(already.has(job.identity))continue;
