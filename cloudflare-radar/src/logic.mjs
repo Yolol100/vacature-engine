@@ -132,8 +132,10 @@ export function isValidJob(job){
   const expectedTenant=String(job.source_account||'').toLowerCase();
   if(!expectedTenant||parts[0]?.toLowerCase()!==expectedTenant)return false;
   if(job.source_id==='greenhouse')return (host==='boards.greenhouse.io'||host==='job-boards.greenhouse.io')&&
-    (parts.length>=2&&(parts[1]==='jobs'?parts.length>=3:true));
-  if(job.source_id==='lever')return (host==='jobs.lever.co'||host==='jobs.eu.lever.co')&&parts.length>=2;
+    parts[1]==='jobs'&&parts.length>=3&&
+    parts[2].toLowerCase()===String(job.source_job_id).toLowerCase();
+  if(job.source_id==='lever')return (host==='jobs.lever.co'||host==='jobs.eu.lever.co')&&
+    parts.length>=2&&parts[1].toLowerCase()===String(job.source_job_id).toLowerCase();
   if(job.source_id==='ashby')return host==='jobs.ashbyhq.com'&&parts.length>=2;
   return false;
 }
