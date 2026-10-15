@@ -127,7 +127,7 @@ test('bootstrap, role dedupe, subsequent application and API cooldown',async()=>
     assert.ok(Date.parse(db.meta.get('cooldown:lever:kinsta'))>Date.now()+14*60000);
     assert.equal((await tick(env)).errors,0,'cooldown skips source fetch');
     assert.ok(db.maxBindings<=100);
-    assert.ok(logs.some(row=>row[5]===1&&row[6]===2&&row[7]===1),'correct Runs counters');
+    assert.ok(logs.some(row=>row[5]===1&&row[6]===1&&row[7]===1),'correct disjoint Runs counters');
     assert.equal(db.meta.get('exclusive_poll_lease'),'1970-01-01T00:00:00.000Z');
   }finally{globalThis.fetch=saved;}
 });
