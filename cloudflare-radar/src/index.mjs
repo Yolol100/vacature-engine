@@ -284,7 +284,7 @@ export async function tick(env){
     if(new Date(start).getUTCMinutes()===0||changes.length||metrics.errors.length||metrics.delivered){
       await appendRows(env.RADAR_RESULT_ID,'Runs!A:L',[runStatsRow(runId,start,end,metrics)],token);
     }
-    return {status:metrics.errors.length?'partial':'ok',sources:metrics.sources,new_records:metrics.delivered,
+    return {status:metrics.errors.length?'partial':metrics.sources===0?'cooldown':'ok',sources:metrics.sources,new_records:metrics.delivered,
       applied_reconciled:changes.filter(x=>x.range.includes('!N')).length,errors:metrics.errors.length};
   }finally{await unlock(env.RADAR_DB,lease);}
 }
