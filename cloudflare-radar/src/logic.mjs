@@ -144,5 +144,5 @@ export function cooldownMinutes(failures,httpStatus,retryAfterSeconds){
   return Math.min(525600,Math.max(baseline,hinted));
 }
 export function runStatsRow(runId,start,end,m){
-  return [runId,start,end,m.sources,m.observations,m.delivered,m.known,m.applied,m.skipped,m.errors.length,m.errors.length?'partial':'ok',m.errors.join('; ').slice(0,500)];
+  return [runId,start,end,m.sources,m.observations,m.delivered,m.known,m.applied,m.skipped,m.errors.length,m.errors.length?'partial':m.sources===0?'cooldown':'ok',m.errors.join('; ').slice(0,500)];
 }
