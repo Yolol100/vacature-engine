@@ -134,3 +134,30 @@ test('bootstrap, role dedupe, subsequent application and API cooldown',async()=>
 test('disabled worker does not access storage/network',async()=>{
   assert.deepEqual(await tick({RADAR_ENABLED:'0'}),{status:'disabled'});
 });
+
+
+test('160 job source stays within free D1 query and SQL binding limits', async()=>{
+  const saved=globalThis.fetch, db=new FakeD1();
+  const jobs=Array.from({length:160},(_,i)=>mkjob('load-'+i));
+  globalThis.fetch=async(input,options={})=>{
+    const url=String(input);
+    if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'mock-token',expires_in:3600});
+    if(url.includes('/values:batchGet')&&url.includes('register-demo'))
+      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+    if(url.includes('/values:batchGet')&&url.includes('radar-demo'))
+      return Response.json({valueRanges:[{values:[['observation_key']]},{values:[['officiele_url']]},{values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
+    if(url.includes('api.lever.co/v0/postings/kinsta'))return Response.json(jobs);
+    if(url.includes('Runs!')&&url.includes(':append'))
+      return Response.json({updates:{updatedRows:JSON.parse(options.body).values.length}});
+    throw new Error('Unexpected capacity test request: '+url);
+  };
+  try{
+    const result=await tick({RADAR_ENABLED:'1',RADAR_DB:db,
+      GOOGLE_SERVICE_ACCOUNT_JSON:JSON.stringify({client_email:'test@example.org',private_key:privateKey}),
+      VACATURE_REGISTER_ID:'register-demo',RADAR_RESULT_ID:'radar-demo'});
+    assert.equal(result.new_records,0);
+    assert.equal(db.observations.size,160);
+    assert.ok(db.maxBindings<=100,'D1 supports maximum 100 SQL bound params');
+    assert.ok(db.statements<=50,'D1 Free supports maximum 50 queries per Worker execution');
+  }finally{globalThis.fetch=saved;}
+});
