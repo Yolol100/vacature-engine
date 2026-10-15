@@ -159,7 +159,9 @@ async function publicJobs(source){
   if(body.length>2_000_000)throw new Error('Source payload too large');
   const items=normalizeJobs(source,JSON.parse(body));
   if(items.length>MAX_SOURCE_JOBS)throw new Error('Source exceeds safe job limit');
-  return items.filter(isValidJob);
+  const valid=items.filter(isValidJob);
+  if(valid.length!==items.length)throw new Error('Unexpected ATS job host: source contract changed');
+  return valid;
 }
 function rowInfo(keyRows,urlRows,statusRows,actionRows){
   const listed=new Set(),strongURLs=new Set(),records=[];
@@ -176,13 +178,12 @@ function reconcileApplied(records,regIndex){
   for(const row of records){
     if(!row.url||count>=MAX_RECONCILIATIONS)continue;
     if(!strongRoleKeys(row.url).some(key=>regIndex.applied.has(key)))continue;
-    if(row.status!=='eerder_gesolliciteerd'){
-      changes.push({range:"'Nieuwe vacatures'!N"+row.row,value:'eerder_gesolliciteerd'});
-      count++;
-    }
-    if(row.action!=='niet_opnieuw_aanbevelen'){
-      changes.push({range:"'Nieuwe vacatures'!R"+row.row,value:'niet_opnieuw_aanbevelen'});
-    }
+    const needsStatus=row.status!=='eerder_gesolliciteerd';
+    const needsAction=row.action!=='niet_opnieuw_aanbevelen';
+    if(!needsStatus&&!needsAction)continue;
+    if(needsStatus)changes.push({range:"'Nieuwe vacatures'!N"+row.row,value:'eerder_gesolliciteerd'});
+    if(needsAction)changes.push({range:"'Nieuwe vacatures'!R"+row.row,value:'niet_opnieuw_aanbevelen'});
+    count++;
   }
   return changes;
 }
@@ -231,7 +232,7 @@ export async function tick(env){
           // Only job-role candidates from title receive radar alerts, not all developer roles.
           const relevant=preliminaryInterest(job);
           if(prev.applied)metrics.applied++;
-          if(prev.known||sameRadar)metrics.known++;
+          else if(prev.known||sameRadar)metrics.known++;
           const status=bootstrap?'baseline':prev.applied||prev.known||sameRadar||!relevant?'excluded':'pending';
           fresh.push({...job,source_instance:instance,status,first_seen_at:now,row:toRadarRow(job,now,runId)});
         }
