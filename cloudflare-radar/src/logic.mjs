@@ -141,7 +141,7 @@ export function chooseSource(sources,minuteIndex){return sources.length?sources[
 export function cooldownMinutes(failures,httpStatus,retryAfterSeconds){
   const baseline=httpStatus===429?15:Math.min(60,3*2**Math.min(6,Math.max(0,failures-1)));
   const hinted=Number.isFinite(retryAfterSeconds)?Math.ceil(Math.max(0,retryAfterSeconds)/60):0;
-  return Math.min(1440,Math.max(baseline,hinted));
+  return Math.min(525600,Math.max(baseline,hinted));
 }
 export function runStatsRow(runId,start,end,m){
   return [runId,start,end,m.sources,m.observations,m.delivered,m.known,m.applied,m.skipped,m.errors.length,m.errors.length?'partial':'ok',m.errors.join('; ').slice(0,500)];
