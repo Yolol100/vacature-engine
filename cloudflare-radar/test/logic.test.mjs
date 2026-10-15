@@ -73,6 +73,7 @@ test('failures and rate limits receive deterministic backoff',()=>{
   assert.equal(cooldownMinutes(1,503,undefined),3);
   assert.equal(cooldownMinutes(2,503,undefined),6);
   assert.equal(cooldownMinutes(1,429,1800),30);
+  assert.equal(cooldownMinutes(1,429,172800),2880,'honor 48-hour Retry-After from source');
 });
 test('runs metrics align to all 12 column headers, including corrected counters',()=>{
   const row=runStatsRow('rid','a','b',{sources:1,observations:21,delivered:2,known:3,applied:4,skipped:5,errors:['bad']});
