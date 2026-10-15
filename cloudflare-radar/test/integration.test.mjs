@@ -302,3 +302,39 @@ test('pending outbox from blocked source is never published as a new radar job',
     assert.equal(db.observations.get(key).status,'excluded');
   }finally{globalThis.fetch=savedFetch;}
 });
+
+
+test('empty first ATS response cannot seed baseline and mislabel recovered vacancies',async()=>{
+  const originalFetch=globalThis.fetch, db=new FakeD1(), emitted=[];
+  let empty=true;
+  globalThis.fetch=async(input,options={})=>{
+    const url=String(input);
+    if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'mock-token',expires_in:3600});
+    if(url.includes('/values:batchGet')&&url.includes('register-demo'))return Response.json({valueRanges:[
+      {values:registry},{values:vacancies},{values:applications},{values:events}]});
+    if(url.includes('/values:batchGet')&&url.includes('radar-demo'))return Response.json({valueRanges:[
+      {values:[['observation_key']]},{values:[['officiele_url']]},
+      {values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
+    if(url.includes('api.lever.co/v0/postings/kinsta'))return Response.json(empty?[]:[mkjob('returned-original')]);
+    if(url.includes(':append')){
+      const records=JSON.parse(options.body).values;
+      if(url.includes('Nieuwe%20vacatures'))emitted.push(...records);
+      return Response.json({updates:{updatedRows:records.length}});
+    }
+    throw new Error('Unexpected transport '+url);
+  };
+  try{
+    const env={RADAR_ENABLED:'1',RADAR_DB:db,
+      GOOGLE_SERVICE_ACCOUNT_JSON:JSON.stringify({client_email:'test@example.org',private_key:privateKey}),
+      VACATURE_REGISTER_ID:'register-demo',RADAR_RESULT_ID:'radar-demo'};
+    const first=await tick(env);
+    assert.equal(first.status,'partial','an untrusted empty initial response must raise a recoverable error');
+    assert.equal(db.meta.has('seeded:lever:kinsta'),false);
+    empty=false;
+    db.meta.set('cooldown:lever:kinsta','1970-01-01T00:00:00.000Z');
+    const recovered=await tick(env);
+    assert.equal(recovered.new_records,0,'reappearing original positions must not alert as newly published');
+    assert.equal(db.observations.get('lever:kinsta:returned-original').status,'baseline');
+    assert.equal(emitted.length,0);
+  }finally{globalThis.fetch=originalFetch;}
+});
