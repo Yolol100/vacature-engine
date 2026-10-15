@@ -267,3 +267,38 @@ test('schema corruption does not initialize baseline or generate false new jobs'
     assert.equal(updates.length,0);
   }finally{globalThis.fetch=original;}
 });
+
+
+test('pending outbox from blocked source is never published as a new radar job',async()=>{
+  const savedFetch=globalThis.fetch,db=new FakeD1(),resultRows=[];
+  const key='ashby:zapier:role-123',url='https://jobs.ashbyhq.com/zapier/role-123';
+  db.observations.set(key,{identity:key,source_instance:'ashby:zapier',canonical_url:url,
+    status:'pending',payload_json:JSON.stringify([key,'ashby','role-123','Zapier','Web Developer',url,url,
+      'Remote','EMEA','','','2026-10-15T19:00:00Z','2026-10-15T19:00:00Z',
+      'onbekend','ontdekt','onbekend','niet_beoordeeld','officiele_verificatie_nodig','','','old-run']),
+    first_seen_at:'2026-10-15T19:00:00Z'});
+  globalThis.fetch=async(input,options={})=>{
+    const request=String(input);
+    if(request==='https://oauth2.googleapis.com/token')return Response.json({access_token:'fake-token',expires_in:3600});
+    if(request.includes('/values:batchGet')&&request.includes('register-demo'))
+      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+    if(request.includes('/values:batchGet')&&request.includes('radar-demo'))
+      return Response.json({valueRanges:[{values:[['observation_key']]},{values:[['officiele_url']]},
+        {values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
+    if(request.includes('api.lever.co/v0/postings/kinsta'))return Response.json([]);
+    if(request.includes(':append')){
+      const batch=JSON.parse(options.body).values;
+      if(request.includes('Nieuwe%20vacatures'))resultRows.push(...batch);
+      return Response.json({updates:{updatedRows:batch.length}});
+    }
+    throw new Error('Unexpected transport: '+request);
+  };
+  try{
+    const outcome=await tick({RADAR_ENABLED:'1',RADAR_DB:db,
+      GOOGLE_SERVICE_ACCOUNT_JSON:JSON.stringify({client_email:'service@example.org',private_key:privateKey}),
+      VACATURE_REGISTER_ID:'register-demo',RADAR_RESULT_ID:'radar-demo'});
+    assert.equal(outcome.new_records,0);
+    assert.equal(resultRows.length,0,'a blocked source cannot leak pending records into the radar');
+    assert.equal(db.observations.get(key).status,'excluded');
+  }finally{globalThis.fetch=savedFetch;}
+});
