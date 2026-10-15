@@ -88,7 +88,7 @@ function assertSheetHeaders(registry,vacancies,applications,events,keys,urls,sta
 }
 function params(n){return Array.from({length:n},()=>'?').join(',');}
 async function pendingEntries(db){
-  return (await db.prepare('SELECT identity,canonical_url,payload_json FROM radar_observations WHERE status=? ORDER BY first_seen_at LIMIT ?')
+  return (await db.prepare('SELECT identity,canonical_url,payload_json,source_instance FROM radar_observations WHERE status=? ORDER BY first_seen_at LIMIT ?')
     .bind('pending',OUTBOX_SIZE).all()).results||[];
 }
 async function existingKeys(db,jobs){
@@ -211,6 +211,7 @@ export async function tick(env){
     metrics.applied += changes.filter(item=>item.range.startsWith("'Nieuwe vacatures'!N")).length;
     if(changes.length)await updateCells(env.RADAR_RESULT_ID,changes,token);
     const active=PILOT_SOURCES.filter(source=>sourceActive(sourcesRows,source));
+    const activeInstances=new Set(active.map(source=>source.source_id+':'+source.account));
     if(!active.length)throw new Error('No active ATS+employer source pairs');
     // One bounded direct source per minute: each of 3 healthy sources every 3 minutes.
     const source=chooseSource(active,Math.floor(Date.now()/60000));
@@ -258,6 +259,10 @@ export async function tick(env){
     const pending=await pendingEntries(env.RADAR_DB);
     const duplicates=[],delivered=[],append=[],planned=new Set();
     for(const entry of pending){
+      if(!activeInstances.has(entry.source_instance)){
+        duplicates.push(entry.identity);
+        continue;
+      }
       const url=canonicalUrl(entry.canonical_url);
       if(radar.listed.has(entry.identity)){
         delivered.push(entry.identity);continue;
