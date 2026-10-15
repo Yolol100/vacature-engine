@@ -162,3 +162,51 @@ test('160 job source stays within free D1 query and SQL binding limits', async()
     assert.ok(db.statements<=50,'D1 Free supports maximum 50 queries per Worker execution');
   }finally{globalThis.fetch=saved;}
 });
+
+
+test('ambiguous Sheets append outcome is reconciled without a second vacancy row',async()=>{
+  const previousFetch=globalThis.fetch, db=new FakeD1(), rows=[];
+  let phase=0,dropResponse=true;
+  globalThis.fetch=async(input,options={})=>{
+    const url=String(input);
+    if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'mock-token',expires_in:3600});
+    if(url.includes('/values:batchGet')&&url.includes('register-demo')){
+      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+    }
+    if(url.includes('/values:batchGet')&&url.includes('radar-demo')){
+      return Response.json({valueRanges:[
+        {values:[['observation_key'],...rows.map(r=>[r[0]])]},
+        {values:[['officiele_url'],...rows.map(r=>[r[5]])]},
+        {values:[['sollicitatiehistorie'],...rows.map(r=>[r[13]])]},
+        {values:[['actie'],...rows.map(r=>[r[17]])]}
+      ]});
+    }
+    if(url.includes('api.lever.co/v0/postings/kinsta')){
+      return Response.json(phase===0?[mkjob('historical')]:[mkjob('historical'),mkjob('recovery')]);
+    }
+    if(url.includes(':append')){
+      const values=JSON.parse(options.body).values;
+      if(url.includes('Nieuwe%20vacatures')){
+        rows.push(...values); // The server committed the append.
+        if(dropResponse){dropResponse=false;throw new Error('connection lost after server append');}
+      }else if(!url.includes('Runs!'))throw new Error('unknown Sheets range');
+      return Response.json({updates:{updatedRows:values.length}});
+    }
+    throw new Error('unknown mock transport: '+url);
+  };
+  try{
+    const env={RADAR_ENABLED:'1',RADAR_DB:db,
+      GOOGLE_SERVICE_ACCOUNT_JSON:JSON.stringify({client_email:'fake@example.org',private_key:privateKey}),
+      VACATURE_REGISTER_ID:'register-demo',RADAR_RESULT_ID:'radar-demo'};
+    assert.equal((await tick(env)).new_records,0);
+    phase=1;
+    await assert.rejects(tick(env),/connection lost after server append/);
+    assert.equal(rows.length,1,'first Sheets append landed despite lost response');
+    assert.equal(db.observations.get('lever:kinsta:recovery').status,'pending');
+    const outcome=await tick(env);
+    assert.equal(outcome.new_records,0,'retry must not append a second row');
+    assert.equal(rows.length,1);
+    assert.equal(db.observations.get('lever:kinsta:recovery').status,'delivered');
+    assert.equal(db.meta.get('exclusive_poll_lease'),'1970-01-01T00:00:00.000Z');
+  }finally{globalThis.fetch=previousFetch;}
+});
