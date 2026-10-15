@@ -63,3 +63,17 @@ test('Never persist URL credentials, non-HTTPS or malformed job URLs',()=>{
     assert.equal(canonicalUrl(raw),'');
   }
 });
+
+
+test('reject mismatched provider job IDs even on the right ATS tenant',()=>{
+  const lever=sample(PILOT_SOURCES[1],{
+    id:'expected',text:'WordPress Developer',
+    hostedUrl:'https://jobs.lever.co/kinsta/different'
+  });
+  assert.equal(isValidJob(lever),false,'Lever URL points to a different job than provider ID');
+  const greenhouse=sample(PILOT_SOURCES[0],{
+    id:123,title:'Web Developer',
+    absolute_url:'https://job-boards.greenhouse.io/automatticcareers/jobs/999'
+  });
+  assert.equal(isValidJob(greenhouse),false,'Greenhouse URL points to a different job than provider ID');
+});
