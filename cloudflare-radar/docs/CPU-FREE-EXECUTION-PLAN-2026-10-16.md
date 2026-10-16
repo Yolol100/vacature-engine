@@ -94,3 +94,10 @@ Prior private test on 2026-10-16T17:54:06Z measured **13 ms CPU** in the optimiz
 Next minimal, separate patch: when `ops.splitBootstrap` is enabled in the dual-gated review-only scheduled handler, the **first Cron invocation only atomically creates the D1 cycle control** and returns `initialized`. The next scheduled invocation (one minute later) runs the unchanged `source_gate` including Google OAuth and live Bronnen source policy. No secrets/tokens are saved in D1 and no additional scheduler is added. A crash or overlap is governed by the same existing atomic control and two-minute stage claim lease. Nine policy phases remain unchanged; the D1 pre-step is not counted as one of the nine.
 
 Tests must verify zero Google calls on initialization, exactly one source scan on the following Cron, and fail-closed concurrent initialization. This is **CPU hypothesis only**: measure the standalone bootstrap and next source gate through Cloudflare `$workers.cpuTimeMs` with production gates disabled. Fail any >=10ms or invalid source and rollback the private test. No GO or Sheet/application operations without full nine-phase CPU and fresh-history proofs.
+
+
+## Final adaptive plan revision — 16-row pages / indexed one-query aggregation
+
+Previous 64-row and 32-row canaries both exceeded the strict Free safety target in at least one real Cron invocation (11ms and 10ms respectively). The next bounded test candidate is **16 rows per history invocation**; a safe D1 `IN` lookup uses <=96 parameters in **one** indexed SQL query for the maximum 1,536-row history, respecting the 50 D1 subrequest and 100 binding constraints. Only the review-only TTL is extended to 135 minutes to cover possible 96 pages without silently omitting data. This is not acceptable as a publish-time snapshot: revalidate authoritative Bronnen/Applications before any future delivery.
+
+Required acceptance remains staged: green 1,536-row and corrupted-page tests, full CI/CodeQL/Wrangler; strict replay/rollback; full private CPU measurement for all nine phases; repeated cold/warm samples with enough CPU reserve; unchanged 26 D1 baselines and empty Radar output. Otherwise NO-GO.

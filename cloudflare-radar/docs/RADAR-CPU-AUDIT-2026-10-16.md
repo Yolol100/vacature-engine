@@ -78,3 +78,12 @@ De stop- en rollbackgate is uitgevoerd: 18:41:37 D1-permit weg; alle zeven tijde
 **Open CPU-work (hard):** reduceer geschiedenis naar maximaal **16 rijen per Cron**, controleer duur/capaciteit en optimaliseer de latere paginaconcentratie tot één begrensde `SELECT ... IN (?,...)`-query (PR #117). De resterende procesfasen `application_rows`, `event_rows`, `application_index`, `radar_history`, `official_ats`, `candidate_screen` en `review_only` zijn **niet live in deze cyclus bereikt**. De eindstatus blijft expliciet **BLOCKED/NO-GO voor Free-budgetvrijgave**, ook bij groene functionele tests.
 
 De bijgevoegde 353-rijen integratietest blijft na het verwijderen van de tijdelijke canary bestaan om toekomstige regressies aantoonbaar te stoppen.
+
+
+## Correctie na CPU-grens, versie 16-rijen (PR #118)
+
+Na de 10ms-uitvoering met 32 rijen op 18:41 UTC is de **volgende niet-automatisch geactiveerde codeversie** gewijzigd naar maximaal 16 Google-historierijen per Cron. Het blijft één bestaande Cron; de dag- en broncontroles zijn niet omzeild. Om de oorspronkelijke maximale 1.536 geschiedenislijnen volledig te blijven scannen, is uitsluitend de review-only cyclus-TTL op 135 minuten gebracht; er is een expliciete fail-closed grens boven 1.536. Dat langere interval is **niet** geschikt als atomaire bronwaarheid voor toekomstige levering, waarvoor een nieuwe live status-/sollicitatiecheck vereist is.
+
+De eindassemblage gebruikt nu één geïndexeerde `SELECT name,value ... WHERE name IN (?,...)`-query met hoogstens 96 D1-parameters in plaats van 96 losse Free-subrequests. Per pagina worden cyclus-ID, verwachte rijlengte en de volledigheid gecontroleerd; één ontbrekende pagina verhindert een review-receipt en elke ATS-call. Een nieuwe gesimuleerde maximum-capaciteitstest verifieert 1.536 rijen en één D1-assemblagequery.
+
+Dit is een functionele/budgetmatige codewijziging. **Zij bewijst nog geen echte CPU <10ms voor alle fasen.** De formele GO-poort blijft geblokkeerd totdat een volgende controle met herhaalde koud/warm-samples en alle 9 fasen (met acceptabele marge) slaagt.
