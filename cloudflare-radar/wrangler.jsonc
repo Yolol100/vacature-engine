@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "vacature-radar",
-  "main": "src/index.mjs",
+  "main": "src/review-worker.mjs",
   "compatibility_date": "2026-10-15",
   "triggers": {
     "crons": [

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import worker from '../src/index.mjs';
+import worker from '../src/review-worker.mjs';
 
 class ReadOnlyMetadata {
   constructor(){this.reads=0;}
