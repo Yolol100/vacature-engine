@@ -103,7 +103,7 @@ function harness(opts={}){
     },
     publicJobs:async source=>{
       events.push('ats:'+source.source_id+':'+source.account);
-      if(opts.atsError)throw Error('Public API HTTP 503');
+      if(opts.atsError)throw Error('Public API HTTP '+(opts.atsStatus||503));
       return jobs;
     },
     existingKeys:async(db,jobs)=>{events.push('d1-existing');return new Set(['greenhouse:automatticcareers:old']);}
@@ -164,15 +164,27 @@ test('missing header stops the cycle fail-closed; no ATS, no Sheets writes',asyn
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,0);
   assert.equal((await runStagedReview(h.env,h.ops)).status,'halted');
 });
-test('ATS failure leaves the pipeline failed, without false candidate output',async()=>{
+test('transient ATS 503 retries once after one minute, then halts safely',async()=>{
   const h=harness({atsError:true});
-  for(let i=0;i<STAGES.indexOf('official_ats');i++){await runStagedReview(h.env,h.ops);h.advance(60000);}
-  const failed=await runStagedReview(h.env,h.ops);
-  assert.equal(failed.status,'partial');
-  assert.equal(failed.reason,'Public API HTTP 503');
+  for(let i=0;i<STAGES.indexOf('official_ats');i++){
+    await runStagedReview(h.env,h.ops);h.advance(60000);
+  }
+  const first=await runStagedReview(h.env,h.ops);
+  assert.equal(first.status,'retry_scheduled');
+  assert.equal(first.reason,'Public API HTTP 503');
   assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
-  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
+  const blocked=await runStagedReview(h.env,h.ops);
+  assert.equal(blocked.status,'retry_wait');
+  h.advance(60000);
+  const second=await runStagedReview(h.env,h.ops);
+  assert.equal(second.status,'partial');
+  assert.equal(second.reason,'Public API HTTP 503');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'halted');
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,2);
 });
+
 test('expires after twelve minutes without automatic restart or delivery',async()=>{
   const h=harness();await runStagedReview(h.env,h.ops);
   h.advance(13*60000);
@@ -253,5 +265,126 @@ test('legacy v1 staged checkpoints cannot be resumed by the incompatible v2 pipe
   assert.equal(h.db.meta.get('micro:v1:control'),legacy);
   assert.equal(h.db.meta.get('micro:v1:cursor'),'1');
   assert.equal(h.db.meta.has(STAGE_CURSOR),false);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+
+test('a running stage is never retried until its lease expires',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  h.advance(60000);
+  const current=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,'running:'+current.run+':1:'+(start+60000)+':0');
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'overlap_skipped');
+  h.advance(119000);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'overlap_skipped');
+  assert.equal(h.events.filter(x=>x.startsWith('google-read')).length,1);
+});
+
+test('an interrupted phase is reclaimed exactly once without delivery',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  h.advance(60000);
+  const current=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,'running:'+current.run+':1:'+(start+60000)+':0');
+  h.advance(120001);
+  const first=await runStagedReview(h.env,h.ops);
+  assert.equal(first.status,'recovered_retry');
+  assert.equal(first.phase,'vacancy_history');
+  assert.equal((await runStagedReview(h.env,h.ops)).phase,'vacancy_history');
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+  assert.ok(h.db.writes.every(key=>key.startsWith('micro:v2:')));
+});
+
+test('a completed checkpoint is advanced instead of executed twice after crash',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  const next=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,'running:'+next.run+':0:'+start+':0');
+  h.advance(120001);
+  const recovered=await runStagedReview(h.env,h.ops);
+  assert.equal(recovered.status,'recovered_checkpoint');
+  assert.equal(recovered.phase,'source_gate');
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).phase,1);
+  assert.equal(h.events.filter(x=>x.startsWith('google-read')).length,1);
+  assert.equal((await runStagedReview(h.env,h.ops)).phase,'vacancy_history');
+});
+
+test('a second interrupted attempt halts with no unlimited replay',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  h.advance(60000);
+  const current=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,'running:'+current.run+':1:'+(start+60000)+':0');
+  h.advance(120001);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'recovered_retry');
+  h.db.meta.set(STAGE_CONTROL,'running:'+current.run+':1:'+(start+180001)+':1');
+  h.advance(120001);
+  const halted=await runStagedReview(h.env,h.ops);
+  assert.equal(halted.status,'partial');
+  assert.equal(halted.reason,'interrupted_cycle');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'halted');
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+
+test('final receipt crash can be recovered without duplicate cursor or ATS poll',async()=>{
+  const h=harness();
+  for(let i=0;i<STAGES.length;i++){
+    assert.equal((await runStagedReview(h.env,h.ops)).status,'ok');
+    h.advance(60000);
+  }
+  const result=JSON.parse(h.db.meta.get(STAGE_RECEIPT));
+  h.db.meta.set(STAGE_CURSOR,'0');
+  h.db.meta.set(STAGE_CONTROL,'running:'+result.cycle+':8:'+(start+8*60000)+':0');
+  h.advance(61000);
+  const recovered=await runStagedReview(h.env,h.ops);
+  assert.equal(recovered.status,'recovered_completed');
+  assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).status,'done');
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_RECEIPT)).review_count,1);
+});
+
+test('legacy running claims remain fail-closed and do not restart',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  const current=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,'running:'+current.run+':1');
+  h.advance(60000);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'overlap_skipped');
+  assert.equal(h.events.filter(x=>x.startsWith('google-read')).length,1);
+});
+
+test('invalid attempt counters cannot bypass the bounded retry limit',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  const c=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,JSON.stringify({...c,attempts:99}));
+  const answer=await runStagedReview(h.env,h.ops);
+  assert.equal(answer.status,'partial');
+  assert.equal(answer.reason,'invalid_control');
+  assert.equal(h.events.filter(x=>x.startsWith('google-read')).length,1);
+});
+
+test('HTTP 429 is fail-closed, without automatic replays or application writes',async()=>{
+  const h=harness({atsError:true,atsStatus:429});
+  for(let i=0;i<STAGES.indexOf('official_ats');i++){
+    await runStagedReview(h.env,h.ops);h.advance(60000);
+  }
+  const failed=await runStagedReview(h.env,h.ops);
+  assert.equal(failed.status,'partial');
+  assert.equal(failed.reason,'Public API HTTP 429');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'halted');
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+
+test('the 12-minute expiry takes precedence over a stale retry deadline',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  const state=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,JSON.stringify({
+    ...state,attempts:1,retry_after:start+50*60000,
+    expires_at:new Date(start+60000).toISOString()
+  }));
+  h.advance(120000);
+  const result=await runStagedReview(h.env,h.ops);
+  assert.equal(result.status,'partial');
+  assert.equal(result.reason,'expired_cycle');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
   assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
 });

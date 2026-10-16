@@ -15,6 +15,10 @@ export const STAGES=Object.freeze([
   'review_only'
 ]);
 const TTL_MS=12*60*1000;
+const STAGE_LEASE_MS=2*60*1000;
+const RETRY_DELAY_MS=60*1000;
+const MAX_STAGE_RETRIES=1;
+const TRANSIENT_HTTP=/^(?:Sheets read HTTP|Google OAuth HTTP|Public API HTTP) 5\d\d$/;
 const MAX_SNAPSHOT_BYTES=210000;
 const MAX_JOBS=160;
 const MAX_CANDIDATES=160;
@@ -221,16 +225,70 @@ export async function runStagedReview(env,ops={}){
   const db=env.RADAR_DB,now=ops.now?.()??Date.now();
   let raw=await getMeta(db,STAGE_CONTROL);
   let state=parse(raw);
-  // A terminated Free-tier invocation leaves a claimed stage; never rerun it.
-  // Purge temporary private snapshots after the deadline instead.
+  // A claimed stage has a two-minute lease. Recover completed snapshots,
+  // otherwise retry at most once; never overlap running invocations.
   if(raw?.startsWith('running:')){
-    const id=/^running:(cycle_(\d+)_\d+):\d+$/.exec(raw);
-    if(!id||now-Number(id[2])<=TTL_MS)return {status:'overlap_skipped',sources:0};
+    const claim=/^running:(cycle_(\d+)_(\d+)):(\d+):(\d+):(\d+)$/.exec(raw);
+    if(!claim){
+      // Old-format claims have no lease timestamp and remain fail-closed.
+      const old=/^running:(cycle_(\d+)_\d+):\d+$/.exec(raw);
+      if(!old||now-Number(old[2])<=TTL_MS)return {status:'overlap_skipped',sources:0};
+      try{
+        await clearSnapshots(db,old[1]);
+        await changeControl(db,raw,'failed:'+old[1]+':interrupted');
+      }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
+      return {status:'partial',errors:1,reason:'interrupted_cycle'};
+    }
+    const run=claim[1],started=Number(claim[2]),cursor=Number(claim[3]);
+    const phase=Number(claim[4]),claimedAt=Number(claim[5]),attempt=Number(claim[6]);
+    if(![started,cursor,phase,claimedAt,attempt].every(Number.isSafeInteger)||
+       phase>=STAGES.length||attempt>MAX_STAGE_RETRIES||claimedAt<started||
+       now<claimedAt)return {status:'partial',errors:1,reason:'invalid_control'};
+    if(now-claimedAt<STAGE_LEASE_MS)return {status:'overlap_skipped',sources:0};
     try{
-      await clearSnapshots(db,id[1]);
-      await changeControl(db,raw,'failed:'+id[1]+':interrupted');
+      if(now-started>TTL_MS){
+        await clearSnapshots(db,run);
+        await changeControl(db,raw,'failed:'+run+':expired');
+        return {status:'partial',errors:1,reason:'expired_cycle'};
+      }
+      const phaseName=STAGES[phase];
+      if(phaseName==='review_only'){
+        const receipt=parse(await getMeta(db,STAGE_RECEIPT));
+        if(receipt?.cycle===run&&receipt.status==='review_ready'&&
+           receipt.manual_review_required===true&&
+           receipt.google_sheet_rows_written===0&&receipt.application_submissions===0){
+          // Idempotently finish an already persisted review receipt.
+          await db.prepare('INSERT INTO radar_metadata(name,value) VALUES(?,?) ON CONFLICT(name) DO UPDATE SET value=excluded.value')
+            .bind(STAGE_CURSOR,String(cursor+1)).run();
+          await clearSnapshots(db,run);
+          await changeControl(db,raw,JSON.stringify({
+            status:'done',version:2,run,finished_at:new Date(now).toISOString(),
+            source:receipt.source,review_count:receipt.review_count
+          }));
+          return {status:'recovered_completed',sources:0,phase:phaseName};
+        }
+      }else{
+        const snapshot=parse(await getMeta(db,snapshotName(run,phaseName)));
+        if(snapshot?.cycle===run&&snapshot.data){
+          // A crash after writing the checkpoint must not execute the stage twice.
+          await changeControl(db,raw,JSON.stringify({
+            ...makeCycle(started,cursor),phase:phase+1,attempts:0
+          }));
+          return {status:'recovered_checkpoint',sources:0,phase:phaseName};
+        }
+      }
+      if(attempt<MAX_STAGE_RETRIES){
+        await changeControl(db,raw,JSON.stringify({
+          ...makeCycle(started,cursor),phase,attempts:attempt+1
+        }));
+        return {status:'recovered_retry',sources:0,phase:phaseName};
+      }
+      await clearSnapshots(db,run);
+      await putMeta(db,'micro:v2:last_failure',{cycle:run,phase:phaseName,
+        reason:'interrupted_stage',at:new Date(now).toISOString()});
+      await changeControl(db,raw,'failed:'+run+':interrupted');
+      return {status:'partial',errors:1,reason:'interrupted_cycle'};
     }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
-    return {status:'partial',errors:1,reason:'interrupted_cycle'};
   }
   if(raw?.startsWith('failed:'))return {status:'halted',sources:0};
   if(!raw||state?.status==='done'){
@@ -249,7 +307,11 @@ export async function runStagedReview(env,ops={}){
   }
   if(!state||state.version!==2||!Number.isInteger(state.phase)||
       state.phase<0||state.phase>=STAGES.length||
-      !/^cycle_\d+_\d+$/.test(state.run||''))
+      !/^cycle_\d+_\d+$/.test(state.run||'')||
+      !Number.isSafeInteger(state.attempts??0)||
+      (state.attempts??0)<0||(state.attempts??0)>MAX_STAGE_RETRIES)
+    return {status:'partial',errors:1,reason:'invalid_control'};
+  if(state.retry_after!==undefined&&!Number.isSafeInteger(state.retry_after))
     return {status:'partial',errors:1,reason:'invalid_control'};
   if(now>Date.parse(state.expires_at)||now<Date.parse(state.started_at)-1000){
     try{
@@ -258,7 +320,9 @@ export async function runStagedReview(env,ops={}){
     }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
     return {status:'partial',errors:1,reason:'expired_cycle'};
   }
-  const claim='running:'+state.run+':'+state.phase;
+  if(state.retry_after&&now<state.retry_after)
+    return {status:'retry_wait',sources:0};
+  const claim='running:'+state.run+':'+state.phase+':'+now+':'+(state.attempts||0);
   try{await changeControl(db,raw,claim);}catch{return {status:'overlap_skipped',sources:0};}
   const name=STAGES[state.phase];
   let result;
@@ -284,7 +348,7 @@ export async function runStagedReview(env,ops={}){
     const next=finished?JSON.stringify({
       status:'done',version:2,run:state.run,finished_at:new Date(now).toISOString(),
       source:result.source,review_count:result.review_count
-    }):JSON.stringify({...state,phase:state.phase+1});
+    }):JSON.stringify({...state,phase:state.phase+1,attempts:0,retry_after:undefined});
     await changeControl(db,claim,next);
     return {status:'ok',sources:name==='official_ats'?1:0,
       phase:name,phase_index:state.phase+1,total_phases:STAGES.length,
@@ -292,12 +356,21 @@ export async function runStagedReview(env,ops={}){
   }catch(error){
     const reason=saneError(error);
     try {
-      await clearSnapshots(db,state.run);
       await putMeta(db,'micro:v2:last_failure',{cycle:state.run,phase:name,reason,
         at:new Date(now).toISOString()});
+      // Only transient 5xx responses receive one delayed retry. 429, policy
+      // violations, invalid data and unknown errors halt immediately.
+      if(TRANSIENT_HTTP.test(reason)&&(state.attempts||0)<MAX_STAGE_RETRIES&&
+         now+RETRY_DELAY_MS<Date.parse(state.expires_at)){
+        await changeControl(db,claim,JSON.stringify({
+          ...state,attempts:(state.attempts||0)+1,retry_after:now+RETRY_DELAY_MS
+        }));
+        return {status:'retry_scheduled',sources:0,errors:1,reason};
+      }
+      await clearSnapshots(db,state.run);
       await changeControl(db,claim,'failed:'+state.run+':'+name);
     }catch {
-      // Leave the locked stage in place; never silently retry after partial failures.
+      // Leave the claim in place for bounded lease recovery, never unlimited retries.
     }
     return {status:'partial',sources:0,errors:1,reason};
   }
