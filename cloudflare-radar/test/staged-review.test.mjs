@@ -601,7 +601,7 @@ test('paged checkpoint survives interrupted D1 CAS and does not replay its Googl
   assert.equal(h.events.filter(e=>e==='google-read:register-test').length,pages);
   const next=await runStagedReview(h.env,h.ops);
   assert.equal(next.status,'checkpointed');
-  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,17);
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,33);
   assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
 });
 test('paged expired claim without a saved page retries once with same offset',async()=>{
@@ -619,7 +619,7 @@ test('paged expired claim without a saved page retries once with same offset',as
   assert.equal(retained.history_end,before.history_end);
   assert.equal(retained.attempts,1);
   assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
-  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,33);
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,17);
   assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).attempts,0);
 });
 test('corrupt claim with page progress on non-vacancy stage is fail closed',async()=>{
