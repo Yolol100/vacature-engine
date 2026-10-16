@@ -6,12 +6,13 @@ import {
   matchRegister,preliminaryInterest,strongRoleKeys
 } from './logic.mjs';
 
-export const STAGE_CONTROL='micro:v1:control';
-export const STAGE_RECEIPT='micro:v1:receipt';
-export const STAGE_CURSOR='micro:v1:cursor';
+export const STAGE_CONTROL='micro:v2:control';
+export const STAGE_RECEIPT='micro:v2:receipt';
+export const STAGE_CURSOR='micro:v2:cursor';
 export const STAGES=Object.freeze([
-  'source_gate','vacancy_history','application_history','radar_history',
-  'official_ats','review_only'
+  'source_gate','vacancy_history','application_rows','event_rows',
+  'application_index','radar_history','official_ats','candidate_screen',
+  'review_only'
 ]);
 const TTL_MS=12*60*1000;
 const MAX_SNAPSHOT_BYTES=210000;
@@ -43,7 +44,7 @@ async function changeControl(db,expected,next) {
 function parse(raw) {
   try {return JSON.parse(raw);} catch {return null;}
 }
-function snapshotName(cycle,step){return 'micro:v1:snapshot:'+cycle+':'+step;}
+function snapshotName(cycle,step){return 'micro:v2:snapshot:'+cycle+':'+step;}
 async function clearSnapshots(db,cycle){
   for(const stage of STAGES.slice(0,-1)){
     await db.prepare('DELETE FROM radar_metadata WHERE name=?')
@@ -53,7 +54,7 @@ async function clearSnapshots(db,cycle){
 
 function makeCycle(now,cursor) {
   return {
-    version:1,run:'cycle_'+now+'_'+cursor,phase:0,cursor,
+    version:2,run:'cycle_'+now+'_'+cursor,phase:0,cursor,
     started_at:new Date(now).toISOString(),expires_at:new Date(now+TTL_MS).toISOString()
   };
 }
@@ -107,19 +108,35 @@ async function readVacancyHistory(env,ops,cycle){
   headers(rows,[[0,'vacancy_id'],[1,'status'],[6,'canonical_url'],[7,'official_url']],'Vacature Register header mismatch');
   return {cycle,rows,read_at:new Date().toISOString()};
 }
-async function readApplicationHistory(env,ops,cycle,db){
-  const vacancy=await readStage(db,cycle,'vacancy_history');
+// Separate the expensive Google read and application dedupe into short Cron phases.
+async function readApplicationRows(env,ops,cycle){
   const token=await ops.accessToken(env);
   const chunks=await ops.readRanges(env.VACATURE_REGISTER_ID,[
-    "'Applications'!A1:A","'Applications'!C1:C","'Applications'!E1:E",
+    "'Applications'!A1:A","'Applications'!C1:C","'Applications'!E1:E"
+  ],token);
+  if(chunks.length!==3)throw new Error('Stage data malformed');
+  const rows=mergeColumns(chunks,[[0,0,1],[1,2,1],[2,4,1]]);
+  headers(rows,[[0,'vacancy_id'],[2,'status'],[4,'application_url']],'Application header mismatch');
+  return {cycle,rows,read_at:new Date().toISOString()};
+}
+async function readEventRows(env,ops,cycle){
+  const token=await ops.accessToken(env);
+  const chunks=await ops.readRanges(env.VACATURE_REGISTER_ID,[
     "'ApplicationEvents'!A1:B","'ApplicationEvents'!D1:D","'ApplicationEvents'!F1:F"
   ],token);
-  if(chunks.length!==6)throw new Error('Stage data malformed');
-  const apps=mergeColumns(chunks.slice(0,3),[[0,0,1],[1,2,1],[2,4,1]]);
-  const events=mergeColumns(chunks.slice(3),[[0,0,2],[1,3,1],[2,5,1]]);
-  headers(apps,[[0,'vacancy_id'],[2,'status'],[4,'application_url']],'Application header mismatch');
-  headers(events,[[0,'event_id'],[1,'vacancy_id'],[3,'event_type'],[5,'status_after']],'ApplicationEvents header mismatch');
-  const index=buildRegisterIndex(vacancy.rows,apps,events);
+  if(chunks.length!==3)throw new Error('Stage data malformed');
+  const rows=mergeColumns(chunks,[[0,0,2],[1,3,1],[2,5,1]]);
+  headers(rows,[[0,'event_id'],[1,'vacancy_id'],[3,'event_type'],[5,'status_after']],
+    'ApplicationEvents header mismatch');
+  return {cycle,rows,read_at:new Date().toISOString()};
+}
+async function buildApplicationIndex(db,cycle){
+  const [vacancy,application,events]=await Promise.all([
+    readStage(db,cycle,'vacancy_history'),
+    readStage(db,cycle,'application_rows'),
+    readStage(db,cycle,'event_rows')
+  ]);
+  const index=buildRegisterIndex(vacancy.rows,application.rows,events.rows);
   return {cycle,known:[...index.known],applied:[...index.applied],
     read_at:new Date().toISOString()};
 }
@@ -159,10 +176,10 @@ async function readOfficialSource(env,ops,cycle,db) {
   });
   return {cycle,source:gate.source,observations:jobs.length,already_known:old.size,newJobs};
 }
-async function classify(db,cycle,now){
+async function screenCandidates(db,cycle,now){
   const [source,index,radar,poll]=await Promise.all([
     readStage(db,cycle,'source_gate'),
-    readStage(db,cycle,'application_history'),
+    readStage(db,cycle,'application_index'),
     readStage(db,cycle,'radar_history'),
     readStage(db,cycle,'official_ats')
   ]);
@@ -181,11 +198,19 @@ async function classify(db,cycle,now){
     });
     else throw new Error('Too many source jobs');
   }
-  return {version:1,cycle,source:source.source,status:'review_ready',
+  return {version:2,cycle,source:source.source,status:'review_ready',
     screened_at:new Date(now).toISOString(),
     observations:poll.observations,previously_observed:poll.already_known,
     rejected:out,review_count:candidates.length,candidates,
     manual_review_required:true,google_sheet_rows_written:0,application_submissions:0};
+}
+async function finalizeReview(db,cycle){
+  const receipt=await readStage(db,cycle,'candidate_screen');
+  if(receipt.cycle!==cycle||receipt.status!=='review_ready'||
+    receipt.manual_review_required!==true||
+    receipt.google_sheet_rows_written!==0||receipt.application_submissions!==0)
+    throw new Error('Stage data malformed');
+  return receipt;
 }
 export async function runStagedReview(env,ops={}){
   // Dual opt-in; setting RADAR_ENABLED alone never starts this pipeline.
@@ -207,6 +232,7 @@ export async function runStagedReview(env,ops={}){
     }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
     return {status:'partial',errors:1,reason:'interrupted_cycle'};
   }
+  if(raw?.startsWith('failed:'))return {status:'halted',sources:0};
   if(!raw||state?.status==='done'){
     if(raw&&now-Date.parse(state.finished_at||'')<60000)return {status:'cooldown',sources:0};
     const cursor=Number(await getMeta(db,STAGE_CURSOR)||0);
@@ -221,7 +247,7 @@ export async function runStagedReview(env,ops={}){
     raw=await getMeta(db,STAGE_CONTROL);
     state=parse(raw);
   }
-  if(!state||state.version!==1||!Number.isInteger(state.phase)||
+  if(!state||state.version!==2||!Number.isInteger(state.phase)||
       state.phase<0||state.phase>=STAGES.length||
       !/^cycle_\d+_\d+$/.test(state.run||''))
     return {status:'partial',errors:1,reason:'invalid_control'};
@@ -239,10 +265,13 @@ export async function runStagedReview(env,ops={}){
   try {
     if(name==='source_gate')result=await readSourceGate(env,ops,state.run,state.cursor);
     else if(name==='vacancy_history')result=await readVacancyHistory(env,ops,state.run);
-    else if(name==='application_history')result=await readApplicationHistory(env,ops,state.run,db);
+    else if(name==='application_rows')result=await readApplicationRows(env,ops,state.run);
+    else if(name==='event_rows')result=await readEventRows(env,ops,state.run);
+    else if(name==='application_index')result=await buildApplicationIndex(db,state.run);
     else if(name==='radar_history')result=await readRadarHistory(env,ops,state.run);
     else if(name==='official_ats')result=await readOfficialSource(env,ops,state.run,db);
-    else if(name==='review_only')result=await classify(db,state.run,now);
+    else if(name==='candidate_screen')result=await screenCandidates(db,state.run,now);
+    else if(name==='review_only')result=await finalizeReview(db,state.run);
     else throw new Error('Invalid stage state');
     if(name==='review_only'){
       await putMeta(db,STAGE_RECEIPT,result);
@@ -253,7 +282,7 @@ export async function runStagedReview(env,ops={}){
     }else await storeStage(db,state.run,name,result);
     const finished=name==='review_only';
     const next=finished?JSON.stringify({
-      status:'done',version:1,run:state.run,finished_at:new Date(now).toISOString(),
+      status:'done',version:2,run:state.run,finished_at:new Date(now).toISOString(),
       source:result.source,review_count:result.review_count
     }):JSON.stringify({...state,phase:state.phase+1});
     await changeControl(db,claim,next);
@@ -264,7 +293,7 @@ export async function runStagedReview(env,ops={}){
     const reason=saneError(error);
     try {
       await clearSnapshots(db,state.run);
-      await putMeta(db,'micro:v1:last_failure',{cycle:state.run,phase:name,reason,
+      await putMeta(db,'micro:v2:last_failure',{cycle:state.run,phase:name,reason,
         at:new Date(now).toISOString()});
       await changeControl(db,claim,'failed:'+state.run+':'+name);
     }catch {

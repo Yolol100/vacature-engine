@@ -117,7 +117,7 @@ test('disabled defaults: no DB access, Google reads, ATS calls or submission',as
   assert.equal(h.events.length,0);
   assert.equal(h.db.writes.length,0);
 });
-test('six small Cron stages classify sources without writing business records',async()=>{
+test('nine bounded Cron stages classify sources without writing business records',async()=>{
   const h=harness(),phases=[];
   for(let i=0;i<STAGES.length;i++){
     const result=await runStagedReview(h.env,h.ops);
@@ -139,8 +139,8 @@ test('six small Cron stages classify sources without writing business records',a
   assert.equal(result.rejected.irrelevant,1);
   assert.equal(result.google_sheet_rows_written,0);
   assert.equal(result.application_submissions,0);
-  assert.ok(h.db.writes.every(x=>x.startsWith('micro:v1:')));
-  assert.ok(![...h.db.meta.keys()].some(x=>x.startsWith('micro:v1:snapshot:')));
+  assert.ok(h.db.writes.every(x=>x.startsWith('micro:v2:')));
+  assert.ok(![...h.db.meta.keys()].some(x=>x.startsWith('micro:v2:snapshot:')));
   assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
   assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).status,'done');
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
@@ -162,11 +162,11 @@ test('missing header stops the cycle fail-closed; no ATS, no Sheets writes',asyn
   assert.equal(failed.reason,'Application header mismatch');
   assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,0);
-  assert.equal((await runStagedReview(h.env,h.ops)).status,'partial');
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'halted');
 });
 test('ATS failure leaves the pipeline failed, without false candidate output',async()=>{
   const h=harness({atsError:true});
-  for(let i=0;i<4;i++){await runStagedReview(h.env,h.ops);h.advance(60000);}
+  for(let i=0;i<STAGES.indexOf('official_ats');i++){await runStagedReview(h.env,h.ops);h.advance(60000);}
   const failed=await runStagedReview(h.env,h.ops);
   assert.equal(failed.status,'partial');
   assert.equal(failed.reason,'Public API HTTP 503');
@@ -197,4 +197,61 @@ test('scheduled event requires BOTH explicit gates, not only RADAR_ENABLED',asyn
   await worker.scheduled({}, {RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'staged_review'}, ctx);
   await worker.scheduled({}, {RADAR_ENABLED:'1'}, ctx);
   assert.equal(invoked,0);
+});
+
+test('each heavy history read is a separate checkpoint from building the policy index',async()=>{
+  const h=harness();
+  const phases=STAGES.slice(0,STAGES.indexOf('application_index'));
+  for(let i=0;i<phases.length;i++){
+    const outcome=await runStagedReview(h.env,h.ops);
+    assert.equal(outcome.phase,phases[i]);
+    h.advance(60000);
+  }
+  const keys=[...h.db.meta.keys()].filter(x=>x.startsWith('micro:v2:snapshot:'));
+  assert.equal(keys.length,4,'Source, vacancy, application and events are separate checkpoints');
+  assert.equal(keys.some(x=>x.endsWith(':application_index')),false);
+  const app=JSON.parse(h.db.meta.get(keys.find(x=>x.endsWith(':application_rows'))));
+  const evt=JSON.parse(h.db.meta.get(keys.find(x=>x.endsWith(':event_rows'))));
+  assert.equal(app.data.rows[0][2],'status');
+  assert.equal(evt.data.rows[0][5],'status_after');
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+  const indexed=await runStagedReview(h.env,h.ops);
+  assert.equal(indexed.phase,'application_index');
+  assert.equal(h.events.filter(x=>x.startsWith('google-read')).length,4);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+
+test('candidate screen is provisional until a distinct final receipt stage succeeds',async()=>{
+  const h=harness();
+  const beforeFinal=STAGES.indexOf('review_only');
+  for(let i=0;i<beforeFinal;i++){
+    const outcome=await runStagedReview(h.env,h.ops);
+    assert.equal(outcome.status,'ok');
+    assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+    h.advance(60000);
+  }
+  const key=[...h.db.meta.keys()].find(x=>x.endsWith(':candidate_screen'));
+  assert.ok(key);
+  const projected=JSON.parse(h.db.meta.get(key)).data;
+  assert.equal(projected.review_count,1);
+  assert.equal(projected.manual_review_required,true);
+  assert.equal(projected.google_sheet_rows_written,0);
+  assert.equal(projected.application_submissions,0);
+  assert.equal((await runStagedReview(h.env,h.ops)).phase,'review_only');
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),true);
+  assert.equal(h.db.meta.has(key),false,'private screening snapshot must be purged');
+});
+
+test('legacy v1 staged checkpoints cannot be resumed by the incompatible v2 pipeline',async()=>{
+  const h=harness();
+  const legacy='{"version":1,"run":"cycle_1792151163845_0","phase":4}';
+  h.db.meta.set('micro:v1:control',legacy);
+  h.db.meta.set('micro:v1:cursor','1');
+  const result=await runStagedReview(h.env,h.ops);
+  assert.equal(result.status,'ok');
+  assert.equal(result.phase,'source_gate');
+  assert.equal(h.db.meta.get('micro:v1:control'),legacy);
+  assert.equal(h.db.meta.get('micro:v1:cursor'),'1');
+  assert.equal(h.db.meta.has(STAGE_CURSOR),false);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
 });

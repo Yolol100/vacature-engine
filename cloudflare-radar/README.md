@@ -85,23 +85,25 @@ De door Cloudflare GraphQL beschikbare invocatie-CPU-metingen zijn onder andere 
 
 **Code aanwezig, productie niet geactiveerd.** De nieuwe Worker heeft een tweede schakelaar: `RADAR_PIPELINE_MODE=off`. De bestaande `RADAR_ENABLED=0` blijft ook uit. De geplande Cron blijft exact `* * * * *`, zonder extra Worker, Queues, R2 of kosten. **Alleen beide expliciete waarden** `RADAR_ENABLED=1` én `RADAR_PIPELINE_MODE=staged_review` zouden de nieuwe verwerking starten. De oude zware `tick` kan via Cron niet per ongeluk worden gestart door alleen `RADAR_ENABLED` aan te zetten. Dit is expres een **review-only** fase: er worden geen rijen in Google Sheets geschreven, geen D1-vacaturewaarnemingen aangepast, en nooit sollicitaties verstuurd.
 
-Een cyclus bestaat uit zes afzonderlijke uitvoeringen van de bestaande eenminuut-Cron:
+Een cyclus bestaat voortaan uit **negen** afzonderlijke Cron-uitvoeringen. De eerder gemeten zesstappenvariant had op enkele momenten circa 18,6, 32,3 en 13,1 ms CPU. Vooral de sollicitatie-index en het beoordelen zijn daarom verder gesplitst.
 
-| Minuutstap | Uit te voeren werk |
+| Stap | Handeling |
 | --- | --- |
-| 1. `source_gate` | Alleen `Bronnen` A/M lezen. Zowel de ATS-bron als de werkgever moeten actief zijn. |
-| 2. `vacancy_history` | Alleen `Vacatures` A/B en G/H lezen; bewaar de korte actuele momentopname tijdelijk in D1. |
-| 3. `application_history` | Alleen `Applications` A/C/E en `ApplicationEvents` A/B/D/F lezen; bouw exact dezelfde `known`- en `applied`-index als de bestaande deduplicatie. |
-| 4. `radar_history` | Alleen bestaande radaridentiteiten, officiële URL's en twee statuskolommen lezen. |
-| 5. `official_ats` | Één officiële Greenhouse-, Lever- of Ashby-bron lezen en bestaande D1-identiteiten controleren. Een bron zonder bewezen eerste baseline wordt niet als nieuw behandeld. |
-| 6. `review_only` | Historische sollicitaties, bronstatus en bestaande radarregels vergelijken. Sla uitsluitend de technische kandidaten en aantallen als afgeschermd D1-reviewresultaat op. |
+| 1. `source_gate` | Lees actuele bron- en werkgeverstatus; controleer beide op `active`. |
+| 2. `vacancy_history` | Lees uitsluitend noodzakelijke `Vacatures`-kolommen; bewaar de momentopname tijdelijk in D1. |
+| 3. `application_rows` | Lees de gebruikte `Applications`-kolommen zonder de index meteen te bouwen. |
+| 4. `event_rows` | Lees de gebruikte `ApplicationEvents`-kolommen afzonderlijk. |
+| 5. `application_index` | Combineer D1-momentopnamen tot de bestaande `known`- en `applied`-index. |
+| 6. `radar_history` | Lees radaridentiteiten, officiële vacature-URL's en statussen. |
+| 7. `official_ats` | Lees één officiële ATS-bron en controleer reeds bekende D1-identiteiten. |
+| 8. `candidate_screen` | Classificeer nieuw ontdekte banen tegen eerdere sollicitaties en de radarhistorie. |
+| 9. `review_only` | Controleer het afgeschermde resultaat, sla alleen reviewgegevens in D1 op en verwijder tijdelijke snapshots. |
 
-De cycluskeuze rouleert tussen de drie actieve bronparen. Hierdoor komt een bron in deze review-only opzet normaal hoogstens eenmaal per circa **18 minuten** aan bod, niet meer elke drie minuten. Dit is een bewuste vertraging om CPU-werk te verdelen, geen belofte van directe vacaturemeldingen.
+Bij drie bronparen komt dezelfde bron normaal ongeveer één keer per **27 minuten** aan de beurt. De cyclus heeft een vervaltijd van twaalf minuten, waardoor gemiste Cron-uitvoeringen een cyclus bewust kunnen blokkeren in plaats van stil te hervatten.
 
-De D1-checkpoints gebruiken het bestaande `radar_metadata`. Iedere stap heeft een atomische claim, unieke cyclus-ID en een maximaal 12 minuten geldig venster. Een dubbel gestart, verlopen of onderbroken proces verzendt **niets** en probeert de stap niet stil opnieuw. Bij falen worden tijdelijke momentopnamen zo mogelijk verwijderd en blijft de cyclus geblokkeerd voor handmatige beoordeling. Na succesvolle beoordeling worden de tijdelijke snapshots gewist, maar blijft een beperkt reviewbewijs (`micro:v1:receipt`) bewaard. Dit bewijs bevat uitsluitend technische vacaturegegevens van de officiële bronnen; geen privé-sollicitatieteksten of privésleutels.
+Deze wijziging gebruikt strikt gescheiden, nieuwe `micro:v2:`-checkpoints. De oude `micro:v1:`-bewijzen blijven behouden maar worden **nooit** hervat in de nieuwe stappenreeks. Dubbel gestarte stappen worden atomair geclaimd. Een fout legt de cyclus stil voor handmatige controle en schrijft nooit sollicitaties, vacaturemeldingen of nieuwe D1-vacaturewaarnemingen. Een vroegere tijdelijke D1-testoverride bij `RADAR_ENABLED=0` is verwijderd.
 
-**Nog niet gereed voor automatische aflevering.** Google Sheets ondersteunt in deze aanpak geen gegarandeerd atomische momentopname van verschillende tabbladen over meerdere Cron-minuten. Daarom zijn nieuwe sollicitaties of bronblokkades vlak na een tussentijdse controle mogelijk. Vóór er ooit nieuwe vacaturemeldingen automatisch naar de resultaten-Sheet mogen worden geschreven, is een aparte actuele eindcontrole met CPU-budget, dedupe-/afmeldregressies en expliciete vrijgave vereist. Ook moet iedere van de zes live Cron-stappen afzonderlijk onder de nominale Workers Free CPU-grens van 10 ms worden bewezen. Een succesvolle GitHub-test of een kleinere payload bewijst dat **niet**.
-
+**Nog geen productie-vrijgave:** de negen stappen zijn code- en regressietests; er is nog geen nieuwe onafhankelijke CPU-meting per stap. Cloudflare Free hanteert nominaal 10 ms CPU per Cron. Met name Google OAuth, het lezen van de bronnen en de radarhistorie kunnen nog boven die grens uitkomen. Ook is een momentopname over meerdere Google Sheets-tabbladen en Cron-minuten niet atomair. Iedere toekomstige automatische aflevering vereist een actuele, volledige eindcontrole van bronstatus, sollicitatiehistorie en dubbele vacatures, plus een aparte geautoriseerde CPU- en afleverproef. `RADAR_ENABLED=0` en `RADAR_PIPELINE_MODE=off` blijven staan.
 
 ## Technisch contract
 
