@@ -29,7 +29,7 @@ class FakeD1 {
           if(change){this.meta.set(args[1],args[0]);this.writes.push(args[1]);}
           return {meta:{changes:change}};
         }
-        if(sql.startsWith('DELETE FROM radar_metadata WHERE name LIKE ?')){
+        if(sql.startsWith('DELETE FROM radar_metadata WHERE name GLOB ?')){
           const prefix=String(args[0]).slice(0,-1);
           let change=0;
           for(const key of [...this.meta.keys()]){
