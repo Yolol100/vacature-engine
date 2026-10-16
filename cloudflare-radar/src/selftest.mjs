@@ -16,7 +16,7 @@ async function putMeta(db, name, value) {
 }
 export async function runOneTimeSmokeTest(env, ops) {
   // No HTTP endpoint; inactive by default, expires after the initial setup.
-  if (env.RADAR_ENABLED !== '0' || !env.RADAR_DB || Date.now() > EXPIRY)
+  if (env.RADAR_ENABLED !== '0' || !env.RADAR_DB || (ops.now?.() ?? Date.now()) > EXPIRY)
     return {status:'disabled'};
   const db = env.RADAR_DB;
   const request = (await db.prepare('SELECT value FROM radar_metadata WHERE name=?')
