@@ -1,0 +1,12 @@
+{
+  "name": "webactueel-cloudflare-vacature-radar",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/index.mjs && node --check src/logic.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.151.0"
+  }
+}

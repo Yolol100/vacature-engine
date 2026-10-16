@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vacature-radar",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-10-15",
+  "triggers": {
+    "crons": [
+      "* * * * *"
+    ]
+  },
+  "vars": {
+    "RADAR_ENABLED": "0",
+    "VACATURE_REGISTER_ID": "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0",
+    "RADAR_RESULT_ID": "1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ"
+  },
+  "d1_databases": [
+    {
+      "binding": "RADAR_DB",
+      "database_name": "vacature-radar-state",
+      "database_id": "5ebaebc-b444-4f8b-a0df-584a1a966fd2"
+    }
+  ]
+}
