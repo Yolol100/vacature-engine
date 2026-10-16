@@ -67,3 +67,21 @@ Automatic Sheet writes and application submissions remain independently blocked.
 The first paged CPU canary used up to 64 history rows per Cron. Real Cloudflare logs read 8 ms (source gate), 9 ms (ID bound), then 7, 9, 8 and **11 ms** for pages starting with rows 1, 65, 129 and 193. The 11 ms page was a Free CPU **NO-GO**, regardless of the `ok` outcome. All private `micro:v2` marker and snapshots were removed, the 26 baseline records stayed intact, and the pre-canary optimized version was restored.
 
 Phase 2 reduces the page maximum to 32 and allows up to a 75-minute **review-only** cycle, so that <=1536 historical rows can still be scanned across minute-by-minute checkpoints without reading them all in one CPU-heavy event. Multi-minute review snapshots are NOT proof of freshness for a future delivery. Repeat isolated runtime tests and keep radar disabled.
+
+
+## Additional source-gate optimization — 16 October 2026
+
+A later private CPU canary measured `source_gate` at **10 ms** on 2026-10-16T17:37:06Z, so the 32-row history optimization did not yet prove a reliable Free CPU budget. The canary was disarmed, its private v2 metadata deleted and a safe non-canary build restored before making further changes.
+
+New gap-only changes in this iteration:
+- `source_gate` directly scans the two registered `Bronnen` columns, keeps only six allowlisted source/employer IDs and retains last-row-wins duplicate semantics; it no longer creates many sparse 13-column arrays. Header mismatch and inactive employer are still fail-closed.
+- Google OAuth keeps its non-extractable RSA `CryptoKey` and a single in-flight token refresh in **memory of the current isolate only**, and invalidates on credential change. A cold isolate still performs the RSA import/signature. No raw keys, tokens or credentials are persisted to D1, KV, logs or files.
+- Google Sheets uses the official partial-response `fields=valueRanges(values)` parameter to omit extraneous range metadata while preserving all requested values and their order.
+
+Source authority:
+- Cloudflare Web Crypto API: https://developers.cloudflare.com/workers/runtime-apis/web-crypto/
+- Cloudflare Free 10ms Cron limit and rollover: https://developers.cloudflare.com/workers/platform/limits/
+- Google Sheets partial response guidance: https://developers.google.com/workspace/sheets/api/guides/performance
+- Google Sheets values batchGet: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchGet
+
+The changes are **not** guaranteed to reduce cold-start CPU below 10 ms or to persist across isolates. Require green regression/security tests, a fresh short-lived D1-gated private Cron canary, Cloudflare `cpuTimeMs` readback for repeated source-gate and history-page invocations, and immediate rollback upon a budget miss. `RADAR_ENABLED=0` and `RADAR_PIPELINE_MODE=off` remain the enforced default. Still **NO-GO** until every stage has repeated headroom.

@@ -261,6 +261,51 @@ test('paged vacancy scans fail closed when header differs before any ATS read',a
   assert.equal(h.events.some(x=>x.startsWith('ats:')),false);
 });
 
+test('source gate reads many unrelated Bronnen rows without changing employer policy',async()=>{
+  const h=harness(),reader=h.ops.readRanges;
+  h.ops.readRanges=async(id,ranges,token)=>{
+    const data=await reader(id,ranges,token);
+    if(ranges[0]==="'Bronnen'!A1:A"){
+      for(let i=0;i<1100;i++){
+        data[0].push(['irrelevant-source-'+i]);
+        data[1].push(['active']);
+      }
+    }
+    return data;
+  };
+  const result=await runStagedReview(h.env,h.ops);
+  assert.equal(result.status,'ok');
+  const key=[...h.db.meta.keys()].find(x=>x.endsWith(':source_gate'));
+  assert.equal(JSON.parse(h.db.meta.get(key)).data.source,'greenhouse:automatticcareers');
+});
+test('later source status overrides prior duplicate ID and blocks that employer',async()=>{
+  const h=harness(),reader=h.ops.readRanges;
+  h.ops.readRanges=async(id,ranges,token)=>{
+    const data=await reader(id,ranges,token);
+    if(ranges[0]==="'Bronnen'!A1:A"){
+      data[0].push(['company-automattic']);
+      data[1].push(['blocked']);
+    }
+    return data;
+  };
+  const result=await runStagedReview(h.env,h.ops);
+  assert.equal(result.status,'ok');
+  const key=[...h.db.meta.keys()].find(x=>x.endsWith(':source_gate'));
+  assert.notEqual(JSON.parse(h.db.meta.get(key)).data.source,'greenhouse:automatticcareers');
+});
+test('source gate invalid header halts before any downstream reads or ATS',async()=>{
+  const h=harness(),reader=h.ops.readRanges;
+  h.ops.readRanges=async(id,ranges,token)=>{
+    const data=await reader(id,ranges,token);
+    if(ranges[0]==="'Bronnen'!A1:A")data[1][0][0]='bad-header';
+    return data;
+  };
+  const outcome=await runStagedReview(h.env,h.ops);
+  assert.equal(outcome.reason,'Source gate header mismatch');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal(h.events.some(x=>x.startsWith('ats:')),false);
+});
+
 test('an inactive employer blocks the source before any ATS access',async()=>{
   const h=harness({blockEmployer:true});
   const r=await runStagedReview(h.env,h.ops);
