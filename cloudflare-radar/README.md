@@ -48,11 +48,22 @@ Onafhankelijke readback na afloop: `Runs!L1000` leeg, `Nieuwe vacatures` en `Run
 
 **Productieactivatie blijft NO-GO** totdat een afgebakende echte baseline-run, CPU-/D1-gebruikscontrole en gebruikersvrijgave zijn bevestigd. Geen tweede Cron, geen R2, geen nieuwe betaalde dienst, geen automatische sollicitaties. `RADAR_ENABLED=0` blijft gehandhaafd.
 
-### Tijdelijke, beperkte live-baseline (16 oktober 2026)
+### Echte, begrensde live-baseline — geslaagd (16 oktober 2026)
 
-De functie `src/baseline.mjs` is **tijdelijk** en uitsluitend vanuit een D1-beheerdersopdracht bereikbaar. `RADAR_ENABLED` blijft `0`; de bestaande Cron mag alleen bij een geldige en maximaal 12 minuten geldige `baseline_control:2026-10-16`-aanvraag een nauwkeurig begrensde `tick` uitvoeren. Per minuut wordt maximaal één van drie geregistreerde broninstanties gebootstrapt. Na fase 3 zet de code het control-record op `done`; na een fout stopt hij op `failed`, zodat niet stiekem een tweede ronde begint.
+Drie onafhankelijke Cron-uitvoeringen van de **echte** \`tick\`-verwerkingscode hebben de actuele eerste momentopname van de drie actieve officiële ATS-bronnen uitsluitend in D1 opgeslagen. Start \`2026-10-16T10:29:03.372Z\`, afgerond \`10:31:07.456Z\`. De private D1-aanvraag \`baseline_control:2026-10-16\` staat op \`done:live_baseline_20261016_01\` en het verifieerbare \`baseline_receipt:2026-10-16\` heeft \`status=ok\`.
 
-Deze uitvoeringen gebruiken de **echte productieverwerkingscode** voor OAuth, officiële ATS en D1-observaties, maar slaan historische eerste-detecties uitsluitend als `baseline` op en slaan alle Google Sheets-writes en outbox-verzending over. Er wordt geen sollicitatie verzonden. Voor veiligheidsacceptatie zijn vereist: exact drie `seeded:`-markers, uitsluitend `baseline`-records, nul uitgaande vacaturemeldingen, Cloudflare-metrics en daarna verwijdering van alle tijdelijke testcode. Indien Cloudflare Free CPU-, D1- of Google-quota de proef afbreken, blijft productie gesloten (`RADAR_ENABLED=0`) en worden eventueel al geschreven D1-baselinegegevens behouden voor herstel/audit. Na de proef wordt de tijdelijke module uit `main` verwijderd.
+| Actieve officiële bron | Nieuwe D1-rijen | D1-status |
+| --- | ---: | --- |
+| Automattic / Greenhouse | 12 | \`baseline\` |
+| Kinsta / Lever | 3 | \`baseline\` |
+| Zapier / Ashby | 11 | \`baseline\` |
+| **Totaal** | **26** | **historische momentopname** |
+
+Onafhankelijke readback na de proef: exact 3 \`seeded:\`-markeringen, 26 D1-waarnemingen allemaal met status \`baseline\`, **geen** \`pending\`, \`delivered\` of \`excluded\`; de tabs \`Nieuwe vacatures\` en \`Runs\` bevatten alleen hun kolomkoppen. Er zijn **geen** sollicitaties of Google-radarrijen verzonden of gewijzigd. De permanente Worker-schakelaar bleef \`RADAR_ENABLED=0\`. De bestaande Google-secret bleef een beveiligde \`secret_text\`. Workers Issues liet 0 issues zien.
+
+**Belangrijke Free-tier CPU-gate: NO-GO voor permanent activeren.** Cloudflare GraphQL \`workersInvocationsAdaptive\` rapporteerde bij de eerste twee echte baseline-Crons \`cpuTimeP99=35376\` en \`38266\` (ongeveer **35,4 ms** en **38,3 ms**), elk bij één uitvoering, zonder geregistreerde fouten. Dat is boven de nominale **10 ms CPU per Cron-uitvoering** van Workers Free. De geslaagde beperkte baseline mag daarom **niet** worden geïnterpreteerd als bewezen langdurig betrouwbare gratis monitoring. Eerst CPU-optimalisatie en een aparte representatieve quota-/Free-test, anders geen \`RADAR_ENABLED=1\` zonder expliciete nieuwe goedkeuring.
+
+De eenmalige baselinecode, D1-triggerroute en bijbehorende tijdelijke tests zijn na de proef uit de actieve broncode verwijderd; alleen de onafhankelijke auditresultaten blijven bewaard. De bestaande foutlogging, D1-healthbewaking en broncooldowns blijven beschikbaar voor een eventuele latere goedgekeurde productieactivatie.
 
 ## Technisch contract
 
