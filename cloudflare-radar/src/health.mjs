@@ -1,6 +1,14 @@
 // Bounded and credential-free health metadata for active production polls.
 // This cannot detect a permanently stopped scheduler on its own; it flags gaps when Cron resumes.
-import {safeDiagnosticError} from './reliability.mjs';
+export function safeDiagnosticError(error){
+  const raw=String(error?.message||'');
+  if(/^Google OAuth HTTP [45]\d\d$/.test(raw) ||
+     /^Sheets (read|update|clear) HTTP [45]\d\d$/.test(raw) ||
+     /^Public API HTTP [45]\d\d$/.test(raw) ||
+     /^(Missing required Worker bindings or secrets|Missing Google Sheets service account secret|Spreadsheet header mismatch: stop before dedupe or writes|No active ATS\+employer source pairs|Source exceeds safe job limit|Source payload too large|Unexpected public jobs payload|Unexpected ATS job host: source contract changed)$/.test(raw))
+    return raw.slice(0,110);
+  return 'Unexpected runtime failure';
+}
 const GAP_MS=6*60*1000;
 async function getMeta(db,key){
   const row=await db.prepare('SELECT value FROM radar_metadata WHERE name=?').bind(key).first();
