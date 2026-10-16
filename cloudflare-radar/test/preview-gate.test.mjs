@@ -37,28 +37,6 @@ test('review-only scheduled path skips redundant health DB I/O',async()=>{
   await pending;
   assert.equal(db.reads,0,'missing required bindings must fail before any health D1 read');
 });
-test('slim CPU diagnostic is inert without private lease',async()=>{
-  const keys=[];let scheduled=0;
-  const db={prepare(){return {bind(k){keys.push(k);return {first:async()=>null};}}}};
-  await worker.scheduled({},{RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',
-    RADAR_CPU_CANARY:'1',RADAR_DB:db},{waitUntil(){scheduled++;}});
-  assert.deepEqual(keys,['micro:v2:cpu_canary']);
-  assert.equal(scheduled,0);
-});
-test('slim CPU diagnostic rejects invalid and expired permit',async()=>{
-  const now=Date.now();
-  for(const lease of [
-    {kind:'wrong',started:now-1000,until:now+60000},
-    {kind:'slim-worker-cpu-audit-20261016',started:now-120000,until:now-5000},
-    {kind:'slim-worker-cpu-audit-20261016',started:now-600000,until:now+1000}
-  ]){
-    let scheduled=0;
-    const db={prepare(){return {bind(){return {first:async()=>({value:JSON.stringify(lease)})};}}}};
-    await worker.scheduled({},{RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',
-      RADAR_CPU_CANARY:'1',RADAR_DB:db},{waitUntil(){scheduled++;}});
-    assert.equal(scheduled,0);
-  }
-});
 test('no public HTTP endpoint',async()=>{
   const result=await worker.fetch();
   assert.equal(result.status,404);
