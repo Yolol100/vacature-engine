@@ -76,6 +76,7 @@ function rangeValues(range,opts) {
       'https://job-boards.greenhouse.io/automatticcareers/jobs/extra-'+i,''
     ]);
   }
+  if(opts.sparseGapAt!==undefined)vacancy.splice(opts.sparseGapAt,0,Array(8).fill(''));
   const apps=[['vacancy_id','','status','','application_url'],
     ['v-old','','submitted','','https://job-boards.greenhouse.io/automatticcareers/jobs/old'],
     ['v-applied','','submitted','','https://job-boards.greenhouse.io/automatticcareers/jobs/applied-no-d1']];
@@ -212,6 +213,37 @@ test('paged vacancy history scans every source row in bounded 64-row sheets read
   assert.ok(![...h.db.meta.keys()].some(k=>k.startsWith('micro:v2:snapshot:')));
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
 });
+test('paged vacancy reconstruction retains blank gaps and later strong URLs',async()=>{
+  const h=harness({extraVacancies:140,sparseGapAt:63});h.ops.pagedVacancy=true;
+  assert.equal((await runStagedReview(h.env,h.ops)).phase,'source_gate');
+  h.advance(60000);
+  let history;
+  for(let i=0;i<7;i++){
+    const outcome=await runStagedReview(h.env,h.ops);
+    if(outcome.status==='ok'){history=outcome;break;}
+    assert.equal(outcome.status,'checkpointed');
+    h.advance(60000);
+  }
+  assert.equal(history?.phase,'vacancy_history');
+  const key=[...h.db.meta.keys()].find(x=>x.endsWith(':vacancy_history'));
+  const rows=JSON.parse(h.db.meta.get(key)).data.rows;
+  assert.equal(rows.length,144,'all original rows and deliberate gap are preserved');
+  assert.deepEqual(rows[63],[],'a blank page-boundary row is never elided');
+  assert.ok(rows.some(row=>row[0]==='v-extra-139'),'later rows cannot be silently omitted');
+  assert.equal(h.events.filter(e=>e.startsWith('ats:')).length,0);
+});
+test('paged scan fails closed instead of dropping history beyond safe capacity',async()=>{
+  const h=harness({extraVacancies:1600});h.ops.pagedVacancy=true;
+  assert.equal((await runStagedReview(h.env,h.ops)).phase,'source_gate');
+  h.advance(60000);
+  const fail=await runStagedReview(h.env,h.ops);
+  assert.equal(fail.status,'partial');
+  assert.equal(fail.reason,'Vacancy history size exceeds safe page limit');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+  assert.equal(h.events.some(x=>x.startsWith('ats:')),false);
+});
+
 test('paged vacancy scans fail closed when header differs before any ATS read',async()=>{
   const h=harness();h.ops.pagedVacancy=true;
   const orig=h.ops.readRanges;
