@@ -103,7 +103,7 @@ function harness(opts={}){
     },
     publicJobs:async source=>{
       events.push('ats:'+source.source_id+':'+source.account);
-      if(opts.atsError)throw Error('Public API HTTP 503');
+      if(opts.atsError)throw Error('Public API HTTP '+(opts.atsStatus||503));
       return jobs;
     },
     existingKeys:async(db,jobs)=>{events.push('d1-existing');return new Set(['greenhouse:automatticcareers:old']);}
@@ -358,4 +358,33 @@ test('invalid attempt counters cannot bypass the bounded retry limit',async()=>{
   assert.equal(answer.status,'partial');
   assert.equal(answer.reason,'invalid_control');
   assert.equal(h.events.filter(x=>x.startsWith('google-read')).length,1);
+});
+
+test('HTTP 429 is fail-closed, without automatic replays or application writes',async()=>{
+  const h=harness({atsError:true,atsStatus:429});
+  for(let i=0;i<STAGES.indexOf('official_ats');i++){
+    await runStagedReview(h.env,h.ops);h.advance(60000);
+  }
+  const failed=await runStagedReview(h.env,h.ops);
+  assert.equal(failed.status,'partial');
+  assert.equal(failed.reason,'Public API HTTP 429');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'halted');
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+
+test('the 12-minute expiry takes precedence over a stale retry deadline',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  const state=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,JSON.stringify({
+    ...state,attempts:1,retry_after:start+50*60000,
+    expires_at:new Date(start+60000).toISOString()
+  }));
+  h.advance(120000);
+  const result=await runStagedReview(h.env,h.ops);
+  assert.equal(result.status,'partial');
+  assert.equal(result.reason,'expired_cycle');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
 });
