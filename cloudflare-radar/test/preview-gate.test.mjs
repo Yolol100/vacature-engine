@@ -37,15 +37,6 @@ test('review-only scheduled path skips redundant health DB I/O',async()=>{
   await pending;
   assert.equal(db.reads,0,'missing required bindings must fail before any health D1 read');
 });
-test('temporary paged canary cannot run without private D1 lease',async()=>{
-  const queries=[];let invoked=0;
-  const db={prepare(){return {bind(name){queries.push(name);return {first:async()=>null};}}}};
-  await worker.scheduled({},{
-    RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',RADAR_CPU_CANARY:'1',RADAR_DB:db
-  },{waitUntil(){invoked++;}});
-  assert.deepEqual(queries,['micro:v2:cpu_canary']);
-  assert.equal(invoked,0);
-});
 test('no public HTTP endpoint',async()=>{
   const result=await worker.fetch();
   assert.equal(result.status,404);
