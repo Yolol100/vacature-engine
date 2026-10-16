@@ -130,3 +130,16 @@ Bronstatus mag alleen als `live_verified` worden aangemerkt na een daadwerkelijk
 - Meer details: [onafhankelijk QA-rapport](docs/INDEPENDENT-QA-2026-10-15.md).
 
 **Vrijgave blijft NO-GO voor reguliere monitoring totdat de resterende limiet-, baseline- en observability-controles zijn afgerond.** Google OAuth, beide Sheets en één ATS-bron zijn op 16 oktober 2026 wél live bewezen. `RADAR_ENABLED=0` blijft staan. Eén Cron per minuut betekent bij drie actieve bronnen circa één broncontrole per drie minuten, geen directe melding.
+
+
+### Herstel van onderbroken negenstapsverwerking (PR #93)
+
+De review-only v2-pijplijn heeft nu een D1-claim per fase met het oorspronkelijke cyclus-ID, het fasenummer, het claimmoment en het herpogingsnummer. De **bestaande 26 baseline-waarnemingen** en eerdere `micro:v1:`-receipts worden niet gewijzigd.
+
+- Na twee minuten mag een vastgelopen *read-only* fase worden gecontroleerd. Is de D1-snapshot al opgeslagen, dan wordt de fase idempotent als voltooid gemarkeerd **zonder opnieuw ATS of Google te lezen**.
+- Ontbreekt de snapshot, dan krijgt die fase hoogstens **één** extra poging. Bij een tijdelijke Google-/ATS-HTTP-5xx is de eerste herpoging minimaal één minuut vertraagd. HTTP 429, 4xx, onbekende fouten en ongeldige brongegevens stoppen fail-closed.
+- Een review-eindresultaat met al opgeslagen D1-receipt kan zonder dubbele cursor of dubbele melding worden afgerond. Er is nog steeds **geen Google Sheets-outbox** in de review-only pijplijn.
+- De volledige cyclus verloopt na twaalf minuten. Een tweede onderbreking, oude claim zonder tijdstempel of onherstelbare inconsistentie activeert **geen** onbeperkte retries; er is dan handmatige beoordeling nodig.
+- Nieuwe testgevallen dekken checkpointrecovery, leasegrenzen, maximaal één retry, 429, verlopen cycli en veilige finalisatie. Github CI bevat Node-tests plus een Wrangler build-only test.
+
+**Vrijgave blijft NO-GO.** De nieuwe CPU-kosten per individuele v2-fase zijn nog **niet live gemeten**. De huidige gepubliceerde Cloudflare Workers Free-limiet voor Cron CPU is 10 ms per uitvoering; een groene GitHub Actions-job meet geen echte Cloudflare CPU. Eerst een afgeschermde runtime-proef en waargenomen CPU/quota per fase, daarna afzonderlijke goedkeuring voordat ooit `RADAR_ENABLED=1` of een aflevermodus wordt ingeschakeld. Tot die tijd blijft `RADAR_PIPELINE_MODE=off`.
