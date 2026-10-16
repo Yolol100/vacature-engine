@@ -87,3 +87,37 @@ Na de 10ms-uitvoering met 32 rijen op 18:41 UTC is de **volgende niet-automatisc
 De eindassemblage gebruikt nu één geïndexeerde `SELECT name,value ... WHERE name IN (?,...)`-query met hoogstens 96 D1-parameters in plaats van 96 losse Free-subrequests. Per pagina worden cyclus-ID, verwachte rijlengte en de volledigheid gecontroleerd; één ontbrekende pagina verhindert een review-receipt en elke ATS-call. Een nieuwe gesimuleerde maximum-capaciteitstest verifieert 1.536 rijen en één D1-assemblagequery.
 
 Dit is een functionele/budgetmatige codewijziging. **Zij bewijst nog geen echte CPU <10ms voor alle fasen.** De formele GO-poort blijft geblokkeerd totdat een volgende controle met herhaalde koud/warm-samples en alle 9 fasen (met acceptabele marge) slaagt.
+
+
+## Hercontrole 16-rijenversie, 19:42–19:55 UTC: GraphQL ontdekt gemiste CPU-overtredingen
+
+Na [PR #118](https://github.com/Yolol100/vacature-engine/pull/118) werd de 16-rijenversie zelfstandig op de echte Cloudflare Free Worker beproefd via tijdelijke privé-PR #119, zonder productieradar, extra Cron, publicatie of sollicitatie. De D1-marker had de exacte waarde `one-16row-review-20261016` en een vaste vervaltijd. De code mocht slechts één review-cyclus starten. De permanente gegevens (26 `radar_observations` in status `baseline`) bleven onaangeroerd.
+
+**Belangrijk nieuw meetinzicht:** Cloudflare Workers invocation logs kunnen bij een gewone `events`-query ontbreken of laat binnenkomen. Een onafhankelijke tweede bron, de **Cloudflare GraphQL Analytics API** `workersInvocationsAdaptive` met `dimensions.datetime`, maakte de CPU-tijd **per echte minuutuitvoering** zichtbaar. De `cpuTimeP99`-waarden zijn in **microseconden**; bij één request per tijdstip geeft het gedeeld door 1.000 de CPU-milliseconden.
+
+| UTC | Review-only stap | GraphQL werkelijke CPU |
+|---|---|---:|
+| 19:42 | D1 bootstrap | 5,052 ms |
+| 19:43 | Live geregistreerde broncontrole | 7,626 ms |
+| 19:44 | Historie ID-grenscontrole | 6,717 ms |
+| 19:45 | Pagina 1–16 | 9,613 ms |
+| 19:46 | Pagina 17–32 | 8,765 ms |
+| 19:47 | Pagina 33–48 | 8,044 ms |
+| 19:48 | Pagina 49–64 | 8,409 ms |
+| 19:49 | Pagina 65–80 | 8,117 ms |
+| 19:50 | Pagina 81–96 | 7,811 ms |
+| 19:51 | Pagina 97–112 | 7,503 ms |
+| 19:52 | Pagina 113–128 | 8,596 ms |
+| 19:53 | Pagina 129–144 | **10,685 ms — NO-GO** |
+| 19:54 | Pagina 145–160 | **11,297 ms — NO-GO** |
+
+Voor alle 13 getelde GraphQL-uitvoeringen werden **nul errors** gerapporteerd. Juist daarom is `outcome=ok`, `errors=0` of ontbrekende invocation-log **niet gelijk aan CPU-compliance**. GraphQL is nu verplicht als onafhankelijke CPU-controle in elke toekomstige canary. Dit is géén afgeronde nine-stage review: de proef stopte nog in de historiepagina's en bereikte `application_rows`, `event_rows`, `application_index`, `radar_history`, `official_ats`, `candidate_screen` en `review_only` niet.
+
+**Veilig herstel (uitgevoerd):** de privémarker is om 19:55:17 UTC ingetrokken; de geverifieerde non-canary Worker `711358ea-e181-4c67-8eae-1143c038d478` werd teruggezet via Cloudflare deployment `d9730936-a6a1-46ce-a5a5-01e9b614e354`; daarna zijn **13** test-eigen `micro:v2:`-record(s) verwijderd en alle **26 baseline-records** blijven staan. Cleanup-PR #120 herstelt de vijf tijdelijke repository-bestanden byte-identiek naar de vorige non-canary commit. Een finale settings-readback moet tevens de tijdelijke `RADAR_CPU_CANARY`-binding verwijderen.
+
+**Einduitspraak: HARD NO-GO op Cloudflare Free.** Ook 16 rijen kunnen 10 ms overschrijden. Verdere halvering of paginering is geen mathematische garantie op altijd minder dan 10 ms vanwege vaste OAuth-/runtimekosten en cold starts; niet blind productie activeren. Een nieuw ontwerp zou apart de te hoge CPU van koude externe bronleesstappen moeten verminderen, historieverwerking/aggregatie fijnmaziger maken en herhaald runtimebewijs voor elke fase leveren, zonder geheimen in D1 of ontbrekende historie. Review-only is bovendien geen geteste idempotente productie-outputroute. Het eerlijk geverifieerde eindresultaat is daarom **veilige code-/regressieverbeteringen afgerond, Free CPU-activering geblokkeerd**.
+
+Primaire bronnen:
+- https://developers.cloudflare.com/workers/platform/limits/ (Free scheduled 10ms CPU; `ok` kan tijdelijke flexibiliteit bevatten).
+- https://developers.cloudflare.com/analytics/graphql-api/tutorials/querying-workers-metrics/ (per-invocatie GraphQL dimensie en CPU-kwantielen).
+- https://developers.cloudflare.com/d1/platform/limits/ (D1 Free-query's per Worker en max 100 parameters).
