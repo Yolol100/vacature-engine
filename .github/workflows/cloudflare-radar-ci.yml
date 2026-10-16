@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
-      - run: node --check src/index.mjs && node --check src/logic.mjs && node --check src/health.mjs && node --check src/compact-register.mjs
+      - run: node --check src/index.mjs && node --check src/logic.mjs && node --check src/health.mjs && node --check src/compact-register.mjs && node --check src/perf-probe.mjs
         working-directory: cloudflare-radar
       - run: node --test test/*.test.mjs
         working-directory: cloudflare-radar
