@@ -305,10 +305,10 @@ export async function runStagedReview(env,ops={}){
         raw=value;
         state=next;
       }else{
-        // Another invocation won the insert. Never assume our proposed
-        // cycle is current: reread the winner and rely on the CAS below.
-        raw=await getMeta(db,STAGE_CONTROL);
-        state=parse(raw);
+        // Another invocation already established control. It may have
+        // claimed or advanced the stage while we were awaiting D1.
+        // Defer to the next Cron instead of racing the winner.
+        return {status:'overlap_skipped',sources:0};
       }
     }else{
       try{await changeControl(db,raw,value);}catch{return {status:'overlap_skipped',sources:0};}
