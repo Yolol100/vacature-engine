@@ -224,7 +224,9 @@ async function readRadarHistory(env,ops,cycle){
   const header=['observation_key','officiele_url','sollicitatiehistorie','actie'];
   for(let i=0;i<4;i++)if(chunks[i]?.[0]?.[0]!==header[i])throw new Error('Radar header mismatch');
   const listed=new Set(),strong=new Set();
-  for(let i=1;i<chunks[0].length;i++){
+  // A partly populated Radar row can contain an official URL without
+  // an observation key. It must still suppress an already-seen role.
+  for(let i=1;i<Math.max(chunks[0].length,chunks[1].length);i++){
     const key=chunks[0][i]?.[0],url=canonicalUrl(chunks[1]?.[i]?.[0]||'');
     if(key)listed.add(key);
     for(const role of strongRoleKeys(url))strong.add(role);
