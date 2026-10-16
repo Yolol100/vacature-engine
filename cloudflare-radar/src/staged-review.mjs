@@ -311,8 +311,8 @@ export async function runStagedReview(env,ops={}){
       !Number.isSafeInteger(state.attempts??0)||
       (state.attempts??0)<0||(state.attempts??0)>MAX_STAGE_RETRIES)
     return {status:'partial',errors:1,reason:'invalid_control'};
-  if(state.retry_after&&now<Number(state.retry_after))
-    return {status:'retry_wait',sources:0};
+  if(state.retry_after!==undefined&&!Number.isSafeInteger(state.retry_after))
+    return {status:'partial',errors:1,reason:'invalid_control'};
   if(now>Date.parse(state.expires_at)||now<Date.parse(state.started_at)-1000){
     try{
       await clearSnapshots(db,state.run);
@@ -320,6 +320,8 @@ export async function runStagedReview(env,ops={}){
     }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
     return {status:'partial',errors:1,reason:'expired_cycle'};
   }
+  if(state.retry_after&&now<state.retry_after)
+    return {status:'retry_wait',sources:0};
   const claim='running:'+state.run+':'+state.phase+':'+now+':'+(state.attempts||0);
   try{await changeControl(db,raw,claim);}catch{return {status:'overlap_skipped',sources:0};}
   const name=STAGES[state.phase];
