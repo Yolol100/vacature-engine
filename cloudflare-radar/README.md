@@ -166,3 +166,21 @@ De daaropvolgende strikt private, eenmalige, via D1-marker toegestane [CPU-canar
 **NO-GO blijft bindend.** De Free-limiet is 10 ms CPU per Cron. De testmarker en de nieuwe `micro:v2:`-checkpoints zijn verwijderd, alle 26 oorspronkelijke `baseline`-records zijn ongewijzigd, en de bekende geoptimaliseerde non-canary Worker-versie is onmiddellijk opnieuw gedeployed. PR #101 verwijdert ook de tijdelijke testcode van de GitHub-hoofdtak. Geen extra Cron, geen publieke interface, geen Google Sheet-writes en geen sollicitatie-inzendingen.
 
 Volgende technische stap: de omvangrijke `Vacatures`-historielezing/-snapshot in de tweede stap reduceren of veilig splitsen, zonder historische sollicitatie- of duplicaatbescherming te verzwakken; daarna eerst CPU opnieuw op echte Free-invocaties meten en pas veel later een GO-beoordeling.
+
+
+### CPU-paginatest en 32-rijenherstel, 16 oktober 2026
+
+Onder een tijdelijke private D1-marker (geen publiek endpoint, geen extra Cron, geen Sheet-/sollicitatiewrites) zijn de eerste zes fasen/subfasen van de review-only Worker daadwerkelijk op Cloudflare Free gemeten:
+
+| UTC | Fase | CPU |
+|---|---|---:|
+| 16:45:08 | `source_gate` | 8 ms |
+| 16:46:06 | `vacancy_history` ID-grenscontrole | 9 ms |
+| 16:47:06 | Geschiedenis pagina 1–64 | 7 ms |
+| 16:48:04 | Geschiedenis pagina 65–128 | 9 ms |
+| 16:49:04 | Geschiedenis pagina 129–192 | 8 ms |
+| 16:50:05 | Geschiedenis pagina 193–256 | **11 ms** |
+
+Cloudflare Free is beperkt tot **10 ms CPU per Cron**; een `ok`-outcome bij 11 ms betekent niet dat de fase voldoende CPU-marge heeft. **NO-GO**. Na de overschrijding zijn de private marker en alle testcheckpoints meteen gewist en is de veilige non-canary-versie teruggezet. De 26 `baseline`-records zijn intact gebleven.
+
+Daarom is de historiepaginagrootte daarna teruggebracht van 64 naar **32 rijen per Cron**, zonder rollen, statusfiltering of historische sollicitaties weg te laten. De review-only maximumduur is daarvoor verhoogd naar 75 minuten (met cap van 1.536 ID-rijen en fout bij overschrijding); dit is geen vrijgave of gegarandeerde diensttijd. De langere verzameltijd is **niet atomair** ten opzichte van tussentijdse Google Sheets-wijzigingen: iedere latere leveringsroute moet bronstatus en sollicitatiehistorie opnieuw valideren. De overige stappen zijn nog niet op stabiele CPU-marge aangetoond; regelmatige productie blijft uit: `RADAR_ENABLED=0`, `RADAR_PIPELINE_MODE=off`. Geen activering zonder aanvullende runtime-metingen.
