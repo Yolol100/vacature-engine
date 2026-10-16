@@ -558,7 +558,7 @@ test('single-query assembly fails closed if any D1 page is missing',async()=>{
   const h=harness({extraVacancies:70});h.ops.pagedVacancy=true;
   await runStagedReview(h.env,h.ops);h.advance(60000);
   await runStagedReview(h.env,h.ops);
-  for(let i=0;i<3;i++){
+  for(let i=0;i<5;i++){
     h.advance(60000);
     assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
   }
