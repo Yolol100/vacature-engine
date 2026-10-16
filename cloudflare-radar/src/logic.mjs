@@ -9,24 +9,34 @@ const APPLIED=new Set(['submitted','applied','screen','interview','assessment','
 const ALREADY_KNOWN=new Set(['seen','shown','submitted','applied','screen','interview','assessment','final','offer','rejected','withdrawn','closed','excluded_user_preference','excluded']);
 const INTEREST=/\b(wordpress|woocommerce|elementor|gutenberg|website|web[\s-]?(?:design(?:er|ing)?|develop(?:er|ment)?|engineer(?:ing)?|performance)|webdesign|webdevelopment|php[\s-]?(?:developer|engineer|programmer)|full[\s-]?stack|software[\s-]?(?:engineer|developer)|applied[\s-]?ai|product[\s-]?design(?:er|ing)?|design[\s-]?systems?|core[\s-]?web[\s-]?vitals?|ui[\s-]?design(?:er|ing)?|react|next\.js|front[\s-]?end|ui\/ux|ux\/ui|ux|accessibility|automation|automations|workflow|workflows|integrations?|n8n|zapier|make\.com|no[\s-]?code|cms|ai[\s-]?agent|technical[\s-]?seo)\b/i;
 
-export function canonicalUrl(raw) {
-  if(typeof raw!=='string'||!raw.trim())return '';
+// A role previously parsed the same URL twice (canonicalize + inspect).
+// Keep the exact canonicalization rules, using one validated URL instance.
+function normalizedUrl(raw){
+  if(typeof raw!=='string'||!raw.trim())return null;
   try{
     const url=new URL(raw.trim());
-    if(url.protocol!=='https:'||url.username||url.password)return '';
+    if(url.protocol!=='https:'||url.username||url.password)return null;
     url.hash='';
-    for(const key of [...url.searchParams.keys()])if(key.toLowerCase().startsWith('utm_')||TRACKING.has(key.toLowerCase()))url.searchParams.delete(key);
+    for(const key of [...url.searchParams.keys()]){
+      if(key.toLowerCase().startsWith('utm_')||TRACKING.has(key.toLowerCase()))
+        url.searchParams.delete(key);
+    }
     url.pathname=url.pathname.replace(/\/+$/,'')||'/';
     url.hostname=url.hostname.toLowerCase();
-    return url.toString().replace(/\/$/,'');
-  }catch{return '';}
+    return url;
+  }catch{return null;}
+}
+function canonicalString(url){return url.toString().replace(/\/$/,'');}
+export function canonicalUrl(raw) {
+  const url=normalizedUrl(raw);
+  return url?canonicalString(url):'';
 }
 // Never treat a generic careers URL as a strong duplicate key.
 // Provider-derived keys allow /apply variants and canonical ATS URL forms to match.
 export function strongRoleKeys(raw) {
-  const url=canonicalUrl(raw);
-  if(!url)return [];
-  const u=new URL(url),host=u.hostname.toLowerCase(),segments=u.pathname.split('/').filter(Boolean);
+  const u=normalizedUrl(raw);
+  if(!u)return [];
+  const url=canonicalString(u),host=u.hostname.toLowerCase(),segments=u.pathname.split('/').filter(Boolean);
   const keys=new Set();
   let ats='';
   if((host==='jobs.lever.co'||host==='jobs.eu.lever.co')&&segments.length>=2)
@@ -116,7 +126,9 @@ export function buildRegisterIndex(vacatures,applications,events){
   return {known,applied};
 }
 export function matchRegister(job,index){
-  const keys=new Set([...strongRoleKeys(job.url),...strongRoleKeys(job.source_url)]);
+  const keys=new Set(strongRoleKeys(job.url));
+  // ATS normalization already assigns source_url=url; avoid duplicate parsing.
+  if(job.source_url!==job.url)for(const key of strongRoleKeys(job.source_url))keys.add(key);
   if(job.source_id&&job.source_job_id){
     keys.add('ats:'+job.source_id+':'+String(job.identity||'').split(':').slice(1,-1).join(':').toLowerCase()+':'+String(job.source_job_id).toLowerCase());
   }
