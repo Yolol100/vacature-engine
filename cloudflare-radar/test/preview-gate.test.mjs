@@ -3,34 +3,30 @@ import assert from 'node:assert/strict';
 import worker from '../src/index.mjs';
 
 class ReadOnlyMetadata {
-  constructor(){this.meta=new Map();this.reads=0;}
-  prepare(sql){
-    assert.match(sql,/^SELECT value FROM radar_metadata/);
-    return {bind:key=>({first:async()=>{this.reads++;return this.meta.has(key)?{value:this.meta.get(key)}:null;}})};
-  }
+  constructor(){this.reads=0;}
+  prepare(){this.reads++;throw new Error('Disabled worker must never open D1');}
 }
-test('no unarmed private canary can start a Cron while RADAR_ENABLED=0',async()=>{
+test('disabled settings cannot read D1 or schedule a micro-pipeline',async()=>{
   const db=new ReadOnlyMetadata(),ctx={calls:0,waitUntil(){this.calls++;}};
-  const env={RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',RADAR_DB:db};
-  await worker.scheduled({},env,ctx);
+  for(const settings of [
+    {RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off'},
+    {RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'staged_review'},
+    {RADAR_ENABLED:'1',RADAR_PIPELINE_MODE:'off'},
+    {RADAR_ENABLED:'1'},
+    {RADAR_ENABLED:'0'}
+  ]){
+    await worker.scheduled({}, {...settings,RADAR_DB:db}, ctx);
+  }
   assert.equal(ctx.calls,0);
-  assert.equal(db.reads,1);
-  db.meta.set('micro:v1:preview_once','not-a-valid-request');
-  await worker.scheduled({},env,ctx);
-  assert.equal(ctx.calls,0);
-  db.meta.set('micro:v1:preview_once','expired_preview_01:'+String(Date.now()-60000));
-  await worker.scheduled({},env,ctx);
-  assert.equal(ctx.calls,0);
+  assert.equal(db.reads,0);
 });
-test('completed canary cannot automatically start a second D1 cycle',async()=>{
+test('old preview marker is inert even when present in D1',async()=>{
   const db=new ReadOnlyMetadata(),ctx={calls:0,waitUntil(){this.calls++;}};
-  const env={RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',RADAR_DB:db};
-  db.meta.set('micro:v1:preview_once','preview_once_20261016:'+String(Date.now()+5*60000));
-  db.meta.set('micro:v1:control',JSON.stringify({version:1,status:'done',run:'cycle_01'}));
-  await worker.scheduled({},env,ctx);
+  await worker.scheduled({}, {RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',RADAR_DB:db}, ctx);
   assert.equal(ctx.calls,0);
+  assert.equal(db.reads,0);
 });
-test('no HTTP endpoint becomes available through the canary',async()=>{
-  const r=await worker.fetch();
-  assert.equal(r.status,404);
+test('no public HTTP endpoint',async()=>{
+  const result=await worker.fetch();
+  assert.equal(result.status,404);
 });
