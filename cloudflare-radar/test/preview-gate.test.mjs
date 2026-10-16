@@ -26,6 +26,17 @@ test('old preview marker is inert even when present in D1',async()=>{
   assert.equal(ctx.calls,0);
   assert.equal(db.reads,0);
 });
+test('review-only scheduled path skips redundant health DB I/O',async()=>{
+  const db=new ReadOnlyMetadata();
+  let pending;
+  const ctx={waitUntil(p){pending=p;}};
+  await worker.scheduled({},{
+    RADAR_ENABLED:'1',RADAR_PIPELINE_MODE:'staged_review',RADAR_DB:db
+  },ctx);
+  assert.ok(pending,'staged runner must be scheduled');
+  await pending;
+  assert.equal(db.reads,0,'missing required bindings must fail before any health D1 read');
+});
 test('no public HTTP endpoint',async()=>{
   const result=await worker.fetch();
   assert.equal(result.status,404);
