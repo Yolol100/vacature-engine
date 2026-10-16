@@ -6,9 +6,9 @@ import {
   matchRegister,preliminaryInterest,strongRoleKeys
 } from './logic.mjs';
 
-export const STAGE_CONTROL='micro:v1:control';
-export const STAGE_RECEIPT='micro:v1:receipt';
-export const STAGE_CURSOR='micro:v1:cursor';
+export const STAGE_CONTROL='micro:v2:control';
+export const STAGE_RECEIPT='micro:v2:receipt';
+export const STAGE_CURSOR='micro:v2:cursor';
 export const STAGES=Object.freeze([
   'source_gate','vacancy_history','application_rows','event_rows',
   'application_index','radar_history','official_ats','candidate_screen',
@@ -44,7 +44,7 @@ async function changeControl(db,expected,next) {
 function parse(raw) {
   try {return JSON.parse(raw);} catch {return null;}
 }
-function snapshotName(cycle,step){return 'micro:v1:snapshot:'+cycle+':'+step;}
+function snapshotName(cycle,step){return 'micro:v2:snapshot:'+cycle+':'+step;}
 async function clearSnapshots(db,cycle){
   for(const stage of STAGES.slice(0,-1)){
     await db.prepare('DELETE FROM radar_metadata WHERE name=?')
@@ -54,7 +54,7 @@ async function clearSnapshots(db,cycle){
 
 function makeCycle(now,cursor) {
   return {
-    version:1,run:'cycle_'+now+'_'+cursor,phase:0,cursor,
+    version:2,run:'cycle_'+now+'_'+cursor,phase:0,cursor,
     started_at:new Date(now).toISOString(),expires_at:new Date(now+TTL_MS).toISOString()
   };
 }
@@ -198,7 +198,7 @@ async function screenCandidates(db,cycle,now){
     });
     else throw new Error('Too many source jobs');
   }
-  return {version:1,cycle,source:source.source,status:'review_ready',
+  return {version:2,cycle,source:source.source,status:'review_ready',
     screened_at:new Date(now).toISOString(),
     observations:poll.observations,previously_observed:poll.already_known,
     rejected:out,review_count:candidates.length,candidates,
@@ -247,7 +247,7 @@ export async function runStagedReview(env,ops={}){
     raw=await getMeta(db,STAGE_CONTROL);
     state=parse(raw);
   }
-  if(!state||state.version!==1||!Number.isInteger(state.phase)||
+  if(!state||state.version!==2||!Number.isInteger(state.phase)||
       state.phase<0||state.phase>=STAGES.length||
       !/^cycle_\d+_\d+$/.test(state.run||''))
     return {status:'partial',errors:1,reason:'invalid_control'};
@@ -282,7 +282,7 @@ export async function runStagedReview(env,ops={}){
     }else await storeStage(db,state.run,name,result);
     const finished=name==='review_only';
     const next=finished?JSON.stringify({
-      status:'done',version:1,run:state.run,finished_at:new Date(now).toISOString(),
+      status:'done',version:2,run:state.run,finished_at:new Date(now).toISOString(),
       source:result.source,review_count:result.review_count
     }):JSON.stringify({...state,phase:state.phase+1});
     await changeControl(db,claim,next);
@@ -293,7 +293,7 @@ export async function runStagedReview(env,ops={}){
     const reason=saneError(error);
     try {
       await clearSnapshots(db,state.run);
-      await putMeta(db,'micro:v1:last_failure',{cycle:state.run,phase:name,reason,
+      await putMeta(db,'micro:v2:last_failure',{cycle:state.run,phase:name,reason,
         at:new Date(now).toISOString()});
       await changeControl(db,claim,'failed:'+state.run+':'+name);
     }catch {
