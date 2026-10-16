@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
-import {tick,cpuReadOnlyTick} from '../src/index.mjs';
+import {tick} from '../src/index.mjs';
 import {REGISTER_COMPACT_RANGES} from '../src/compact-register.mjs';
 
 class FakeD1{
@@ -356,32 +356,4 @@ test('empty first ATS response cannot seed baseline and mislabel recovered vacan
     assert.equal(db.observations.get('lever:kinsta:returned-original').status,'baseline');
     assert.equal(emitted.length,0);
   }finally{globalThis.fetch=originalFetch;}
-});
-
-test('CPU probe reads real auth, register, radar, ATS and D1 without business writes',async()=>{
-  const saved=globalThis.fetch,db=new FakeD1();
-  let writes=0,reads=0;
-  globalThis.fetch=async(input,options={})=>{
-    const url=String(input);
-    if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'cpu-test-token',expires_in:3600});
-    if(url.includes('values:batchGet')&&url.includes('register-demo')){reads++;return registerBatchResponse(url);}
-    if(url.includes('values:batchGet')&&url.includes('radar-demo')){
-      reads++;return Response.json({valueRanges:[{values:[['observation_key']]},
-        {values:[['officiele_url']]},{values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
-    }
-    if(url.includes('api.lever.co/v0/postings/kinsta')){reads++;return Response.json([mkjob('original')]);}
-    writes++;throw Error('CPU benchmark must not make any Sheets write');
-  };
-  try{
-    const result=await cpuReadOnlyTick({RADAR_ENABLED:'0',RADAR_DB:db,
-      GOOGLE_SERVICE_ACCOUNT_JSON:JSON.stringify({client_email:'local-test@example.org',private_key:privateKey}),
-      VACATURE_REGISTER_ID:'register-demo',RADAR_RESULT_ID:'radar-demo'},'lever:kinsta');
-    assert.equal(result.status,'ok');
-    assert.equal(result.observations,1);
-    assert.equal(reads,3);
-    assert.equal(writes,0);
-    assert.equal(db.observations.size,0);
-    assert.equal(db.meta.size,0);
-    await assert.rejects(cpuReadOnlyTick({RADAR_ENABLED:'1',RADAR_DB:db},'lever:kinsta'),/Read-only prerequisites/);
-  }finally{globalThis.fetch=saved;}
 });

@@ -4,7 +4,6 @@ import {
 } from './logic.mjs';
 import {monitoredTick,safeDiagnosticError} from './health.mjs';
 import {REGISTER_COMPACT_RANGES,expandRegisterRanges} from './compact-register.mjs';
-import {runPrivateCpuProbe} from './perf-probe.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
 const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
@@ -298,64 +297,11 @@ export async function tick(env){
       applied_reconciled:changes.filter(x=>x.range.includes('!N')).length,errors:metrics.errors.length};
   }finally{await unlock(env.RADAR_DB,lease);}
 }
-// Temporary, strictly read-only measurement: actual Google + ATS + duplicate-index path.
-// No new D1 observations, no Sheets writes, no application state changes.
-export async function cpuReadOnlyTick(env,requestedInstance){
-  if(env.RADAR_ENABLED!=='0'||!env.RADAR_DB||
-     !env.GOOGLE_SERVICE_ACCOUNT_JSON||!env.VACATURE_REGISTER_ID||!env.RADAR_RESULT_ID)
-    throw new Error('Read-only prerequisites not met');
-  const token=await accessToken(env);
-  const [sourcesRows,vacancyRows,applicationRows,eventRows]=expandRegisterRanges(
-    await readRanges(env.VACATURE_REGISTER_ID,REGISTER_COMPACT_RANGES,token));
-  const [keyRows,urlRows,statusRows,actionRows]=await readRanges(env.RADAR_RESULT_ID,[
-    "'Nieuwe vacatures'!A1:A","'Nieuwe vacatures'!F1:F",
-    "'Nieuwe vacatures'!N1:N","'Nieuwe vacatures'!R1:R"
-  ],token);
-  assertSheetHeaders(sourcesRows,vacancyRows,applicationRows,eventRows,
-    keyRows,urlRows,statusRows,actionRows);
-  const register=buildRegisterIndex(vacancyRows,applicationRows,eventRows);
-  const radar=rowInfo(keyRows,urlRows,statusRows,actionRows);
-  const active=activeSourcePairs(sourcesRows,PILOT_SOURCES);
-  const source=active.find(x=>x.source_id+':'+x.account===requestedInstance);
-  if(!source)throw new Error('Inactive or unregistered test source');
-  const jobs=await publicJobs(source);
-  const existing=await existingKeys(env.RADAR_DB,jobs);
-  let novel=0;
-  for(const job of jobs){
-    if(existing.has(job.identity))continue;
-    const known=matchRegister(job,register);
-    const same=radar.listed.has(job.identity)||
-      strongRoleKeys(job.url).some(key=>radar.strongURLs.has(key));
-    preliminaryInterest(job);
-    if(!known.known&&!known.applied&&!same)novel++;
-  }
-  // Include the safe outbox scan path in the benchmark without delivering any row.
-  const pending=await pendingEntries(env.RADAR_DB);
-  for(const entry of pending){
-    const url=canonicalUrl(entry.canonical_url);
-    const known=matchRegister({url,source_url:url},register);
-    strongRoleKeys(url).some(key=>radar.strongURLs.has(key));
-    void known;
-  }
-  return {status:'ok',source:requestedInstance,observations:jobs.length,
-    already_known:existing.size,new_candidates:novel};
-}
-
 export default{
   async scheduled(_event,env,ctx){
     // Production remains explicitly off until all acceptance gates and owner approval.
     // No D1, Google or ATS calls when disabled.
-    if(env.RADAR_ENABLED!=='1'){
-      ctx.waitUntil(runPrivateCpuProbe(env,{
-        readOnlyTick:cpuReadOnlyTick,sources:PILOT_SOURCES
-      }).then(outcome=>{
-        if(outcome.status!=='disabled')console.log(JSON.stringify(outcome));
-      }).catch(error=>{
-        console.error('vacature_radar_private_cpu_probe_failed:'+safeDiagnosticError(error));
-        throw error;
-      }));
-      return;
-    }
+    if(env.RADAR_ENABLED!=='1')return;
     ctx.waitUntil(monitoredTick(env,tick).then(outcome=>{
       console.log(JSON.stringify(outcome));
     }).catch(error=>{
