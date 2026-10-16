@@ -44,24 +44,18 @@ function parse(raw) {
   try {return JSON.parse(raw);} catch {return null;}
 }
 function snapshotName(cycle,step){return 'micro:v1:snapshot:'+cycle+':'+step;}
+async function clearSnapshots(db,cycle){
+  for(const stage of STAGES.slice(0,-1)){
+    await db.prepare('DELETE FROM radar_metadata WHERE name=?')
+      .bind(snapshotName(cycle,stage)).run();
+  }
+}
+
 function makeCycle(now,cursor) {
   return {
     version:1,run:'cycle_'+now+'_'+cursor,phase:0,cursor,
     started_at:new Date(now).toISOString(),expires_at:new Date(now+TTL_MS).toISOString()
   };
-}
-function join(rows,columns) {
-  const n=Math.max(0,...columns.map(x=>rows[x][0].length));
-  const output=[];
-  for(let i=0;i<n;i++){
-    const next=[];
-    for(const [offset,width,chunk] of columns){
-      const values=rows[chunk]?.[i]||[];
-      for(let j=0;j<width;j++)if(values[j]!==undefined)next[offset+j]=values[j];
-    }
-    output.push(next);
-  }
-  return output;
 }
 function mergeColumns(chunks,columns) {
   const n=Math.max(0,...chunks.map(x=>x.length));
@@ -202,6 +196,17 @@ export async function runStagedReview(env,ops={}){
   const db=env.RADAR_DB,now=ops.now?.()??Date.now();
   let raw=await getMeta(db,STAGE_CONTROL);
   let state=parse(raw);
+  // A terminated Free-tier invocation leaves a claimed stage; never rerun it.
+  // Purge temporary private snapshots after the deadline instead.
+  if(raw?.startsWith('running:')){
+    const id=/^running:(cycle_(\d+)_\d+):\d+$/.exec(raw);
+    if(!id||now-Number(id[2])<=TTL_MS)return {status:'overlap_skipped',sources:0};
+    try{
+      await clearSnapshots(db,id[1]);
+      await changeControl(db,raw,'failed:'+id[1]+':interrupted');
+    }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
+    return {status:'partial',errors:1,reason:'interrupted_cycle'};
+  }
   if(!raw||state?.status==='done'){
     if(raw&&now-Date.parse(state.finished_at||'')<60000)return {status:'cooldown',sources:0};
     const cursor=Number(await getMeta(db,STAGE_CURSOR)||0);
@@ -220,8 +225,13 @@ export async function runStagedReview(env,ops={}){
       state.phase<0||state.phase>=STAGES.length||
       !/^cycle_\d+_\d+$/.test(state.run||''))
     return {status:'partial',errors:1,reason:'invalid_control'};
-  if(now>Date.parse(state.expires_at)||now<Date.parse(state.started_at)-1000)
+  if(now>Date.parse(state.expires_at)||now<Date.parse(state.started_at)-1000){
+    try{
+      await clearSnapshots(db,state.run);
+      await changeControl(db,raw,'failed:'+state.run+':expired');
+    }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
     return {status:'partial',errors:1,reason:'expired_cycle'};
+  }
   const claim='running:'+state.run+':'+state.phase;
   try{await changeControl(db,raw,claim);}catch{return {status:'overlap_skipped',sources:0};}
   const name=STAGES[state.phase];
@@ -238,11 +248,8 @@ export async function runStagedReview(env,ops={}){
       await putMeta(db,STAGE_RECEIPT,result);
       await db.prepare('INSERT INTO radar_metadata(name,value) VALUES(?,?) ON CONFLICT(name) DO UPDATE SET value=excluded.value')
         .bind(STAGE_CURSOR,String(state.cursor+1)).run();
-      // Clear temporary snapshots after a successful classification; only proof remains.
-      for(const stage of STAGES.slice(0,-1)){
-        await db.prepare('DELETE FROM radar_metadata WHERE name=?')
-          .bind(snapshotName(state.run,stage)).run();
-      }
+      // Clear temporary private snapshots; retain only the reviewed receipt.
+      await clearSnapshots(db,state.run);
     }else await storeStage(db,state.run,name,result);
     const finished=name==='review_only';
     const next=finished?JSON.stringify({
@@ -256,6 +263,7 @@ export async function runStagedReview(env,ops={}){
   }catch(error){
     const reason=saneError(error);
     try {
+      await clearSnapshots(db,state.run);
       await putMeta(db,'micro:v1:last_failure',{cycle:state.run,phase:name,reason,
         at:new Date(now).toISOString()});
       await changeControl(db,claim,'failed:'+state.run+':'+name);
