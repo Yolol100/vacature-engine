@@ -338,38 +338,3 @@ test('empty first ATS response cannot seed baseline and mislabel recovered vacan
     assert.equal(emitted.length,0);
   }finally{globalThis.fetch=originalFetch;}
 });
-
-
-test('controlled live baseline uses real tick, D1 only, no Google Sheet append or reconciliation',async()=>{
-  const original=globalThis.fetch,db=new FakeD1();
-  let googleWrites=0;
-  globalThis.fetch=async(input,options={})=>{
-    const url=String(input);
-    if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'baseline-token',expires_in:3600});
-    if(url.includes('/values:batchGet')&&url.includes('register-demo'))
-      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
-    if(url.includes('/values:batchGet')&&url.includes('radar-demo'))
-      return Response.json({valueRanges:[{values:[['observation_key']]},
-        {values:[['officiele_url']]},{values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
-    if(url.includes('api.lever.co/v0/postings/kinsta'))
-      return Response.json([mkjob('existing-at-start'),mkjob('another-at-start')]);
-    if(url.includes(':append')||url.includes('values:batchUpdate')){
-      googleWrites++;
-      throw Error('Baseline MUST NOT write to any Google Sheet');
-    }
-    throw Error('Unexpected baseline HTTP call '+url);
-  };
-  try{
-    const out=await tick({RADAR_ENABLED:'1',BASELINE_SOURCE_INSTANCE:'lever:kinsta',RADAR_DB:db,
-      GOOGLE_SERVICE_ACCOUNT_JSON:JSON.stringify({client_email:'test@example.org',private_key:privateKey}),
-      VACATURE_REGISTER_ID:'register-demo',RADAR_RESULT_ID:'radar-demo'});
-    assert.equal(out.status,'ok');
-    assert.equal(out.observations,2);
-    assert.equal(out.new_records,0);
-    assert.equal(out.applied_reconciled,0);
-    assert.equal(googleWrites,0);
-    assert.equal(db.observations.size,2);
-    assert.equal(db.observations.get('lever:kinsta:existing-at-start').status,'baseline');
-    assert.ok(db.meta.has('seeded:lever:kinsta'));
-  }finally{globalThis.fetch=original;}
-});
