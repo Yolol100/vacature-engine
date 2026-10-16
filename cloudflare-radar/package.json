@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "check": "node --check src/index.mjs && node --check src/logic.mjs && node --check src/selftest.mjs"
+    "check": "node --check src/index.mjs && node --check src/logic.mjs && node --check src/selftest.mjs && node --check src/reliability.mjs && node --check src/health.mjs"
   },
   "devDependencies": {
     "wrangler": "4.151.0"
