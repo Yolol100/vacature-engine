@@ -130,3 +130,23 @@ Aanleiding is de live GraphQL-afwijking **10,685/11,297 ms** terwijl 16-rijenpag
 De nieuwe `src/review-worker.mjs` is geen extra scanner/Worker of scheduler. Het is de enige deployment-ingang van de bestaande `vacature-radar`; hij importeert uitsluitend bestaande review-only processor, bestaande gezondheidssanitizer en hergebruikte Google/ATS-leeshelpers. `src/index.mjs` behoudt de oudere `tick` voor tests als compatibiliteitsmodule, maar is **niet** de Worker-`main`. Helpers zijn gedeeld zodat auth-, bron- en idempotentiegedrag niet gedupliceerd worden. Het testschema verifieert exact één Cron, beide productieschakelaars op uit, geen publiek endpoint, afwezigheid van import uit de legacy-ingang en functiegelijkheid bij de OAuth-/Sheets-tests.
 
 Deze refactor lost potentieel onnodige koude V8-compile/initialisatiekosten op maar **garandeert geen reductie van HTTP-, Google-serviceaccountsleutel- of D1-CPU**. Vrijgave vereist vooraf een kleinere, groene bundle, vervolgens een strikt aflopende afgeschermde real-world CPU-proef met log én GraphQL (per datetime één invocation), de originele 26 baselinewaarnemingen, geen Google-Sheetrijen, alle foutscenario's en rollback bij **>=10ms**. Productieradar blijft NO-GO.
+
+
+## Review-only slankere Worker-bundle — onafhankelijke live CPU-test 20:41–20:44 UTC
+
+[PR #121](https://github.com/Yolol100/vacature-engine/pull/121) ontkoppelt de oude aflevercode van de enige actieve `vacature-radar`-bundel. De Wrangler dry-run zakte aantoonbaar van **57,05 / 14,54 KiB** (raw / gzip) naar **42,28 / 11,10 KiB** (ruw / gzip), circa 26% kleiner. Alle 84 Radar-tests, CodeQL en algemene CI slaagden. De productievariabelen bleven `RADAR_ENABLED=0` / `RADAR_PIPELINE_MODE=off`.
+
+Een nieuwe uitsluitend *read-only* test via [PR #122](https://github.com/Yolol100/vacature-engine/pull/122) gebruikte een exact beperkte privé-D1-marker (`lean-bundle-cpu-20261016`, uiterlijk 20:58 UTC) en dezelfde bestaande Cron. Cloudflare GraphQL `workersInvocationsAdaptive` (één request per UTC-tijdstip; microseconden omgerekend naar ms) liet de volgende echte CPU-waarden zien:
+
+| UTC | Stapscope | CPU-tijd | Uitkomst |
+|---|---|---:|---|
+| 20:41 | D1-only bootstrap | **4,848 ms** | onder limiet |
+| 20:42 | **live Google-broncontrole / OAuth** | **11,700 ms** | **HARD NO-GO** |
+| 20:43 | historie-ID-grenscontrole | **9,471 ms** | onder limiet, nauwelijks marge |
+| 20:44 | eerste historiepagina | **7,407 ms** | onder limiet |
+
+Iedere minuut had GraphQL `errors=0`. **De bundle verkleinen heeft de CPU-overschrijding in de Google-broncontrole niet weggenomen.** Dit is geen voltooide reviewcyclus en er zijn geen latere ATS-/index-/reviewfasen live bewezen. Een afzonderlijke profilerule moet externe OAuth-key-import/signature, isolate-cold-start en Sheets-parsing kwantificeren. Een constant <10ms bij iedere koude uitvoering is onder de huidige Free-tierbeperking niet bewezen of te garanderen.
+
+**STOP/rollback daadwerkelijk uitgevoerd:** de tijdelijke D1-toestemming ingetrokken op **20:45:13 UTC**, bekende non-canary Worker `8f85bda0-bf95-4a47-ac37-425b101ab067` hersteld via Cloudflare deployment `f883c391-08e1-4acd-882b-31b37ee92700`, alle vier test-eigen `micro:v2:`-records verwijderd, en oorspronkelijke **26 baselinewaarnemingen** onaangetast. De [cleanup-PR #123](https://github.com/Yolol100/vacature-engine/pull/123) verwijdert de tijdelijke diagnostic-code en -variabele na groene CI. Geen automatische sollicitaties, geen Google-output, geen nieuwe Cron of betaalde hulpbron.
+
+**Vervolgstatus: BLOCKED / NO-GO voor productie onder Cloudflare Free.** Wel een bewezen, duurzame bundle-optimalisatie. De volgende audit moet de latere fasen en eventuele D1-transactionele checkpointverbetering afzonderlijk uitzoeken; geen nieuwe testmarker of tweede scanner zonder gecontroleerde veilige route.
