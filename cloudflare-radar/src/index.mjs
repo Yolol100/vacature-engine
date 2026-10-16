@@ -2,9 +2,7 @@ import {
   PILOT_SOURCES,adapterUrl,buildRegisterIndex,canonicalUrl,chooseSource,cooldownMinutes,
   isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,sourceActive,strongRoleKeys,toRadarRow
 } from './logic.mjs';
-import {runOneTimeSmokeTest} from './selftest.mjs';
-import {runReliabilityProbe,safeDiagnosticError} from './reliability.mjs';
-import {monitoredTick} from './health.mjs';
+import {monitoredTick,safeDiagnosticError} from './health.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
 const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
@@ -80,14 +78,6 @@ async function updateCells(id,changes,token){
   if(!resp.ok)throw new Error('Sheets update HTTP '+resp.status);
   const json=await resp.json();
   if(Number(json.totalUpdatedCells)!==changes.length)throw new Error('Incomplete Sheets reconciliation');
-}
-async function clearSmokeCell(id,range,token){
-  const uri='https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+':clear';
-  const resp=await fetch(uri,{
-    method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
-    body:'{}',signal:AbortSignal.timeout(TIMEOUT_MS)
-  });
-  if(!resp.ok)throw new Error('Sheets clear HTTP '+resp.status);
 }
 function assertSheetHeaders(registry,vacancies,applications,events,keys,urls,statuses,actions){
   if(registry?.[0]?.[0]!=='source_id'||vacancies?.[0]?.[0]!=='vacancy_id'||
@@ -308,17 +298,11 @@ export async function tick(env){
 }
 export default{
   async scheduled(_event,env,ctx){
-    const ops={
-      accessToken,readRanges,updateCells,clearCell:clearSmokeCell,publicJobs,
-      assertSheetHeaders,PILOT_SOURCES,sourceActive
-    };
-    const work=env.RADAR_ENABLED==='1'
-      ? monitoredTick(env,tick)
-      : runOneTimeSmokeTest(env,ops).then(outcome=>
-        outcome.status==='disabled'?runReliabilityProbe(env,ops):outcome);
-    ctx.waitUntil(work.then(outcome=>{
-      if(outcome.status!=='disabled'&&outcome.status!=='already_claimed')
-        console.log(JSON.stringify(outcome));
+    // Production remains explicitly off until all acceptance gates and owner approval.
+    // No D1, Google or ATS calls when disabled.
+    if(env.RADAR_ENABLED!=='1')return;
+    ctx.waitUntil(monitoredTick(env,tick).then(outcome=>{
+      console.log(JSON.stringify(outcome));
     }).catch(error=>{
       console.error('vacature_radar_poll_failed:'+safeDiagnosticError(error));
       throw error;
