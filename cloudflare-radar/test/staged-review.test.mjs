@@ -158,6 +158,18 @@ test('nine bounded Cron stages classify sources without writing business records
   assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).status,'done');
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
 });
+test('private CPU canary stops after one completed review cycle',async()=>{
+  const h=harness();h.ops.singleCycle=true;
+  for(let i=0;i<STAGES.length;i++){
+    const outcome=await runStagedReview(h.env,h.ops);
+    assert.equal(outcome.status,'ok');
+    h.advance(60000);
+  }
+  const again=await runStagedReview(h.env,h.ops);
+  assert.equal(again.status,'canary_completed');
+  assert.equal(h.events.filter(e=>e.startsWith('ats:')).length,1);
+  assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
+});
 test('an inactive employer blocks the source before any ATS access',async()=>{
   const h=harness({blockEmployer:true});
   const r=await runStagedReview(h.env,h.ops);
