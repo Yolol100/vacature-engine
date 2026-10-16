@@ -54,9 +54,9 @@ function parse(raw) {
 function snapshotName(cycle,step){return 'micro:v2:snapshot:'+cycle+':'+step;}
 async function clearSnapshots(db,cycle){
   // One indexed D1 delete covers both ordinary and bounded page checkpoints.
-  // Cycle IDs are generated from decimal timestamps/cursors (no LIKE wildcards).
-  await db.prepare('DELETE FROM radar_metadata WHERE name LIKE ?')
-    .bind('micro:v2:snapshot:'+cycle+':%').run();
+  // GLOB treats the underscores in cycle IDs literally, unlike SQL LIKE.
+  await db.prepare('DELETE FROM radar_metadata WHERE name GLOB ?')
+    .bind('micro:v2:snapshot:'+cycle+':*').run();
 }
 
 function makeCycle(now,cursor,ttl=TTL_MS) {
