@@ -44,7 +44,7 @@ Provide an honest phase-by-phase verification ledger and measured CPU distributi
 
 ## Execution gates
 1. **Discover and baseline:** source register + skills + repo + Library + prior context + official docs. Verify bindings, D1 counts, Sheet headers, old CPU timestamps.
-2. **Bound history:** an ID-only bounds read, followed by one at-most-64-row page per Cron and D1 page checkpoints. Keep exact row offsets and blank gaps; fail closed at capacity. Do not create a review receipt until all pages are reconstructed. Preserve v2 fallback tests. Increase only the review-only paged cycle lease to cover the bounded work.
+2. **Bound history:** an ID-only bounds read, followed by one at-most-32-row page per Cron and D1 page checkpoints. Keep exact row offsets and blank gaps; fail closed at capacity. Do not create a review receipt until all pages are reconstructed. Preserve v2 fallback tests. Increase only the review-only paged cycle lease to cover the bounded work.
 3. **Security and functional tests:** old invariants (no submissions or Sheets writes, race claim, retry limits, 429, no duplicate candidates), new paging coverage, gaps, header errors, stale control and cleanup. All CI green before merge.
 4. **Measure privately:** short-lived D1-only canary, exactly one review cycle; Cloudflare logs per invocation using `$workers.cpuTimeMs`, not `performance.now()`. Stop on any overrun/failed integrity gate.
 5. **Iterate bottlenecks:** if OAuth/bounds or index construction exceeds budget, split again, cache imported CryptoKey only inside an isolate without persisting secrets, and/or index incrementally across checkpoints. Review any tradeoffs in freshness (multi-minute Sheet reads are not atomic).
@@ -62,3 +62,8 @@ Every stage has repeated live samples strictly below 10 ms, with practical
 margin below 7 ms at p99 where measurable; failures halt before any output.
 Only then consider a separate approval for a read-only operational review.
 Automatic Sheet writes and application submissions remain independently blocked.
+
+## Private runtime finding (16 October 2026)
+The first paged CPU canary used up to 64 history rows per Cron. Real Cloudflare logs read 8 ms (source gate), 9 ms (ID bound), then 7, 9, 8 and **11 ms** for pages starting with rows 1, 65, 129 and 193. The 11 ms page was a Free CPU **NO-GO**, regardless of the `ok` outcome. All private `micro:v2` marker and snapshots were removed, the 26 baseline records stayed intact, and the pre-canary optimized version was restored.
+
+Phase 2 reduces the page maximum to 32 and allows up to a 75-minute **review-only** cycle, so that <=1536 historical rows can still be scanned across minute-by-minute checkpoints without reading them all in one CPU-heavy event. Multi-minute review snapshots are NOT proof of freshness for a future delivery. Repeat isolated runtime tests and keep radar disabled.
