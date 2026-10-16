@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
 import {tick} from '../src/index.mjs';
+import {REGISTER_COMPACT_RANGES} from '../src/compact-register.mjs';
 
 class FakeD1{
   constructor(){this.observations=new Map();this.meta=new Map();this.maxBindings=0;this.statements=0;}
@@ -62,6 +63,25 @@ const applications=[['vacancy_id','prepared_at','status','application_route','ap
 const vacancies=[['vacancy_id','status','','','','','canonical_url','official_url'],['vshown','shown','','','','','https://jobs.lever.co/kinsta/shown','']];
 const events=[['event_id','vacancy_id','occurred_at','event_type','source','status_after']];
 const mkjob=id=>({id,text:'Remote WordPress Developer',hostedUrl:'https://jobs.lever.co/kinsta/'+id,categories:{location:'Remote'}});
+function registerBatchResponse(url){
+  const sets={'Bronnen':registry,'Vacatures':vacancies,'Applications':applications,'ApplicationEvents':events};
+  const ranges=new URL(url).searchParams.getAll('ranges');
+  assert.deepEqual(ranges,REGISTER_COMPACT_RANGES);
+  const valueRanges=ranges.map(range=>{
+    const match=/^'([^']+)'!([A-Z])1:([A-Z])$/.exec(range);
+    assert.ok(match,'Unexpected register column request: '+range);
+    const rows=sets[match[1]];
+    assert.ok(rows,'Unexpected register tab: '+match[1]);
+    const start=match[2].charCodeAt(0)-65,end=match[3].charCodeAt(0)-65;
+    return {values:rows.map(row=>{
+      const chunk=[];
+      for(let i=start;i<=end;i++)chunk.push(row[i]??'');
+      return chunk;
+    })};
+  });
+  return Response.json({valueRanges});
+}
+
 const {privateKey}=generateKeyPairSync('rsa',{modulusLength:2048,privateKeyEncoding:{type:'pkcs8',format:'pem'},publicKeyEncoding:{type:'spki',format:'pem'}});
 test('bootstrap, role dedupe, subsequent application and API cooldown',async()=>{
   const saved=globalThis.fetch;
@@ -70,7 +90,7 @@ test('bootstrap, role dedupe, subsequent application and API cooldown',async()=>
     const url=String(input);
     if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'mock-token',expires_in:3600});
     if(url.includes('/values:batchGet')&&url.includes('register-demo')){
-      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+      return registerBatchResponse(url);
     }
     if(url.includes('/values:batchGet')&&url.includes('radar-demo')){
       return Response.json({valueRanges:[
@@ -146,7 +166,7 @@ test('160 job source stays within free D1 query and SQL binding limits', async()
     const url=String(input);
     if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'mock-token',expires_in:3600});
     if(url.includes('/values:batchGet')&&url.includes('register-demo'))
-      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+      return registerBatchResponse(url);
     if(url.includes('/values:batchGet')&&url.includes('radar-demo'))
       return Response.json({valueRanges:[{values:[['observation_key']]},{values:[['officiele_url']]},{values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
     if(url.includes('api.lever.co/v0/postings/kinsta'))return Response.json(jobs);
@@ -173,7 +193,7 @@ test('ambiguous Sheets append outcome is reconciled without a second vacancy row
     const url=String(input);
     if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'mock-token',expires_in:3600});
     if(url.includes('/values:batchGet')&&url.includes('register-demo')){
-      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+      return registerBatchResponse(url);
     }
     if(url.includes('/values:batchGet')&&url.includes('radar-demo')){
       return Response.json({valueRanges:[
@@ -234,7 +254,7 @@ test('schema corruption does not initialize baseline or generate false new jobs'
     const url=String(input);
     if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'test-token',expires_in:3600});
     if(url.includes('/values:batchGet')&&url.includes('register-demo')){
-      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+      return registerBatchResponse(url);
     }
     if(url.includes('/values:batchGet')&&url.includes('radar-demo')){
       return Response.json({valueRanges:[{values:[['observation_key']]},{values:[['officiele_url']]},
@@ -281,7 +301,7 @@ test('pending outbox from blocked source is never published as a new radar job',
     const request=String(input);
     if(request==='https://oauth2.googleapis.com/token')return Response.json({access_token:'fake-token',expires_in:3600});
     if(request.includes('/values:batchGet')&&request.includes('register-demo'))
-      return Response.json({valueRanges:[{values:registry},{values:vacancies},{values:applications},{values:events}]});
+      return registerBatchResponse(request);
     if(request.includes('/values:batchGet')&&request.includes('radar-demo'))
       return Response.json({valueRanges:[{values:[['observation_key']]},{values:[['officiele_url']]},
         {values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
@@ -310,8 +330,7 @@ test('empty first ATS response cannot seed baseline and mislabel recovered vacan
   globalThis.fetch=async(input,options={})=>{
     const url=String(input);
     if(url==='https://oauth2.googleapis.com/token')return Response.json({access_token:'mock-token',expires_in:3600});
-    if(url.includes('/values:batchGet')&&url.includes('register-demo'))return Response.json({valueRanges:[
-      {values:registry},{values:vacancies},{values:applications},{values:events}]});
+    if(url.includes('/values:batchGet')&&url.includes('register-demo'))return registerBatchResponse(url);
     if(url.includes('/values:batchGet')&&url.includes('radar-demo'))return Response.json({valueRanges:[
       {values:[['observation_key']]},{values:[['officiele_url']]},
       {values:[['sollicitatiehistorie']]},{values:[['actie']]}]});
