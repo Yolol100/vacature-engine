@@ -428,6 +428,7 @@ export async function runStagedReview(env,ops={}){
     }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
   }
   if(raw?.startsWith('failed:'))return {status:'halted',sources:0};
+  if(ops.singleCycle===true&&state?.status==='done')return {status:'canary_complete',sources:0};
   if(!raw||state?.status==='done'){
     if(raw&&now-Date.parse(state.finished_at||'')<60000)return {status:'cooldown',sources:0};
     const cursor=Number(await getMeta(db,STAGE_CURSOR)||0);
