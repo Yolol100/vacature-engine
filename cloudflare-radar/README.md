@@ -81,6 +81,28 @@ De door Cloudflare GraphQL beschikbare invocatie-CPU-metingen zijn onder andere 
 
 **NO-GO voor `RADAR_ENABLED=1` op Cloudflare Free:** ten minste twee gemeten leesuitvoeringen liggen fors boven de nominale 10 ms CPU/Cron-grens; zonder aantoonbare CPU-ruimte zou permanente productie onbetrouwbaar zijn. Behoud de 26 bestaande D1-baselinewaarnemingen; geen betaalde upgrade, geen R2, geen tweede Cron en geen automatische sollicitaties. Voor een volgende stap is verdere opsplitsing/architectuurverbetering en een nieuwe zelfstandige CPU-validatie nodig.
 
+## Gefaseerde Cron-architectuur (oktober 2026)
+
+**Code aanwezig, productie niet geactiveerd.** De nieuwe Worker heeft een tweede schakelaar: `RADAR_PIPELINE_MODE=off`. De bestaande `RADAR_ENABLED=0` blijft ook uit. De geplande Cron blijft exact `* * * * *`, zonder extra Worker, Queues, R2 of kosten. **Alleen beide expliciete waarden** `RADAR_ENABLED=1` én `RADAR_PIPELINE_MODE=staged_review` zouden de nieuwe verwerking starten. De oude zware `tick` kan via Cron niet per ongeluk worden gestart door alleen `RADAR_ENABLED` aan te zetten. Dit is expres een **review-only** fase: er worden geen rijen in Google Sheets geschreven, geen D1-vacaturewaarnemingen aangepast, en nooit sollicitaties verstuurd.
+
+Een cyclus bestaat uit zes afzonderlijke uitvoeringen van de bestaande eenminuut-Cron:
+
+| Minuutstap | Uit te voeren werk |
+| --- | --- |
+| 1. `source_gate` | Alleen `Bronnen` A/M lezen. Zowel de ATS-bron als de werkgever moeten actief zijn. |
+| 2. `vacancy_history` | Alleen `Vacatures` A/B en G/H lezen; bewaar de korte actuele momentopname tijdelijk in D1. |
+| 3. `application_history` | Alleen `Applications` A/C/E en `ApplicationEvents` A/B/D/F lezen; bouw exact dezelfde `known`- en `applied`-index als de bestaande deduplicatie. |
+| 4. `radar_history` | Alleen bestaande radaridentiteiten, officiële URL's en twee statuskolommen lezen. |
+| 5. `official_ats` | Één officiële Greenhouse-, Lever- of Ashby-bron lezen en bestaande D1-identiteiten controleren. Een bron zonder bewezen eerste baseline wordt niet als nieuw behandeld. |
+| 6. `review_only` | Historische sollicitaties, bronstatus en bestaande radarregels vergelijken. Sla uitsluitend de technische kandidaten en aantallen als afgeschermd D1-reviewresultaat op. |
+
+De cycluskeuze rouleert tussen de drie actieve bronparen. Hierdoor komt een bron in deze review-only opzet normaal hoogstens eenmaal per circa **18 minuten** aan bod, niet meer elke drie minuten. Dit is een bewuste vertraging om CPU-werk te verdelen, geen belofte van directe vacaturemeldingen.
+
+De D1-checkpoints gebruiken het bestaande `radar_metadata`. Iedere stap heeft een atomische claim, unieke cyclus-ID en een maximaal 12 minuten geldig venster. Een dubbel gestart, verlopen of onderbroken proces verzendt **niets** en probeert de stap niet stil opnieuw. Bij falen worden tijdelijke momentopnamen zo mogelijk verwijderd en blijft de cyclus geblokkeerd voor handmatige beoordeling. Na succesvolle beoordeling worden de tijdelijke snapshots gewist, maar blijft een beperkt reviewbewijs (`micro:v1:receipt`) bewaard. Dit bewijs bevat uitsluitend technische vacaturegegevens van de officiële bronnen; geen privé-sollicitatieteksten of privésleutels.
+
+**Nog niet gereed voor automatische aflevering.** Google Sheets ondersteunt in deze aanpak geen gegarandeerd atomische momentopname van verschillende tabbladen over meerdere Cron-minuten. Daarom zijn nieuwe sollicitaties of bronblokkades vlak na een tussentijdse controle mogelijk. Vóór er ooit nieuwe vacaturemeldingen automatisch naar de resultaten-Sheet mogen worden geschreven, is een aparte actuele eindcontrole met CPU-budget, dedupe-/afmeldregressies en expliciete vrijgave vereist. Ook moet iedere van de zes live Cron-stappen afzonderlijk onder de nominale Workers Free CPU-grens van 10 ms worden bewezen. Een succesvolle GitHub-test of een kleinere payload bewijst dat **niet**.
+
+
 ## Technisch contract
 
 - Cron: `* * * * *` UTC (één technische uitvoering per minuut, niet één controle per bron per minuut; bij drie actieve bronnen één controle per bron per circa drie minuten). Geen publicatie-SLA.
