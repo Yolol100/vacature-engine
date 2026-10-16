@@ -4,6 +4,7 @@ import {
 } from './logic.mjs';
 import {monitoredTick,safeDiagnosticError} from './health.mjs';
 import {REGISTER_COMPACT_RANGES,expandRegisterRanges} from './compact-register.mjs';
+import {runStagedReview} from './staged-review.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
 const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
@@ -299,13 +300,14 @@ export async function tick(env){
 }
 export default{
   async scheduled(_event,env,ctx){
-    // Production remains explicitly off until all acceptance gates and owner approval.
-    // No D1, Google or ATS calls when disabled.
-    if(env.RADAR_ENABLED!=='1')return;
-    ctx.waitUntil(monitoredTick(env,tick).then(outcome=>{
+    // Double gate: the existing RADAR_ENABLED flag alone cannot start the legacy CPU-heavy tick.
+    // This initial staged path is review-only: no Google Sheets or applicant writes.
+    if(env.RADAR_ENABLED!=='1'||env.RADAR_PIPELINE_MODE!=='staged_review')return;
+    const ops={accessToken,readRanges,publicJobs,existingKeys};
+    ctx.waitUntil(monitoredTick(env,enabled=>runStagedReview(enabled,ops)).then(outcome=>{
       console.log(JSON.stringify(outcome));
     }).catch(error=>{
-      console.error('vacature_radar_poll_failed:'+safeDiagnosticError(error));
+      console.error('vacature_radar_staged_failed:'+safeDiagnosticError(error));
       throw error;
     }));
   },
