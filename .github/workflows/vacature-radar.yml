@@ -1,20 +1,21 @@
 name: Vacature First-Seen Radar
 
+# Exactly one existing GitHub radar; manual only. No push, cron or schedule.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'ingestion/**'
-      - '.github/workflows/vacature-radar.yml'
-  pull_request:
-    paths:
-      - 'ingestion/**'
-      - '.github/workflows/vacature-radar.yml'
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'validate only, or scan official vacancies into the existing review queue'
+        required: true
+        type: choice
+        default: validate
+        options:
+          - validate
+          - scan
 
 concurrency:
   group: vacature-first-seen-radar
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   radar-tests:
@@ -32,7 +33,7 @@ jobs:
       - run: python -m compileall -q ingestion/src
 
   live-radar:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'scan'
     needs: radar-tests
     permissions:
       contents: write
@@ -71,6 +72,18 @@ jobs:
           python -m vacature_ingestion.workflow_state normalize-ack --path .runtime/radar-ack.json
           echo "bootstrap=$bootstrap" >> "$GITHUB_OUTPUT"
 
+      - name: Verify Google secret before any ATS or state write
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${GOOGLE_SERVICE_ACCOUNT_JSON:-}" ]]; then
+            echo "::error::Add GOOGLE_SERVICE_ACCOUNT_JSON to repository Actions secrets before scanning."
+            exit 1
+          fi
+          python -c 'import json,os; c=json.loads(os.environ["GOOGLE_SERVICE_ACCOUNT_JSON"]); assert c.get("client_email") and c.get("private_key"), "Google service account secret is invalid"'
+
       - name: Resolve active direct sources from Vacature Register
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
@@ -94,6 +107,12 @@ jobs:
           set -e
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           cat .runtime/ingest-console.json
+
+      - name: Fail closed on any failed ingestion before persisting state
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ steps.ingest.outputs.exit_code }}" = "0"
 
       - name: Build first-seen alert queue
         shell: bash
