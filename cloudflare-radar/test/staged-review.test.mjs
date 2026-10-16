@@ -18,7 +18,7 @@ class FakeD1 {
       all:async()=>{
         if(sql.startsWith('SELECT name,value FROM radar_metadata WHERE name IN (')){
           this.assemblyBatches++;
-          assert.ok(args.length<=48,'one bounded indexed D1 query, within 100 binding limit');
+          assert.ok(args.length<=96,'one bounded indexed D1 query, within 100 binding limit');
           return {results:args.filter(name=>this.meta.has(name)).map(name=>({
             name,value:this.meta.get(name)
           }))};
@@ -214,7 +214,34 @@ test('nine bounded Cron stages classify sources without writing business records
   assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).status,'done');
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
 });
-test('paged vacancy history scans every source row in bounded 32-row sheets reads',async()=>{
+test('full 353-row read-only source cycle completes via bounded Free-size pages',async()=>{
+  const h=harness({extraVacancies:350});
+  h.ops.pagedVacancy=true;h.ops.splitBootstrap=true;
+  const phases=[];
+  for(let i=0;i<50;i++){
+    const result=await runStagedReview(h.env,h.ops);
+    assert.ok(['initialized','checkpointed','ok'].includes(result.status),
+      result.reason||'unexpected phase status');
+    phases.push(result.phase);
+    if(result.phase==='review_only')break;
+    h.advance(60000);
+  }
+  assert.equal(phases.at(-1),'review_only');
+  assert.equal(phases[0],'cycle_bootstrap');
+  assert.equal(phases.filter(x=>x==='vacancy_history').length,25,
+    'one ID-bounds read, twenty-three 16-row pages and final snapshot assembly');
+  const receipt=JSON.parse(h.db.meta.get(STAGE_RECEIPT));
+  assert.equal(receipt.review_count,1);
+  assert.equal(receipt.rejected.applied,1);
+  assert.equal(receipt.google_sheet_rows_written,0);
+  assert.equal(receipt.application_submissions,0);
+  assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
+  assert.ok(![...h.db.meta.keys()].some(x=>x.startsWith('micro:v2:snapshot:')));
+  assert.ok(h.db.writes.every(k=>k.startsWith('micro:v2:')));
+});
+
+test('paged vacancy history scans every source row in bounded 16-row sheets reads',async()=>{
   const h=harness({extraVacancies:130});
   h.ops.pagedVacancy=true;
   const original=h.ops.readRanges,reads=[];
@@ -231,17 +258,17 @@ test('paged vacancy history scans every source row in bounded 32-row sheets read
     h.advance(60000);
   }
   assert.equal(phases.at(-1),'review_only');
-  assert.equal(phases.filter(x=>x==='vacancy_history').length,7,
-    'one bounds call, five 32-row pages and one D1-only assembly');
+  assert.equal(phases.filter(x=>x==='vacancy_history').length,11,
+    'one bounds call, nine 16-row pages and one D1-only assembly');
   const history=reads.filter(x=>x.some(r=>r.startsWith("'Vacatures'!")));
-  assert.equal(history.length,6);
+  assert.equal(history.length,10);
   assert.ok(history[0].includes("'Vacatures'!A1:A"));
   for(const ranges of history.slice(1)){
     assert.equal(ranges.length,2);
     for(const range of ranges){
       const m=/[A-Z](\d+):[A-Z](\d+)$/.exec(range);
       assert.ok(m);
-      assert.ok(Number(m[2])-Number(m[1])+1<=32);
+      assert.ok(Number(m[2])-Number(m[1])+1<=16);
     }
   }
   const receipt=JSON.parse(h.db.meta.get(STAGE_RECEIPT));
@@ -257,7 +284,7 @@ test('paged vacancy reconstruction retains blank gaps and later strong URLs',asy
   assert.equal((await runStagedReview(h.env,h.ops)).phase,'source_gate');
   h.advance(60000);
   let history;
-  for(let i=0;i<7;i++){
+  for(let i=0;i<12;i++){
     const outcome=await runStagedReview(h.env,h.ops);
     if(outcome.status==='ok'){history=outcome;break;}
     assert.equal(outcome.status,'checkpointed');
@@ -504,12 +531,12 @@ test('Radar history with official URL but missing observation key still blocks d
   assert.equal(receipt.google_sheet_rows_written,0);
 });
 
-test('1536 history rows reassemble through one D1 query, not 48 Free subrequests',async()=>{
+test('1536 history rows reassemble through one D1 query, not 96 Free subrequests',async()=>{
   const h=harness({extraVacancies:1533});h.ops.pagedVacancy=true;
   assert.equal((await runStagedReview(h.env,h.ops)).phase,'source_gate');
   h.advance(60000);
   assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
-  for(let i=0;i<48;i++){
+  for(let i=0;i<96;i++){
     h.advance(60000);
     const page=await runStagedReview(h.env,h.ops);
     assert.equal(page.status,'checkpointed');
@@ -557,7 +584,7 @@ test('paged checkpoint survives interrupted D1 CAS and does not replay its Googl
   h.advance(60000);
   assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
   const after=JSON.parse(h.db.meta.get(STAGE_CONTROL));
-  assert.equal(after.history_next,33);
+  assert.equal(after.history_next,17);
   const pages=h.events.filter(e=>e==='google-read:register-test').length;
   // Model a crash precisely after the page snapshot INSERT but before
   // the control CAS persisted its advance to the next history offset.
@@ -569,12 +596,12 @@ test('paged checkpoint survives interrupted D1 CAS and does not replay its Googl
   assert.equal(recovered.phase,'vacancy_history');
   const checkpoint=JSON.parse(h.db.meta.get(STAGE_CONTROL));
   assert.equal(checkpoint.history_end,before.history_end);
-  assert.equal(checkpoint.history_next,33);
+  assert.equal(checkpoint.history_next,17);
   assert.equal(checkpoint.attempts,0);
   assert.equal(h.events.filter(e=>e==='google-read:register-test').length,pages);
   const next=await runStagedReview(h.env,h.ops);
   assert.equal(next.status,'checkpointed');
-  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,65);
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,17);
   assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
 });
 test('paged expired claim without a saved page retries once with same offset',async()=>{
