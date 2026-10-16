@@ -320,7 +320,7 @@ export default{
           .then(outcome=>console.log(JSON.stringify({
             cpu_canary:true,phase:outcome.phase||null,
             status:outcome.status,phase_index:outcome.phase_index||null
-          })).catch(error=>{
+          }))).catch(error=>{
             console.error('cpu_canary_failed:'+safeDiagnosticError(error));
             throw error;
           }));
