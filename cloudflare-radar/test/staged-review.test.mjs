@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   runStagedReview,STAGES,STAGE_CONTROL,STAGE_CURSOR,STAGE_RECEIPT
 } from '../src/staged-review.mjs';
+import {buildRegisterIndex,matchRegister} from '../src/logic.mjs';
 
 class FakeD1 {
   constructor(){this.meta=new Map([['seeded:greenhouse:automatticcareers','2026-10-16T10:29:03Z']]);this.writes=[];this.reads=[];}
@@ -455,6 +456,42 @@ test('legacy v1 staged checkpoints cannot be resumed by the incompatible v2 pipe
   assert.equal(h.db.meta.get('micro:v1:cursor'),'1');
   assert.equal(h.db.meta.has(STAGE_CURSOR),false);
   assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+
+test('submitted application with missing vacancy ID still suppresses official role URL',async()=>{
+  const index=buildRegisterIndex(
+    [['vacancy_id','status','','','','','canonical_url','official_url']],
+    [['vacancy_id','','status','','application_url'],
+      ['', '', 'submitted', '', 'https://job-boards.greenhouse.io/automatticcareers/jobs/no-id-submitted']],
+    [['event_id','vacancy_id','','event_type','','status_after']]
+  );
+  const match=matchRegister({
+    url:'https://job-boards.greenhouse.io/automatticcareers/jobs/no-id-submitted',
+    source_url:'https://job-boards.greenhouse.io/automatticcareers/jobs/no-id-submitted'
+  },index);
+  assert.equal(match.applied,true);
+  assert.equal(match.known,true);
+});
+test('Radar history with official URL but missing observation key still blocks duplicate',async()=>{
+  const h=harness();
+  const original=h.ops.readRanges;
+  h.ops.readRanges=async(id,ranges,token)=>{
+    const parts=await original(id,ranges,token);
+    const idx=ranges.indexOf("'Nieuwe vacatures'!F1:F");
+    if(idx!==-1)
+      parts[idx].push(['https://job-boards.greenhouse.io/automatticcareers/jobs/new']);
+    return parts;
+  };
+  for(let i=0;i<STAGES.length;i++){
+    const result=await runStagedReview(h.env,h.ops);
+    assert.equal(result.status,'ok',result.reason||'');
+    h.advance(60000);
+  }
+  const receipt=JSON.parse(h.db.meta.get(STAGE_RECEIPT));
+  assert.equal(receipt.review_count,0);
+  assert.equal(receipt.rejected.radar_duplicates,2);
+  assert.equal(receipt.application_submissions,0);
+  assert.equal(receipt.google_sheet_rows_written,0);
 });
 
 test('paged checkpoint survives interrupted D1 CAS and does not replay its Google page',async()=>{
