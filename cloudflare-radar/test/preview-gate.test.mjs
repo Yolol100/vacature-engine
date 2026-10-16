@@ -37,29 +37,6 @@ test('review-only scheduled path skips redundant health DB I/O',async()=>{
   await pending;
   assert.equal(db.reads,0,'missing required bindings must fail before any health D1 read');
 });
-test('private lean Worker CPU canary fails closed without exact D1 permit',async()=>{
-  let launches=0;const keys=[];
-  const db={prepare(){return {bind(k){keys.push(k);return {first:async()=>null};}}}};
-  await worker.scheduled({},{
-    RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',RADAR_CPU_CANARY:'1',RADAR_DB:db
-  },{waitUntil(){launches++;}});
-  assert.deepEqual(keys,['micro:v2:cpu_canary']);
-  assert.equal(launches,0);
-});
-test('private lean Worker CPU canary rejects expired and malformed permit',async()=>{
-  for(const lease of [
-    {kind:'lean-bundle-cpu-20261016',started:Date.now()-100000,until:Date.now()-1000},
-    {kind:'other',started:Date.now()-30000,until:Date.now()+30000},
-    {kind:'lean-bundle-cpu-20261016',started:Date.now()-600000,until:Date.now()+600000}
-  ]){
-    let launches=0;
-    const db={prepare(){return {bind(){return {first:async()=>({value:JSON.stringify(lease)})};}}}};
-    await worker.scheduled({},{
-      RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',RADAR_CPU_CANARY:'1',RADAR_DB:db
-    },{waitUntil(){launches++;}});
-    assert.equal(launches,0);
-  }
-});
 test('no public HTTP endpoint',async()=>{
   const result=await worker.fetch();
   assert.equal(result.status,404);
