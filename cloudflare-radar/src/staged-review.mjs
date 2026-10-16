@@ -104,7 +104,7 @@ async function readVacancyHistory(env,ops,cycle){
     ["'Vacatures'!A1:B","'Vacatures'!G1:H"],token);
   if(chunks.length!==2)throw new Error('Stage data malformed');
   const rows=mergeColumns(chunks,[[0,0,2],[1,6,2]]);
-  headers(rows,[[0,'vacancy_id'],[1,'status']],'Vacature Register header mismatch');
+  headers(rows,[[0,'vacancy_id'],[1,'status'],[6,'canonical_url'],[7,'official_url']],'Vacature Register header mismatch');
   return {cycle,rows,read_at:new Date().toISOString()};
 }
 async function readApplicationHistory(env,ops,cycle,db){
@@ -117,8 +117,8 @@ async function readApplicationHistory(env,ops,cycle,db){
   if(chunks.length!==6)throw new Error('Stage data malformed');
   const apps=mergeColumns(chunks.slice(0,3),[[0,0,1],[1,2,1],[2,4,1]]);
   const events=mergeColumns(chunks.slice(3),[[0,0,2],[1,3,1],[2,5,1]]);
-  headers(apps,[[0,'vacancy_id'],[2,'status']],'Application header mismatch');
-  headers(events,[[0,'event_id'],[1,'vacancy_id']],'ApplicationEvents header mismatch');
+  headers(apps,[[0,'vacancy_id'],[2,'status'],[4,'application_url']],'Application header mismatch');
+  headers(events,[[0,'event_id'],[1,'vacancy_id'],[3,'event_type'],[5,'status_after']],'ApplicationEvents header mismatch');
   const index=buildRegisterIndex(vacancy.rows,apps,events);
   return {cycle,known:[...index.known],applied:[...index.applied],
     read_at:new Date().toISOString()};
