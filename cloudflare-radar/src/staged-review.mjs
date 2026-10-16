@@ -10,8 +10,9 @@ export const STAGE_CONTROL='micro:v1:control';
 export const STAGE_RECEIPT='micro:v1:receipt';
 export const STAGE_CURSOR='micro:v1:cursor';
 export const STAGES=Object.freeze([
-  'source_gate','vacancy_history','application_history','radar_history',
-  'official_ats','review_only'
+  'source_gate','vacancy_history','application_rows','event_rows',
+  'application_index','radar_history','official_ats','candidate_screen',
+  'review_only'
 ]);
 const TTL_MS=12*60*1000;
 const MAX_SNAPSHOT_BYTES=210000;
@@ -107,19 +108,35 @@ async function readVacancyHistory(env,ops,cycle){
   headers(rows,[[0,'vacancy_id'],[1,'status'],[6,'canonical_url'],[7,'official_url']],'Vacature Register header mismatch');
   return {cycle,rows,read_at:new Date().toISOString()};
 }
-async function readApplicationHistory(env,ops,cycle,db){
-  const vacancy=await readStage(db,cycle,'vacancy_history');
+// Separate the expensive Google read and application dedupe into short Cron phases.
+async function readApplicationRows(env,ops,cycle){
   const token=await ops.accessToken(env);
   const chunks=await ops.readRanges(env.VACATURE_REGISTER_ID,[
-    "'Applications'!A1:A","'Applications'!C1:C","'Applications'!E1:E",
+    "'Applications'!A1:A","'Applications'!C1:C","'Applications'!E1:E"
+  ],token);
+  if(chunks.length!==3)throw new Error('Stage data malformed');
+  const rows=mergeColumns(chunks,[[0,0,1],[1,2,1],[2,4,1]]);
+  headers(rows,[[0,'vacancy_id'],[2,'status'],[4,'application_url']],'Application header mismatch');
+  return {cycle,rows,read_at:new Date().toISOString()};
+}
+async function readEventRows(env,ops,cycle){
+  const token=await ops.accessToken(env);
+  const chunks=await ops.readRanges(env.VACATURE_REGISTER_ID,[
     "'ApplicationEvents'!A1:B","'ApplicationEvents'!D1:D","'ApplicationEvents'!F1:F"
   ],token);
-  if(chunks.length!==6)throw new Error('Stage data malformed');
-  const apps=mergeColumns(chunks.slice(0,3),[[0,0,1],[1,2,1],[2,4,1]]);
-  const events=mergeColumns(chunks.slice(3),[[0,0,2],[1,3,1],[2,5,1]]);
-  headers(apps,[[0,'vacancy_id'],[2,'status'],[4,'application_url']],'Application header mismatch');
-  headers(events,[[0,'event_id'],[1,'vacancy_id'],[3,'event_type'],[5,'status_after']],'ApplicationEvents header mismatch');
-  const index=buildRegisterIndex(vacancy.rows,apps,events);
+  if(chunks.length!==3)throw new Error('Stage data malformed');
+  const rows=mergeColumns(chunks,[[0,0,2],[1,3,1],[2,5,1]]);
+  headers(rows,[[0,'event_id'],[1,'vacancy_id'],[3,'event_type'],[5,'status_after']],
+    'ApplicationEvents header mismatch');
+  return {cycle,rows,read_at:new Date().toISOString()};
+}
+async function buildApplicationIndex(db,cycle){
+  const [vacancy,application,events]=await Promise.all([
+    readStage(db,cycle,'vacancy_history'),
+    readStage(db,cycle,'application_rows'),
+    readStage(db,cycle,'event_rows')
+  ]);
+  const index=buildRegisterIndex(vacancy.rows,application.rows,events.rows);
   return {cycle,known:[...index.known],applied:[...index.applied],
     read_at:new Date().toISOString()};
 }
@@ -159,10 +176,10 @@ async function readOfficialSource(env,ops,cycle,db) {
   });
   return {cycle,source:gate.source,observations:jobs.length,already_known:old.size,newJobs};
 }
-async function classify(db,cycle,now){
+async function screenCandidates(db,cycle,now){
   const [source,index,radar,poll]=await Promise.all([
     readStage(db,cycle,'source_gate'),
-    readStage(db,cycle,'application_history'),
+    readStage(db,cycle,'application_index'),
     readStage(db,cycle,'radar_history'),
     readStage(db,cycle,'official_ats')
   ]);
@@ -187,6 +204,14 @@ async function classify(db,cycle,now){
     rejected:out,review_count:candidates.length,candidates,
     manual_review_required:true,google_sheet_rows_written:0,application_submissions:0};
 }
+async function finalizeReview(db,cycle){
+  const receipt=await readStage(db,cycle,'candidate_screen');
+  if(receipt.cycle!==cycle||receipt.status!=='review_ready'||
+    receipt.manual_review_required!==true||
+    receipt.google_sheet_rows_written!==0||receipt.application_submissions!==0)
+    throw new Error('Stage data malformed');
+  return receipt;
+}
 export async function runStagedReview(env,ops={}){
   // Dual opt-in; setting RADAR_ENABLED alone never starts this pipeline.
   if(env.RADAR_ENABLED!=='1'||env.RADAR_PIPELINE_MODE!=='staged_review'||!env.RADAR_DB)
@@ -207,6 +232,7 @@ export async function runStagedReview(env,ops={}){
     }catch{return {status:'partial',errors:1,reason:'stage_cleanup_failed'};}
     return {status:'partial',errors:1,reason:'interrupted_cycle'};
   }
+  if(raw?.startsWith('failed:'))return {status:'halted',sources:0};
   if(!raw||state?.status==='done'){
     if(raw&&now-Date.parse(state.finished_at||'')<60000)return {status:'cooldown',sources:0};
     const cursor=Number(await getMeta(db,STAGE_CURSOR)||0);
@@ -239,10 +265,13 @@ export async function runStagedReview(env,ops={}){
   try {
     if(name==='source_gate')result=await readSourceGate(env,ops,state.run,state.cursor);
     else if(name==='vacancy_history')result=await readVacancyHistory(env,ops,state.run);
-    else if(name==='application_history')result=await readApplicationHistory(env,ops,state.run,db);
+    else if(name==='application_rows')result=await readApplicationRows(env,ops,state.run);
+    else if(name==='event_rows')result=await readEventRows(env,ops,state.run);
+    else if(name==='application_index')result=await buildApplicationIndex(db,state.run);
     else if(name==='radar_history')result=await readRadarHistory(env,ops,state.run);
     else if(name==='official_ats')result=await readOfficialSource(env,ops,state.run,db);
-    else if(name==='review_only')result=await classify(db,state.run,now);
+    else if(name==='candidate_screen')result=await screenCandidates(db,state.run,now);
+    else if(name==='review_only')result=await finalizeReview(db,state.run);
     else throw new Error('Invalid stage state');
     if(name==='review_only'){
       await putMeta(db,STAGE_RECEIPT,result);
