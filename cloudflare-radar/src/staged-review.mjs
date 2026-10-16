@@ -15,9 +15,9 @@ export const STAGES=Object.freeze([
   'review_only'
 ]);
 const TTL_MS=12*60*1000;
-const PAGED_TTL_MS=75*60*1000; // Long review-only cycle; still no business/Sheet writes.
-const VACANCY_PAGE_ROWS=32;
-const MAX_VACANCY_ROWS=1536; // Fail closed before unbounded read, storage or processing.
+const PAGED_TTL_MS=135*60*1000; // Long review-only cycle; still no business/Sheet writes.
+const VACANCY_PAGE_ROWS=16;
+const MAX_VACANCY_ROWS=1536; // Bounded 96 pages; never silently omit history.
 const STAGE_LEASE_MS=2*60*1000;
 const RETRY_DELAY_MS=60*1000;
 const MAX_STAGE_RETRIES=1;
@@ -133,7 +133,7 @@ async function readVacancyHistory(env,ops,cycle){
 /**
  * Bounded, resumable Google Sheet history:
  * - a separate ID-only read establishes the LAST nonempty vacancy-id row;
- * - each later Cron reads at most 32 rows in the two required column pairs;
+ * - each later Cron reads at most 16 rows in the two required column pairs;
  * - each page is its own D1 snapshot, never a growing full-history rewrite;
  * - a final D1-only step assembles the same sparse row shape as the legacy path.
  * Empty gaps inside the Sheet are retained; entries after the last nonempty ID
