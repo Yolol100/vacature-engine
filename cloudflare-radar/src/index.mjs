@@ -304,7 +304,7 @@ export default{
     // This initial staged path is review-only: no Google Sheets or applicant writes.
     // Private one-shot CPU canary. The real production gates remain off.
     // D1-only activation; no HTTP trigger, sheet mutations, or applicant writes.
-    if(env.RADAR_ENABLED==='0'&&env.RADAR_PIPELINE_MODE==='off'&&env.RADAR_DB){
+    if(env.RADAR_CPU_CANARY==='1'&&env.RADAR_ENABLED==='0'&&env.RADAR_PIPELINE_MODE==='off'&&env.RADAR_DB){
       const row=await env.RADAR_DB.prepare(
         'SELECT value FROM radar_metadata WHERE name=?'
       ).bind('micro:v2:cpu_canary').first();
