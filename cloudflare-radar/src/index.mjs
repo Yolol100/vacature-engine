@@ -334,32 +334,6 @@ export default{
   async scheduled(_event,env,ctx){
     // Double gate: the existing RADAR_ENABLED flag alone cannot start the legacy CPU-heavy tick.
     // This initial staged path is review-only: no Google Sheets or applicant writes.
-    // TEMPORARY diagnostic: exact D1 permit, bounded 29 minutes, one cycle.
-    // Both production switches MUST stay disabled; no Sheets/application writes.
-    if(env.RADAR_CPU_CANARY==='1'&&env.RADAR_ENABLED==='0'&&
-       env.RADAR_PIPELINE_MODE==='off'&&env.RADAR_DB){
-      const item=await env.RADAR_DB.prepare('SELECT value FROM radar_metadata WHERE name=?')
-        .bind('micro:v2:cpu_canary').first();
-      let permit;
-      try{permit=JSON.parse(item?.value||'null');}catch{permit=null;}
-      const now=Date.now();
-      if(permit?.kind==='full-review-cpu-audit-20261016'&&
-         Number.isSafeInteger(permit.started)&&Number.isSafeInteger(permit.until)&&
-         permit.started<=now&&now<permit.until&&
-         permit.until-permit.started<=29*60000){
-        const isolated={...env,RADAR_ENABLED:'1',RADAR_PIPELINE_MODE:'staged_review'};
-        const ops={accessToken,readRanges,publicJobs,existingKeys,
-          pagedVacancy:true,splitBootstrap:true,singleCycle:true};
-        ctx.waitUntil(runStagedReview(isolated,ops).then(outcome=>{
-          console.log(JSON.stringify({cpu_audit:true,status:outcome.status,
-            phase:outcome.phase||null,phase_index:outcome.phase_index||null}));
-        }).catch(error=>{
-          console.error('cpu_audit_failed:'+safeDiagnosticError(error));
-          throw error;
-        }));
-      }
-      return;
-    }
     if(env.RADAR_ENABLED!=='1'||env.RADAR_PIPELINE_MODE!=='staged_review')return;
     const ops={accessToken,readRanges,publicJobs,existingKeys,pagedVacancy:true,splitBootstrap:true};
     // The review-only stage engine already persists bounded checkpoint/error receipts.
