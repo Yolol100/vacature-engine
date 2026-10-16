@@ -303,7 +303,7 @@ export default{
     // Double gate: the existing RADAR_ENABLED flag alone cannot start the legacy CPU-heavy tick.
     // This initial staged path is review-only: no Google Sheets or applicant writes.
     if(env.RADAR_ENABLED!=='1'||env.RADAR_PIPELINE_MODE!=='staged_review')return;
-    const ops={accessToken,readRanges,publicJobs,existingKeys};
+    const ops={accessToken,readRanges,publicJobs,existingKeys,pagedVacancy:true};
     // The review-only stage engine already persists bounded checkpoint/error receipts.
     // Avoid multiple redundant D1 health writes on every Free-tier Cron invocation.
     ctx.waitUntil(runStagedReview(env,ops).then(outcome=>{
