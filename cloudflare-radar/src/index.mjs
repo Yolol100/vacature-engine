@@ -3,6 +3,8 @@ import {
   isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,sourceActive,strongRoleKeys,toRadarRow
 } from './logic.mjs';
 import {runOneTimeSmokeTest} from './selftest.mjs';
+import {runReliabilityProbe,safeDiagnosticError} from './reliability.mjs';
+import {monitoredTick} from './health.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
 const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
@@ -306,15 +308,19 @@ export async function tick(env){
 }
 export default{
   async scheduled(_event,env,ctx){
-    const work=env.RADAR_ENABLED==='1'?tick(env):runOneTimeSmokeTest(env,{
+    const ops={
       accessToken,readRanges,updateCells,clearCell:clearSmokeCell,publicJobs,
       assertSheetHeaders,PILOT_SOURCES,sourceActive
-    });
+    };
+    const work=env.RADAR_ENABLED==='1'
+      ? monitoredTick(env,tick)
+      : runOneTimeSmokeTest(env,ops).then(outcome=>
+        outcome.status==='disabled'?runReliabilityProbe(env,ops):outcome);
     ctx.waitUntil(work.then(outcome=>{
       if(outcome.status!=='disabled'&&outcome.status!=='already_claimed')
         console.log(JSON.stringify(outcome));
     }).catch(error=>{
-      console.error('vacature_radar_poll_failed:'+String(error.message).slice(0,150));
+      console.error('vacature_radar_poll_failed:'+safeDiagnosticError(error));
       throw error;
     }));
   },
