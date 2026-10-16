@@ -48,6 +48,12 @@ Onafhankelijke readback na afloop: `Runs!L1000` leeg, `Nieuwe vacatures` en `Run
 
 **Productieactivatie blijft NO-GO** totdat een afgebakende echte baseline-run, CPU-/D1-gebruikscontrole en gebruikersvrijgave zijn bevestigd. Geen tweede Cron, geen R2, geen nieuwe betaalde dienst, geen automatische sollicitaties. `RADAR_ENABLED=0` blijft gehandhaafd.
 
+### Tijdelijke, beperkte live-baseline (16 oktober 2026)
+
+De functie `src/baseline.mjs` is **tijdelijk** en uitsluitend vanuit een D1-beheerdersopdracht bereikbaar. `RADAR_ENABLED` blijft `0`; de bestaande Cron mag alleen bij een geldige en maximaal 12 minuten geldige `baseline_control:2026-10-16`-aanvraag een nauwkeurig begrensde `tick` uitvoeren. Per minuut wordt maximaal één van drie geregistreerde broninstanties gebootstrapt. Na fase 3 zet de code het control-record op `done`; na een fout stopt hij op `failed`, zodat niet stiekem een tweede ronde begint.
+
+Deze uitvoeringen gebruiken de **echte productieverwerkingscode** voor OAuth, officiële ATS en D1-observaties, maar slaan historische eerste-detecties uitsluitend als `baseline` op en slaan alle Google Sheets-writes en outbox-verzending over. Er wordt geen sollicitatie verzonden. Voor veiligheidsacceptatie zijn vereist: exact drie `seeded:`-markers, uitsluitend `baseline`-records, nul uitgaande vacaturemeldingen, Cloudflare-metrics en daarna verwijdering van alle tijdelijke testcode. Indien Cloudflare Free CPU-, D1- of Google-quota de proef afbreken, blijft productie gesloten (`RADAR_ENABLED=0`) en worden eventueel al geschreven D1-baselinegegevens behouden voor herstel/audit. Na de proef wordt de tijdelijke module uit `main` verwijderd.
+
 ## Technisch contract
 
 - Cron: `* * * * *` UTC (één technische uitvoering per minuut, niet één controle per bron per minuut; bij drie actieve bronnen één controle per bron per circa drie minuten). Geen publicatie-SLA.
