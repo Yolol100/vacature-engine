@@ -386,6 +386,13 @@ export async function runStagedReview(env,ops={}){
       raw=value;
       state=next;
     }
+    if(ops.splitBootstrap===true){
+      // The first Free Cron in a new review cycle only establishes D1
+      // control. Source Google OAuth and policy checks start next minute,
+      // with no extra scheduler, secret storage, or relaxed source policy.
+      return {status:'initialized',phase:'cycle_bootstrap',sources:0,
+        phase_index:0,total_phases:STAGES.length,new_records:0};
+    }
   }
   if(!state||state.version!==2||!Number.isInteger(state.phase)||
       state.phase<0||state.phase>=STAGES.length||
