@@ -351,7 +351,7 @@ export default{
           accessToken,readRanges,publicJobs,existingKeys,pagedVacancy:true
         }).then(outcome=>console.log(JSON.stringify({
           private_cpu:true,phase:outcome.phase||null,status:outcome.status
-        })).catch(error=>{
+        }))).catch(error=>{
           console.error('cpu_canary_failed:'+safeDiagnosticError(error));
           throw error;
         }));
