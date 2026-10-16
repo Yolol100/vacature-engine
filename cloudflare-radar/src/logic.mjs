@@ -47,9 +47,18 @@ export function strongRoleKeys(raw) {
   return [...keys];
 }
 function addKeys(set,raw){for(const key of strongRoleKeys(raw))set.add(key);}
+export function activeSourcePairs(rows,sources){
+  // Source registry can contain hundreds of rows; build the map once per poll.
+  const states=new Map();
+  for(let i=1;i<rows.length;i++){
+    const row=rows[i];
+    if(row?.[0])states.set(row[0],row[12]);
+  }
+  return sources.filter(source=>
+    states.get(source.source_id)==='active'&&states.get(source.employer_source_id)==='active');
+}
 export function sourceActive(rows,source){
-  const states=new Map(rows.slice(1).filter(r=>r[0]).map(r=>[r[0],r[12]]));
-  return states.get(source.source_id)==='active'&&states.get(source.employer_source_id)==='active';
+  return activeSourcePairs(rows,[source]).length===1;
 }
 export function preliminaryInterest(job){
   return INTEREST.test([job.title,job.remote,job.location].join(' '));
