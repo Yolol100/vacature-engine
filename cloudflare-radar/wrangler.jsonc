@@ -19,5 +19,19 @@
       "database_name": "vacature-radar-state",
       "database_id": "5ebaeebc-b444-4f8b-a0df-584a1a966fd2"
     }
-  ]
+  ],
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+      "head_sampling_rate": 1
+    },
+    "issues": {
+      "enabled": true
+    }
+  },
+  "limits": {
+    "subrequests": 20
+  }
 }
