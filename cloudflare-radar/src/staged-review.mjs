@@ -173,10 +173,27 @@ async function readVacancyHistoryPaged(env,ops,cycle,state,db){
   }
   // The last pass performs no Google OAuth or network fetch.
   // Snapshots remain private and are purged at finalization/failure.
-  const starts=[];
-  for(let row=1;row<=last;row+=VACANCY_PAGE_ROWS)starts.push(row);
-  const parts=await Promise.all(starts.map(row=>readStage(db,cycle,'vacancy_page_'+row)));
-  const rows=parts.flatMap(x=>x.rows);
+  const starts=[],keys=[];
+  for(let row=1;row<=last;row+=VACANCY_PAGE_ROWS){
+    starts.push(row);
+    keys.push(snapshotName(cycle,'vacancy_page_'+row));
+  }
+  // D1 Free allows only 50 subrequests per Worker invocation. Reading 48
+  // pages individually, plus the control claim and checkpoint mutations,
+  // could exceed that budget. Fetch exact page keys in one indexed SELECT.
+  const result=await db.prepare('SELECT name,value FROM radar_metadata WHERE name IN ('+
+    keys.map(()=>'?').join(',')+')').bind(...keys).all();
+  if(result.results?.length!==keys.length)throw new Error('Missing or stale staged snapshot');
+  const byName=new Map(result.results.map(row=>[row.name,row.value]));
+  if(byName.size!==keys.length)throw new Error('Stage data malformed');
+  const rows=[];
+  for(let i=0;i<keys.length;i++){
+    const data=stateSnapshot(byName.get(keys[i]),cycle);
+    const count=Math.min(VACANCY_PAGE_ROWS,last-starts[i]);
+    if(!Array.isArray(data.rows)||data.rows.length!==count)
+      throw new Error('Stage data malformed');
+    rows.push(...data.rows);
+  }
   if(rows.length!==last)throw new Error('Stage data malformed');
   headers(rows,[[0,'vacancy_id'],[1,'status'],[6,'canonical_url'],[7,'official_url']],
     'Vacature Register header mismatch');
