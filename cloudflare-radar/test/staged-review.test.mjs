@@ -457,6 +457,66 @@ test('legacy v1 staged checkpoints cannot be resumed by the incompatible v2 pipe
   assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
 });
 
+test('paged checkpoint survives interrupted D1 CAS and does not replay its Google page',async()=>{
+  const h=harness({extraVacancies:70});h.ops.pagedVacancy=true;
+  assert.equal((await runStagedReview(h.env,h.ops)).phase,'source_gate');
+  h.advance(60000);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
+  const before=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  assert.equal(before.history_next,1);
+  h.advance(60000);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
+  const after=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  assert.equal(after.history_next,33);
+  const pages=h.events.filter(e=>e==='google-read:register-test').length;
+  // Model a crash precisely after the page snapshot INSERT but before
+  // the control CAS persisted its advance to the next history offset.
+  h.db.meta.set(STAGE_CONTROL,'running:'+before.run+':1:'+h.ops.now()+
+    ':0:'+before.history_end+':1');
+  h.advance(120001);
+  const recovered=await runStagedReview(h.env,h.ops);
+  assert.equal(recovered.status,'recovered_checkpoint');
+  assert.equal(recovered.phase,'vacancy_history');
+  const checkpoint=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  assert.equal(checkpoint.history_end,before.history_end);
+  assert.equal(checkpoint.history_next,33);
+  assert.equal(checkpoint.attempts,0);
+  assert.equal(h.events.filter(e=>e==='google-read:register-test').length,pages);
+  const next=await runStagedReview(h.env,h.ops);
+  assert.equal(next.status,'checkpointed');
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,65);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+test('paged expired claim without a saved page retries once with same offset',async()=>{
+  const h=harness({extraVacancies:50});h.ops.pagedVacancy=true;
+  await runStagedReview(h.env,h.ops);
+  h.advance(60000);
+  await runStagedReview(h.env,h.ops);
+  const before=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,'running:'+before.run+':1:'+h.ops.now()+
+    ':0:'+before.history_end+':1');
+  h.advance(120001);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'recovered_retry');
+  const retained=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  assert.equal(retained.history_next,1);
+  assert.equal(retained.history_end,before.history_end);
+  assert.equal(retained.attempts,1);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,33);
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).attempts,0);
+});
+test('corrupt claim with page progress on non-vacancy stage is fail closed',async()=>{
+  const h=harness();await runStagedReview(h.env,h.ops);
+  const current=JSON.parse(h.db.meta.get(STAGE_CONTROL));
+  h.db.meta.set(STAGE_CONTROL,'running:'+current.run+':0:'+h.ops.now()+
+    ':0:128:1');
+  h.advance(120001);
+  const result=await runStagedReview(h.env,h.ops);
+  assert.equal(result.status,'partial');
+  assert.equal(result.reason,'invalid_control');
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,0);
+});
+
 test('a running stage is never retried until its lease expires',async()=>{
   const h=harness();await runStagedReview(h.env,h.ops);
   h.advance(60000);
