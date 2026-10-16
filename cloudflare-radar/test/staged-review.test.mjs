@@ -241,3 +241,17 @@ test('candidate screen is provisional until a distinct final receipt stage succe
   assert.equal(h.db.meta.has(STAGE_RECEIPT),true);
   assert.equal(h.db.meta.has(key),false,'private screening snapshot must be purged');
 });
+
+test('legacy v1 staged checkpoints cannot be resumed by the incompatible v2 pipeline',async()=>{
+  const h=harness();
+  const legacy='{"version":1,"run":"cycle_1792151163845_0","phase":4}';
+  h.db.meta.set('micro:v1:control',legacy);
+  h.db.meta.set('micro:v1:cursor','1');
+  const result=await runStagedReview(h.env,h.ops);
+  assert.equal(result.status,'ok');
+  assert.equal(result.phase,'source_gate');
+  assert.equal(h.db.meta.get('micro:v1:control'),legacy);
+  assert.equal(h.db.meta.get('micro:v1:cursor'),'1');
+  assert.equal(h.db.meta.has(STAGE_CURSOR),false);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
