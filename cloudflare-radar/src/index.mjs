@@ -1,8 +1,9 @@
 import {
   PILOT_SOURCES,adapterUrl,buildRegisterIndex,canonicalUrl,chooseSource,cooldownMinutes,
-  isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,sourceActive,strongRoleKeys,toRadarRow
+  activeSourcePairs,isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,strongRoleKeys,toRadarRow
 } from './logic.mjs';
 import {monitoredTick,safeDiagnosticError} from './health.mjs';
+import {REGISTER_COMPACT_RANGES,expandRegisterRanges} from './compact-register.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
 const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
@@ -196,9 +197,9 @@ export async function tick(env){
   if(!lease)return {status:'overlap_skipped'};
   try{
     const start=new Date().toISOString(),runId='cloudflare-'+start,token=await accessToken(env);
-    const [sourcesRows,vacancyRows,applicationRows,eventRows]=await readRanges(env.VACATURE_REGISTER_ID,[
-      "'Bronnen'!A1:M","'Vacatures'!A1:H","'Applications'!A1:E","'ApplicationEvents'!A1:F"
-    ],token);
+    // Pull A/M, A/B/G/H etc. without wasting CPU on unused spreadsheet columns.
+    const [sourcesRows,vacancyRows,applicationRows,eventRows]=expandRegisterRanges(
+      await readRanges(env.VACATURE_REGISTER_ID,REGISTER_COMPACT_RANGES,token));
     const [keyRows,urlRows,statusRows,actionRows]=await readRanges(env.RADAR_RESULT_ID,[
       "'Nieuwe vacatures'!A1:A","'Nieuwe vacatures'!F1:F",
       "'Nieuwe vacatures'!N1:N","'Nieuwe vacatures'!R1:R"
@@ -211,7 +212,7 @@ export async function tick(env){
     const changes=reconcileApplied(radar.records,register);
     metrics.applied += changes.filter(item=>item.range.startsWith("'Nieuwe vacatures'!N")).length;
     if(changes.length)await updateCells(env.RADAR_RESULT_ID,changes,token);
-    const active=PILOT_SOURCES.filter(source=>sourceActive(sourcesRows,source));
+    const active=activeSourcePairs(sourcesRows,PILOT_SOURCES);
     const activeInstances=new Set(active.map(source=>source.source_id+':'+source.account));
     if(!active.length)throw new Error('No active ATS+employer source pairs');
     // One bounded direct source per minute: each of 3 healthy sources every 3 minutes.
