@@ -15,9 +15,9 @@ export const STAGES=Object.freeze([
   'review_only'
 ]);
 const TTL_MS=12*60*1000;
-const PAGED_TTL_MS=75*60*1000; // Long review-only cycle; still no business/Sheet writes.
-const VACANCY_PAGE_ROWS=32;
-const MAX_VACANCY_ROWS=1536; // Fail closed before unbounded read, storage or processing.
+const PAGED_TTL_MS=135*60*1000; // Long review-only cycle; still no business/Sheet writes.
+const VACANCY_PAGE_ROWS=16;
+const MAX_VACANCY_ROWS=1536; // Bounded 96 pages; never silently omit history.
 const STAGE_LEASE_MS=2*60*1000;
 const RETRY_DELAY_MS=60*1000;
 const MAX_STAGE_RETRIES=1;
@@ -133,7 +133,7 @@ async function readVacancyHistory(env,ops,cycle){
 /**
  * Bounded, resumable Google Sheet history:
  * - a separate ID-only read establishes the LAST nonempty vacancy-id row;
- * - each later Cron reads at most 32 rows in the two required column pairs;
+ * - each later Cron reads at most 16 rows in the two required column pairs;
  * - each page is its own D1 snapshot, never a growing full-history rewrite;
  * - a final D1-only step assembles the same sparse row shape as the legacy path.
  * Empty gaps inside the Sheet are retained; entries after the last nonempty ID
@@ -173,10 +173,27 @@ async function readVacancyHistoryPaged(env,ops,cycle,state,db){
   }
   // The last pass performs no Google OAuth or network fetch.
   // Snapshots remain private and are purged at finalization/failure.
-  const starts=[];
-  for(let row=1;row<=last;row+=VACANCY_PAGE_ROWS)starts.push(row);
-  const parts=await Promise.all(starts.map(row=>readStage(db,cycle,'vacancy_page_'+row)));
-  const rows=parts.flatMap(x=>x.rows);
+  const starts=[],keys=[];
+  for(let row=1;row<=last;row+=VACANCY_PAGE_ROWS){
+    starts.push(row);
+    keys.push(snapshotName(cycle,'vacancy_page_'+row));
+  }
+  // D1 Free allows only 50 subrequests per Worker invocation. Reading 48
+  // pages individually, plus the control claim and checkpoint mutations,
+  // could exceed that budget. Fetch exact page keys in one indexed SELECT.
+  const result=await db.prepare('SELECT name,value FROM radar_metadata WHERE name IN ('+
+    keys.map(()=>'?').join(',')+')').bind(...keys).all();
+  if(result.results?.length!==keys.length)throw new Error('Missing or stale staged snapshot');
+  const byName=new Map(result.results.map(row=>[row.name,row.value]));
+  if(byName.size!==keys.length)throw new Error('Stage data malformed');
+  const rows=[];
+  for(let i=0;i<keys.length;i++){
+    const data=stateSnapshot(byName.get(keys[i]),cycle);
+    const count=Math.min(VACANCY_PAGE_ROWS,last-starts[i]+1);
+    if(!Array.isArray(data.rows)||data.rows.length!==count)
+      throw new Error('Stage data malformed');
+    rows.push(...data.rows);
+  }
   if(rows.length!==last)throw new Error('Stage data malformed');
   headers(rows,[[0,'vacancy_id'],[1,'status'],[6,'canonical_url'],[7,'official_url']],
     'Vacature Register header mismatch');
