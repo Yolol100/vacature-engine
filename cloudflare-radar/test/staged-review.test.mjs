@@ -175,7 +175,7 @@ test('nine bounded Cron stages classify sources without writing business records
   assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).status,'done');
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
 });
-test('paged vacancy history scans every source row in bounded 64-row sheets reads',async()=>{
+test('paged vacancy history scans every source row in bounded 32-row sheets reads',async()=>{
   const h=harness({extraVacancies:130});
   h.ops.pagedVacancy=true;
   const original=h.ops.readRanges,reads=[];
@@ -192,17 +192,17 @@ test('paged vacancy history scans every source row in bounded 64-row sheets read
     h.advance(60000);
   }
   assert.equal(phases.at(-1),'review_only');
-  assert.equal(phases.filter(x=>x==='vacancy_history').length,5,
-    'one bounds call, three 64-row pages and one D1-only assembly');
+  assert.equal(phases.filter(x=>x==='vacancy_history').length,7,
+    'one bounds call, five 32-row pages and one D1-only assembly');
   const history=reads.filter(x=>x.some(r=>r.startsWith("'Vacatures'!")));
-  assert.equal(history.length,4);
+  assert.equal(history.length,6);
   assert.ok(history[0].includes("'Vacatures'!A1:A"));
   for(const ranges of history.slice(1)){
     assert.equal(ranges.length,2);
     for(const range of ranges){
       const m=/[A-Z](\d+):[A-Z](\d+)$/.exec(range);
       assert.ok(m);
-      assert.ok(Number(m[2])-Number(m[1])+1<=64);
+      assert.ok(Number(m[2])-Number(m[1])+1<=32);
     }
   }
   const receipt=JSON.parse(h.db.meta.get(STAGE_RECEIPT));
