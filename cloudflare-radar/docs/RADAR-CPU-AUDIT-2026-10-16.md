@@ -121,3 +121,12 @@ Primaire bronnen:
 - https://developers.cloudflare.com/workers/platform/limits/ (Free scheduled 10ms CPU; `ok` kan tijdelijke flexibiliteit bevatten).
 - https://developers.cloudflare.com/analytics/graphql-api/tutorials/querying-workers-metrics/ (per-invocatie GraphQL dimensie en CPU-kwantielen).
 - https://developers.cloudflare.com/d1/platform/limits/ (D1 Free-query's per Worker en max 100 parameters).
+
+
+## Isolatie van de actieve Workers-bundle (nieuwe optimalisatie)
+
+Aanleiding is de live GraphQL-afwijking **10,685/11,297 ms** terwijl 16-rijenpagina's volledig functioneel bleven. De actieve Worker bundelde eerder onnodig de oude `tick`-bezorgcode en de daarin gebruikte append-/reconciliationfuncties. Meetbasis uit de eerdere GitHub Actions `wrangler deploy --dry-run`: **57,05 KiB**, gzip **14,54 KiB**.
+
+De nieuwe `src/review-worker.mjs` is geen extra scanner/Worker of scheduler. Het is de enige deployment-ingang van de bestaande `vacature-radar`; hij importeert uitsluitend bestaande review-only processor, bestaande gezondheidssanitizer en hergebruikte Google/ATS-leeshelpers. `src/index.mjs` behoudt de oudere `tick` voor tests als compatibiliteitsmodule, maar is **niet** de Worker-`main`. Helpers zijn gedeeld zodat auth-, bron- en idempotentiegedrag niet gedupliceerd worden. Het testschema verifieert exact één Cron, beide productieschakelaars op uit, geen publiek endpoint, afwezigheid van import uit de legacy-ingang en functiegelijkheid bij de OAuth-/Sheets-tests.
+
+Deze refactor lost potentieel onnodige koude V8-compile/initialisatiekosten op maar **garandeert geen reductie van HTTP-, Google-serviceaccountsleutel- of D1-CPU**. Vrijgave vereist vooraf een kleinere, groene bundle, vervolgens een strikt aflopende afgeschermde real-world CPU-proef met log én GraphQL (per datetime één invocation), de originele 26 baselinewaarnemingen, geen Google-Sheetrijen, alle foutscenario's en rollback bij **>=10ms**. Productieradar blijft NO-GO.
