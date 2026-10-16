@@ -24,7 +24,7 @@ export default{
          permit.until-permit.started<=7*60000){
         const isolated={...env,RADAR_ENABLED:'1',RADAR_PIPELINE_MODE:'staged_review'};
         const ops={accessToken,readRanges,publicJobs,existingKeys,
-          pagedVacancy:true,splitBootstrap:true,singleCycle:true};
+          pagedVacancy:true,splitBootstrap:true};
         ctx.waitUntil(runStagedReview(isolated,ops).then(outcome=>{
           console.log(JSON.stringify({private_cpu_audit:true,
             phase:outcome.phase||null,status:outcome.status}));
