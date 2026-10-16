@@ -29,6 +29,14 @@ class FakeD1 {
           if(change){this.meta.set(args[1],args[0]);this.writes.push(args[1]);}
           return {meta:{changes:change}};
         }
+        if(sql.startsWith('DELETE FROM radar_metadata WHERE name LIKE ?')){
+          const prefix=String(args[0]).slice(0,-1);
+          let change=0;
+          for(const key of [...this.meta.keys()]){
+            if(key.startsWith(prefix)){this.meta.delete(key);this.writes.push(key);change++;}
+          }
+          return {meta:{changes:change}};
+        }
         if(sql.startsWith('DELETE FROM radar_metadata WHERE name=?')){
           this.meta.delete(args[0]);this.writes.push(args[0]);
           return {meta:{changes:1}};
@@ -62,6 +70,12 @@ function rangeValues(range,opts) {
     ['v-old','submitted','','','','','https://job-boards.greenhouse.io/automatticcareers/jobs/old',''],
     ['v-applied','submitted','','','','','https://job-boards.greenhouse.io/automatticcareers/jobs/applied-no-d1','']
   ];
+  if(opts.extraVacancies){
+    for(let i=0;i<opts.extraVacancies;i++)vacancy.push([
+      'v-extra-'+i,'seen','','','','',
+      'https://job-boards.greenhouse.io/automatticcareers/jobs/extra-'+i,''
+    ]);
+  }
   const apps=[['vacancy_id','','status','','application_url'],
     ['v-old','','submitted','','https://job-boards.greenhouse.io/automatticcareers/jobs/old'],
     ['v-applied','','submitted','','https://job-boards.greenhouse.io/automatticcareers/jobs/applied-no-d1']];
@@ -71,11 +85,13 @@ function rangeValues(range,opts) {
   const radar=[['observation_key','','','','','officiele_url','','','','','','','','sollicitatiehistorie','','','','actie'],
     ['greenhouse:automatticcareers:seen','','','','','https://job-boards.greenhouse.io/automatticcareers/jobs/seen']];
   const data={'Bronnen':source,'Vacatures':vacancy,'Applications':apps,'ApplicationEvents':events,'Nieuwe vacatures':radar};
-  const m=/^'([^']+)'!([A-Z])1:([A-Z])$/.exec(range);
+  const m=/^'([^']+)'!([A-Z])(\d+):([A-Z])(\d+)?$/.exec(range);
   assert.ok(m,'Unexpected Google range '+range);
-  const from=m[2].charCodeAt(0)-65,to=m[3].charCodeAt(0)-65,rows=data[m[1]];
+  const from=m[2].charCodeAt(0)-65,to=m[4].charCodeAt(0)-65,rows=data[m[1]];
   assert.ok(rows, 'Unexpected register sheet '+m[1]);
-  const values=rows.map(r=>Array.from({length:to-from+1},(_,i)=>r[from+i]||''));
+  const start=Number(m[3])-1,end=m[5]?Number(m[5]):rows.length;
+  const values=rows.slice(start,end).map(r=>
+    Array.from({length:to-from+1},(_,i)=>r[from+i]||''));
   if(opts.breakHeader&&m[1]==='Applications'&&m[2]==='C')values[0][0]='BROKEN';
   if(opts.blockEmployer&&m[1]==='Bronnen'&&m[2]==='M')values[2][0]='blocked';
   return values;
@@ -158,6 +174,61 @@ test('nine bounded Cron stages classify sources without writing business records
   assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).status,'done');
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
 });
+test('paged vacancy history scans every source row in bounded 64-row sheets reads',async()=>{
+  const h=harness({extraVacancies:130});
+  h.ops.pagedVacancy=true;
+  const original=h.ops.readRanges,reads=[];
+  h.ops.readRanges=async(id,ranges,token)=>{
+    reads.push(ranges);
+    return original(id,ranges,token);
+  };
+  const phases=[];
+  for(let i=0;i<30;i++){
+    const outcome=await runStagedReview(h.env,h.ops);
+    assert.ok(['ok','checkpointed'].includes(outcome.status),outcome.reason||'Unexpected state');
+    phases.push(outcome.phase);
+    if(outcome.phase==='review_only')break;
+    h.advance(60000);
+  }
+  assert.equal(phases.at(-1),'review_only');
+  assert.equal(phases.filter(x=>x==='vacancy_history').length,5,
+    'one bounds call, three 64-row pages and one D1-only assembly');
+  const history=reads.filter(x=>x.some(r=>r.startsWith("'Vacatures'!")));
+  assert.equal(history.length,4);
+  assert.ok(history[0].includes("'Vacatures'!A1:A"));
+  for(const ranges of history.slice(1)){
+    assert.equal(ranges.length,2);
+    for(const range of ranges){
+      const m=/[A-Z](\d+):[A-Z](\d+)$/.exec(range);
+      assert.ok(m);
+      assert.ok(Number(m[2])-Number(m[1])+1<=64);
+    }
+  }
+  const receipt=JSON.parse(h.db.meta.get(STAGE_RECEIPT));
+  assert.equal(receipt.status,'review_ready');
+  assert.equal(receipt.application_submissions,0);
+  assert.equal(receipt.google_sheet_rows_written,0);
+  assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
+  assert.ok(![...h.db.meta.keys()].some(k=>k.startsWith('micro:v2:snapshot:')));
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
+});
+test('paged vacancy scans fail closed when header differs before any ATS read',async()=>{
+  const h=harness();h.ops.pagedVacancy=true;
+  const orig=h.ops.readRanges;
+  h.ops.readRanges=async(id,ranges,token)=>{
+    const v=await orig(id,ranges,token);
+    if(ranges.includes("'Vacatures'!A1:A"))v[0][0][0]='mismatch';
+    return v;
+  };
+  assert.equal((await runStagedReview(h.env,h.ops)).phase,'source_gate');
+  h.advance(60000);
+  const bad=await runStagedReview(h.env,h.ops);
+  assert.equal(bad.status,'partial');
+  assert.equal(bad.reason,'Vacature Register header mismatch');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal(h.events.some(x=>x.startsWith('ats:')),false);
+});
+
 test('an inactive employer blocks the source before any ATS access',async()=>{
   const h=harness({blockEmployer:true});
   const r=await runStagedReview(h.env,h.ops);
