@@ -65,6 +65,14 @@ Onafhankelijke readback na de proef: exact 3 `seeded:`-markeringen, 26 D1-waarne
 
 De eenmalige baselinecode, D1-triggerroute en bijbehorende tijdelijke tests zijn na de proef uit de actieve broncode verwijderd; alleen de onafhankelijke auditresultaten blijven bewaard. De bestaande foutlogging, D1-healthbewaking en broncooldowns blijven beschikbaar voor een eventuele latere goedgekeurde productieactivatie.
 
+### CPU-optimalisatie zonder wijziging van vacaturebeleid (16 oktober 2026)
+
+De Worker leest voortaan via één Google Sheets `values:batchGet` alleen de noodzakelijke kolommen van `Bronnen`, `Vacatures`, `Applications` en `ApplicationEvents`. Deze tien dunne kolomranges worden opnieuw samengevoegd tot dezelfde oorspronkelijke rijposities, zodat de bestaande checks voor actieve bronnen, officiële vacatures, historische sollicitaties en afmeldingen exact hetzelfde blijven. Uit de actuele registeromvang (228 bronrijen, 349 vacaturerijen, 192 application-rijen en 163 eventrijen) volgt ongeveer **173.331 versus 98.796 JSON-tekens aan rijwaarden**, een afname van ongeveer **43%** exclusief response-metadata. Dit is een payload-inschatting, **geen bewezen CPU-winst**.
+
+Het zoeken van de drie actieve bronparen gebruikt één statusindex i.p.v. driemaal de volledige bronlijst te scannen. URL-canonicalisatie voor rol-deduplicatie gebruikt één gevalideerde URL-parser in plaats van dezelfde URL opnieuw te parsen. De tests vergelijken compacte reconstructie met de oorspronkelijke registerindex en bewaken dubieuze URL's, lege cellen en rijuitlijning.
+
+**Vrijgave:** `RADAR_ENABLED=0` blijft staan. Historische 26 D1-baselinewaarnemingen blijven behouden. De bekende volledige baselines kostten circa 35, 38 en 62 ms CPU op Free, dus pas na herhaalde CPU-metingen op echte workloads en grenscontroles kan eventueel een nieuw activeringsvoorstel volgen. Geen betaalde upgrade of automatische sollicitaties.
+
 ## Technisch contract
 
 - Cron: `* * * * *` UTC (één technische uitvoering per minuut, niet één controle per bron per minuut; bij drie actieve bronnen één controle per bron per circa drie minuten). Geen publicatie-SLA.
