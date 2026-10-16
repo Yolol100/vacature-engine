@@ -93,6 +93,25 @@ async function storeStage(db,cycle,stage,data) {
   await putMeta(db,snapshotName(cycle,stage),{cycle,data});
 }
 
+// Write one page and advance its cursor in ONE D1 transaction/subrequest.
+// The conditional INSERT prevents orphan pages on a lost CAS. D1 batch()
+// is transactional: if its second statement fails, the first is rolled back.
+async function advanceHistoryPage(db,cycle,claim,next,page){
+  const key=snapshotName(cycle,'vacancy_page_'+page.first);
+  const snapshot=JSON.stringify({cycle,data:{rows:page.rows}});
+  if(snapshot.length>MAX_SNAPSHOT_BYTES)throw new Error('Stage snapshot too large');
+  const result=await db.batch([
+    db.prepare('INSERT INTO radar_metadata(name,value) '+
+      'SELECT ?,? WHERE EXISTS (SELECT 1 FROM radar_metadata WHERE name=? AND value=?) '+
+      'ON CONFLICT(name) DO UPDATE SET value=excluded.value')
+      .bind(key,snapshot,STAGE_CONTROL,claim),
+    db.prepare('UPDATE radar_metadata SET value=? WHERE name=? AND value=?')
+      .bind(next,STAGE_CONTROL,claim)
+  ]);
+  if(result?.[0]?.meta?.changes!==1||result?.[1]?.meta?.changes!==1)
+    throw new Error('Stage race');
+}
+
 async function readSourceGate(env,ops,cycle,cursor){
   const token=await ops.accessToken(env);
   const chunks=await ops.readRanges(env.VACATURE_REGISTER_ID,
@@ -480,11 +499,11 @@ export async function runStagedReview(env,ops={}){
     else if(name==='review_only')result=await finalizeReview(db,state.run);
     else throw new Error('Invalid stage state');
     if(name==='vacancy_history'&&result?.kind==='progress'){
-      if(result.page)await storeStage(db,state.run,'vacancy_page_'+result.page.first,
-        {rows:result.page.rows});
-      await changeControl(db,claim,JSON.stringify({
+      const advanced=JSON.stringify({
         ...state,...result.next,attempts:0,retry_after:undefined
-      }));
+      });
+      if(result.page)await advanceHistoryPage(db,state.run,claim,advanced,result.page);
+      else await changeControl(db,claim,advanced);
       return {status:'checkpointed',sources:0,phase:name,
         phase_index:state.phase+1,total_phases:STAGES.length,new_records:0};
     }
