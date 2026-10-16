@@ -139,8 +139,8 @@ test('nine bounded Cron stages classify sources without writing business records
   assert.equal(result.rejected.irrelevant,1);
   assert.equal(result.google_sheet_rows_written,0);
   assert.equal(result.application_submissions,0);
-  assert.ok(h.db.writes.every(x=>x.startsWith('micro:v1:')));
-  assert.ok(![...h.db.meta.keys()].some(x=>x.startsWith('micro:v1:snapshot:')));
+  assert.ok(h.db.writes.every(x=>x.startsWith('micro:v2:')));
+  assert.ok(![...h.db.meta.keys()].some(x=>x.startsWith('micro:v2:snapshot:')));
   assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
   assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).status,'done');
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
@@ -207,7 +207,7 @@ test('each heavy history read is a separate checkpoint from building the policy 
     assert.equal(outcome.phase,phases[i]);
     h.advance(60000);
   }
-  const keys=[...h.db.meta.keys()].filter(x=>x.startsWith('micro:v1:snapshot:'));
+  const keys=[...h.db.meta.keys()].filter(x=>x.startsWith('micro:v2:snapshot:'));
   assert.equal(keys.length,4,'Source, vacancy, application and events are separate checkpoints');
   assert.equal(keys.some(x=>x.endsWith(':application_index')),false);
   const app=JSON.parse(h.db.meta.get(keys.find(x=>x.endsWith(':application_rows'))));
