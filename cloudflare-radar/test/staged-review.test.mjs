@@ -135,6 +135,34 @@ test('disabled defaults: no DB access, Google reads, ATS calls or submission',as
   assert.equal(h.events.length,0);
   assert.equal(h.db.writes.length,0);
 });
+test('D1-only bootstrap separates first-cycle writes from Google source OAuth',async()=>{
+  const h=harness();h.ops.pagedVacancy=true;h.ops.splitBootstrap=true;
+  const init=await runStagedReview(h.env,h.ops);
+  assert.equal(init.status,'initialized');
+  assert.equal(init.phase,'cycle_bootstrap');
+  assert.equal(init.new_records,0);
+  assert.equal(h.events.length,0,'bootstrap must not even request Google OAuth');
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).phase,0);
+  assert.equal([...h.db.meta.keys()].filter(k=>k.startsWith('micro:v2:snapshot:')).length,0);
+  h.advance(60000);
+  const phase=await runStagedReview(h.env,h.ops);
+  assert.equal(phase.status,'ok');
+  assert.equal(phase.phase,'source_gate');
+  assert.equal(h.events.filter(x=>x==='google-auth').length,1);
+  assert.equal(h.events.filter(x=>x.startsWith('google-read')).length,1);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+test('D1 bootstrap contention never creates two concurrent sources',async()=>{
+  const h=harness();h.ops.pagedVacancy=true;h.ops.splitBootstrap=true;
+  const both=await Promise.all([
+    runStagedReview(h.env,h.ops),runStagedReview(h.env,h.ops)
+  ]);
+  assert.equal(both.filter(x=>x.status==='initialized').length,1);
+  assert.equal(both.filter(x=>x.status==='overlap_skipped').length,1);
+  assert.equal(h.events.length,0);
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).phase,0);
+});
+
 test('first stage avoids redundant D1 control reread after atomic insert',async()=>{
   const h=harness();
   const out=await runStagedReview(h.env,h.ops);
