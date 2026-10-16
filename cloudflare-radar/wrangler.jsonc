@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "webactueel-vacature-radar",
+  "name": "vacature-radar",
   "main": "src/index.mjs",
   "compatibility_date": "2026-10-15",
   "triggers": {
@@ -16,8 +16,8 @@
   "d1_databases": [
     {
       "binding": "RADAR_DB",
-      "database_name": "webactueel-vacature-radar-state",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_name": "vacature-radar-state",
+      "database_id": "5ebaebc-b444-4f8b-a0df-584a1a966fd2"
     }
   ]
 }
