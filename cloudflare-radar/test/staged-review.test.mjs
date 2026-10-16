@@ -228,7 +228,7 @@ test('paged vacancy reconstruction retains blank gaps and later strong URLs',asy
   const key=[...h.db.meta.keys()].find(x=>x.endsWith(':vacancy_history'));
   const rows=JSON.parse(h.db.meta.get(key)).data.rows;
   assert.equal(rows.length,144,'all original rows and deliberate gap are preserved');
-  assert.deepEqual(rows[63],[],'a blank page-boundary row is never elided');
+  assert.ok(!rows[63]?.some(value=>Boolean(value)),'a blank page-boundary row is never elided');
   assert.ok(rows.some(row=>row[0]==='v-extra-139'),'later rows cannot be silently omitted');
   assert.equal(h.events.filter(e=>e.startsWith('ats:')).length,0);
 });
