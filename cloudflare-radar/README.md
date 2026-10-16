@@ -73,6 +73,12 @@ Het zoeken van de drie actieve bronparen gebruikt één statusindex i.p.v. driem
 
 **Vrijgave:** `RADAR_ENABLED=0` blijft staan. Historische 26 D1-baselinewaarnemingen blijven behouden. De bekende volledige baselines kostten circa 35, 38 en 62 ms CPU op Free, dus pas na herhaalde CPU-metingen op echte workloads en grenscontroles kan eventueel een nieuw activeringsvoorstel volgen. Geen betaalde upgrade of automatische sollicitaties.
 
+### Tijdelijke Free-tier CPU-meting na optimalisatie
+
+Een privé D1-controle (`perf_request:2026-10-16`) kan, alleen terwijl `RADAR_ENABLED=0`, maximaal drie onafhankelijke leesuitvoeringen voor de officiële Automattic-, Kinsta- en Zapier-bronnen aanvragen. Er is geen publieke endpoint. Elke uitvoering leest de actuele compacte registerkolommen, controleert sollicitatiegeschiedenis, bestaande radaridentiteiten en openbare ATS-vacatures. Ze voert **geen** Google Sheets-mutaties, D1-vacaturemutaties of sollicitaties uit. Het `perf_result:2026-10-16`-bewijs bevat alleen bron, aantallen en status. De aanvraag heeft een vaste vervaldatum en wordt bij een fout gesloten.
+
+De Cloudflare GraphQL `workersInvocationsAdaptive`-meting toont daarna per uitgevoerde minuut de daadwerkelijke CPU-kwantiel. Dit meet een bijna-volledige **lees-/vergelijkingsroute**, niet een volledige productierun met nieuwe D1-inserts en Google Sheets-outbox. De 10 ms-Free-limiet en eerdere echte baseline van 35/38/62 ms blijven een harde NO-GO-poort. Verwijder de tijdelijke meetcode na gebruik.
+
 ## Technisch contract
 
 - Cron: `* * * * *` UTC (één technische uitvoering per minuut, niet één controle per bron per minuut; bij drie actieve bronnen één controle per bron per circa drie minuten). Geen publicatie-SLA.
