@@ -1,95 +1,18 @@
 import {
-  PILOT_SOURCES,adapterUrl,buildRegisterIndex,canonicalUrl,chooseSource,cooldownMinutes,
-  activeSourcePairs,isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,strongRoleKeys,toRadarRow
+  PILOT_SOURCES,buildRegisterIndex,canonicalUrl,chooseSource,cooldownMinutes,
+  activeSourcePairs,matchRegister,preliminaryInterest,runStatsRow,strongRoleKeys,toRadarRow
 } from './logic.mjs';
-import {safeDiagnosticError} from './health.mjs';
 import {REGISTER_COMPACT_RANGES,expandRegisterRanges} from './compact-register.mjs';
-import {runStagedReview} from './staged-review.mjs';
+import {accessToken,readRanges} from './google-sheets.mjs';
+import {publicJobs,existingKeys,params} from './official-ats.mjs';
+import reviewWorker from './review-worker.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
-const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
-const TOKEN_URL='https://oauth2.googleapis.com/token';
-const MAX_SOURCE_JOBS=160;
 const OUTBOX_SIZE=20;
 const MAX_RECONCILIATIONS=20;
 const MAX_DB_INSERT_ROWS=16; // 16 * 6 bindings = 96 (under D1's 100 per statement).
 const POLL_LOCK_MS=180000;
 const TIMEOUT_MS=10000;
-let tokenCache;
-let signingKeyCache;
-let pendingToken;
-const encoder=new TextEncoder();
-
-function b64url(bytes){
-  let text='';
-  for(const byte of bytes)text+=String.fromCharCode(byte);
-  return btoa(text).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-}
-function encodeJSON(value){return b64url(encoder.encode(JSON.stringify(value)));}
-function privateKeyBytes(pem){
-  const stripped=pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g,'');
-  return Uint8Array.from(atob(stripped),c=>c.charCodeAt(0));
-}
-async function accessToken(env){
-  const secret=env.GOOGLE_SERVICE_ACCOUNT_JSON||'{}';
-  if(tokenCache?.secret===secret&&tokenCache.expires>Date.now())return tokenCache.token;
-  // Multiple scheduled invocations in one isolate should never repeat the
-  // same RSA import, signature and OAuth request concurrently.
-  if(pendingToken?.secret===secret)return pendingToken.promise;
-  const task=(async()=>{
-    let entry=signingKeyCache;
-    if(!entry||entry.secret!==secret){
-      const svc=JSON.parse(secret);
-      if(!svc.private_key||!svc.client_email)
-        throw new Error('Missing Google Sheets service account secret');
-      // CryptoKey is non-extractable and lives in isolate memory only: no
-      // OAuth token, key or raw credential is written to D1, KV or logs.
-      entry={secret,email:svc.client_email,keyPromise:crypto.subtle.importKey(
-        'pkcs8',privateKeyBytes(svc.private_key),
-        {name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['sign']
-      )};
-      signingKeyCache=entry;
-    }
-    let key;
-    try{key=await entry.keyPromise;}
-    catch(error){
-      if(signingKeyCache===entry)signingKeyCache=undefined;
-      throw error;
-    }
-    const now=Math.floor(Date.now()/1000);
-    const assertion=encodeJSON({alg:'RS256',typ:'JWT'})+'.'+encodeJSON({
-      iss:entry.email,scope:GOOGLE_SCOPE,aud:TOKEN_URL,iat:now,exp:now+3300
-    });
-    const signature=await crypto.subtle.sign('RSASSA-PKCS1-v1_5',key,
-      encoder.encode(assertion));
-    const reply=await fetch(TOKEN_URL,{
-      method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:new URLSearchParams({grant_type:'urn:ietf:params:oauth:grant-type:jwt-bearer',
-        assertion:assertion+'.'+b64url(new Uint8Array(signature))}),
-      signal:AbortSignal.timeout(TIMEOUT_MS)
-    });
-    if(!reply.ok)throw new Error('Google OAuth HTTP '+reply.status);
-    const payload=await reply.json();
-    if(!payload.access_token)throw new Error('Missing Google OAuth access token');
-    tokenCache={secret,token:payload.access_token,expires:Date.now()+
-      Math.max(60,(Number(payload.expires_in)||3600)-120)*1000};
-    return tokenCache.token;
-  })();
-  pendingToken={secret,promise:task};
-  try{return await task;}
-  finally{if(pendingToken?.promise===task)pendingToken=undefined;}
-}
-async function readRanges(id,ranges,token){
-  const url=new URL('https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(id)+'/values:batchGet');
-  for(const range of ranges)url.searchParams.append('ranges',range);
-  // Google supports partial responses: parse just the values, not range metadata.
-  url.searchParams.set('fields','valueRanges(values)');
-  const response=await fetch(url,{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(TIMEOUT_MS)});
-  if(!response.ok)throw new Error('Sheets read HTTP '+response.status);
-  const body=await response.json();
-  if(!Array.isArray(body.valueRanges)||body.valueRanges.length!==ranges.length)throw new Error('Sheets response incomplete');
-  return body.valueRanges.map(item=>item.values||[]);
-}
 async function appendRows(id,range,rows,token){
   if(!rows.length)return;
   const uri='https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(id)+'/values/'+encodeURIComponent(range)+':append?valueInputOption=RAW&insertDataOption=INSERT_ROWS';
@@ -121,21 +44,9 @@ function assertSheetHeaders(registry,vacancies,applications,events,keys,urls,sta
     throw new Error('Spreadsheet header mismatch: stop before dedupe or writes');
   }
 }
-function params(n){return Array.from({length:n},()=>'?').join(',');}
 async function pendingEntries(db){
   return (await db.prepare('SELECT identity,canonical_url,payload_json,source_instance FROM radar_observations WHERE status=? ORDER BY first_seen_at LIMIT ?')
     .bind('pending',OUTBOX_SIZE).all()).results||[];
-}
-async function existingKeys(db,jobs){
-  const existing=new Set();
-  for(let i=0;i<jobs.length;i+=60){
-    const ids=jobs.slice(i,i+60).map(j=>j.identity);
-    if(!ids.length)continue;
-    const result=await db.prepare('SELECT identity FROM radar_observations WHERE identity IN ('+params(ids.length)+')')
-      .bind(...ids).all();
-    for(const row of result.results||[])existing.add(row.identity);
-  }
-  return existing;
 }
 async function insertJobs(db,items){
   for(let i=0;i<items.length;i+=MAX_DB_INSERT_ROWS){
@@ -173,30 +84,6 @@ async function lock(db){
 async function unlock(db,token){
   await db.prepare('UPDATE radar_metadata SET value=? WHERE name=? AND value=?')
     .bind('1970-01-01T00:00:00.000Z','exclusive_poll_lease',token).run();
-}
-async function publicJobs(source){
-  const resp=await fetch(adapterUrl(source),{
-    headers:{Accept:'application/json'},signal:AbortSignal.timeout(TIMEOUT_MS)
-  });
-  if(!resp.ok){
-    const error=new Error('Public API HTTP '+resp.status);
-    error.status=resp.status;
-    const val=resp.headers.get('retry-after');
-    if(val){
-      const n=Number(val);
-      error.retryAfterSeconds=Number.isFinite(n)?n:Math.max(0,(Date.parse(val)-Date.now())/1000);
-    }
-    throw error;
-  }
-  const declared=Number(resp.headers.get('content-length')||0);
-  if(declared>2_000_000)throw new Error('Source payload too large');
-  const body=await resp.text();
-  if(body.length>2_000_000)throw new Error('Source payload too large');
-  const items=normalizeJobs(source,JSON.parse(body));
-  if(items.length>MAX_SOURCE_JOBS)throw new Error('Source exceeds safe job limit');
-  const valid=items.filter(isValidJob);
-  if(valid.length!==items.length)throw new Error('Unexpected ATS job host: source contract changed');
-  return valid;
 }
 function rowInfo(keyRows,urlRows,statusRows,actionRows){
   const listed=new Set(),strongURLs=new Set(),records=[];
@@ -330,23 +217,6 @@ export async function tick(env){
       applied_reconciled:changes.filter(x=>x.range.includes('!N')).length,errors:metrics.errors.length};
   }finally{await unlock(env.RADAR_DB,lease);}
 }
-export default{
-  async scheduled(_event,env,ctx){
-    // Double gate: the existing RADAR_ENABLED flag alone cannot start the legacy CPU-heavy tick.
-    // This initial staged path is review-only: no Google Sheets or applicant writes.
-    if(env.RADAR_ENABLED!=='1'||env.RADAR_PIPELINE_MODE!=='staged_review')return;
-    const ops={accessToken,readRanges,publicJobs,existingKeys,pagedVacancy:true,splitBootstrap:true};
-    // The review-only stage engine already persists bounded checkpoint/error receipts.
-    // Avoid multiple redundant D1 health writes on every Free-tier Cron invocation.
-    ctx.waitUntil(runStagedReview(env,ops).then(outcome=>{
-      console.log(JSON.stringify(outcome));
-    }).catch(error=>{
-      console.error('vacature_radar_staged_failed:'+safeDiagnosticError(error));
-      throw error;
-    }));
-  },
-  async fetch(){return new Response('Not found',{status:404});}
-};
-
-// Testable internal helpers; the Worker fetch handler remains 404-only.
+// Compatibility-only entrypoint: live Wrangler points to review-worker.mjs.
+export default reviewWorker;
 export {accessToken,readRanges};
