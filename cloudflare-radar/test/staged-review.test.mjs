@@ -58,12 +58,15 @@ function rangeValues(range,opts) {
   });
   const vacancy=[
     ['vacancy_id','status','','','','','canonical_url','official_url'],
-    ['v-old','submitted','','','','','https://job-boards.greenhouse.io/automatticcareers/jobs/old','']
+    ['v-old','submitted','','','','','https://job-boards.greenhouse.io/automatticcareers/jobs/old',''],
+    ['v-applied','submitted','','','','','https://job-boards.greenhouse.io/automatticcareers/jobs/applied-no-d1','']
   ];
   const apps=[['vacancy_id','','status','','application_url'],
-    ['v-old','','submitted','','https://job-boards.greenhouse.io/automatticcareers/jobs/old']];
+    ['v-old','','submitted','','https://job-boards.greenhouse.io/automatticcareers/jobs/old'],
+    ['v-applied','','submitted','','https://job-boards.greenhouse.io/automatticcareers/jobs/applied-no-d1']];
   const events=[['event_id','vacancy_id','','event_type','','status_after'],
-    ['e-1','v-old','','submitted','','submitted']];
+    ['e-1','v-old','','submitted','','submitted'],
+    ['e-2','v-applied','','submitted','','submitted']];
   const radar=[['observation_key','','','','','officiele_url','','','','','','','','sollicitatiehistorie','','','','actie'],
     ['greenhouse:automatticcareers:seen','','','','','https://job-boards.greenhouse.io/automatticcareers/jobs/seen']];
   const data={'Bronnen':source,'Vacatures':vacancy,'Applications':apps,'ApplicationEvents':events,'Nieuwe vacatures':radar};
@@ -86,6 +89,8 @@ function harness(opts={}){
       source_job_id:'new',title:'WordPress Developer',url:'https://job-boards.greenhouse.io/automatticcareers/jobs/new',source_url:'https://job-boards.greenhouse.io/automatticcareers/jobs/new',remote:'',location:''},
     {identity:'greenhouse:automatticcareers:seen',source_id:'greenhouse',source_account:'automatticcareers',
       source_job_id:'seen',title:'WordPress Developer',url:'https://job-boards.greenhouse.io/automatticcareers/jobs/seen',source_url:'https://job-boards.greenhouse.io/automatticcareers/jobs/seen',remote:'',location:''},
+    {identity:'greenhouse:automatticcareers:applied-no-d1',source_id:'greenhouse',source_account:'automatticcareers',
+      source_job_id:'applied-no-d1',title:'WordPress Developer',url:'https://job-boards.greenhouse.io/automatticcareers/jobs/applied-no-d1',source_url:'https://job-boards.greenhouse.io/automatticcareers/jobs/applied-no-d1',remote:'',location:''},
     {identity:'greenhouse:automatticcareers:irrelevant',source_id:'greenhouse',source_account:'automatticcareers',
       source_job_id:'irrelevant',title:'Human Resources Specialist',url:'https://job-boards.greenhouse.io/automatticcareers/jobs/irrelevant',source_url:'https://job-boards.greenhouse.io/automatticcareers/jobs/irrelevant',remote:'',location:''}
   ];
@@ -130,6 +135,7 @@ test('six small Cron stages classify sources without writing business records',a
   assert.equal(result.review_count,1);
   assert.equal(result.candidates[0].identity,'greenhouse:automatticcareers:new');
   assert.equal(result.rejected.radar_duplicates,1);
+  assert.equal(result.rejected.applied,1,'a submitted application must be suppressed even if D1 has never seen the job');
   assert.equal(result.rejected.irrelevant,1);
   assert.equal(result.google_sheet_rows_written,0);
   assert.equal(result.application_submissions,0);
@@ -181,4 +187,14 @@ test('repeated overlapping invocations cannot fetch source twice',async()=>{
   const outcomes=await Promise.all([runStagedReview(h.env,h.ops),runStagedReview(h.env,h.ops)]);
   assert.equal(outcomes.filter(x=>x.status==='ok').length,1);
   assert.equal(outcomes.filter(x=>x.status==='overlap_skipped').length,1);
+});
+
+test('scheduled event requires BOTH explicit gates, not only RADAR_ENABLED',async()=>{
+  const {default:worker}=await import('../src/index.mjs');
+  let invoked=0;
+  const ctx={waitUntil(){invoked++;}};
+  await worker.scheduled({}, {RADAR_ENABLED:'1',RADAR_PIPELINE_MODE:'off'}, ctx);
+  await worker.scheduled({}, {RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'staged_review'}, ctx);
+  await worker.scheduled({}, {RADAR_ENABLED:'1'}, ctx);
+  assert.equal(invoked,0);
 });
