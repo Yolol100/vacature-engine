@@ -37,6 +37,24 @@ test('review-only scheduled path skips redundant health DB I/O',async()=>{
   await pending;
   assert.equal(db.reads,0,'missing required bindings must fail before any health D1 read');
 });
+test('slim Worker private CPU probe is inert without valid D1 lease',async()=>{
+  for(const permit of [
+    null,
+    {kind:'incorrect',started:Date.now()-60000,until:Date.now()+20000},
+    {kind:'slim-worker-cpu-20261017',started:Date.now()-120000,until:Date.now()-1000},
+    {kind:'slim-worker-cpu-20261017',started:Date.now()-900000,until:Date.now()+20000}
+  ]){
+    const keys=[];let starts=0;
+    const db={prepare(){return {bind(k){keys.push(k);return {
+      first:async()=>permit?{value:JSON.stringify(permit)}:null
+    };}}}};
+    await worker.scheduled({},{
+      RADAR_ENABLED:'0',RADAR_PIPELINE_MODE:'off',RADAR_CPU_CANARY:'1',RADAR_DB:db
+    },{waitUntil(){starts++;}});
+    assert.deepEqual(keys,['micro:v2:cpu_canary']);
+    assert.equal(starts,0);
+  }
+});
 test('no public HTTP endpoint',async()=>{
   const result=await worker.fetch();
   assert.equal(result.status,404);
