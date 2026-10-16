@@ -302,6 +302,32 @@ export default{
   async scheduled(_event,env,ctx){
     // Double gate: the existing RADAR_ENABLED flag alone cannot start the legacy CPU-heavy tick.
     // This initial staged path is review-only: no Google Sheets or applicant writes.
+    // Private read-only diagnostic. Production gates are never changed.
+    // Requires BOTH an explicit short-lived binding and a private D1 marker.
+    if(env.RADAR_CPU_CANARY==='1'&&env.RADAR_ENABLED==='0'&&
+       env.RADAR_PIPELINE_MODE==='off'&&env.RADAR_DB){
+      const marker=await env.RADAR_DB.prepare(
+        'SELECT value FROM radar_metadata WHERE name=?'
+      ).bind('micro:v2:cpu_canary').first();
+      let lease;
+      try{lease=JSON.parse(marker?.value||'null');}catch{lease=null;}
+      const now=Date.now();
+      if(lease?.kind==='paged-history-20261016'&&
+         Number.isSafeInteger(lease.started)&&Number.isSafeInteger(lease.until)&&
+         lease.started<=now&&now<lease.until&&
+         lease.until-lease.started<=11*60000+30000){
+        const isolated={...env,RADAR_ENABLED:'1',RADAR_PIPELINE_MODE:'staged_review'};
+        const ops={accessToken,readRanges,publicJobs,existingKeys,pagedVacancy:true};
+        ctx.waitUntil(runStagedReview(isolated,ops).then(result=>{
+          console.log(JSON.stringify({private_cpu_canary:true,phase:result.phase||null,
+            phase_index:result.phase_index||null,status:result.status}));
+        }).catch(error=>{
+          console.error('private_cpu_canary_failed:'+safeDiagnosticError(error));
+          throw error;
+        }));
+      }
+      return;
+    }
     if(env.RADAR_ENABLED!=='1'||env.RADAR_PIPELINE_MODE!=='staged_review')return;
     const ops={accessToken,readRanges,publicJobs,existingKeys,pagedVacancy:true};
     // The review-only stage engine already persists bounded checkpoint/error receipts.
