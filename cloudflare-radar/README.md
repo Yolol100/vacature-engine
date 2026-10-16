@@ -200,3 +200,21 @@ De codewijziging in [PR #107](https://github.com/Yolol100/vacature-engine/pull/1
 Daaropvolgende privacyveilige CPU-canary [PR #108](https://github.com/Yolol100/vacature-engine/pull/108) werd via een tijdelijke D1-marker gestart met `RADAR_ENABLED=0` en `RADAR_PIPELINE_MODE=off`. **Cloudflare Workers Observability registreerde `source_gate` op 2026-10-16T17:54:06Z met 13 ms CPU** (`outcome=ok`, dus de rollover is geen bewijs dat de 10 ms-limiet werd gehaald). De proef is bij deze eerste overschrijding beëindigd. Marker en v2-testsnapshots zijn gewist, alle **26 baseline-records** behouden, en de geverifieerde veilige non-canary Worker-versie `328b0813-1c52-4098-b10d-edafb992bd13` werd direct teruggezet. Opruim-PR #109 verwijdert de testcode en -variabele uit `main`.
 
 **NO-GO blijft gelden.** Key-caching is per isolate en kan geen koude start onder 10 ms garanderen. Het volgende bewezen gat is vaste opstartoverhead: ontwerp een **aparte D1-only cyclusinitialisatie** vóór `source_gate`, zodat OAuth/bronselectie niet tevens de eerste D1-control-aanmaak draagt. Pas daarna opnieuw gemeten Free Cron-profiel, inclusief koude en warme starts en alle geschiedenispagina's. Geen Sheets-uitvoer of sollicitatieautomatisering activeren.
+
+
+### D1-only bootstrap: afgeschermde CPU-meting op Cloudflare Free (16 oktober 2026)
+
+Na [PR #110](https://github.com/Yolol100/vacature-engine/pull/110) is de D1-cyclusaanmaak opt-in gescheiden van Google `source_gate` binnen dezelfde, bestaande minuut-Cron (geen extra trigger). Een [private test in PR #111](https://github.com/Yolol100/vacature-engine/pull/111) gebruikte een tijdelijke D1-marker met automatische vervaldatum, terwijl `RADAR_ENABLED=0` en `RADAR_PIPELINE_MODE=off` bleven:
+
+| UTC | Stap | Werkelijke Worker-CPU |
+|---|---|---:|
+| 18:05:04 | D1-only `cycle_bootstrap` | **3 ms** |
+| 18:06:05 | live Google `source_gate` | **9 ms** |
+| 18:07 | historische ID-grenscontrole | checkpoint voltooid, CPU-log **niet beschikbaar** |
+| 18:08:05 | eerste geschiedenis-pagina van 32 rijen | **9 ms** |
+
+Bewijs: Cloudflare Workers Observability `$workers.cpuTimeMs`, D1 `micro:v2:control` en `micro:v2:snapshot:cycle_1792173904020_0:vacancy_page_1`. Een ontbrekend CPU-log is **geen meting onder de limiet**.
+
+De testtoestemming is ingetrokken, alle drie resterende `micro:v2:`-testrecords gewist, de **26 D1-baseline-waarnemingen** onaangeraakt gebleven en de geverifieerde non-canary Worker-versie `3b04b773-f77a-45a5-b339-58d7b79367e6` via deployment `81dc1e46-5e66-4f7b-9439-604feda5ee31` teruggezet. PR #112 verwijdert de tijdelijke diagnosecode uit `main`. Geheimen, bestaande Cron en Google Sheets zijn ongewijzigd.
+
+**CPU GO = nog niet toegestaan.** De drie afzonderlijke gemeten uitvoeringen bleven onder 10 ms, maar zijn slechts eenmalige observaties, twee op 9 ms zonder voldoende marge. Het historische-ID-stadium en de overige bron-/index-/ATS-/review-stadia zijn nog niet volledig en herhaald gemeten; complete leverings- en sollicitatieprocessen blijven afzonderlijk uit. Verdere CPU-optimalisatie en betrouwbaarheidstests moeten voortbouwen op deze veilige uitgangspositie.
