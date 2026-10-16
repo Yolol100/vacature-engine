@@ -2,7 +2,7 @@ import {
   PILOT_SOURCES,adapterUrl,buildRegisterIndex,canonicalUrl,chooseSource,cooldownMinutes,
   activeSourcePairs,isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,strongRoleKeys,toRadarRow
 } from './logic.mjs';
-import {monitoredTick,safeDiagnosticError} from './health.mjs';
+import {safeDiagnosticError} from './health.mjs';
 import {REGISTER_COMPACT_RANGES,expandRegisterRanges} from './compact-register.mjs';
 import {runStagedReview} from './staged-review.mjs';
 
@@ -304,7 +304,9 @@ export default{
     // This initial staged path is review-only: no Google Sheets or applicant writes.
     if(env.RADAR_ENABLED!=='1'||env.RADAR_PIPELINE_MODE!=='staged_review')return;
     const ops={accessToken,readRanges,publicJobs,existingKeys};
-    ctx.waitUntil(monitoredTick(env,enabled=>runStagedReview(enabled,ops)).then(outcome=>{
+    // The review-only stage engine already persists bounded checkpoint/error receipts.
+    // Avoid multiple redundant D1 health writes on every Free-tier Cron invocation.
+    ctx.waitUntil(runStagedReview(env,ops).then(outcome=>{
       console.log(JSON.stringify(outcome));
     }).catch(error=>{
       console.error('vacature_radar_staged_failed:'+safeDiagnosticError(error));
