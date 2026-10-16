@@ -218,3 +218,23 @@ Bewijs: Cloudflare Workers Observability `$workers.cpuTimeMs`, D1 `micro:v2:cont
 De testtoestemming is ingetrokken, alle drie resterende `micro:v2:`-testrecords gewist, de **26 D1-baseline-waarnemingen** onaangeraakt gebleven en de geverifieerde non-canary Worker-versie `3b04b773-f77a-45a5-b339-58d7b79367e6` via deployment `81dc1e46-5e66-4f7b-9439-604feda5ee31` teruggezet. PR #112 verwijdert de tijdelijke diagnosecode uit `main`. Geheimen, bestaande Cron en Google Sheets zijn ongewijzigd.
 
 **CPU GO = nog niet toegestaan.** De drie afzonderlijke gemeten uitvoeringen bleven onder 10 ms, maar zijn slechts eenmalige observaties, twee op 9 ms zonder voldoende marge. Het historische-ID-stadium en de overige bron-/index-/ATS-/review-stadia zijn nog niet volledig en herhaald gemeten; complete leverings- en sollicitatieprocessen blijven afzonderlijk uit. Verdere CPU-optimalisatie en betrouwbaarheidstests moeten voortbouwen op deze veilige uitgangspositie.
+
+
+### Integrale privé-CPU-audit na PR #113/#114, 16 oktober 2026
+
+Eenmalige read-only reviewcyclus gestart op **18:33:19 UTC** met expliciete D1-toestemming (maximaal 28 minuten), terwijl de productieradar op `RADAR_ENABLED=0` en `RADAR_PIPELINE_MODE=off` bleef. De tijdelijke [PR #115](https://github.com/Yolol100/vacature-engine/pull/115) bracht een 353-rijen integratietest en een strikt single-cycle-testpad; de [cleanup PR #116](https://github.com/Yolol100/vacature-engine/pull/116) verwijdert uitsluitend de testcode en behoudt de 353-rijen regressietest.
+
+| UTC | Bevestigde stap | Cloudflare Worker CPU |
+|---|---|---:|
+| 18:34:04 | D1-only cyclusinitialisatie | 3 ms |
+| 18:35:07 | Live `source_gate` | 9 ms |
+| 18:36:06 | Vacatures-ID-grenscontrole | 9 ms |
+| 18:37:05 | Historiepagina 1–32 | 7 ms |
+| 18:38:06 | Historiepagina 33–64 | 7 ms |
+| 18:39:05 | Historiepagina 65–96 | 7 ms |
+| 18:40 | Pagina 97–128 checkpoint voltooid | CPU-log ontbreekt |
+| 18:41:05 | Volgende historiepagina vanaf rij 129 | **10 ms — CPU NO-GO** |
+
+Cloudflare Observability liet bij de 10ms-uitvoering `outcome=ok` zien; dat is geen bewijs van marge. De tijdelijke D1-toestemming is om 18:41:37 ingetrokken; daarna zijn alle **zeven resterende `micro:v2:`-testrecords** verwijderd. De 26 oorspronkelijke `baseline`-records zijn gecontroleerd intact. De vorige non-canary Worker-versie `ab2afcf7-6b5b-4293-8d72-9962ddfa934a` is via deployment `c770b3a4-cb15-4fb6-a8bd-204d4bf00544` teruggezet. Er zijn geen outputtabrijen, sollicitaties, extra Crons of nieuwe secrets ontstaan.
+
+De uitkomst verplicht verdere verkleining van de historiepagina's (van 32 naar **maximaal 16 rijen per Cron**) en behoud van de 1.536-rijen-capaciteitsbescherming. Bij één afgebroken CPU-meting mag de resterende, niet-gemeten pipeline **niet** als succesvol worden beoordeeld. De langere paginacyclus is review-only en niet atomair met Google Sheets; elke toekomstige levering vergt actuele bron- en sollicitatiehercontrole. **Geen productie-GO.**
