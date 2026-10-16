@@ -6,7 +6,27 @@ import {
 import {buildRegisterIndex,matchRegister} from '../src/logic.mjs';
 
 class FakeD1 {
-  constructor(){this.meta=new Map([['seeded:greenhouse:automatticcareers','2026-10-16T10:29:03Z']]);this.writes=[];this.reads=[];this.assemblyBatches=0;}
+  constructor(){this.meta=new Map([['seeded:greenhouse:automatticcareers','2026-10-16T10:29:03Z']]);this.writes=[];this.reads=[];this.assemblyBatches=0;this.pageBatches=0;}
+  async batch(statements){
+    this.pageBatches++;
+    if(this.beforeBatch){const callback=this.beforeBatch;this.beforeBatch=null;callback();}
+    const previous=new Map(this.meta),writeCount=this.writes.length;
+    try{
+      const output=[];
+      for(let i=0;i<statements.length;i++){
+        output.push(await statements[i].run());
+        if(this.abortPageBatchAfterFirst&&i===0){
+          this.abortPageBatchAfterFirst=false;
+          throw new Error('Simulated transactional D1 failure');
+        }
+      }
+      return output;
+    }catch(error){
+      this.meta=previous;
+      this.writes.length=writeCount;
+      throw error;
+    }
+  }
   prepare(sql) {
     return {bind:(...args)=>({
       first:async()=>{
@@ -26,6 +46,11 @@ class FakeD1 {
         throw Error('Unexpected D1 all: '+sql);
       },
       run:async()=>{
+        if(sql.startsWith('INSERT INTO radar_metadata(name,value) SELECT ?,? WHERE EXISTS (')){
+          const changes=Number(this.meta.get(args[2])===args[3]);
+          if(changes){this.meta.set(args[0],args[1]);this.writes.push(args[0]);}
+          return {meta:{changes}};
+        }
         if(sql.startsWith('INSERT OR IGNORE INTO radar_metadata')){
           const change=Number(!this.meta.has(args[0]));
           if(change){this.meta.set(args[0],args[1]);this.writes.push(args[0]);}
@@ -572,6 +597,44 @@ test('single-query assembly fails closed if any D1 page is missing',async()=>{
   assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
   assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,0);
+});
+
+test('16-row page and cursor checkpoint use one transactional D1 batch',async()=>{
+  const h=harness({extraVacancies:22});h.ops.pagedVacancy=true;
+  await runStagedReview(h.env,h.ops);
+  h.advance(60000);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
+  h.advance(60000);
+  const value=await runStagedReview(h.env,h.ops);
+  assert.equal(value.status,'checkpointed');
+  assert.equal(h.db.pageBatches,1);
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).history_next,17);
+  assert.equal([...h.db.meta.keys()].filter(k=>k.endsWith(':vacancy_page_1')).length,1);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+test('failed D1 batch rolls back page; never publishes a half checkpoint',async()=>{
+  const h=harness({extraVacancies:22});h.ops.pagedVacancy=true;
+  await runStagedReview(h.env,h.ops);h.advance(60000);
+  await runStagedReview(h.env,h.ops);h.advance(60000);
+  h.db.abortPageBatchAfterFirst=true;
+  const bad=await runStagedReview(h.env,h.ops);
+  assert.equal(bad.status,'partial');
+  assert.equal(h.db.pageBatches,1);
+  assert.equal([...h.db.meta.keys()].filter(k=>k.includes(':vacancy_page_')).length,0);
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+test('lost page claim cannot create an orphan D1 page snapshot',async()=>{
+  const h=harness({extraVacancies:22});h.ops.pagedVacancy=true;
+  await runStagedReview(h.env,h.ops);h.advance(60000);
+  await runStagedReview(h.env,h.ops);h.advance(60000);
+  h.db.beforeBatch=()=>h.db.meta.set(STAGE_CONTROL,'running:another-writer');
+  const outcome=await runStagedReview(h.env,h.ops);
+  assert.equal(outcome.status,'partial');
+  assert.equal(outcome.reason,'Stage race');
+  assert.equal(h.db.pageBatches,1);
+  assert.equal([...h.db.meta.keys()].filter(k=>k.includes(':vacancy_page_')).length,0);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
 });
 
 test('paged checkpoint survives interrupted D1 CAS and does not replay its Google page',async()=>{
