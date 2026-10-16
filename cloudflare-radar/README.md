@@ -21,7 +21,7 @@ De pilot heeft precies drie geregistreerde werkgever-/ATS-routes uit `ingestion/
 
 - **GitHub:** `Yolol100/vacature-engine` op `main` is de broncode; Cloudflare Builds gebruikt al deze repository met root `cloudflare-radar`. Extra MCP of repository niet nodig.
 - **Cloudflare:** Worker `vacature-radar`, eenminuut-Cron en D1 `vacature-radar-state` (EU) bestaan. De tabellen `radar_observations` en `radar_metadata` zijn ingericht.
-- **Google Sheets:** `GOOGLE_SERVICE_ACCOUNT_JSON` is een Cloudflare **Secret**. Het serviceaccount is Lezer op Vacature Register en Bewerker op Vacature Radar. De API-toegang vanuit de daadwerkelijke Worker wordt met de eenmalige proef bewezen, niet afgeleid uit de aanwezigheid van de secret.
+- **Google Sheets:** `GOOGLE_SERVICE_ACCOUNT_JSON` is een Cloudflare **Secret**. Het serviceaccount is Lezer op Vacature Register en Bewerker op Vacature Radar. De API-toegang vanuit de daadwerkelijke Worker is op 16 oktober 2026 tijdens de eenmalige proef bewezen.
 - **Uitgeschakeld:** `RADAR_ENABLED=0`, oorspronkelijke Register-config `radar_enabled=FALSE`. Dit mag voor de smoke-test **niet** op `1`.
 - **Geen R2**, geen extra Cron, geen tweede monitor en geen automatische sollicitaties.
 
@@ -32,6 +32,14 @@ De tijdelijk geactiveerde diagnose in `src/selftest.mjs` draait alleen via de be
 De test probeert achtereenvolgens Google OAuth, beide Sheets lezen, controleren van officiële kolomkoppen, een tijdelijke **lege** cel `Runs!L1000` schrijven/teruglezen/wissen, en **één** actieve ATS-bron uitlezen (voorkeur: Kinsta/Lever). De code weigert een gevulde testcel en probeert na elke schrijfpoging altijd op te ruimen. Er worden geen vacatures in de doel-Sheet gezet, geen sollicitatiestatussen gewijzigd en geen geheime of persoonlijke gegevens in de testuitkomst opgenomen.
 
 De gezuiverde uitkomst staat na een run uitsluitend in `radar_metadata` bij `smoke_result:2026-10-16`. Vereiste acceptatie: `status=ok`, `google_auth=ok`, `sheets_read=ok`, `sheets_write=ok`, `cleanup=ok`, `ats=ok`, geen gewijzigde vacaturedata, en `RADAR_ENABLED=0` gebleven. Bij `failed`/`partial` blijft productie **NO-GO**. Bescherm oude privésleutels door ze bij Google Cloud in te trekken nadat een nieuwe Secret actief is.
+
+### Live testbewijs — 16 oktober 2026
+
+**Bevestigd geslaagd**, daadwerkelijk uitgevoerd door de gedeployde Cloudflare Worker (GitHub-commit `07963d8aab138fa08595fe343c22f4427c728fb6`). De eenmalige Cron-proef begon `2026-10-16T09:00:03.530Z` en eindigde `09:00:09.251Z`. Het duurzame D1-resultaat `smoke_result:2026-10-16` vermeldt `status=ok`, `google_auth=ok`, `sheets_read=ok`, `sheets_write=ok`, `cleanup=ok`, `ats=ok` en **3** jobs van `lever:kinsta`. De aanvraag staat op `done`, zodat de Cron dit niet herhaalt. De testcode heeft geen openbare endpoint en verloopt na 17 oktober.
+
+Onafhankelijke readback na afloop: `Runs!L1000` leeg, `Nieuwe vacatures` en `Runs` hebben uitsluitend hun kolomkoppen, `radar_observations` heeft 0 rijen, Cloudflare-secret `secret_text`, `RADAR_ENABLED=0`. Alle GitHub Radar checks, CI en Release Evidence voor de testcommit zijn geslaagd.
+
+**Geen productie-activering:** de eenmalige proof-of-connection is gereed, maar baseline-ingestie van alle drie de bronnen, foutlogs/alerts, gemiste uitvoeringen en Free-tier CPU/quota moeten vóór `RADAR_ENABLED=1` worden gevalideerd. Vermijd dubbele schedulers en voeg voorlopig geen R2 toe.
 
 ## Technisch contract
 
@@ -57,4 +65,4 @@ Bronstatus mag alleen als `live_verified` worden aangemerkt na een daadwerkelijk
 - GitHub CI bevat ook een échte `wrangler deploy --dry-run`-bundelcontrole **zonder deployment**. De direct afhankelijke Wrangler-versie is vastgezet op `4.151.0`.
 - Meer details: [onafhankelijk QA-rapport](docs/INDEPENDENT-QA-2026-10-15.md).
 
-**Vrijgave blijft NO-GO zolang de live smoke-test en limietcontrole niet aantoonbaar zijn afgerond.** Cloudflare/D1/Google Secret zijn aanwezig, maar inrichting alleen bewijst nog geen succesvolle Google OAuth vanuit de Worker, broncontrole of veilige Sheets-write. `RADAR_ENABLED=0` blijft staan. Eén Cron per minuut betekent bij drie actieve bronnen circa één broncontrole per drie minuten, geen directe melding.
+**Vrijgave blijft NO-GO voor reguliere monitoring totdat de resterende limiet-, baseline- en observability-controles zijn afgerond.** Google OAuth, beide Sheets en één ATS-bron zijn op 16 oktober 2026 wél live bewezen. `RADAR_ENABLED=0` blijft staan. Eén Cron per minuut betekent bij drie actieve bronnen circa één broncontrole per drie minuten, geen directe melding.
