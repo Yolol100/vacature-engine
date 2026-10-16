@@ -52,7 +52,10 @@ function rangeValues(range,opts) {
     ['company-kinsta','active'],
     ['ashby','active'],
     ['company-zapier','active']
-  ];
+  ].map(([id,status])=>{
+    const row=Array(13).fill('');
+    row[0]=id;row[12]=status;return row;
+  });
   const vacancy=[
     ['vacancy_id','status','','','','','canonical_url','official_url'],
     ['v-old','submitted','','','','','https://job-boards.greenhouse.io/automatticcareers/jobs/old','']
