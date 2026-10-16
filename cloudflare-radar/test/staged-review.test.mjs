@@ -6,7 +6,7 @@ import {
 import {buildRegisterIndex,matchRegister} from '../src/logic.mjs';
 
 class FakeD1 {
-  constructor(){this.meta=new Map([['seeded:greenhouse:automatticcareers','2026-10-16T10:29:03Z']]);this.writes=[];this.reads=[];}
+  constructor(){this.meta=new Map([['seeded:greenhouse:automatticcareers','2026-10-16T10:29:03Z']]);this.writes=[];this.reads=[];this.assemblyBatches=0;}
   prepare(sql) {
     return {bind:(...args)=>({
       first:async()=>{
@@ -14,6 +14,16 @@ class FakeD1 {
         if(sql.startsWith('SELECT value FROM radar_metadata'))
           return this.meta.has(args[0])?{value:this.meta.get(args[0])}:null;
         throw Error('Unexpected D1 first: '+sql);
+      },
+      all:async()=>{
+        if(sql.startsWith('SELECT name,value FROM radar_metadata WHERE name IN (')){
+          this.assemblyBatches++;
+          assert.ok(args.length<=48,'one bounded indexed D1 query, within 100 binding limit');
+          return {results:args.filter(name=>this.meta.has(name)).map(name=>({
+            name,value:this.meta.get(name)
+          }))};
+        }
+        throw Error('Unexpected D1 all: '+sql);
       },
       run:async()=>{
         if(sql.startsWith('INSERT OR IGNORE INTO radar_metadata')){
@@ -492,6 +502,49 @@ test('Radar history with official URL but missing observation key still blocks d
   assert.equal(receipt.rejected.radar_duplicates,2);
   assert.equal(receipt.application_submissions,0);
   assert.equal(receipt.google_sheet_rows_written,0);
+});
+
+test('1536 history rows reassemble through one D1 query, not 48 Free subrequests',async()=>{
+  const h=harness({extraVacancies:1533});h.ops.pagedVacancy=true;
+  assert.equal((await runStagedReview(h.env,h.ops)).phase,'source_gate');
+  h.advance(60000);
+  assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
+  for(let i=0;i<48;i++){
+    h.advance(60000);
+    const page=await runStagedReview(h.env,h.ops);
+    assert.equal(page.status,'checkpointed');
+    assert.equal(page.phase,'vacancy_history');
+  }
+  h.advance(60000);
+  const assembled=await runStagedReview(h.env,h.ops);
+  assert.equal(assembled.status,'ok');
+  assert.equal(assembled.phase,'vacancy_history');
+  assert.equal(h.db.assemblyBatches,1);
+  const key=[...h.db.meta.keys()].find(x=>x.endsWith(':vacancy_history'));
+  const snapshot=JSON.parse(h.db.meta.get(key));
+  assert.equal(snapshot.data.rows.length,1536);
+  assert.equal(snapshot.data.rows.at(-1)[0],'v-extra-1532');
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,0);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+});
+test('single-query assembly fails closed if any D1 page is missing',async()=>{
+  const h=harness({extraVacancies:70});h.ops.pagedVacancy=true;
+  await runStagedReview(h.env,h.ops);h.advance(60000);
+  await runStagedReview(h.env,h.ops);
+  for(let i=0;i<3;i++){
+    h.advance(60000);
+    assert.equal((await runStagedReview(h.env,h.ops)).status,'checkpointed');
+  }
+  const key=[...h.db.meta.keys()].find(x=>x.endsWith(':vacancy_page_33'));
+  assert.ok(key);
+  h.db.meta.delete(key);
+  h.advance(60000);
+  const failed=await runStagedReview(h.env,h.ops);
+  assert.equal(failed.status,'partial');
+  assert.equal(failed.reason,'Missing or stale staged snapshot');
+  assert.match(h.db.meta.get(STAGE_CONTROL),/^failed:/);
+  assert.equal(h.db.meta.has(STAGE_RECEIPT),false);
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,0);
 });
 
 test('paged checkpoint survives interrupted D1 CAS and does not replay its Google page',async()=>{
