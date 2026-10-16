@@ -3,7 +3,6 @@ import {
   isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,sourceActive,strongRoleKeys,toRadarRow
 } from './logic.mjs';
 import {monitoredTick,safeDiagnosticError} from './health.mjs';
-import {runControlledBaseline} from './baseline.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
 const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
@@ -209,17 +208,14 @@ export async function tick(env){
     const radar=rowInfo(keyRows,urlRows,statusRows,actionRows);
     const metrics={sources:0,observations:0,known:0,applied:0,skipped:0,delivered:0,errors:[]};
     // Reconcile pre-existing rows after the user submits an application later.
-    const changes=env.BASELINE_SOURCE_INSTANCE?[]:reconcileApplied(radar.records,register);
+    const changes=reconcileApplied(radar.records,register);
     metrics.applied += changes.filter(item=>item.range.startsWith("'Nieuwe vacatures'!N")).length;
     if(changes.length)await updateCells(env.RADAR_RESULT_ID,changes,token);
     const active=PILOT_SOURCES.filter(source=>sourceActive(sourcesRows,source));
     const activeInstances=new Set(active.map(source=>source.source_id+':'+source.account));
     if(!active.length)throw new Error('No active ATS+employer source pairs');
     // One bounded direct source per minute: each of 3 healthy sources every 3 minutes.
-    const source=env.BASELINE_SOURCE_INSTANCE
-      ? active.find(item=>item.source_id+':'+item.account===env.BASELINE_SOURCE_INSTANCE)
-      : chooseSource(active,Math.floor(Date.now()/60000));
-    if(!source)throw new Error('Unregistered or inactive baseline source');
+    const source=chooseSource(active,Math.floor(Date.now()/60000));
     const instance=source.source_id+':'+source.account;
     const cooldown=await getMeta(env.RADAR_DB,'cooldown:'+instance);
     if(cooldown&&Date.parse(cooldown)>Date.now()){
@@ -262,10 +258,6 @@ export async function tick(env){
         metrics.errors.push(instance+': '+String(error.message).slice(0,110));
       }
     }
-    // Baseline mode exercises the exact production ATS/D1 ingestion, but NEVER the Sheets outbox.
-    if(env.BASELINE_SOURCE_INSTANCE)return {status:metrics.errors.length?'partial':metrics.sources===1?'ok':'cooldown',
-      sources:metrics.sources,observations:metrics.observations,new_records:0,
-      applied_reconciled:0,errors:metrics.errors.length};
     // Durable outbox; retry after errors. Readback-before-append prevents duplicate delivery.
     const pending=await pendingEntries(env.RADAR_DB);
     const duplicates=[],delivered=[],append=[],planned=new Set();
@@ -308,16 +300,7 @@ export default{
   async scheduled(_event,env,ctx){
     // Production remains explicitly off until all acceptance gates and owner approval.
     // No D1, Google or ATS calls when disabled.
-    if(env.RADAR_ENABLED!=='1'){
-      // Temporary private one-shot baseline. Normal monitoring remains disabled.
-      ctx.waitUntil(runControlledBaseline(env,{tick,PILOT_SOURCES}).then(outcome=>{
-        if(outcome.status!=='disabled')console.log(JSON.stringify(outcome));
-      }).catch(error=>{
-        console.error('vacature_radar_baseline_failed:'+safeDiagnosticError(error));
-        throw error;
-      }));
-      return;
-    }
+    if(env.RADAR_ENABLED!=='1')return;
     ctx.waitUntil(monitoredTick(env,tick).then(outcome=>{
       console.log(JSON.stringify(outcome));
     }).catch(error=>{
