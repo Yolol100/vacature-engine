@@ -15,6 +15,9 @@ export const STAGES=Object.freeze([
   'review_only'
 ]);
 const TTL_MS=12*60*1000;
+const PAGED_TTL_MS=45*60*1000; // Long review-only cycle; still no business/Sheet writes.
+const VACANCY_PAGE_ROWS=64;
+const MAX_VACANCY_ROWS=1536; // Fail closed before unbounded read, storage or processing.
 const STAGE_LEASE_MS=2*60*1000;
 const RETRY_DELAY_MS=60*1000;
 const MAX_STAGE_RETRIES=1;
@@ -25,7 +28,7 @@ const MAX_CANDIDATES=160;
 
 function saneError(error) {
   const str=String(error?.message||'');
-  if (/^(Source gate header mismatch|Vacature Register header mismatch|Application header mismatch|ApplicationEvents header mismatch|Radar header mismatch|No active registered source pair|Official source has no seeded baseline|Unexpected source account|Unexpected source payload|Empty source response|Too many source jobs|Stage snapshot too large|Missing or stale staged snapshot|Invalid stage state|Stage race|Stage data malformed)$/.test(str))
+  if (/^(Source gate header mismatch|Vacature Register header mismatch|Vacancy history size exceeds safe page limit|Application header mismatch|ApplicationEvents header mismatch|Radar header mismatch|No active registered source pair|Official source has no seeded baseline|Unexpected source account|Unexpected source payload|Empty source response|Too many source jobs|Stage snapshot too large|Missing or stale staged snapshot|Invalid stage state|Stage race|Stage data malformed)$/.test(str))
     return str;
   if (/^(Sheets read HTTP|Google OAuth HTTP|Public API HTTP) [45]\d\d$/.test(str))
     return str.slice(0,100);
@@ -50,16 +53,16 @@ function parse(raw) {
 }
 function snapshotName(cycle,step){return 'micro:v2:snapshot:'+cycle+':'+step;}
 async function clearSnapshots(db,cycle){
-  for(const stage of STAGES.slice(0,-1)){
-    await db.prepare('DELETE FROM radar_metadata WHERE name=?')
-      .bind(snapshotName(cycle,stage)).run();
-  }
+  // One indexed D1 delete covers both ordinary and bounded page checkpoints.
+  // Cycle IDs are generated from decimal timestamps/cursors (no LIKE wildcards).
+  await db.prepare('DELETE FROM radar_metadata WHERE name LIKE ?')
+    .bind('micro:v2:snapshot:'+cycle+':%').run();
 }
 
-function makeCycle(now,cursor) {
+function makeCycle(now,cursor,ttl=TTL_MS) {
   return {
     version:2,run:'cycle_'+now+'_'+cursor,phase:0,cursor,
-    started_at:new Date(now).toISOString(),expires_at:new Date(now+TTL_MS).toISOString()
+    started_at:new Date(now).toISOString(),expires_at:new Date(now+ttl).toISOString()
   };
 }
 function mergeColumns(chunks,columns) {
@@ -113,6 +116,60 @@ async function readVacancyHistory(env,ops,cycle){
   return {cycle,rows,read_at:new Date().toISOString()};
 }
 // Separate the expensive Google read and application dedupe into short Cron phases.
+
+/**
+ * Bounded, resumable Google Sheet history:
+ * - a separate ID-only read establishes the LAST nonempty vacancy-id row;
+ * - each later Cron reads at most 64 rows in the two required column pairs;
+ * - each page is its own D1 snapshot, never a growing full-history rewrite;
+ * - a final D1-only step assembles the same sparse row shape as the legacy path.
+ * Empty gaps inside the Sheet are retained; entries after the last nonempty ID
+ * cannot contribute to buildRegisterIndex, so they are not silently omitted.
+ * This is review-only: any error blocks candidate finalization.
+ */
+async function readVacancyHistoryPaged(env,ops,cycle,state,db){
+  if(state.history_end===undefined){
+    const token=await ops.accessToken(env);
+    const parts=await ops.readRanges(env.VACATURE_REGISTER_ID,["'Vacatures'!A1:A"],token);
+    if(parts.length!==1||parts[0]?.[0]?.[0]!=='vacancy_id')
+      throw new Error('Vacature Register header mismatch');
+    const end=parts[0].length;
+    if(end<1||end>MAX_VACANCY_ROWS)throw new Error('Vacancy history size exceeds safe page limit');
+    return {kind:'progress',next:{history_end:end,history_next:1}};
+  }
+  const last=state.history_end,first=state.history_next;
+  if(!Number.isSafeInteger(last)||last<1||last>MAX_VACANCY_ROWS||
+     !Number.isSafeInteger(first)||first<1||first>last+1)
+    throw new Error('Invalid stage state');
+  if(first<=last){
+    const end=Math.min(last,first+VACANCY_PAGE_ROWS-1);
+    const token=await ops.accessToken(env);
+    const parts=await ops.readRanges(env.VACATURE_REGISTER_ID,[
+      "'Vacatures'!A"+first+":B"+end,
+      "'Vacatures'!G"+first+":H"+end
+    ],token);
+    if(parts.length!==2)throw new Error('Stage data malformed');
+    const rows=mergeColumns(parts,[[0,0,2],[1,6,2]]);
+    if(first===1)headers(rows,[[0,'vacancy_id'],[1,'status'],[6,'canonical_url'],[7,'official_url']],
+      'Vacature Register header mismatch');
+    // Sheets trims trailing empty rows of each requested range. Preserve
+    // their absolute positions, including gaps preceding later IDs.
+    while(rows.length<end-first+1)rows.push([]);
+    if(rows.length!==end-first+1)throw new Error('Stage data malformed');
+    return {kind:'progress',next:{history_next:end+1},page:{first,rows}};
+  }
+  // The last pass performs no Google OAuth or network fetch.
+  // Snapshots remain private and are purged at finalization/failure.
+  const starts=[];
+  for(let row=1;row<=last;row+=VACANCY_PAGE_ROWS)starts.push(row);
+  const parts=await Promise.all(starts.map(row=>readStage(db,cycle,'vacancy_page_'+row)));
+  const rows=parts.flatMap(x=>x.rows);
+  if(rows.length!==last)throw new Error('Stage data malformed');
+  headers(rows,[[0,'vacancy_id'],[1,'status'],[6,'canonical_url'],[7,'official_url']],
+    'Vacature Register header mismatch');
+  return {cycle,rows,read_at:new Date().toISOString()};
+}
+
 async function readApplicationRows(env,ops,cycle){
   const token=await ops.accessToken(env);
   const chunks=await ops.readRanges(env.VACATURE_REGISTER_ID,[
@@ -223,6 +280,7 @@ export async function runStagedReview(env,ops={}){
   if(!env.GOOGLE_SERVICE_ACCOUNT_JSON||!env.VACATURE_REGISTER_ID||!env.RADAR_RESULT_ID)
     return {status:'partial',errors:1,reason:'missing_bindings'};
   const db=env.RADAR_DB,now=ops.now?.()??Date.now();
+  const cycleTtl=ops.pagedVacancy===true?PAGED_TTL_MS:TTL_MS;
   let raw=await getMeta(db,STAGE_CONTROL);
   let state=parse(raw);
   // A claimed stage has a two-minute lease. Recover completed snapshots,
@@ -232,7 +290,7 @@ export async function runStagedReview(env,ops={}){
     if(!claim){
       // Old-format claims have no lease timestamp and remain fail-closed.
       const old=/^running:(cycle_(\d+)_\d+):\d+$/.exec(raw);
-      if(!old||now-Number(old[2])<=TTL_MS)return {status:'overlap_skipped',sources:0};
+      if(!old||now-Number(old[2])<=cycleTtl)return {status:'overlap_skipped',sources:0};
       try{
         await clearSnapshots(db,old[1]);
         await changeControl(db,raw,'failed:'+old[1]+':interrupted');
@@ -246,7 +304,7 @@ export async function runStagedReview(env,ops={}){
        now<claimedAt)return {status:'partial',errors:1,reason:'invalid_control'};
     if(now-claimedAt<STAGE_LEASE_MS)return {status:'overlap_skipped',sources:0};
     try{
-      if(now-started>TTL_MS){
+      if(now-started>cycleTtl){
         await clearSnapshots(db,run);
         await changeControl(db,raw,'failed:'+run+':expired');
         return {status:'partial',errors:1,reason:'expired_cycle'};
@@ -272,14 +330,14 @@ export async function runStagedReview(env,ops={}){
         if(snapshot?.cycle===run&&snapshot.data){
           // A crash after writing the checkpoint must not execute the stage twice.
           await changeControl(db,raw,JSON.stringify({
-            ...makeCycle(started,cursor),phase:phase+1,attempts:0
+            ...makeCycle(started,cursor,cycleTtl),phase:phase+1,attempts:0
           }));
           return {status:'recovered_checkpoint',sources:0,phase:phaseName};
         }
       }
       if(attempt<MAX_STAGE_RETRIES){
         await changeControl(db,raw,JSON.stringify({
-          ...makeCycle(started,cursor),phase,attempts:attempt+1
+          ...makeCycle(started,cursor,cycleTtl),phase,attempts:attempt+1
         }));
         return {status:'recovered_retry',sources:0,phase:phaseName};
       }
@@ -294,7 +352,7 @@ export async function runStagedReview(env,ops={}){
   if(!raw||state?.status==='done'){
     if(raw&&now-Date.parse(state.finished_at||'')<60000)return {status:'cooldown',sources:0};
     const cursor=Number(await getMeta(db,STAGE_CURSOR)||0);
-    const next=makeCycle(now,Number.isSafeInteger(cursor)&&cursor>=0?cursor:0);
+    const next=makeCycle(now,Number.isSafeInteger(cursor)&&cursor>=0?cursor:0,cycleTtl);
     const value=JSON.stringify(next);
     if(!raw){
       const claim=await db.prepare('INSERT OR IGNORE INTO radar_metadata(name,value) VALUES(?,?)')
@@ -339,7 +397,9 @@ export async function runStagedReview(env,ops={}){
   let result;
   try {
     if(name==='source_gate')result=await readSourceGate(env,ops,state.run,state.cursor);
-    else if(name==='vacancy_history')result=await readVacancyHistory(env,ops,state.run);
+    else if(name==='vacancy_history')result=ops.pagedVacancy===true
+      ?await readVacancyHistoryPaged(env,ops,state.run,state,db)
+      :await readVacancyHistory(env,ops,state.run);
     else if(name==='application_rows')result=await readApplicationRows(env,ops,state.run);
     else if(name==='event_rows')result=await readEventRows(env,ops,state.run);
     else if(name==='application_index')result=await buildApplicationIndex(db,state.run);
@@ -348,6 +408,15 @@ export async function runStagedReview(env,ops={}){
     else if(name==='candidate_screen')result=await screenCandidates(db,state.run,now);
     else if(name==='review_only')result=await finalizeReview(db,state.run);
     else throw new Error('Invalid stage state');
+    if(name==='vacancy_history'&&result?.kind==='progress'){
+      if(result.page)await storeStage(db,state.run,'vacancy_page_'+result.page.first,
+        {rows:result.page.rows});
+      await changeControl(db,claim,JSON.stringify({
+        ...state,...result.next,attempts:0,retry_after:undefined
+      }));
+      return {status:'checkpointed',sources:0,phase:name,
+        phase_index:state.phase+1,total_phases:STAGES.length,new_records:0};
+    }
     if(name==='review_only'){
       await putMeta(db,STAGE_RECEIPT,result);
       await db.prepare('INSERT INTO radar_metadata(name,value) VALUES(?,?) ON CONFLICT(name) DO UPDATE SET value=excluded.value')
