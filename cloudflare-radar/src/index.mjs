@@ -317,7 +317,7 @@ export default{
          permit.started<=now&&now<permit.until&&
          permit.until-permit.started<=11*60*1000+30*1000){
         const isolated={...env,RADAR_ENABLED:'1',RADAR_PIPELINE_MODE:'staged_review'};
-        const ops={accessToken,readRanges,publicJobs,existingKeys};
+        const ops={accessToken,readRanges,publicJobs,existingKeys,singleCycle:true};
         ctx.waitUntil(runStagedReview(isolated,ops).then(outcome=>{
           console.log(JSON.stringify({cpu_canary:true,phase:outcome.phase||null,
             status:outcome.status,phase_index:outcome.phase_index||null}));
