@@ -85,3 +85,12 @@ Source authority:
 - Google Sheets values batchGet: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchGet
 
 The changes are **not** guaranteed to reduce cold-start CPU below 10 ms or to persist across isolates. Require green regression/security tests, a fresh short-lived D1-gated private Cron canary, Cloudflare `cpuTimeMs` readback for repeated source-gate and history-page invocations, and immediate rollback upon a budget miss. `RADAR_ENABLED=0` and `RADAR_PIPELINE_MODE=off` remain the enforced default. Still **NO-GO** until every stage has repeated headroom.
+
+
+## D1-only bootstrap experiment (after source-gate 13 ms failure)
+
+Prior private test on 2026-10-16T17:54:06Z measured **13 ms CPU** in the optimized source gate; caching a CryptoKey within an isolate cannot guarantee cold-start headroom. The test was halted, D1 canary marker and v2 snapshots deleted, all 26 baselines preserved, and the optimized non-canary Worker version restored.
+
+Next minimal, separate patch: when `ops.splitBootstrap` is enabled in the dual-gated review-only scheduled handler, the **first Cron invocation only atomically creates the D1 cycle control** and returns `initialized`. The next scheduled invocation (one minute later) runs the unchanged `source_gate` including Google OAuth and live Bronnen source policy. No secrets/tokens are saved in D1 and no additional scheduler is added. A crash or overlap is governed by the same existing atomic control and two-minute stage claim lease. Nine policy phases remain unchanged; the D1 pre-step is not counted as one of the nine.
+
+Tests must verify zero Google calls on initialization, exactly one source scan on the following Cron, and fail-closed concurrent initialization. This is **CPU hypothesis only**: measure the standalone bootstrap and next source gate through Cloudflare `$workers.cpuTimeMs` with production gates disabled. Fail any >=10ms or invalid source and rollback the private test. No GO or Sheet/application operations without full nine-phase CPU and fresh-history proofs.
