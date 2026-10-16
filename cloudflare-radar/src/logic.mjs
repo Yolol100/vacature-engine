@@ -110,7 +110,14 @@ export function buildRegisterIndex(vacatures,applications,events){
   const applicationRows=[];
   for(const row of applications.slice(1)){
     const id=String(row[0]||'');
-    if(!id||/^(?:test:|history:)/i.test(id))continue;
+    if(!id){
+      // A submitted application may have no vacancy ID yet, but its
+      // canonical role URL is still strong evidence against resurfacing it.
+      if(APPLIED.has(String(row[2]||'').toLowerCase()))
+        addKeys(applied,row[4]);
+      continue;
+    }
+    if(/^(?:test:|history:)/i.test(id))continue;
     applicationRows.push(row);
     if(APPLIED.has(String(row[2]||'').toLowerCase()))submittedIds.add(id);
   }
