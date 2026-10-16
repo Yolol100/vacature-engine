@@ -204,6 +204,43 @@ test('nine bounded Cron stages classify sources without writing business records
   assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).status,'done');
   assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
 });
+test('full 353-row read-only source cycle completes via bounded Free-size pages',async()=>{
+  const h=harness({extraVacancies:350});
+  h.ops.pagedVacancy=true;h.ops.splitBootstrap=true;
+  const phases=[];
+  for(let i=0;i<30;i++){
+    const result=await runStagedReview(h.env,h.ops);
+    assert.ok(['initialized','checkpointed','ok'].includes(result.status),
+      result.reason||'unexpected phase status');
+    phases.push(result.phase);
+    if(result.phase==='review_only')break;
+    h.advance(60000);
+  }
+  assert.equal(phases.at(-1),'review_only');
+  assert.equal(phases[0],'cycle_bootstrap');
+  assert.equal(phases.filter(x=>x==='vacancy_history').length,14,
+    'one ID-bounds read, twelve 32-row pages and final snapshot assembly');
+  const receipt=JSON.parse(h.db.meta.get(STAGE_RECEIPT));
+  assert.equal(receipt.review_count,1);
+  assert.equal(receipt.rejected.applied,1);
+  assert.equal(receipt.google_sheet_rows_written,0);
+  assert.equal(receipt.application_submissions,0);
+  assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
+  assert.equal(h.events.filter(x=>x.startsWith('ats:')).length,1);
+  assert.ok(![...h.db.meta.keys()].some(x=>x.startsWith('micro:v2:snapshot:')));
+  assert.ok(h.db.writes.every(k=>k.startsWith('micro:v2:')));
+});
+test('private CPU audit does not restart a completed review-only cycle',async()=>{
+  const h=harness();h.ops.singleCycle=true;
+  for(let i=0;i<STAGES.length;i++){
+    assert.equal((await runStagedReview(h.env,h.ops)).status,'ok');
+    h.advance(60000);
+  }
+  const later=await runStagedReview(h.env,h.ops);
+  assert.equal(later.status,'canary_complete');
+  assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
+  assert.equal(h.events.filter(e=>e.startsWith('ats:')).length,1);
+});
 test('paged vacancy history scans every source row in bounded 32-row sheets reads',async()=>{
   const h=harness({extraVacancies:130});
   h.ops.pagedVacancy=true;
