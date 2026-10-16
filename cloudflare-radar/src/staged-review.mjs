@@ -189,7 +189,7 @@ async function readVacancyHistoryPaged(env,ops,cycle,state,db){
   const rows=[];
   for(let i=0;i<keys.length;i++){
     const data=stateSnapshot(byName.get(keys[i]),cycle);
-    const count=Math.min(VACANCY_PAGE_ROWS,last-starts[i]);
+    const count=Math.min(VACANCY_PAGE_ROWS,last-starts[i]+1);
     if(!Array.isArray(data.rows)||data.rows.length!==count)
       throw new Error('Stage data malformed');
     rows.push(...data.rows);
