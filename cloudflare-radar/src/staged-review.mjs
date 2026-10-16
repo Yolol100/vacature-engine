@@ -297,13 +297,24 @@ export async function runStagedReview(env,ops={}){
     const next=makeCycle(now,Number.isSafeInteger(cursor)&&cursor>=0?cursor:0);
     const value=JSON.stringify(next);
     if(!raw){
-      await db.prepare('INSERT OR IGNORE INTO radar_metadata(name,value) VALUES(?,?)')
+      const claim=await db.prepare('INSERT OR IGNORE INTO radar_metadata(name,value) VALUES(?,?)')
         .bind(STAGE_CONTROL,value).run();
+      if(claim.meta?.changes===1){
+        // This invocation created the cycle. Reading it back costs an
+        // unnecessary D1 round trip on the CPU-critical first phase.
+        raw=value;
+        state=next;
+      }else{
+        // Another invocation already established control. It may have
+        // claimed or advanced the stage while we were awaiting D1.
+        // Defer to the next Cron instead of racing the winner.
+        return {status:'overlap_skipped',sources:0};
+      }
     }else{
       try{await changeControl(db,raw,value);}catch{return {status:'overlap_skipped',sources:0};}
+      raw=value;
+      state=next;
     }
-    raw=await getMeta(db,STAGE_CONTROL);
-    state=parse(raw);
   }
   if(!state||state.version!==2||!Number.isInteger(state.phase)||
       state.phase<0||state.phase>=STAGES.length||

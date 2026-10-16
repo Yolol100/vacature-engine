@@ -5,10 +5,11 @@ import {
 } from '../src/staged-review.mjs';
 
 class FakeD1 {
-  constructor(){this.meta=new Map([['seeded:greenhouse:automatticcareers','2026-10-16T10:29:03Z']]);this.writes=[];}
+  constructor(){this.meta=new Map([['seeded:greenhouse:automatticcareers','2026-10-16T10:29:03Z']]);this.writes=[];this.reads=[];}
   prepare(sql) {
     return {bind:(...args)=>({
       first:async()=>{
+        this.reads.push(args[0]);
         if(sql.startsWith('SELECT value FROM radar_metadata'))
           return this.meta.has(args[0])?{value:this.meta.get(args[0])}:null;
         throw Error('Unexpected D1 first: '+sql);
@@ -117,6 +118,18 @@ test('disabled defaults: no DB access, Google reads, ATS calls or submission',as
   assert.equal(h.events.length,0);
   assert.equal(h.db.writes.length,0);
 });
+test('first stage avoids redundant D1 control reread after atomic insert',async()=>{
+  const h=harness();
+  const out=await runStagedReview(h.env,h.ops);
+  assert.equal(out.status,'ok');
+  assert.equal(out.phase,'source_gate');
+  assert.deepEqual(h.db.reads,[STAGE_CONTROL,STAGE_CURSOR],
+    'an uncontended new cycle must use exactly the control and cursor reads');
+  assert.equal(JSON.parse(h.db.meta.get(STAGE_CONTROL)).phase,1);
+  assert.equal(h.db.writes.filter(key=>key===STAGE_CONTROL).length,3,
+    'initial insert, atomic claim and checkpoint transition each remain guarded');
+});
+
 test('nine bounded Cron stages classify sources without writing business records',async()=>{
   const h=harness(),phases=[];
   for(let i=0;i<STAGES.length;i++){
