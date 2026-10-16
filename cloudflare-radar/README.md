@@ -143,3 +143,15 @@ De review-only v2-pijplijn heeft nu een D1-claim per fase met het oorspronkelijk
 - Nieuwe testgevallen dekken checkpointrecovery, leasegrenzen, maximaal één retry, 429, verlopen cycli en veilige finalisatie. Github CI bevat Node-tests plus een Wrangler build-only test.
 
 **Vrijgave blijft NO-GO.** De nieuwe CPU-kosten per individuele v2-fase zijn nog **niet live gemeten**. De huidige gepubliceerde Cloudflare Workers Free-limiet voor Cron CPU is 10 ms per uitvoering; een groene GitHub Actions-job meet geen echte Cloudflare CPU. Eerst een afgeschermde runtime-proef en waargenomen CPU/quota per fase, daarna afzonderlijke goedkeuring voordat ooit `RADAR_ENABLED=1` of een aflevermodus wordt ingeschakeld. Tot die tijd blijft `RADAR_PIPELINE_MODE=off`.
+
+
+### Cloudflare Free CPU-praktijkmetingen 2026-10-16
+
+Afgeschermde D1-marker-Croncanaries (geen publiek endpoint, geen extra Cron, geen Sheets-/sollicitatiewrites) hebben de **eerste** negenfasenstap `source_gate` werkelijk gemeten in Workers Observability (veld `$workers.cpuTimeMs`):
+
+- 2026-10-16 15:32:07 UTC: **18 ms**, originele negenfasencode met extra `monitoredTick`-health-D1-reads/writes. [Tijdelijke canary PR #94](https://github.com/Yolol100/vacature-engine/pull/94), verwijderd in PR #95.
+- 2026-10-16 15:50:07 UTC: **10 ms**, na [PR #96](https://github.com/Yolol100/vacature-engine/pull/96), waarbij alleen voor de al checkpointed review-only route de redundante health-D1-registratie is weggelaten. [Tijdelijke canary PR #97](https://github.com/Yolol100/vacature-engine/pull/97), verwijderd via PR #98.
+
+Dit zijn twee afzonderlijke runtime-observaties, **geen statistisch robuust CPU-profiel** of bewijs dat alle negen stappen onder 10 ms blijven. De 10 ms van de tweede proef ligt precies op de gepubliceerde Free Cron-limiet en geeft geen marge voor cold starts, grotere datasets en incidentele fluctuaties. Cloudflare documenteert bovendien beperkte rolloverflexibiliteit waardoor een enkele overschrijding zonder `exceededCpu` kan voorkomen. Daarom blijft **NO-GO** voor activatie gelden. De overige acht stappen en een latere daadwerkelijke leveringsroute zijn niet bewezen.
+
+Na beide tests: `RADAR_ENABLED=0` en `RADAR_PIPELINE_MODE=off`; de `micro:v2:cpu_canary`-marker en alle nieuwe `micro:v2:`-testcheckpoints opgeschoond, 26 D1-baselines intact, beide Radar Sheet-outputtabbladen alleen headers, en tijdelijke Worker-canary-code/config verwijderd. Er is geen automatische indiening, geen bronstatuswijziging en geen extra schedulering. Eerst meer CPU-marge, dan een opnieuw begrensde meervoudige proef met volledige readback; pas na apart besluit eventuele activering.
