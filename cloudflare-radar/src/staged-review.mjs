@@ -2,7 +2,7 @@
 // All business records and Google Sheets are read-only in this pipeline.
 // The legacy delivery path is not invoked. Release requires a separate gate.
 import {
-  PILOT_SOURCES,activeSourcePairs,buildRegisterIndex,canonicalUrl,
+  PILOT_SOURCES,buildRegisterIndex,canonicalUrl,
   matchRegister,preliminaryInterest,strongRoleKeys
 } from './logic.mjs';
 
@@ -98,9 +98,22 @@ async function readSourceGate(env,ops,cycle,cursor){
   const chunks=await ops.readRanges(env.VACATURE_REGISTER_ID,
     ["'Bronnen'!A1:A","'Bronnen'!M1:M"],token);
   if(chunks.length!==2)throw new Error('Stage data malformed');
-  const rows=mergeColumns(chunks,[[0,0,1],[1,12,1]]);
-  headers(rows,[[0,'source_id'],[12,'status']],'Source gate header mismatch');
-  const active=activeSourcePairs(rows,PILOT_SOURCES);
+  // Only six IDs can authorize a pilot source. Avoid allocating sparse
+  // 13-column arrays for the entire Bronnen tab on every cold Cron.
+  const ids=chunks[0],statuses=chunks[1];
+  if(ids?.[0]?.[0]!=='source_id'||statuses?.[0]?.[0]!=='status')
+    throw new Error('Source gate header mismatch');
+  const required=new Set(PILOT_SOURCES.flatMap(source=>[
+    source.source_id,source.employer_source_id
+  ]));
+  const states=new Map();
+  for(let i=1;i<ids.length;i++){
+    const id=ids[i]?.[0];
+    if(id&&required.has(id))states.set(id,statuses[i]?.[0]);
+  }
+  const active=PILOT_SOURCES.filter(source=>
+    states.get(source.source_id)==='active'&&
+    states.get(source.employer_source_id)==='active');
   if(!active.length)throw new Error('No active registered source pair');
   const selected=active[cursor%active.length];
   return {cycle,source:selected.source_id+':'+selected.account,source_id:selected.source_id,
