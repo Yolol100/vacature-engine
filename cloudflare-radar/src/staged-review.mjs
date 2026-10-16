@@ -299,7 +299,7 @@ export async function runStagedReview(env,ops={}){
   // A claimed stage has a two-minute lease. Recover completed snapshots,
   // otherwise retry at most once; never overlap running invocations.
   if(raw?.startsWith('running:')){
-    const claim=/^running:(cycle_(\d+)_(\d+)):(\d+):(\d+):(\d+)$/.exec(raw);
+    const claim=/^running:(cycle_(\d+)_(\d+)):(\d+):(\d+):(\d+)(?::(\d+):(\d+))?$/.exec(raw);
     if(!claim){
       // Old-format claims have no lease timestamp and remain fail-closed.
       const old=/^running:(cycle_(\d+)_\d+):\d+$/.exec(raw);
@@ -312,9 +312,19 @@ export async function runStagedReview(env,ops={}){
     }
     const run=claim[1],started=Number(claim[2]),cursor=Number(claim[3]);
     const phase=Number(claim[4]),claimedAt=Number(claim[5]),attempt=Number(claim[6]);
+    const historyEnd=claim[7]===undefined?undefined:Number(claim[7]);
+    const historyNext=claim[8]===undefined?undefined:Number(claim[8]);
     if(![started,cursor,phase,claimedAt,attempt].every(Number.isSafeInteger)||
        phase>=STAGES.length||attempt>MAX_STAGE_RETRIES||claimedAt<started||
-       now<claimedAt)return {status:'partial',errors:1,reason:'invalid_control'};
+       now<claimedAt||
+       (historyEnd!==undefined&&(
+         phase!==STAGES.indexOf('vacancy_history')||
+         !Number.isSafeInteger(historyEnd)||historyEnd<1||historyEnd>MAX_VACANCY_ROWS||
+         !Number.isSafeInteger(historyNext)||historyNext<1||historyNext>historyEnd+1)))
+      return {status:'partial',errors:1,reason:'invalid_control'};
+    const progress=historyEnd===undefined?{}:{
+      history_end:historyEnd,history_next:historyNext
+    };
     if(now-claimedAt<STAGE_LEASE_MS)return {status:'overlap_skipped',sources:0};
     try{
       if(now-started>cycleTtl){
@@ -341,16 +351,34 @@ export async function runStagedReview(env,ops={}){
       }else{
         const snapshot=parse(await getMeta(db,snapshotName(run,phaseName)));
         if(snapshot?.cycle===run&&snapshot.data){
-          // A crash after writing the checkpoint must not execute the stage twice.
+          // A crash after writing the final stage checkpoint must not
+          // execute the stage twice (or perform a second source fetch).
           await changeControl(db,raw,JSON.stringify({
             ...makeCycle(started,cursor,cycleTtl),phase:phase+1,attempts:0
           }));
           return {status:'recovered_checkpoint',sources:0,phase:phaseName};
         }
+        if(phaseName==='vacancy_history'&&historyEnd!==undefined&&
+           historyNext<=historyEnd){
+          // Paged stages persist a named page BEFORE updating control.
+          // A failed compare-and-swap must not force a reread of that page.
+          const saved=parse(await getMeta(db,snapshotName(run,
+            'vacancy_page_'+historyNext)));
+          const count=Math.min(VACANCY_PAGE_ROWS,historyEnd-historyNext+1);
+          if(saved?.cycle===run&&Array.isArray(saved.data?.rows)&&
+             saved.data.rows.length===count){
+            await changeControl(db,raw,JSON.stringify({
+              ...makeCycle(started,cursor,cycleTtl),phase,attempts:0,
+              history_end:historyEnd,history_next:historyNext+count
+            }));
+            return {status:'recovered_checkpoint',sources:0,phase:phaseName};
+          }
+        }
       }
       if(attempt<MAX_STAGE_RETRIES){
         await changeControl(db,raw,JSON.stringify({
-          ...makeCycle(started,cursor,cycleTtl),phase,attempts:attempt+1
+          ...makeCycle(started,cursor,cycleTtl),phase,attempts:attempt+1,
+          ...progress
         }));
         return {status:'recovered_retry',sources:0,phase:phaseName};
       }
@@ -411,7 +439,11 @@ export async function runStagedReview(env,ops={}){
   }
   if(state.retry_after&&now<state.retry_after)
     return {status:'retry_wait',sources:0};
-  const claim='running:'+state.run+':'+state.phase+':'+now+':'+(state.attempts||0);
+  const progress=(state.phase===STAGES.indexOf('vacancy_history')&&
+    state.history_end!==undefined&&state.history_next!==undefined)
+    ?':'+state.history_end+':'+state.history_next:'';
+  const claim='running:'+state.run+':'+state.phase+':'+now+':'+
+    (state.attempts||0)+progress;
   try{await changeControl(db,raw,claim);}catch{return {status:'overlap_skipped',sources:0};}
   const name=STAGES[state.phase];
   let result;
