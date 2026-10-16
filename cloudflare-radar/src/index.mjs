@@ -4,7 +4,7 @@ import {
 } from './logic.mjs';
 import {monitoredTick,safeDiagnosticError} from './health.mjs';
 import {REGISTER_COMPACT_RANGES,expandRegisterRanges} from './compact-register.mjs';
-import {runStagedReview,STAGE_CONTROL} from './staged-review.mjs';
+import {runStagedReview} from './staged-review.mjs';
 
 // Standalone transport-only radar; no application submission and no eligibility claims.
 const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
@@ -302,26 +302,6 @@ export default{
   async scheduled(_event,env,ctx){
     // Double gate: the existing RADAR_ENABLED flag alone cannot start the legacy CPU-heavy tick.
     // This initial staged path is review-only: no Google Sheets or applicant writes.
-    if(env.RADAR_ENABLED==='0'&&env.RADAR_PIPELINE_MODE==='off'&&env.RADAR_DB){
-      // Ephemeral, private D1-only one-shot CPU canary. No public HTTP handler.
-      const marker=(await env.RADAR_DB.prepare('SELECT value FROM radar_metadata WHERE name=?')
-        .bind('micro:v1:preview_once').first())?.value||'';
-      const match=/^([A-Za-z0-9_-]{12,48}):(\d{13})$/.exec(marker);
-      const now=Date.now(),until=Number(match?.[2]||0);
-      if(!match||until<=now||until-now>11*60000)return;
-      const current=(await env.RADAR_DB.prepare('SELECT value FROM radar_metadata WHERE name=?')
-        .bind(STAGE_CONTROL).first())?.value||'';
-      if(current.includes('"status":"done"')||current.startsWith('failed:'))return;
-      const readOnlyEnv={...env,RADAR_ENABLED:'1',RADAR_PIPELINE_MODE:'staged_review'};
-      const ops={accessToken,readRanges,publicJobs,existingKeys};
-      ctx.waitUntil(runStagedReview(readOnlyEnv,ops).then(result=>{
-        if(result.status!=='disabled')console.log(JSON.stringify(result));
-      }).catch(error=>{
-        console.error('vacature_radar_staged_canary_failed:'+safeDiagnosticError(error));
-        throw error;
-      }));
-      return;
-    }
     if(env.RADAR_ENABLED!=='1'||env.RADAR_PIPELINE_MODE!=='staged_review')return;
     const ops={accessToken,readRanges,publicJobs,existingKeys};
     ctx.waitUntil(monitoredTick(env,enabled=>runStagedReview(enabled,ops)).then(outcome=>{
