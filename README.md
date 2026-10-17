@@ -4,7 +4,7 @@
 
 `vacature-engine` ondersteunt `vacature-search`. De repo bezit geen discoverybeleid, kandidaatprofiel, bronprioriteiten of sollicitatiestatus. Veranderlijke runtimewaarheid blijft in het `Vacature Register`.
 
-**Developer profile:** [Andrew Baeten](https://github.com/Yolol100) · [Portfolio cases](https://andrewbaeten.nl/category/cases)
+**Developer profile:** [Andrew Baeten](https://github.com/Yolol100) · [GitHub project index](https://github.com/Yolol100?tab=repositories)
 
 ## What it demonstrates
 
