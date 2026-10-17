@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {reviewOnce,pollWithRetry,MAX_REVIEW} from '../src/actions-review.mjs';
+import {reviewOnce,pollWithRetry,MAX_REVIEW,preliminaryNetherlandsScope} from '../src/actions-review.mjs';
 import {safeDiagnosticError} from '../src/health.mjs';
 
 const reg='REGISTER',radar='RADAR';
@@ -437,4 +437,39 @@ test('hybrid positions never fill the manual review quota',async()=>{
   const r=await harness({jobs:[j]}).run();
   assert.equal(r.candidates.length,0);
   assert.equal(r.counts.unrelated,1);
+});
+
+test('foreign-country-only official ATS locations cannot fill the ten-slot NL manual queue',async()=>{
+  const foreign=[
+    'Remote - Costa Rica','Remote, United Kingdom','Bangalore, India',
+    'Remote, Canada; Remote, United States',
+    'Remote, Canada; Remote, Israel; Remote, United Kingdom',
+    'Remote, US','Remote - Australia'
+  ];
+  const possible=['Remote, Netherlands','Remote, Europe','Remote'];
+  const jobs=[
+    ...foreign.map((place,i)=>({...job('outside'+i),location:place})),
+    ...possible.map((place,i)=>({...job('possible'+i),location:place}))
+  ];
+  const r=await harness({jobs}).run(10);
+  assert.equal(r.status,'review_ready');
+  assert.equal(r.counts.observed,10);
+  assert.equal(r.counts.geography_outside_nl,foreign.length);
+  assert.equal(r.candidates.length,possible.length);
+  assert.ok(r.candidates.every(c=>c.verification.includes('manual authenticity, remote/NL eligibility')));
+  assert.equal(r.application_submissions,0);
+  assert.equal(r.google_sheet_rows_written,0);
+});
+
+test('location triage keeps ambiguous worldwide scope unknown, but fails explicit NL exclusions',()=>{
+  for(const place of ['','Remote','Worldwide','Remote, EMEA','Remote, Europe','Remote, NL',
+      'Remote, Canada; Remote, Netherlands']) {
+    assert.equal(preliminaryNetherlandsScope({location:place}),true,place);
+  }
+  for(const place of ['Remote, UK','Bangalore, India',
+      'Remote worldwide excluding Netherlands',
+      'Europe except the Netherlands',
+      'Remote, United States; Remote, Canada']) {
+    assert.equal(preliminaryNetherlandsScope({location:place}),false,place);
+  }
 });
