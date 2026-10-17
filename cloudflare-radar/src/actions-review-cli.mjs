@@ -44,13 +44,15 @@ try{
       application_submissions:0,external_sources_polled:0}));
   }else {
   const manifest=JSON.parse(readFileSync('ingestion/source-specs.radar.json','utf8'));
-  const {sources,unsupported}=selectSupportedSources(manifest);
+  const {sources,unsupported,unverified}=selectSupportedSources(manifest);
   console.log(JSON.stringify({technical_source_scope:{
     supported:sources.length,unsupported:unsupported.length,
+    unverified:unverified.length,
     source_manifest:'ingestion/source-specs.radar.json'}}));
   const result=await reviewOnce({env,accessToken:readOnlyAccessToken,readRanges,
     publicJobs:source=>publicJobs(source,{maxJobs:1000,maxBytes:6_000_000}),
-    maxCandidates,priorState:prior,sources,unsupportedSources:unsupported});
+    maxCandidates,priorState:prior,sources,unsupportedSources:unsupported,
+    unverifiedSources:unverified});
   console.log(JSON.stringify(result));
   if(result.status!=='review_ready') {
     process.exitCode=1;

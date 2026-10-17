@@ -11,7 +11,7 @@ const SOURCE_TOKEN=/^[a-z0-9][a-z0-9_-]{1,79}$/;
 export function selectSupportedSources(specs){
   if(!Array.isArray(specs)||specs.length===0||specs.length>100)
     throw new Error('Invalid radar source manifest');
-  const sources=[],unsupported=[],seen=new Set();
+  const sources=[],unsupported=[],unverified=[],seen=new Set();
   for(const spec of specs){
     if(!spec||typeof spec!=='object'||Array.isArray(spec)||
        typeof spec.source_id!=='string'||typeof spec.adapter!=='string')
@@ -29,12 +29,21 @@ export function selectSupportedSources(specs){
     const key=spec.source_id+':'+spec.account.toLowerCase();
     if(seen.has(key))throw new Error('Duplicate radar source specification');
     seen.add(key);
+    const contract=spec.options?.actions_review_host_contract;
+    if(contract==='unverified'){
+      // Provider returns URLs outside the strict official ATS tenant contract.
+      // Do not weaken canonical URL verification to force this source through.
+      unverified.push(key);
+      continue;
+    }
+    if(contract!==undefined&&contract!=='verified')
+      throw new Error('Invalid radar source host contract');
     sources.push({source_id:spec.source_id,account:spec.account,
       employer_source_id:owner,employer:spec.employer});
   }
   if(!sources.length||sources.length>30)
     throw new Error('No bounded supported radar sources');
-  return {sources,unsupported};
+  return {sources,unsupported,unverified};
 }
 // One bounded 5xx retry for a public ATS source. Never retry a 429 immediately,
 // authentication failures, invalid payloads, policy changes or unknown errors.
@@ -90,10 +99,11 @@ function uniqueIdentity(rows,keyCol,urlCol) {
   return {ids,roles};
 }
 export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandidates=5,priorState,
-  sources=PILOT_SOURCES,unsupportedSources=[]}) {
+  sources=PILOT_SOURCES,unsupportedSources=[],unverifiedSources=[]}) {
   const reviewHistory=parseReviewState(priorState);
   if(!Array.isArray(sources)||sources.length===0||sources.length>30||
-     !Array.isArray(unsupportedSources)||unsupportedSources.length>100)
+     !Array.isArray(unsupportedSources)||unsupportedSources.length>100||
+     !Array.isArray(unverifiedSources)||unverifiedSources.length>100)
     throw new Error('Invalid bounded radar source scope');
   if(!Number.isInteger(maxCandidates)||maxCandidates<1||maxCandidates>MAX_REVIEW)
     throw new Error('Invalid candidate limit');
@@ -237,5 +247,6 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     google_sheet_rows_written:0,application_submissions:0,
     active_sources:enabled.length,configured_sources:sources.length,
     unsupported_source_adapters:unsupportedSources.length,
+    unverified_source_contracts:unverifiedSources.length,
     counts,candidates,failures};
 }

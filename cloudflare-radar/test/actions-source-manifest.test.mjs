@@ -10,13 +10,15 @@ const sample={source_id:'greenhouse',adapter:'greenhouse',source_type:'ats',
   options:{registry_source_id:'company-automattic'}};
 
 test('manual Actions review reuses existing radar source specs, not a second source registry',()=>{
-  const {sources,unsupported}=selectSupportedSources(manifest);
-  assert.equal(sources.length,8);
+  const {sources,unsupported,unverified}=selectSupportedSources(manifest);
+  assert.equal(sources.length,6);
   assert.equal(unsupported.length,3);
+  assert.deepEqual(unverified,[
+    'greenhouse:digitalocean98','greenhouse:pantheon'
+  ]);
   assert.deepEqual(sources.map(s=>s.source_id+':'+s.account),[
     'greenhouse:automatticcareers','lever:kinsta','lever:siteground',
-    'greenhouse:acquia','greenhouse:gitlab','greenhouse:digitalocean98',
-    'greenhouse:pantheon','ashby:zapier'
+    'greenhouse:acquia','greenhouse:gitlab','ashby:zapier'
   ]);
   assert.ok(sources.every(s=>s.employer_source_id.startsWith('company-')));
   assert.deepEqual(unsupported,['personio','workable','workable']);
@@ -28,6 +30,7 @@ test('invalid tenant, adapter drift, missing owner registration and duplicate so
     [{...sample,options:{}}],
     [{...sample,adapter:'lever'}],
     [{...sample,source_type:'discovery'}],
+    [{...sample,options:{...sample.options,actions_review_host_contract:'weaken'}}],
     [sample,{...sample}],
     [],
     Array.from({length:101},()=>sample)
@@ -70,4 +73,10 @@ test('manual feed max bytes remains bounded independently from job-count allowan
     await assert.rejects(()=>publicJobs(sample,{maxJobs:1000,maxBytes:6_000_000}),
       /Source payload too large/);
   }finally{globalThis.fetch=original;}
+});
+
+test('live incompatible hosts are excluded by the shared radar manifest without weakening URL validation',()=>{
+  const {sources,unverified}=selectSupportedSources(manifest);
+  assert.equal(unverified.length,2);
+  assert.equal(sources.some(s=>s.account==='digitalocean98'||s.account==='pantheon'),false);
 });
