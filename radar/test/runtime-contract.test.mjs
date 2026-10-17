@@ -7,7 +7,7 @@ const root=new URL('../../',import.meta.url);
 const text=path=>readFileSync(new URL(path,root),'utf8');
 // Boundaries apply to each token separately: punctuation like '(' after
 // .prepare is not a word boundary, so one outer \\b misses D1 calls.
-const FORBIDDEN_RUNTIME=/(?:\\bRADAR_DB\\b|\\bwrangler\\b|\\bcloudflare:|\\.prepare\\s*\\(|\\.scheduled\\b)/i;
+const FORBIDDEN_RUNTIME=/(?:\bRADAR_DB\b|\bwrangler\b|\bcloudflare:|\.prepare\s*\(|\.scheduled\b)/i;
 
 test('Worker/D1 mutation fixtures are rejected by runtime sentinel',()=>{
   for(const bad of [
