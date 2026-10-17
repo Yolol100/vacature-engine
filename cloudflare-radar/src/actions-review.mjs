@@ -4,6 +4,15 @@ import {safeDiagnosticError} from './health.mjs';
 import {parseReviewState} from './review-state.mjs';
 export const MAX_REVIEW=10;
 
+
+export function preliminaryRemoteEvidence(job){
+  const text=[job?.location||'',job?.remote||''].join(' ').toLowerCase();
+  // Workplace policy beats a loose "remote" mention; still only triage.
+  if(/\b(?:hybrid|on[- ]?site|in[- ]?office|office[- ]?based)\b/.test(text))
+    return false;
+  return /\b(?:remote|work(?:ing)? from home|home[- ]?based|telecommut(?:e|ing)|anywhere|worldwide|distributed)\b/.test(text);
+}
+
 // Conservative *triage only*. A foreign-country-only ATS location must not
 // consume the ten-slot manual queue for a Netherlands-based applicant.
 // Unknown / broad "Remote" is still UNVERIFIED, never an NL eligibility claim.
@@ -19,7 +28,7 @@ export function preliminaryNetherlandsScope(job){
     return true;
   // Verified live negative cases + other unambiguous single-country locations.
   // Lack of a match only means "unknown, requires specialist review".
-  const abroad=/\b(?:costa rica|united kingdom|england|scotland|wales|uk|united states|usa|us|canada|india|bengaluru|bangalore|hyderabad|israel|australia|new zealand|singapore|philippines|south africa|brazil|mexico|argentina|colombia|japan|south korea|uae|united arab emirates|bulgaria|germany|france|spain|poland|romania|portugal|austria|italy|sweden|switzerland|belgium|ireland)\b/;
+  const abroad=/\b(?:costa rica|united kingdom|england|scotland|wales|uk|united states|usa|us|canada|india|bengaluru|bangalore|hyderabad|israel|australia|new zealand|singapore|philippines|south africa|brazil|mexico|argentina|colombia|japan|south korea|uae|united arab emirates|seattle|boston|san francisco|austin|denver|new york|nyc|toronto|vancouver|montreal|london|berlin|sofia|bulgaria|germany|france|spain|poland|romania|portugal|austria|italy|sweden|switzerland|belgium|ireland)\b/;
   return !abroad.test(place);
 }
 // Read the existing ingestion radar manifest instead of hardcoding a second
@@ -221,7 +230,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     ...reviewHistory.observed.flatMap(v=>strongRoleKeys(v.official_url))]);
   const candidates=[],failures=[];
   const counts={observed:0,previously_seen:0,already_in_register:0,previously_applied:0,
-    unrelated:0,geography_outside_nl:0,review_candidates:0};
+    unrelated:0,remote_evidence_missing:0,geography_outside_nl:0,review_candidates:0};
   for(const source of enabled) {
     let jobs;
     try {
@@ -246,6 +255,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
       else if(match.known)counts.already_in_register++;
       else if(duplicate)counts.previously_seen++;
       else if(!preliminaryInterest(job))counts.unrelated++;
+      else if(!preliminaryRemoteEvidence(job))counts.remote_evidence_missing++;
       else if(!preliminaryNetherlandsScope(job))counts.geography_outside_nl++;
       else {
         for(const k of roleKeys)seenRoles.add(k);

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {reviewOnce,pollWithRetry,MAX_REVIEW,preliminaryNetherlandsScope} from '../src/actions-review.mjs';
+import {reviewOnce,pollWithRetry,MAX_REVIEW,preliminaryNetherlandsScope,preliminaryRemoteEvidence} from '../src/actions-review.mjs';
 import {safeDiagnosticError} from '../src/health.mjs';
 
 const reg='REGISTER',radar='RADAR';
@@ -472,4 +472,41 @@ test('location triage keeps ambiguous worldwide scope unknown, but fails explici
       'Remote, United States; Remote, Canada']) {
     assert.equal(preliminaryNetherlandsScope({location:place}),false,place);
   }
+});
+
+test('the ten-slot preview rejects actual US city-only roles without remote evidence',async()=>{
+  const jobs=[
+    {...job('seattle'),location:'Seattle',remote:''},
+    {...job('boston'),location:'Boston',remote:''},
+    {...job('sf'),location:'San Francisco',remote:'remote'},
+    {...job('germany'),location:'Remote, Germany',remote:''},
+    {...job('emea'),location:'Remote, EMEA',remote:''},
+    {...job('unrestricted'),location:'Remote',remote:''}
+  ];
+  const result=await harness({jobs}).run(10);
+  assert.equal(result.status,'review_ready');
+  assert.equal(result.counts.observed,6);
+  assert.equal(result.counts.remote_evidence_missing,2);
+  assert.equal(result.counts.geography_outside_nl,2);
+  assert.equal(result.candidates.length,2);
+  assert.deepEqual(result.candidates.map(c=>c.location),['Remote, EMEA','Remote']);
+  assert.equal(result.google_sheet_rows_written,0);
+  assert.equal(result.application_submissions,0);
+});
+
+test('explicit workplace modes override loose remote hints without inventing NL eligibility',()=>{
+  for(const example of [
+    {location:'Seattle',remote:''},
+    {location:'Remote',remote:'hybrid'},
+    {location:'Remote',remote:'on-site'},
+    {location:'Amsterdam',remote:''}
+  ])assert.equal(preliminaryRemoteEvidence(example),false,JSON.stringify(example));
+  for(const example of [
+    {location:'Remote, EMEA',remote:''},
+    {location:'',remote:'remote'},
+    {location:'Worldwide',remote:''},
+    {location:'Amsterdam',remote:'remote'}
+  ])assert.equal(preliminaryRemoteEvidence(example),true,JSON.stringify(example));
+  for(const city of ['Seattle','Boston','San Francisco','Austin','Denver'])
+    assert.equal(preliminaryNetherlandsScope({location:city}),false,city);
 });
