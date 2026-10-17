@@ -549,3 +549,16 @@ test('tiered mode reuses the authoritative Sheets preflight and keeps official q
   assert.equal(result.google_sheet_rows_written,0);
   assert.equal(result.application_submissions,0);
 });
+
+test('live API location restrictions cannot waste manual slots on foreign-only countries',()=>{
+  for(const place of ['LATAM','APAC','Hungary','Hongarije','Serbia','Servië',
+    'Remote, Hungary','Remote, Serbia','Remote, LATAM','Remote, APAC',
+    'Remote, Northern America']) {
+    assert.equal(preliminaryNetherlandsScope({location:place}),false,place);
+  }
+  for(const place of ['Remote, Europe','Remote, European Union','Remote, EMEA',
+    'Remote, Netherlands','Remote, Nederland','Worldwide',
+    'Remote, Europe, USA']) {
+    assert.equal(preliminaryNetherlandsScope({location:place}),true,place);
+  }
+});
