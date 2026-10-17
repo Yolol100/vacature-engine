@@ -24,14 +24,21 @@ class ActionsReadonlyBridgeTests(unittest.TestCase):
         records = [{
             "id": "private-internal-id", "shortcode": "ABC123",
             "title": "WordPress Developer",
-            "url": "https://apply.workable.com/awesomemotive/j/ABC123/",
+            "url": "https://apply.workable.com/j/ABC123/",
             "location": {"workplace_type": "remote", "country": "Netherlands"},
         }]
         result = read_public("workable", "awesomemotive", "Awesome Motive", FakeClient(jobs=records))
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["identity"], "workable:awesomemotive:ABC123")
         self.assertEqual(result[0]["remote"], "remote")
+        self.assertEqual(result[0]["url"], "https://apply.workable.com/awesomemotive/j/ABC123")
         self.assertNotIn("description", result[0])
+
+    def test_workable_rejects_untrusted_job_url(self):
+        bad = [{"shortcode": "ABC123", "title": "WordPress Developer",
+                "url": "https://evil.example/awesomemotive/j/ABC123"}]
+        with self.assertRaisesRegex(ValueError, "Invalid public ATS job data"):
+            read_public("workable", "awesomemotive", "Awesome Motive", FakeClient(jobs=bad))
 
     def test_personio_public_xml_reuses_existing_parser(self):
         xml = "<workzag-jobs><position><id>2345</id><name>Senior WordPress Engineer</name><office>Remote</office></position></workzag-jobs>"
