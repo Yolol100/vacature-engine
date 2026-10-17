@@ -11,4 +11,4 @@ if git cat-file -e refs/remotes/origin/radar-state:review-observations.json 2>/d
 else
   printf '%s\n' '{"schema_version":1,"observed":[],"runs":[]}' > .runtime/review-observations.json
 fi
-node --input-type=module -e "import {parseReviewState} from './cloudflare-radar/src/review-state.mjs'; import {readFileSync} from 'node:fs'; const r=parseReviewState(readFileSync('.runtime/review-observations.json','utf8')); console.log(JSON.stringify({technical_history_items:r.observed.length,completed_receipts:r.runs.length}));"
+node --input-type=module -e "import {parseReviewState} from './radar/src/review-state.mjs'; import {readFileSync} from 'node:fs'; const r=parseReviewState(readFileSync('.runtime/review-observations.json','utf8')); console.log(JSON.stringify({technical_history_items:r.observed.length,completed_receipts:r.runs.length}));"
