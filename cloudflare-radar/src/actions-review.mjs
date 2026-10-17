@@ -63,10 +63,42 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
   if(!env.GOOGLE_SERVICE_ACCOUNT_JSON||!env.VACATURE_REGISTER_ID||!env.RADAR_RESULT_ID)
     throw new Error('Missing required bindings or secrets');
   const token=await accessToken(env);
-  const chunks=await Promise.all([
-    ...REGISTER.map(r=>readRanges(env.VACATURE_REGISTER_ID,r,token)),
-    ...RADAR.map(r=>readRanges(env.RADAR_RESULT_ID,r,token))
+  // Google batchGet supports all ranges for one spreadsheet. Read the two
+  // spreadsheet IDs independently so a 403 identifies the failed permission
+  // boundary. Never poll ATS when either historical data source is unavailable.
+  async function readGroups(id,groups){
+    const flat=groups.flat();
+    const values=await readRanges(id,flat,token);
+    if(!Array.isArray(values)||values.length!==flat.length)
+      throw new Error('Sheets response incomplete');
+    let offset=0;
+    return groups.map(group=>{
+      const out=values.slice(offset,offset+group.length);
+      offset+=group.length;
+      return out;
+    });
+  }
+  const attempts=await Promise.allSettled([
+    readGroups(env.VACATURE_REGISTER_ID,REGISTER),
+    readGroups(env.RADAR_RESULT_ID,RADAR)
   ]);
+  if(attempts.some(x=>x.status==='rejected')){
+    const describe=attempt=>{
+      if(attempt.status==='fulfilled')return 'OK';
+      const err=attempt.reason;
+      const status=Number(err?.httpStatus)||
+        Number(/^Sheets read HTTP ([45]\\d\\d)$/.exec(String(err?.message||''))?.[1]);
+      const reason=String(err?.sheetReason||'UNCLASSIFIED');
+      const allowed=['PERMISSION_DENIED','UNAUTHENTICATED','RESOURCE_EXHAUSTED',
+        'NOT_FOUND','ACCESS_TOKEN_SCOPE_INSUFFICIENT','insufficientPermissions',
+        'rateLimitExceeded','accessNotConfigured','forbidden','UNCLASSIFIED'];
+      return (Number.isSafeInteger(status)&&status>=400&&status<=599?
+        'HTTP'+status:'FAILED')+':'+(allowed.includes(reason)?reason:'UNCLASSIFIED');
+    };
+    throw new Error('Radar Sheets preflight failed register='+describe(attempts[0])+
+      ' radar='+describe(attempts[1]));
+  }
+  const chunks=[...attempts[0].value,...attempts[1].value];
   header(chunks[0],['key']);
   if(chunks[0][0]?.[0]?.[1]!=='value')
     throw new Error('Spreadsheet header mismatch: stop before dedupe or writes');
