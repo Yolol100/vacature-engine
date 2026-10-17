@@ -14,17 +14,17 @@ State: READ-ONLY IMPLEMENTATION, NOT PRODUCTION GO
 
 ## New proof-of-concept execution
 - cloudflare-radar/src/actions-review.mjs reuses existing logic.mjs, official-ats.mjs and google-sheets.mjs.
-- One bounded Node.js run reads source/employer statuses, vacancy history, application statuses and submission events, existing Radar results and Radar State baselines, and official ATS data for the original three source/employer pilot pairs.
+- One bounded Node.js run reads live `Config` transition flags (`radar_enabled=FALSE`, `radar_delivery=none`), source/employer statuses, vacancy history, application statuses and submission events, existing Radar results and Radar State baselines, and official ATS data for the original three source/employer pilot pairs. It fails closed if the older Radar is activated.
 - Official ATS observation and preliminary technical-interest filtering are NOT full authenticity, live remote-from-NL, current vacancy status, language, candidate-evidence or ranking proof. The only possible output is a queue for manual specialist review; it may not be labelled an approved vacancy.
 - Every run is read-only: no Google Sheets updates, no D1 writes, no emails, no submissions, no persistence or new controller.
 - Limit up to 10 manual review observations, stop duplicate identities and official job URLs, fail closed on history/headers and report partial source errors. Public run logs contain official public vacancy information only.
-- Credentials are received through GitHub Actions secret GOOGLE_SERVICE_ACCOUNT_JSON if present. This has NOT been verified in the repository secret configuration, nor copied from Cloudflare.
+- Credentials are received through GitHub Actions secret `GOOGLE_SERVICE_ACCOUNT_JSON` if present. The Node review uses only OAuth `spreadsheets.readonly`; the shared Cloudflare module's original default write-compatible scope remains available only to existing callers. No credentials have been moved from Cloudflare. GitHub Actions secret configuration has not been inspected or proven.
 - The existing 26-record Radar State mirror is historical dedupe input only. It is NOT a continuously synchronized checkpoint store. Runner ephemerality means fresh uncommitted candidates can be rediscovered across runs.
 - GitHub workflow may be triggered by manual workflow_dispatch or owner-authored issue title exactly [radar] review 5 or [radar] review 10. Issue trigger only works once the workflow is present on the default branch. The connected GitHub ChatGPT app can create an issue but does not presently expose a workflow_dispatch API.
-- GitHub workflow includes PR-only mocked regression checks; read-only job will not execute on pull_request. No schedule.
+- GitHub workflow includes PR-only mocked regression checks; read-only job will not execute on `pull_request`. No schedule. Workflow dispatch requires owner `Yolol100`. Each authorized issue command uses its issue ID for an independent concurrency group so one pending request cannot replace another. This does **not** establish durable state or safe concurrent writes; the workflow is read-only.
 
 ## Safe acceptance and continuation
-1. Run CI against the migration PR. Inspect jobs/steps and actual failure evidence, not just green status.
+1. CI against PR #134 at commit `de3001bd9b0e049ed1dc4fceb150115da3a32071`: new review workflow run `38988280383` SUCCESS, 115 Node tests passed/0 failed. Its live `review` job was SKIPPED. Existing Cloudflare build/regression checks were green at the preceding head; verify again against the final head. Broader repository CI must also be fully checked.
 2. Verify an Actions secret is configured and has access only to required Google Sheets. Never reveal token/key values.
 3. After explicit merge and production-read-only permission, trigger a bounded single test and read official run logs, correlate input issue/run and inspect result correctness; verify both sheets and D1 unchanged.
 4. Broaden from the existing three pilot ATS pairs only if live Config/source tier and official verified routes justify coverage. Apply all vacature-search gates before presenting any final role.
@@ -33,3 +33,12 @@ State: READ-ONLY IMPLEMENTATION, NOT PRODUCTION GO
 7. Preserve original Worker, D1 data, disabled settings, credentials and rollback until all gated acceptance evidence exists. No production activation or teardown without explicit approval.
 
 GO/NO-GO: NO-GO for full migration, durable writes, Cloudflare retirement or production activation. This PR is a safe read-only precursor only.
+
+## 2026-10-17 QA updates
+- Fixed regression discovered on run 38988121653: a duplicate fixture previously used an intentionally inconsistent source ID. The strict source ID gate is correct; fixture now uses duplicate genuine identity and keeps an adversarial inconsistent-ID test.
+- Fail-closed guard checks the live Config transition flags. Any changed/unknown flag halts before fetching official ATS data.
+- Production review requires at least 26 distinct saved Radar State identities; a missing/duplicate baseline blocks execution.
+- Official source identity is checked against the exact configured provider account and posting ID, in addition to URL ownership checks.
+- OAuth permission is limited to Sheets read-only. JWT test asserts no cache collision with wider legacy scope.
+- The new 27 review-runner regression cases include parallel read-only requests, interrupted ATS retry, missing history, duplicated URL, disabled sources and log truncation.
+- No claims about live Actions authentication, persistence or full vacancy policy verification are supported yet.
