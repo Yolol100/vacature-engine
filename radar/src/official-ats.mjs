@@ -1,19 +1,7 @@
-// Shared official ATS reader and exact D1 identity lookup.
+// Read-only official ATS reader.
 import {adapterUrl,isValidJob,normalizeJobs} from './logic.mjs';
 const MAX_SOURCE_JOBS=160;
 const TIMEOUT_MS=10000;
-function params(n){return Array.from({length:n},()=>'?').join(',');}
-async function existingKeys(db,jobs){
-  const existing=new Set();
-  for(let i=0;i<jobs.length;i+=60){
-    const ids=jobs.slice(i,i+60).map(j=>j.identity);
-    if(!ids.length)continue;
-    const result=await db.prepare('SELECT identity FROM radar_observations WHERE identity IN ('+params(ids.length)+')')
-      .bind(...ids).all();
-    for(const row of result.results||[])existing.add(row.identity);
-  }
-  return existing;
-}
 async function publicJobs(source,limits={}){
   // Keep the existing Worker limits by default. Only the manual Node review
   // may request a larger, still bounded ATS feed.
@@ -45,4 +33,4 @@ async function publicJobs(source,limits={}){
   if(valid.length!==items.length)throw new Error('Unexpected ATS job host: source contract changed');
   return valid;
 }
-export {publicJobs,existingKeys,params};
+export {publicJobs};

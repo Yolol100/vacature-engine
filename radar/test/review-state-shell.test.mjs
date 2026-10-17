@@ -31,9 +31,9 @@ function fixture(){
   git(workspace,'push','origin','radar-state');
   git(workspace,'switch','main');
   mkdirSync(join(workspace,'.runtime'));
-  mkdirSync(join(workspace,'cloudflare-radar','src'),{recursive:true});
-  copyFileSync(resolve('src/review-state.mjs'),join(workspace,'cloudflare-radar','src','review-state.mjs'));
-  copyFileSync(resolve('src/logic.mjs'),join(workspace,'cloudflare-radar','src','logic.mjs'));
+  mkdirSync(join(workspace,'radar','src'),{recursive:true});
+  copyFileSync(resolve('src/review-state.mjs'),join(workspace,'radar','src','review-state.mjs'));
+  copyFileSync(resolve('src/logic.mjs'),join(workspace,'radar','src','logic.mjs'));
   writeFileSync(join(workspace,'.runtime','review-observations.next.json'),
     '{"schema_version":1,"observed":[],"runs":[]}\n');
   return {root,remote,workspace,head:git(workspace,'rev-parse','radar-state')};

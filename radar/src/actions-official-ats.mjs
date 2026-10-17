@@ -1,5 +1,4 @@
-// Actions-only bridge. The Cloudflare Worker continues using its existing
-// three JavaScript adapters; Personio/Workable reuse the ingestion adapters.
+// GitHub review bridge. Personio/Workable reuse ingestion adapters.
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {publicJobs} from './official-ats.mjs';

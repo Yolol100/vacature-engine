@@ -1,0 +1,9 @@
+{
+  "name": "webactueel-vacature-radar",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/actions-review-cli.mjs && node --check src/actions-review.mjs && node --check src/actions-official-ats.mjs && node --check src/google-sheets.mjs && node --check src/official-ats.mjs && node --check src/logic.mjs && node --check src/review-state.mjs && node --check src/health.mjs && bash -n scripts/load-review-state.sh scripts/persist-review-state.sh"
+  }
+}
