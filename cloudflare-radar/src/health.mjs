@@ -5,7 +5,7 @@ export function safeDiagnosticError(error){
   if(/^Google OAuth HTTP [45]\d\d$/.test(raw) ||
      /^Sheets (read|update|clear) HTTP [45]\d\d$/.test(raw) ||
      /^Public API HTTP [45]\d\d$/.test(raw) ||
-     /^(Missing required Worker bindings or secrets|Missing Google Sheets service account secret|Spreadsheet header mismatch: stop before dedupe or writes|No active ATS\+employer source pairs|Source exceeds safe job limit|Source payload too large|Unexpected public jobs payload|Unexpected ATS job host: source contract changed)$/.test(raw))
+     /^(Missing required Worker bindings or secrets|Missing required bindings or secrets|Missing Google Sheets service account secret|Invalid candidate limit|Invalid Google OAuth scope|Radar is not in a read-only transition state|Radar State baseline unavailable|Duplicate identity in Radar history|Spreadsheet header mismatch: stop before dedupe or writes|No active ATS\+employer source pairs|Source exceeds safe job limit|Source payload too large|Unexpected public jobs payload|Unexpected ATS job host: source contract changed)$/.test(raw))
     return raw.slice(0,110);
   return 'Unexpected runtime failure';
 }
