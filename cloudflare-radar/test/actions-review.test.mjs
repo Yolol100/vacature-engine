@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {reviewOnce,pollWithRetry,MAX_REVIEW} from '../src/actions-review.mjs';
+import {safeDiagnosticError} from '../src/health.mjs';
 
 const reg='REGISTER',radar='RADAR';
 const env={GOOGLE_SERVICE_ACCOUNT_JSON:'test-only-sentinel',VACATURE_REGISTER_ID:reg,RADAR_RESULT_ID:radar,RADAR_BASELINE_MIN_RECORDS:'1'};
@@ -40,6 +41,12 @@ function harness(overrides={}) {
   const readRanges=async (_id,ranges)=>{
     calls.read++;
     if(overrides.failRead)throw new Error('Sheets read HTTP 503');
+    if((overrides.failRegister&&_id===reg)||(overrides.failRadar&&_id===radar)){
+      const err=new Error('Sheets read HTTP 403');
+      err.httpStatus=403;
+      err.sheetReason='PERMISSION_DENIED';
+      throw err;
+    }
     return ranges.map(range=>{
       if(!Object.hasOwn(data,range))throw new Error('Unknown fixture range');
       return data[range];
@@ -66,7 +73,7 @@ test('one official ATS observation reaches only manual review; no writes',async(
   assert.equal(r.baseline_records_read,1);
   assert.equal(r.google_sheet_rows_written,0);
   assert.equal(r.application_submissions,0);
-  assert.equal(h.calls.read,7);
+  assert.equal(h.calls.read,2);
 });
 test('zero fresh positions returns an empty, successful manual queue',async()=>{
   const r=await harness({jobs:[]}).run();
@@ -147,7 +154,7 @@ test('duplicate exact official URL never yields duplicate manual review entries'
 });
 test('Google read failure fails closed before any official ATS source polling',async()=>{
   const h=harness({failRead:true});
-  await assert.rejects(()=>h.run(),/Sheets read HTTP 503/);
+  await assert.rejects(()=>h.run(),/Radar Sheets preflight failed register=HTTP503:UNCLASSIFIED radar=HTTP503:UNCLASSIFIED/);
   assert.equal(h.calls.poll,0);
 });
 test('transient official ATS failure is partial, never a zero-results success',async()=>{
@@ -326,4 +333,32 @@ test('historical baseline official URL is required and tenant-validated',async()
   const h=harness();h.data["'Radar State'!C1:C"][1]=['https://fake.invalid/automatticcareers/jobs/baseline'];
   await assert.rejects(()=>h.run(),/Radar State baseline unavailable/);
   assert.equal(h.calls.poll,0);
+});
+
+test('register-only Google 403 names only the denied boundary and blocks ATS',async()=>{
+  const h=harness({failRegister:true});
+  const error=await h.run().then(()=>null,e=>e);
+  assert.equal(error?.message,'Radar Sheets preflight failed register=HTTP403:PERMISSION_DENIED radar=OK');
+  assert.equal(safeDiagnosticError(error),error.message);
+  assert.equal(h.calls.read,2);
+  assert.equal(h.calls.poll,0);
+});
+test('radar-only Google 403 names only the denied boundary and blocks ATS',async()=>{
+  const h=harness({failRadar:true});
+  const error=await h.run().then(()=>null,e=>e);
+  assert.equal(error?.message,'Radar Sheets preflight failed register=OK radar=HTTP403:PERMISSION_DENIED');
+  assert.equal(safeDiagnosticError(error),error.message);
+  assert.equal(h.calls.poll,0);
+});
+test('dual Google 403 identifies both missing read permissions with no ATS calls',async()=>{
+  const h=harness({failRegister:true,failRadar:true});
+  const error=await h.run().then(()=>null,e=>e);
+  assert.equal(error?.message,
+    'Radar Sheets preflight failed register=HTTP403:PERMISSION_DENIED radar=HTTP403:PERMISSION_DENIED');
+  assert.equal(safeDiagnosticError(error),error.message);
+  assert.equal(h.calls.poll,0);
+});
+test('free-form Google errors cannot be echoed into public GitHub logs',()=>{
+  const err=new Error('Radar Sheets preflight failed register=HTTP403:PERMISSION_DENIED secret=abc radar=OK');
+  assert.equal(safeDiagnosticError(err),'Unexpected runtime failure');
 });
