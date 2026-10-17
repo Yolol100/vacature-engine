@@ -101,3 +101,28 @@ test('Actions mode uses Sheets read-only OAuth permission and never reuses broad
     );
   }finally{globalThis.fetch=originalFetch;}
 });
+
+test('Google Sheets 403 exposes only allowlisted API code, never free-form response text',async()=>{
+  try{
+    globalThis.fetch=async()=>new Response(JSON.stringify({
+      error:{status:'PERMISSION_DENIED',
+        message:'Credential abc/private@example.invalid cannot read this spreadsheet'}
+    }),{status:403});
+    const err=await readRanges('dummy-sheet',['A1:B2'],'redacted-token')
+      .then(()=>null,error=>error);
+    assert.equal(err.message,'Sheets read HTTP 403');
+    assert.equal(err.httpStatus,403);
+    assert.equal(err.sheetReason,'PERMISSION_DENIED');
+    assert.doesNotMatch(JSON.stringify(err),/private@example.invalid|Credential abc/);
+  }finally{globalThis.fetch=originalFetch;}
+});
+test('unknown Google error status is collapsed before public diagnostics',async()=>{
+  try{
+    globalThis.fetch=async()=>new Response(JSON.stringify({
+      error:{status:'some_private_value',message:'sensitive payload'}
+    }),{status:403});
+    const err=await readRanges('dummy-sheet',['A1:B2'],'redacted-token')
+      .then(()=>null,error=>error);
+    assert.equal(err.sheetReason,'UNCLASSIFIED');
+  }finally{globalThis.fetch=originalFetch;}
+});
