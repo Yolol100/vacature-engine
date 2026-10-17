@@ -127,5 +127,6 @@ test('only the existing radar-state branch is identified for technical persisten
   assert.match(yml,/radar-state/);
   assert.match(yml,/queue: max/);
   assert.doesNotMatch(yml,/^\s+schedule:/m);
-  assert.match(yml,/inputs\.radar_mode/);
+  assert.match(yml,/inputs\.persist_review/);
+  assert.doesNotMatch(yml,/legacy_first_seen|live-radar:/);
 });
