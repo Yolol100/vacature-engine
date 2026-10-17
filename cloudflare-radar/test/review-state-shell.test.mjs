@@ -36,7 +36,7 @@ function fixture(){
 }
 function apply(f,overrides={}){
   const env={...process.env,GITHUB_WORKSPACE:f.workspace,GITHUB_EVENT_NAME:'workflow_dispatch',
-    GITHUB_ACTOR:'Yolol100',RADAR_PERSIST:'1',RADAR_STATE_BASE_SHA:f.head,...overrides};
+    GITHUB_ACTOR:'Yolol100',RADAR_PERSIST:'1',RADAR_APPROVED_PERSIST:'yes',RADAR_STATE_BASE_SHA:f.head,...overrides};
   return spawnSync('bash',[script],{cwd:f.workspace,env,encoding:'utf8'});
 }
 test('one new technical checkpoint commits to existing state branch and reads back exactly',()=>{
@@ -81,6 +81,8 @@ test('issue trigger, non-owner, or missing approval context cannot mutate the br
       {GITHUB_EVENT_NAME:'issues'},
       {GITHUB_ACTOR:'untrusted-bot'},
       {RADAR_PERSIST:'0'},
+      {RADAR_APPROVED_PERSIST:'no'},
+      {RADAR_APPROVED_PERSIST:''},
       {RADAR_STATE_BASE_SHA:''}
     ]){
       const out=apply(f,changes);
