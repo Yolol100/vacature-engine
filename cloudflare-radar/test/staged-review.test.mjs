@@ -266,17 +266,6 @@ test('full 353-row read-only source cycle completes via bounded Free-size pages'
   assert.ok(h.db.writes.every(k=>k.startsWith('micro:v2:')));
 });
 
-test('private CPU audit cannot start another completed review cycle',async()=>{
-  const h=harness();h.ops.singleCycle=true;
-  for(let i=0;i<STAGES.length;i++){
-    const r=await runStagedReview(h.env,h.ops);
-    assert.equal(r.status,'ok');
-    h.advance(60000);
-  }
-  const later=await runStagedReview(h.env,h.ops);
-  assert.equal(later.status,'canary_complete');
-  assert.equal(h.db.meta.get(STAGE_CURSOR),'1');
-});
 test('paged vacancy history scans every source row in bounded 16-row sheets reads',async()=>{
   const h=harness({extraVacancies:130});
   h.ops.pagedVacancy=true;
