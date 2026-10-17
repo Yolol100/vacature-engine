@@ -316,3 +316,14 @@ test('invalid ATS payload is not retried under the transient HTTP policy',async(
   },async()=>{}),/Unexpected public jobs payload/);
   assert.equal(calls,1);
 });
+
+test('historical baseline must stay baseline, not silently rewritten or delivered',async()=>{
+  const h=harness();h.data["'Radar State'!D1:D"][1]=['delivered'];
+  await assert.rejects(()=>h.run(),/Radar State baseline unavailable/);
+  assert.equal(h.calls.poll,0);
+});
+test('historical baseline official URL is required and tenant-validated',async()=>{
+  const h=harness();h.data["'Radar State'!C1:C"][1]=['https://fake.invalid/automatticcareers/jobs/baseline'];
+  await assert.rejects(()=>h.run(),/Radar State baseline unavailable/);
+  assert.equal(h.calls.poll,0);
+});
