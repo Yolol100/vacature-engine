@@ -60,6 +60,17 @@ try{
   }
   }
 }catch(error){
+  // An OAuth JWT can be valid yet belong to an account that has no Google
+  // Sheet permission. Report ONLY equality to the already-shared principal,
+  // never the service-account JSON, email, private key or access token.
+  if(String(error?.message||'').startsWith('Radar Sheets preflight failed')){
+    let same=false;
+    try{
+      same=JSON.parse(env.GOOGLE_SERVICE_ACCOUNT_JSON||'{}').client_email===
+        env.RADAR_EXPECTED_SERVICE_ACCOUNT_EMAIL;
+    }catch{}
+    console.error('radar_service_account_matches_existing_sheet_reader:'+same);
+  }
   console.error('vacature_actions_review_failed:'+safeDiagnosticError(error));
   process.exitCode=1;
 }
