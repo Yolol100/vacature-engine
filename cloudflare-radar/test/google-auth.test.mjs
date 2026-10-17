@@ -101,3 +101,30 @@ test('Actions mode uses Sheets read-only OAuth permission and never reuses broad
     );
   }finally{globalThis.fetch=originalFetch;}
 });
+
+test('review runner identifies register vs Radar Sheets 403 without leaking raw API details',async()=>{
+  const details=[
+    ['register',{error:{status:'PERMISSION_DENIED',message:'do-not-log-private-name'}},'PERMISSION_DENIED'],
+    ['radar',{error:{status:'PERMISSION_DENIED',message:'hidden-user',
+      details:[{reason:'SERVICE_DISABLED'}]}},'SERVICE_DISABLED'],
+    ['register',{error:{status:'PERMISSION_DENIED',
+      details:[{reason:'ACCESS_TOKEN_SCOPE_INSUFFICIENT'}]}},'SCOPE_INSUFFICIENT'],
+    ['radar',{error:{status:'RESOURCE_EXHAUSTED'}},'QUOTA_EXCEEDED']
+  ];
+  try{
+    for(const [book,body,reason] of details){
+      globalThis.fetch=async()=>new Response(JSON.stringify(body),{status:403});
+      await assert.rejects(()=>readRanges('id',['A1:B4'],'test-token',book),
+        error=>error.message==='Sheets read HTTP 403 ['+book+':'+reason+']');
+    }
+  }finally{globalThis.fetch=originalFetch;}
+});
+test('Cloudflare legacy Sheets callers keep unchanged generic error and no credential exposure',async()=>{
+  try{
+    globalThis.fetch=async()=>new Response(JSON.stringify({
+      error:{status:'PERMISSION_DENIED',message:'never-log-account'}
+    }),{status:403});
+    await assert.rejects(()=>readRanges('id',['A1'],'test-token'),
+      error=>error.message==='Sheets read HTTP 403');
+  }finally{globalThis.fetch=originalFetch;}
+});
