@@ -149,3 +149,23 @@ test('Personio and Workable receipts require genuine tenant-specific job URLs',(
     runId:'221',result:result([malicious])
   }),/Invalid radar review candidate/);
 });
+
+test('verified employer-owned Greenhouse roles can be replayed without duplicates',()=>{
+  const jobs=[
+    {observation_key:'greenhouse:digitalocean98:8249366',
+     official_url:'https://www.digitalocean.com/careers/position/apply?gh_jid=8249366',
+     title:'WordPress Engineer'},
+    {observation_key:'greenhouse:pantheon:8202241',
+     official_url:'https://pantheon.io/about/careers/detail?gh_jid=8202241',
+     title:'Senior Web Developer'}
+  ];
+  const first=commitReviewReceipt(undefined,{runId:'301',result:result(jobs),now:options.now});
+  assert.equal(first.added,2);
+  assert.equal(parseReviewState(first.state).observed.length,2);
+  const second=commitReviewReceipt(first.state,{runId:'301',result:result(jobs),now:options.now});
+  assert.equal(second.added,0);
+  assert.equal(second.already_committed,true);
+  const invalid={...jobs[0],official_url:'https://www.digitalocean.com/careers/position/apply?gh_jid=1234567'};
+  assert.throws(()=>commitReviewReceipt(undefined,{runId:'302',
+    result:result([invalid]),now:options.now}),/Invalid radar review candidate/);
+});
