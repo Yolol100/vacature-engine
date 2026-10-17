@@ -115,7 +115,8 @@ test('country-only API discovery does not fill the manual Netherlands review que
     location
   }));
   const result=await collectTieredDiscovery({...readerParams,
-    sources:[source],maxCandidates:5,fetchJobs:async()=>rows});
+    sources:[source],maxCandidates:5,seenIds:new Set(),seenRoles:new Set(),
+    fetchJobs:async()=>rows});
   assert.equal(result.counts.geography_outside_nl,3);
   assert.equal(result.candidates.length,1);
   assert.equal(result.candidates[0].location,'Europe');
