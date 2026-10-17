@@ -390,3 +390,13 @@ test('technical review refuses invalid or excessive source scopes before Google'
   await assert.rejects(()=>h.run(),/Invalid bounded radar source scope/);
   assert.equal(h.calls.read,0);
 });
+
+test('expanded manual provider feed still yields no more than ten preliminary observations',async()=>{
+  const h=harness({jobs:Array.from({length:200},(_,i)=>job(i+1))});
+  const r=await h.run(10);
+  assert.equal(r.status,'review_ready');
+  assert.equal(r.counts.observed,200);
+  assert.equal(r.candidates.length,10);
+  assert.equal(r.failures.length,0);
+  assert.equal(r.application_submissions,0);
+});
