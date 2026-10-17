@@ -79,3 +79,21 @@ test('runs metrics align to all 12 column headers, including corrected counters'
   const row=runStatsRow('rid','a','b',{sources:1,observations:21,delivered:2,known:3,applied:4,skipped:5,errors:['bad']});
   assert.deepEqual(row,['rid','a','b',1,21,2,3,4,5,1,'partial','bad']);
 });
+
+test('Personio and Workable accept only exact official role URL and employer tenant',()=>{
+  const jobs=[
+    {identity:'personio:syde:2345',source_id:'personio',source_account:'syde',
+      source_job_id:'2345',title:'Senior WordPress Engineer',
+      url:'https://syde.jobs.personio.com/job/2345'},
+    {identity:'workable:awesomemotive:ABC123',source_id:'workable',
+      source_account:'awesomemotive',source_job_id:'ABC123',
+      title:'WordPress Developer',
+      url:'https://apply.workable.com/awesomemotive/j/ABC123'}
+  ];
+  for(const j of jobs){
+    assert.equal(isValidJob(j),true);
+    assert.ok(strongRoleKeys(j.url).some(k=>k.startsWith('ats:')));
+    assert.equal(isValidJob({...j,source_account:'othercompany'}),false);
+    assert.equal(isValidJob({...j,url:'https://evil.invalid/awesomemotive/j/ABC123'}),false);
+  }
+});

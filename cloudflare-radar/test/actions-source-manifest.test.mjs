@@ -11,17 +11,18 @@ const sample={source_id:'greenhouse',adapter:'greenhouse',source_type:'ats',
 
 test('manual Actions review reuses existing radar source specs, not a second source registry',()=>{
   const {sources,unsupported,unverified}=selectSupportedSources(manifest);
-  assert.equal(sources.length,6);
-  assert.equal(unsupported.length,3);
+  assert.equal(sources.length,9);
+  assert.equal(unsupported.length,0);
   assert.deepEqual(unverified,[
     'greenhouse:digitalocean98','greenhouse:pantheon'
   ]);
   assert.deepEqual(sources.map(s=>s.source_id+':'+s.account),[
     'greenhouse:automatticcareers','lever:kinsta','lever:siteground',
-    'greenhouse:acquia','greenhouse:gitlab','ashby:zapier'
+    'greenhouse:acquia','greenhouse:gitlab','ashby:zapier',
+    'personio:syde','workable:awesomemotive','workable:humanmade'
   ]);
   assert.ok(sources.every(s=>s.employer_source_id.startsWith('company-')));
-  assert.deepEqual(unsupported,['personio','workable','workable']);
+  assert.deepEqual(unsupported,[]);
 });
 
 test('invalid tenant, adapter drift, missing owner registration and duplicate sources fail closed',()=>{
@@ -41,10 +42,10 @@ test('invalid tenant, adapter drift, missing owner registration and duplicate so
 
 test('nonimplemented adapters never turn into an invented technical provider',()=>{
   const result=selectSupportedSources([sample,{
-    source_id:'workable',adapter:'workable',source_type:'ats',
+    source_id:'recruitee',adapter:'recruitee',source_type:'ats',
     account:'humanmade',employer:'Human Made'}]);
   assert.equal(result.sources.length,1);
-  assert.deepEqual(result.unsupported,['workable']);
+  assert.deepEqual(result.unsupported,['recruitee']);
 });
 
 test('manual review may process a bounded larger source without raising legacy Worker defaults',async()=>{
@@ -79,4 +80,14 @@ test('live incompatible hosts are excluded by the shared radar manifest without 
   const {sources,unverified}=selectSupportedSources(manifest);
   assert.equal(unverified.length,2);
   assert.equal(sources.some(s=>s.account==='digitalocean98'||s.account==='pantheon'),false);
+});
+
+test('new official employers must have a bounded registered live tenant',()=>{
+  for(const adapter of ['workable','personio']){
+    assert.throws(()=>selectSupportedSources([{
+      source_id:adapter,adapter,source_type:'ats',
+      account:adapter==='personio'?'syde':'awesomemotive',employer:'Example',
+      options:{registry_source_id:'../invalid'}
+    }]),/Invalid supported radar source specification/);
+  }
 });

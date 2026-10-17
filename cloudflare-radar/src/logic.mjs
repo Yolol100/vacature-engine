@@ -47,6 +47,13 @@ export function strongRoleKeys(raw) {
     const id=segments[1]==='jobs'?segments[2]:segments[1];
     if(id)ats='ats:greenhouse:'+segments[0].toLowerCase()+':'+id.toLowerCase();
   }
+  else if(host==='apply.workable.com'&&segments.length===3&&segments[1]==='j')
+    ats='ats:workable:'+segments[0].toLowerCase()+':'+segments[2].toLowerCase();
+  else if(host.endsWith('.jobs.personio.com')&&segments.length===2&&segments[0]==='job'){
+    const tenant=host.slice(0,-'.jobs.personio.com'.length);
+    if(tenant&&!tenant.includes('.'))
+      ats='ats:personio:'+tenant+':'+segments[1].toLowerCase();
+  }
   if(ats){keys.add(ats);keys.add('url:'+url);return [...keys];}
   if(segments.length<2)return [];
   const path=u.pathname.toLowerCase();
@@ -71,6 +78,10 @@ export function sourceActive(rows,source){
   return activeSourcePairs(rows,[source]).length===1;
 }
 export function preliminaryInterest(job){
+  // Hybrid/onsite jobs cannot pass the live fully-remote gate.
+  // Missing evidence remains unknown until verified by vacature-search.
+  if(/^(?:hybrid|on[-_ ]?site|in[-_ ]?office|office)$/i.test(String(job.remote||'').trim()))
+    return false;
   return INTEREST.test([job.title,job.remote,job.location].join(' '));
 }
 export function normalizeJobs(source,payload){
@@ -158,7 +169,14 @@ export function isValidJob(job){
   const url=new URL(job.url);
   const host=url.hostname, parts=url.pathname.split('/').filter(Boolean);
   const expectedTenant=String(job.source_account||'').toLowerCase();
-  if(!expectedTenant||parts[0]?.toLowerCase()!==expectedTenant)return false;
+  if(!expectedTenant)return false;
+  if(job.source_id==='personio')return host===expectedTenant+'.jobs.personio.com'&&
+    parts.length===2&&parts[0]==='job'&&
+    parts[1].toLowerCase()===String(job.source_job_id).toLowerCase();
+  if(parts[0]?.toLowerCase()!==expectedTenant)return false;
+  if(job.source_id==='workable')return host==='apply.workable.com'&&
+    parts.length===3&&parts[1]==='j'&&
+    parts[2].toLowerCase()===String(job.source_job_id).toLowerCase();
   if(job.source_id==='greenhouse')return (host==='boards.greenhouse.io'||host==='job-boards.greenhouse.io')&&
     parts[1]==='jobs'&&parts.length>=3&&
     parts[2].toLowerCase()===String(job.source_job_id).toLowerCase();

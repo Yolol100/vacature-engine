@@ -81,6 +81,10 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e ingestion
       - name: Restore existing technical history without any writes
         run: bash cloudflare-radar/scripts/load-review-state.sh
       - name: Review official ATS without Sheets or state writes
@@ -113,6 +117,10 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e ingestion
       - name: Restore and bind existing technical history to its base SHA
         run: bash cloudflare-radar/scripts/load-review-state.sh
       - name: Review and stage completed-only technical receipt

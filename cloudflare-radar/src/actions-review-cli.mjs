@@ -4,7 +4,7 @@ import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {reviewOnce,selectSupportedSources} from './actions-review.mjs';
 import {parseReviewState,commitReviewReceipt} from './review-state.mjs';
 import {readOnlyAccessToken,readRanges} from './google-sheets.mjs';
-import {publicJobs} from './official-ats.mjs';
+import {actionsPublicJobs} from './actions-official-ats.mjs';
 import {safeDiagnosticError} from './health.mjs';
 
 const env=process.env;
@@ -50,7 +50,7 @@ try{
     unverified:unverified.length,
     source_manifest:'ingestion/source-specs.radar.json'}}));
   const result=await reviewOnce({env,accessToken:readOnlyAccessToken,readRanges,
-    publicJobs:source=>publicJobs(source,{maxJobs:1000,maxBytes:6_000_000}),
+    publicJobs:source=>actionsPublicJobs(source,{maxJobs:1000,maxBytes:6_000_000}),
     maxCandidates,priorState:prior,sources,unsupportedSources:unsupported,
     unverifiedSources:unverified});
   console.log(JSON.stringify(result));
