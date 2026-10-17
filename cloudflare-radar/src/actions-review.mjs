@@ -3,6 +3,25 @@ import {PILOT_SOURCES,buildRegisterIndex,matchRegister,preliminaryInterest,stron
 import {safeDiagnosticError} from './health.mjs';
 import {parseReviewState} from './review-state.mjs';
 export const MAX_REVIEW=10;
+
+// Conservative *triage only*. A foreign-country-only ATS location must not
+// consume the ten-slot manual queue for a Netherlands-based applicant.
+// Unknown / broad "Remote" is still UNVERIFIED, never an NL eligibility claim.
+export function preliminaryNetherlandsScope(job){
+  const place=String(job?.location||'').toLowerCase().replace(/[–—]/g,'-').trim();
+  if(!place)return true;
+  // An explicit employer exclusion outranks broad "global"/"Europe" wording.
+  if(/\b(?:except|excluding|not in|outside|not available in)\s+(?:the\s+)?(?:netherlands|nederland)\b/.test(place))
+    return false;
+  if(/\b(?:netherlands|nederland|holland|amsterdam|rotterdam|utrecht|eindhoven|nl)\b/.test(place))
+    return true;
+  if(/\b(?:worldwide|anywhere|global(?:ly)?|europe|european union|emea|eea)\b/.test(place))
+    return true;
+  // Verified live negative cases + other unambiguous single-country locations.
+  // Lack of a match only means "unknown, requires specialist review".
+  const abroad=/\b(?:costa rica|united kingdom|england|scotland|wales|uk|united states|usa|us|canada|india|bengaluru|bangalore|hyderabad|israel|australia|new zealand|singapore|philippines|south africa|brazil|mexico|argentina|colombia|japan|south korea|uae|united arab emirates|bulgaria|germany|france|spain|poland|romania|portugal|austria|italy|sweden|switzerland|belgium|ireland)\b/;
+  return !abroad.test(place);
+}
 // Read the existing ingestion radar manifest instead of hardcoding a second
 // production source list. Only adapters already shared with the Cloudflare
 // reader are selected; unsupported adapters remain explicitly out of scope.
@@ -202,7 +221,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     ...reviewHistory.observed.flatMap(v=>strongRoleKeys(v.official_url))]);
   const candidates=[],failures=[];
   const counts={observed:0,previously_seen:0,already_in_register:0,previously_applied:0,
-    unrelated:0,review_candidates:0};
+    unrelated:0,geography_outside_nl:0,review_candidates:0};
   for(const source of enabled) {
     let jobs;
     try {
@@ -227,6 +246,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
       else if(match.known)counts.already_in_register++;
       else if(duplicate)counts.previously_seen++;
       else if(!preliminaryInterest(job))counts.unrelated++;
+      else if(!preliminaryNetherlandsScope(job))counts.geography_outside_nl++;
       else {
         for(const k of roleKeys)seenRoles.add(k);
         seenIds.add(job.identity);
