@@ -14,6 +14,29 @@ export function preliminaryRemoteEvidence(job){
   return /\b(?:remote|work(?:ing)? from home|home[- ]?based|telecommut(?:e|ing)|anywhere|worldwide|distributed)\b/.test(text);
 }
 
+// Provider locations can use any ISO country, including NL and EN names.
+// A one-country remote restriction is NOT proof of Netherlands eligibility.
+const GEO_COUNTRY_NAMES=(()=>{
+  const names=new Set();
+  const normalize=x=>String(x).normalize('NFKD').replace(/\p{M}/gu,'')
+    .toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  for(const locale of ['en','nl']){
+    const display=new Intl.DisplayNames([locale],{type:'region'});
+    for(let a=65;a<=90;a++)for(let b=65;b<=90;b++){
+      const code=String.fromCharCode(a,b);
+      if(['EU','UN','EZ','QO'].includes(code))continue;
+      const label=display.of(code);
+      if(label!==code&&label.length>=4)names.add(normalize(label));
+    }
+  }
+  return [...names].filter(Boolean);
+})();
+function containsCountryOnly(place){
+  const words=' '+place.normalize('NFKD').replace(/\p{M}/gu,'')
+    .replace(/[^a-z0-9]+/g,' ').trim()+' ';
+  return GEO_COUNTRY_NAMES.some(name=>words.includes(' '+name+' '));
+}
+
 // Conservative *triage only*. A foreign-country-only ATS location must not
 // consume the ten-slot manual queue for a Netherlands-based applicant.
 // Unknown / broad "Remote" is still UNVERIFIED, never an NL eligibility claim.
@@ -25,12 +48,14 @@ export function preliminaryNetherlandsScope(job){
     return false;
   if(/\b(?:netherlands|nederland|holland|amsterdam|rotterdam|utrecht|eindhoven|nl)\b/.test(place))
     return true;
-  if(/\b(?:worldwide|anywhere|global(?:ly)?|europe|european union|emea|eea)\b/.test(place))
+  if(/\b(?:worldwide|anywhere|global(?:ly)?|europe|european union|europese unie|emea|eea)\b/.test(place))
     return true;
   // Verified live negative cases + other unambiguous single-country locations.
   // Lack of a match only means "unknown, requires specialist review".
   const abroad=/\b(?:costa rica|united kingdom|england|scotland|wales|uk|united states|usa|us|canada|india|bengaluru|bangalore|hyderabad|israel|australia|new zealand|singapore|philippines|south africa|brazil|mexico|argentina|colombia|japan|south korea|uae|united arab emirates|seattle|boston|san francisco|austin|denver|new york|nyc|toronto|vancouver|montreal|london|berlin|sofia|bulgaria|germany|france|spain|poland|romania|portugal|austria|italy|sweden|switzerland|belgium|ireland)\b/;
-  return !abroad.test(place);
+  return !abroad.test(place)&&
+    !/\b(?:latam|latin america|latin american|apac|asia pacific|north america|north american|middle east)\b/.test(place)&&
+    !containsCountryOnly(place);
 }
 // Read the existing ingestion radar manifest instead of hardcoding a second
 // production source list. Only adapters already shared with the Cloudflare
