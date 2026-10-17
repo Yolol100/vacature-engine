@@ -197,7 +197,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     let jobs;
     try {
       jobs=await pollWithRetry(source,publicJobs);
-      if(!Array.isArray(jobs)||jobs.length>160)throw new Error('Unexpected public jobs payload');
+      if(!Array.isArray(jobs)||jobs.length>1000)throw new Error('Unexpected public jobs payload');
     }catch(error) {
       failures.push({source:source.source_id+':'+source.account,reason:safeDiagnosticError(error)});
       continue;
