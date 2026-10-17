@@ -1,7 +1,7 @@
 // Isolated git integration: no network, credentials, Sheets or D1 writes.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,copyFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,copyFileSync,rmSync,chmodSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {execFileSync,spawnSync} from 'node:child_process';
@@ -143,5 +143,92 @@ test('loader fails closed when the historical technical branch does not exist',(
       env:{...process.env,GITHUB_ENV:envPath},encoding:'utf8'});
     assert.notEqual(r.status,0);
     assert.equal(git(f.workspace,'ls-remote','--heads','origin').includes('refs/heads/radar-state'),false);
+  }finally{rmSync(f.root,{recursive:true,force:true});}
+});
+
+
+// Controlled fault injection uses an isolated temp bare Git remote. It kills
+// only the fixture's bash runner, never a live GitHub Actions job or radar-state.
+function applyKilledAtGitPush(f,phase){
+  const bin=join(f.root,'fault-bin');
+  mkdirSync(bin);
+  const realGit=execFileSync('which',['git'],{encoding:'utf8'}).trim();
+  const wrapper=join(bin,'git');
+  writeFileSync(wrapper,[
+    '#!/bin/sh',
+    'if [ "$1" = "push" ]; then',
+    '  if [ "$RADAR_TEST_STOP_AT" = "before_push" ]; then',
+    '    kill -KILL "$RADAR_TEST_RUNNER_PID"',
+    '    exit 137',
+    '  fi',
+    '  "'+realGit+'" "$@"',
+    '  result=$?',
+    '  if [ "$result" -eq 0 ] && [ "$RADAR_TEST_STOP_AT" = "after_push" ]; then',
+    '    kill -KILL "$RADAR_TEST_RUNNER_PID"',
+    '    exit 137',
+    '  fi',
+    '  exit "$result"',
+    'fi',
+    'exec "'+realGit+'" "$@"'
+  ].join('\n')+'\n');
+  chmodSync(wrapper,0o755);
+  const env={...process.env,GITHUB_WORKSPACE:f.workspace,
+    GITHUB_EVENT_NAME:'workflow_dispatch',GITHUB_ACTOR:'Yolol100',
+    RADAR_PERSIST:'1',RADAR_APPROVED_PERSIST:'yes',
+    RADAR_STATE_BASE_SHA:f.head,RADAR_TEST_STOP_AT:phase,
+    PATH:bin+':'+process.env.PATH};
+  const command='export RADAR_TEST_RUNNER_PID=$$; exec bash "'+script+'"';
+  return spawnSync('bash',['-c',command],
+    {cwd:f.workspace,env,encoding:'utf8',timeout:12000});
+}
+function remoteStateSHA(f){
+  return git(f.workspace,'ls-remote','origin','refs/heads/radar-state')
+    .split(/\s+/)[0];
+}
+
+test('SIGKILL before git push never mutates technical history; a fresh runner retries safely',()=>{
+  const f=fixture();
+  try{
+    const before=remoteStateSHA(f);
+    const stopped=applyKilledAtGitPush(f,'before_push');
+    assert.notEqual(stopped.status,0,'SIGKILL must interrupt the runner');
+    assert.equal(remoteStateSHA(f),before,'a staged-but-not-pushed receipt is not durable');
+    const retry=apply(f);
+    assert.equal(retry.status,0,retry.stderr+' '+retry.stdout);
+    assert.notEqual(remoteStateSHA(f),before);
+    assert.equal(git(f.workspace,'show','refs/remotes/origin/radar-state:state.sqlite3'),
+      'simulated historical binary');
+    assert.equal(git(f.workspace,'show','refs/remotes/origin/radar-state:radar-ack.json'),
+      '{"acked_keys":[]}');
+  }finally{rmSync(f.root,{recursive:true,force:true});}
+});
+
+test('SIGKILL after push but before readback recovers exact state without a duplicate commit',()=>{
+  const f=fixture();
+  try{
+    const before=remoteStateSHA(f);
+    const stopped=applyKilledAtGitPush(f,'after_push');
+    assert.notEqual(stopped.status,0,'SIGKILL must interrupt the runner');
+    const after=remoteStateSHA(f);
+    assert.notEqual(after,before,'remote checkpoint must survive runner death');
+    const envFile=join(f.workspace,'.runtime','github-env');
+    writeFileSync(envFile,'');
+    const loaded=spawnSync('bash',[loadScript],{cwd:f.workspace,encoding:'utf8',
+      env:{...process.env,GITHUB_ENV:envFile},timeout:12000});
+    assert.equal(loaded.status,0,loaded.stderr+' '+loaded.stdout);
+    const durable=git(f.workspace,'show',
+      'refs/remotes/origin/radar-state:review-observations.json');
+    const restored=readFileSync(join(f.workspace,'.runtime','review-observations.json'),'utf8');
+    assert.equal(restored.trim(),durable,'new runner loads the committed receipt');
+    assert.equal(durable,readFileSync(
+      join(f.workspace,'.runtime','review-observations.next.json'),'utf8').trim());
+    f.head=after;
+    const replay=apply(f);
+    assert.equal(replay.status,0,replay.stderr+' '+replay.stdout);
+    assert.equal(remoteStateSHA(f),after,'replay cannot create an extra commit');
+    assert.equal(git(f.workspace,'show','refs/remotes/origin/radar-state:state.sqlite3'),
+      'simulated historical binary');
+    assert.equal(git(f.workspace,'show','refs/remotes/origin/radar-state:radar-ack.json'),
+      '{"acked_keys":[]}');
   }finally{rmSync(f.root,{recursive:true,force:true});}
 });
