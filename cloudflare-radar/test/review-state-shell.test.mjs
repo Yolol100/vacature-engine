@@ -1,12 +1,13 @@
 // Isolated git integration: no network, credentials, Sheets or D1 writes.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,copyFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {execFileSync,spawnSync} from 'node:child_process';
 
 const script=resolve('scripts/persist-review-state.sh');
+const loadScript=resolve('scripts/load-review-state.sh');
 function git(cwd,...args){return execFileSync('git',args,{cwd,encoding:'utf8'}).trim();}
 function fixture(){
   const root=mkdtempSync(join(tmpdir(),'radar-git-'));
@@ -30,6 +31,9 @@ function fixture(){
   git(workspace,'push','origin','radar-state');
   git(workspace,'switch','main');
   mkdirSync(join(workspace,'.runtime'));
+  mkdirSync(join(workspace,'cloudflare-radar','src'),{recursive:true});
+  copyFileSync(resolve('src/review-state.mjs'),join(workspace,'cloudflare-radar','src','review-state.mjs'));
+  copyFileSync(resolve('src/logic.mjs'),join(workspace,'cloudflare-radar','src','logic.mjs'));
   writeFileSync(join(workspace,'.runtime','review-observations.next.json'),
     '{"schema_version":1,"observed":[],"runs":[]}\n');
   return {root,remote,workspace,head:git(workspace,'rev-parse','radar-state')};
@@ -99,5 +103,45 @@ test('missing durable source branch must not generate a replacement state branch
     assert.notEqual(out.status,0);
     const remoteRefs=git(f.workspace,'ls-remote','--heads','origin');
     assert.ok(!remoteRefs.includes('refs/heads/radar-state'));
+  }finally{rmSync(f.root,{recursive:true,force:true});}
+});
+
+test('loader recovers an empty technical history without creating a remote branch or committing',()=>{
+  const f=fixture();
+  try{
+    const envPath=join(f.workspace,'.runtime','GITHUB_ENV');
+    writeFileSync(envPath,'');
+    const r=spawnSync('bash',[loadScript],{cwd:f.workspace,
+      env:{...process.env,GITHUB_ENV:envPath},encoding:'utf8'});
+    assert.equal(r.status,0,r.stderr+' '+r.stdout);
+    assert.deepEqual(JSON.parse(readFileSync(join(f.workspace,'.runtime','review-observations.json'),'utf8')),
+      {schema_version:1,observed:[],runs:[]});
+    assert.equal(git(f.workspace,'rev-parse','refs/remotes/origin/radar-state'),f.head);
+    assert.match(readFileSync(envPath,'utf8'),/RADAR_STATE_BASE_SHA=[a-f0-9]{40}/);
+  }finally{rmSync(f.root,{recursive:true,force:true});}
+});
+test('loader reads back an already-committed technical receipt from the same existing branch',()=>{
+  const f=fixture();
+  try{
+    assert.equal(apply(f).status,0);
+    const envPath=join(f.workspace,'.runtime','GITHUB_ENV');
+    writeFileSync(envPath,'');
+    const r=spawnSync('bash',[loadScript],{cwd:f.workspace,
+      env:{...process.env,GITHUB_ENV:envPath},encoding:'utf8'});
+    assert.equal(r.status,0,r.stderr+' '+r.stdout);
+    const actual=readFileSync(join(f.workspace,'.runtime','review-observations.json'),'utf8');
+    assert.equal(actual,readFileSync(join(f.workspace,'.runtime','review-observations.next.json'),'utf8'));
+  }finally{rmSync(f.root,{recursive:true,force:true});}
+});
+test('loader fails closed when the historical technical branch does not exist',()=>{
+  const f=fixture();
+  try{
+    git(f.workspace,'push','origin','--delete','radar-state');
+    const envPath=join(f.workspace,'.runtime','GITHUB_ENV');
+    writeFileSync(envPath,'');
+    const r=spawnSync('bash',[loadScript],{cwd:f.workspace,
+      env:{...process.env,GITHUB_ENV:envPath},encoding:'utf8'});
+    assert.notEqual(r.status,0);
+    assert.equal(git(f.workspace,'ls-remote','--heads','origin').includes('refs/heads/radar-state'),false);
   }finally{rmSync(f.root,{recursive:true,force:true});}
 });
