@@ -14,7 +14,14 @@ async function existingKeys(db,jobs){
   }
   return existing;
 }
-async function publicJobs(source){
+async function publicJobs(source,limits={}){
+  // Keep the existing Worker limits by default. Only the manual Node review
+  // may request a larger, still bounded ATS feed.
+  const maxJobs=limits.maxJobs??MAX_SOURCE_JOBS;
+  const maxBytes=limits.maxBytes??2_000_000;
+  if(!Number.isSafeInteger(maxJobs)||maxJobs<1||maxJobs>1000||
+     !Number.isSafeInteger(maxBytes)||maxBytes<1||maxBytes>6_000_000)
+    throw new Error('Invalid bounded ATS limits');
   const resp=await fetch(adapterUrl(source),{
     headers:{Accept:'application/json'},signal:AbortSignal.timeout(TIMEOUT_MS)
   });
@@ -29,11 +36,11 @@ async function publicJobs(source){
     throw error;
   }
   const declared=Number(resp.headers.get('content-length')||0);
-  if(declared>2_000_000)throw new Error('Source payload too large');
+  if(declared>maxBytes)throw new Error('Source payload too large');
   const body=await resp.text();
-  if(body.length>2_000_000)throw new Error('Source payload too large');
+  if(body.length>maxBytes)throw new Error('Source payload too large');
   const items=normalizeJobs(source,JSON.parse(body));
-  if(items.length>MAX_SOURCE_JOBS)throw new Error('Source exceeds safe job limit');
+  if(items.length>maxJobs)throw new Error('Source exceeds safe job limit');
   const valid=items.filter(isValidJob);
   if(valid.length!==items.length)throw new Error('Unexpected ATS job host: source contract changed');
   return valid;
