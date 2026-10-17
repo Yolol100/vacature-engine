@@ -8,7 +8,7 @@ export const REVIEW_STATE_VERSION=1;
 export const MAX_REVIEW_STATE_ITEMS=5000;
 export const MAX_RUN_RECEIPTS=1500;
 const EMPTY=Object.freeze({schema_version:1,observed:[],runs:[]});
-const ID=/^(?:greenhouse|lever|ashby):[a-z0-9_-]+:[a-zA-Z0-9_-]{1,120}$/;
+const ID=/^(?:greenhouse|lever|ashby|personio|workable):[a-z0-9_-]+:[a-zA-Z0-9_-]{1,120}$/;
 
 function object(value) {
   return value!==null&&typeof value==='object'&&!Array.isArray(value);

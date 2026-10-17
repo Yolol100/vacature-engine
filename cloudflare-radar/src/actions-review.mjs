@@ -6,7 +6,7 @@ export const MAX_REVIEW=10;
 // Read the existing ingestion radar manifest instead of hardcoding a second
 // production source list. Only adapters already shared with the Cloudflare
 // reader are selected; unsupported adapters remain explicitly out of scope.
-const ACTIONS_ADAPTERS=new Set(['greenhouse','lever','ashby']);
+const ACTIONS_ADAPTERS=new Set(['greenhouse','lever','ashby','personio','workable']);
 const SOURCE_TOKEN=/^[a-z0-9][a-z0-9_-]{1,79}$/;
 export function selectSupportedSources(specs){
   if(!Array.isArray(specs)||specs.length===0||specs.length>100)

@@ -415,3 +415,24 @@ test('radar manifest-only pushes do not trigger legacy ingestion writer',()=>{
   assert.ok(pr.includes("'ingestion/**'"));
   assert.ok(pr.includes("'.github/workflows/vacature-ingestion.yml'"));
 });
+
+test('new public ATS employer only runs when both registry entries are active',async()=>{
+  const provider={source_id:'personio',account:'syde',employer:'Syde',
+    employer_source_id:'company-syde'};
+  const h=harness({sources:[provider],unsupportedSources:[]});
+  h.data["'Bronnen'!A1:A"].push(['personio'],['company-syde']);
+  h.data["'Bronnen'!M1:M"].push(['active'],['active']);
+  const result=await h.run();
+  assert.equal(result.status,'review_ready');
+  assert.equal(result.active_sources,1);
+  assert.equal(result.google_sheet_rows_written,0);
+  h.data["'Bronnen'!M1:M"].at(-1)[0]='retired';
+  await assert.rejects(()=>h.run(),/No active registered source pair/);
+});
+test('hybrid positions never fill the manual review quota',async()=>{
+  const j=job('hybrid');
+  j.remote='hybrid';
+  const r=await harness({jobs:[j]}).run();
+  assert.equal(r.candidates.length,0);
+  assert.equal(r.counts.unrelated,1);
+});

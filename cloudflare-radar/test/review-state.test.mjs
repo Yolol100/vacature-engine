@@ -130,3 +130,22 @@ test('only the existing radar-state branch is identified for technical persisten
   assert.match(yml,/inputs\.persist_review/);
   assert.doesNotMatch(yml,/legacy_first_seen|live-radar:/);
 });
+
+test('Personio and Workable receipts require genuine tenant-specific job URLs',()=>{
+  const samples=[
+    {observation_key:'personio:syde:2345',
+     official_url:'https://syde.jobs.personio.com/job/2345',
+     title:'Senior WordPress Engineer'},
+    {observation_key:'workable:awesomemotive:ABC123',
+     official_url:'https://apply.workable.com/awesomemotive/j/ABC123',
+     title:'WordPress Developer'}
+  ];
+  const receipt=commitReviewReceipt(undefined,{runId:'220',
+    result:result(samples),now:options.now});
+  assert.equal(receipt.added,2);
+  assert.equal(receipt.state.observed.length,2);
+  const malicious={...samples[1],official_url:'https://evil.invalid/awesomemotive/j/ABC123'};
+  assert.throws(()=>commitReviewReceipt(undefined,{
+    runId:'221',result:result([malicious])
+  }),/Invalid radar review candidate/);
+});
