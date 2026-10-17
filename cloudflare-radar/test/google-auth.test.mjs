@@ -75,3 +75,29 @@ test('Sheets batchGet projects only values but retains range ordering and emptie
     assert.deepEqual(actual,[[['source_id'],['greenhouse']],[['status'],['active']]]);
   }finally{globalThis.fetch=originalFetch;}
 });
+
+test('Actions mode uses Sheets read-only OAuth permission and never reuses broad token',async()=>{
+  const {readOnlyAccessToken}=await import('../src/google-sheets.mjs');
+  const auth=account('actions-read-only@example.invalid');
+  const requested=[];
+  try{
+    globalThis.fetch=async(_url,opts)=>{
+      const jwt=decodeJwt(new URLSearchParams(String(opts.body)).get('assertion'));
+      requested.push(jwt.scope);
+      return new Response(JSON.stringify({
+        access_token:'scope-token-'+requested.length,expires_in:3600
+      }),{status:200});
+    };
+    assert.equal(await readOnlyAccessToken(auth),'scope-token-1');
+    assert.equal(await readOnlyAccessToken(auth),'scope-token-1');
+    assert.equal(await accessToken(auth),'scope-token-2');
+    assert.deepEqual(requested,[
+      'https://www.googleapis.com/auth/spreadsheets.readonly',
+      'https://www.googleapis.com/auth/spreadsheets'
+    ]);
+    await assert.rejects(
+      ()=>accessToken(auth,'https://www.googleapis.com/auth/drive'),
+      /Invalid Google OAuth scope/
+    );
+  }finally{globalThis.fetch=originalFetch;}
+});
