@@ -1,10 +1,11 @@
 // Read-only official ATS reader.
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
 import {adapterUrl,isValidJob,normalizeJobs} from './logic.mjs';
 const MAX_SOURCE_JOBS=160;
 const TIMEOUT_MS=10000;
 async function publicJobs(source,limits={}){
-  // Keep the existing Worker limits by default. Only the manual Node review
-  // may request a larger, still bounded ATS feed.
+  // Conservative defaults; manual reviews may request a larger bounded feed.
   const maxJobs=limits.maxJobs??MAX_SOURCE_JOBS;
   const maxBytes=limits.maxBytes??2_000_000;
   if(!Number.isSafeInteger(maxJobs)||maxJobs<1||maxJobs>1000||
@@ -34,3 +35,33 @@ async function publicJobs(source,limits={}){
   return valid;
 }
 export {publicJobs};
+
+// Read-only Node bridge for Personio/Workable via existing ingestion adapters.
+const execFileAsync=promisify(execFile);
+export async function actionsPublicJobs(source,limits={maxJobs:1000,maxBytes:6_000_000}) {
+  if(!['personio','workable'].includes(source.source_id))
+    return publicJobs(source,limits);
+  if(!Number.isSafeInteger(limits.maxJobs)||limits.maxJobs<1||limits.maxJobs>1000)
+    throw new Error('Invalid bounded ATS limits');
+  let stdout;
+  try{
+    ({stdout}=await execFileAsync('python3',[
+      '-m','vacature_ingestion.actions_readonly_bridge',
+      source.source_id,source.account,source.employer
+    ],{
+      // Never forward the service-account secret to a public ATS child process.
+      env:{PATH:process.env.PATH,PYTHONPATH:'ingestion/src',PYTHONIOENCODING:'utf-8'},
+      timeout:20_000,maxBuffer:6_000_000
+    }));
+  }catch(error){
+    const status=/public_ats_http_([45][0-9][0-9])/.exec(String(error?.stderr||''))?.[1];
+    const safe=new Error(status?'Public API HTTP '+status:'Public ATS adapter failed');
+    if(status)safe.status=Number(status);
+    throw safe;
+  }
+  let data;
+  try{data=JSON.parse(stdout);}catch{throw new Error('Unexpected public ATS payload');}
+  if(!Array.isArray(data?.jobs)||data.jobs.length>limits.maxJobs)
+    throw new Error('Unexpected public ATS payload');
+  return data.jobs;
+}

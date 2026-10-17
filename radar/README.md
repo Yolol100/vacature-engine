@@ -9,6 +9,7 @@ Independent read-only technical review using the 11 official ATS tenants from `i
 - Checkpoint requires manual `workflow_dispatch` by repository owner, `persist_review=true`, and `RADAR_PERSIST_APPROVED=yes`.
 - No automated application, email, Google Sheets write or scheduled polling.
 - Node checks: `cd radar && npm run check && npm test`.
+- Node and focused Python regression jobs run in parallel in `.github/workflows/vacature-radar.yml` on code changes.
 - Python regression: `python -m unittest discover -s ingestion/tests`.
 
 ## Cloudflare retirement (2026-10-17)
