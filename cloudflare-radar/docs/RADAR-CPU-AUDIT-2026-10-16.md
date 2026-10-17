@@ -168,3 +168,27 @@ Na een succesvolle [PR #121](https://github.com/Yolol100/vacature-engine/pull/12
 **Veilige rollback:** D1-testtoestemming verwijderd op **22:29:40 UTC**; de byte-gecontroleerde veilige non-canary Worker-versie `f0cbc4e7-7f35-4da3-8a7b-d9aaf4657cb4` teruggezet via deployment `bc867d3e-da6c-4d52-8fed-82a782f7c41c`. Daarna zijn de twee resterende `micro:v2:`-testrecords gewist; alle **26** oorspronkelijke D1 `baseline`-observaties behouden. De cleanup [PR #127](https://github.com/Yolol100/vacature-engine/pull/127) verwijdert de drie tijdelijke bron-/config-/testwijzigingen byte-identiek en registreert deze CPU-uitkomst. De periodieke Cron blijft één keer per minuut, de productieradar blijft `RADAR_ENABLED=0` en `RADAR_PIPELINE_MODE=off`, en er is geen nieuwe publicatie of sollicitatie.
 
 **Vervolgacceptatie:** onderzoek de afzonderlijke OAuth-/Google-grenscontrolekosten (zoals variabele koude import-/sign-tijd, JSON-allocatie, responspaginering) zonder historisch bewijs over te slaan. Laat de onafhankelijke GraphQL-CPU-gate herhalen over alle 9 review-only fasen, koud/warm, met praktische marge; gebruik geen enkele groene run als garantie. Mocht Cloudflare Free binnen deze grenzen onhaalbaar blijken, vraag eerst toestemming voor een andere runtime/abonnement, zonder stilzwijgend kosten te maken.
+
+
+## Vervolgaudit 17 oktober 2026, 00:00–00:06 UTC — compacte review-Worker
+
+**Wijziging:** [PR #121](https://github.com/Yolol100/vacature-engine/pull/121) is al geaccepteerd en gebruikt de bestaande `vacature-radar` Worker met een aparte lichte `src/review-worker.mjs` als deployment-ingang. De oude bezorg-`tick` blijft alleen voor regressietests beschikbaar en zit niet in de actieve bundle. Wrangler dry-run ging van **57,05 KiB / 14,54 KiB gzip** naar **42,28 KiB / 11,10 KiB gzip**; de tijdelijke diagnostische variant was 44,55 KiB / 11,57 KiB gzip. PR #121 passeerde 84 Node-tests en CI.
+
+**Privétest:** [PR #131](https://github.com/Yolol100/vacature-engine/pull/131) voegde uitsluitend voor een **zes minuten** geldige D1-permit `micro:v2:cpu_canary` een read-only reviewtest toe. De echte Cloudflare-variabelen bleven `RADAR_ENABLED=0` en `RADAR_PIPELINE_MODE=off`. Er werd geen tweede Worker, Cron, HTTP-trigger, Google-Sheetaflevering of sollicitatie gestart. Voor #131 waren 90 Node-tests en de volledige CI groen. De geautoriseerde bron bleef `greenhouse:automatticcareers` en de historie had 353 rijen.
+
+De invocatielogs en **onafhankelijke GraphQL Analytics** `workersInvocationsAdaptive` werden waar beschikbaar vergeleken. Nauwkeurige `cpuTimeP99` bij één request per timestamp (microseconden omgerekend naar ms):
+
+| UTC, 17 oktober | Stap | Workers log CPU | GraphQL CPU |
+|---|---|---:|---:|
+| 00:00:03 | D1-only bootstrap | 6 ms | **6,649 ms** |
+| 00:01:04 | Live source gate | 8 ms | **8,365 ms** |
+| 00:02:03 | Vacaturehistorie ID-bounds | 7 ms | **7,096 ms** |
+| 00:03:04 | Historiepagina 1–16 | 9 ms | **9,258 ms** |
+| 00:04:04 | Historiepagina 17–32 | 7 ms | **7,553 ms** |
+| 00:05:04 | Historiepagina 33–48 | 7 ms | afzonderlijke GraphQL-sample nog niet bevestigd |
+
+In de eerste vijf GraphQL-rijen was `requests=1` en `errors=0` bij elke tijdstempel. Bij een tijdelijke GraphQL-queryrate-limit is **niet** stiekem `outcome=ok` als vervanging gebruikt; de historische steekproef is later alsnog opnieuw opgehaald. Vijf exact gekoppelde invocaties blijven onder 10 ms, maar één is 9,258 ms (te weinig marge voor betrouwbaar GO). De laatste historiepagina's en alle sollicitatie-, events-, ATS-, deduplicatie- en reviewstappen zijn in deze korte proef **niet bereikt**.
+
+**Rollback gecontroleerd:** tijdelijke permit ingetrokken; veilig gecontroleerde non-canary Worker-versie `74d7735f-b0d3-4695-b0d2-d54e58aace78` hersteld met Cloudflare deployment `3559197b-6dcf-4473-9adb-f14a73316978`; **vijf** overgebleven private `micro:v2:`-sleutels verwijderd; alle **26 `baseline`-observaties** behouden. PR #133 verwijdert de vijf tijdelijke bron/config/testbestanden en herstelt de bestaande 42,28 KiB Worker zonder ander toepassingsgedrag.
+
+**Eindpoort:** Functionele code-/rollbackcontrole = PASS binnen deze beperkte scope. **Cloudflare Free CPU voor de totale negenfasenpipeline = NO-GO / ONVOLDOENDE BEWEZEN**. Herhaal echte verschillende koud/warm- en late-pagina-invocaties inclusief alle latere fasen vóór mogelijke activering. Cloudflare Free 10ms CPU is een maximale verwerkingsgrens, geen gegarandeerd tijdsbudget voor willekeurige belasting. Geen betaalde omschakeling, automatische sollicitaties of productiedelivery zonder aparte toestemming.
