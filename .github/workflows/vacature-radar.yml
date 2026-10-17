@@ -74,6 +74,7 @@ jobs:
       VACATURE_REGISTER_ID: '1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0'
       RADAR_RESULT_ID: '1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ'
       RADAR_BASELINE_MIN_RECORDS: '26'
+      RADAR_EXPECTED_SERVICE_ACCOUNT_EMAIL: 'vacature-radar@leads-507621.iam.gserviceaccount.com'
       GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -105,6 +106,7 @@ jobs:
       VACATURE_REGISTER_ID: '1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0'
       RADAR_RESULT_ID: '1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ'
       RADAR_BASELINE_MIN_RECORDS: '26'
+      RADAR_EXPECTED_SERVICE_ACCOUNT_EMAIL: 'vacature-radar@leads-507621.iam.gserviceaccount.com'
       GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
