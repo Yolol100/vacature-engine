@@ -5,12 +5,12 @@ on:
     branches: [main]
     paths:
       - 'ingestion/**'
-      - 'cloudflare-radar/**'
+      - 'radar/**'
       - '.github/workflows/vacature-radar.yml'
   pull_request:
     paths:
       - 'ingestion/**'
-      - 'cloudflare-radar/**'
+      - 'radar/**'
       - '.github/workflows/vacature-radar.yml'
   workflow_dispatch:
     inputs:
@@ -86,9 +86,9 @@ jobs:
           python-version: '3.13'
       - run: python -m pip install -e ingestion
       - name: Restore existing technical history without any writes
-        run: bash cloudflare-radar/scripts/load-review-state.sh
+        run: bash radar/scripts/load-review-state.sh
       - name: Review official ATS without Sheets or state writes
-        run: node cloudflare-radar/src/actions-review-cli.mjs
+        run: node radar/src/actions-review-cli.mjs
 
   checkpoint-review:
     # Double approval: owner-initiated workflow_dispatch boolean AND explicit
@@ -122,11 +122,11 @@ jobs:
           python-version: '3.13'
       - run: python -m pip install -e ingestion
       - name: Restore and bind existing technical history to its base SHA
-        run: bash cloudflare-radar/scripts/load-review-state.sh
+        run: bash radar/scripts/load-review-state.sh
       - name: Review and stage completed-only technical receipt
-        run: node cloudflare-radar/src/actions-review-cli.mjs
+        run: node radar/src/actions-review-cli.mjs
       - name: Checkpoint on existing radar-state branch with compare-and-swap and readback
-        run: bash cloudflare-radar/scripts/persist-review-state.sh
+        run: bash radar/scripts/persist-review-state.sh
 
   checkpoint-denied:
     if: >-
