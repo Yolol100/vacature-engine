@@ -4,6 +4,7 @@
 set -euo pipefail
 
 test "${RADAR_PERSIST:-0}" = "1"
+test "${RADAR_APPROVED_PERSIST:-}" = "yes"
 test "${GITHUB_EVENT_NAME:-}" = "workflow_dispatch"
 test "${GITHUB_ACTOR:-}" = "Yolol100"
 test -n "${RADAR_STATE_BASE_SHA:-}"
