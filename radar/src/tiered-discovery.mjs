@@ -98,6 +98,13 @@ export async function collectTieredDiscovery({
     for(const job of jobs){
       const matched=matchRegister(job,register);
       const keys=strongRoleKeys(job.url);
+      // Exact job-like links may use /remote-jobs/... rather than /jobs/...
+      // This fallback is local-only: never persists as a verified role key.
+      const clean=canonicalUrl(job.url);
+      const segments=new URL(clean).pathname.split('/').filter(Boolean);
+      if(segments.length>=2&&!['jobs','job','careers','career','search','apply',
+        'positions','openings','remote-jobs'].includes(segments.at(-1).toLowerCase()))
+        keys.push('discovery-url:'+clean);
       if(matched.applied)result.counts.previously_applied++;
       else if(matched.known)result.counts.already_in_register++;
       else if(seenIds.has(job.identity)||keys.some(k=>seenRoles.has(k)))
