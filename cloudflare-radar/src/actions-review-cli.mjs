@@ -33,6 +33,16 @@ const path='.runtime/review-observations.json';
 try{
   // A missing or corrupt fetched history is NOT silently replaced.
   const prior=parseReviewState(readFileSync(path,'utf8'));
+  // GitHub re-run preserves GITHUB_RUN_ID. A crash *after* the branch commit
+  // must resume at the verified receipt, never re-fetch or rewrite candidates.
+  if(persist && prior.runs.some(r=>r.run_id===String(env.GITHUB_RUN_ID))) {
+    mkdirSync('.runtime',{recursive:true});
+    writeFileSync('.runtime/review-observations.next.json',
+      JSON.stringify(prior)+'\n',{flag:'wx',mode:0o600});
+    console.log(JSON.stringify({status:'already_committed',mode:'technical_checkpoint',
+      run_id:String(env.GITHUB_RUN_ID),google_sheet_rows_written:0,
+      application_submissions:0,external_sources_polled:0}));
+  }else {
   const result=await reviewOnce({env,accessToken:readOnlyAccessToken,readRanges,
     publicJobs,maxCandidates,priorState:prior});
   console.log(JSON.stringify(result));
@@ -47,6 +57,7 @@ try{
       {flag:'wx',mode:0o600});
     console.log(JSON.stringify({checkpoint_staged:true,added,
       already_committed,persisted_runs:state.runs.length}));
+  }
   }
 }catch(error){
   console.error('vacature_actions_review_failed:'+safeDiagnosticError(error));
