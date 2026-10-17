@@ -314,6 +314,15 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     unsupported_source_adapters:unsupportedSources.length,
     unverified_source_contracts:unverifiedSources.length,
     counts,candidates,failures};
-  if(discovery)result.discovery=discovery;
+  if(discovery){
+    // High-priority web-only sources are explicit human handoff hints, NOT
+    // automatically polled feeds. No invented API/ATS integrations.
+    const automated=new Set([...sources.map(x=>x.source_id),
+      ...tieredSources.map(x=>x.source_id)]);
+    discovery.manual_fallback_sources=String(config.get('high_source_order')||'')
+      .split(',').map(x=>x.trim()).filter(id=>id&&active.get(id)==='active'&&
+        !automated.has(id)).slice(0,10);
+    result.discovery=discovery;
+  }
   return result;
 }
