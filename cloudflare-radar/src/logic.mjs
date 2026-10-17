@@ -7,6 +7,20 @@ export const PILOT_SOURCES=Object.freeze([
 const TRACKING=new Set(['ref','source','campaign','gh_src','mc_cid','mc_eid','li_fat_id','referral']);
 const APPLIED=new Set(['submitted','applied','screen','interview','assessment','final','offer','rejected','withdrawn','closed']);
 const ALREADY_KNOWN=new Set(['seen','shown','submitted','applied','screen','interview','assessment','final','offer','rejected','withdrawn','closed','excluded_user_preference','excluded']);
+// Only these two provider-confirmed employer-owned Greenhouse URL contracts.
+const CUSTOM_GREENHOUSE=Object.freeze({
+  'www.digitalocean.com':{tenant:'digitalocean98',path:'/careers/position/apply'},
+  'pantheon.io':{tenant:'pantheon',path:'/about/careers/detail'}
+});
+function greenhouseCustomRole(url){
+  const entry=CUSTOM_GREENHOUSE[url.hostname];
+  if(!entry||url.protocol!=='https:'||url.username||url.password||url.port||
+     (url.pathname.endsWith('/')?url.pathname.slice(0,-1):url.pathname)!==entry.path||
+     url.searchParams.size!==1)return null;
+  const ids=url.searchParams.getAll('gh_jid');
+  if(ids.length!==1||!/^[1-9][0-9]{1,14}$/.test(ids[0]))return null;
+  return {tenant:entry.tenant,id:ids[0]};
+}
 const INTEREST=/\b(wordpress|woocommerce|elementor|gutenberg|website|web[\s-]?(?:design(?:er|ing)?|develop(?:er|ment)?|engineer(?:ing)?|performance)|webdesign|webdevelopment|php[\s-]?(?:developer|engineer|programmer)|full[\s-]?stack|software[\s-]?(?:engineer|developer)|applied[\s-]?ai|product[\s-]?design(?:er|ing)?|design[\s-]?systems?|core[\s-]?web[\s-]?vitals?|ui[\s-]?design(?:er|ing)?|react|next\.js|front[\s-]?end|ui\/ux|ux\/ui|ux|accessibility|automation|automations|workflow|workflows|integrations?|n8n|zapier|make\.com|no[\s-]?code|cms|ai[\s-]?agent|technical[\s-]?seo)\b/i;
 
 // A role previously parsed the same URL twice (canonicalize + inspect).
@@ -54,6 +68,8 @@ export function strongRoleKeys(raw) {
     if(tenant&&!tenant.includes('.'))
       ats='ats:personio:'+tenant+':'+segments[1].toLowerCase();
   }
+  const custom=greenhouseCustomRole(u);
+  if(custom)ats='ats:greenhouse:'+custom.tenant+':'+custom.id;
   if(ats){keys.add(ats);keys.add('url:'+url);return [...keys];}
   if(segments.length<2)return [];
   const path=u.pathname.toLowerCase();
@@ -170,6 +186,13 @@ export function isValidJob(job){
   const host=url.hostname, parts=url.pathname.split('/').filter(Boolean);
   const expectedTenant=String(job.source_account||'').toLowerCase();
   if(!expectedTenant)return false;
+  // Greenhouse may return an official employer URL with a gh_jid post ID.
+  // Only the two exact employer/tenant/path contracts above are trusted.
+  if(job.source_id==='greenhouse'){
+    const custom=greenhouseCustomRole(url);
+    if(custom)return custom.tenant===expectedTenant&&
+      custom.id===String(job.source_job_id);
+  }
   if(job.source_id==='personio')return host===expectedTenant+'.jobs.personio.com'&&
     parts.length===2&&parts[0]==='job'&&
     parts[1].toLowerCase()===String(job.source_job_id).toLowerCase();

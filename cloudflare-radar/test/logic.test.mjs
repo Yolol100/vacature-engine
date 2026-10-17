@@ -97,3 +97,36 @@ test('Personio and Workable accept only exact official role URL and employer ten
     assert.equal(isValidJob({...j,url:'https://evil.invalid/awesomemotive/j/ABC123'}),false);
   }
 });
+
+test('custom Greenhouse employer URLs require exact tenant, official host, path and job ID',()=>{
+  const cases=[
+    {source_account:'digitalocean98',source_job_id:'8249366',
+      url:'https://www.digitalocean.com/careers/position/apply/?gh_jid=8249366'},
+    {source_account:'pantheon',source_job_id:'8202241',
+      url:'https://pantheon.io/about/careers/detail?gh_jid=8202241'}
+  ];
+  for(const testCase of cases){
+    const job={identity:'greenhouse:'+testCase.source_account+':'+testCase.source_job_id,
+      source_id:'greenhouse',title:'WordPress Developer',...testCase};
+    assert.equal(isValidJob(job),true);
+    assert.ok(strongRoleKeys(job.url).includes(
+      'ats:greenhouse:'+testCase.source_account+':'+testCase.source_job_id
+    ));
+    assert.equal(isValidJob({...job,source_account:'other'}),false);
+    assert.equal(isValidJob({...job,source_job_id:'9999999'}),false);
+    assert.equal(isValidJob({...job,url:job.url.replace('gh_jid=','other=')}),false);
+    assert.equal(isValidJob({...job,url:job.url+'&other=1'}),false);
+    assert.equal(isValidJob({...job,url:job.url+'&gh_jid='+testCase.source_job_id}),false);
+    assert.equal(isValidJob({...job,url:job.url.replace('https://','http://')}),false);
+    assert.equal(isValidJob({...job,url:job.url.replace(
+      testCase.source_account==='pantheon'?'pantheon.io':'www.digitalocean.com',
+      'phishing.invalid')}),false);
+  }
+  const p=cases[1],d=cases[0];
+  assert.equal(isValidJob({source_id:'greenhouse',source_account:'digitalocean98',
+    source_job_id:p.source_job_id,identity:'greenhouse:digitalocean98:'+p.source_job_id,
+    title:'WordPress Developer',url:p.url}),false);
+  assert.equal(isValidJob({source_id:'greenhouse',source_account:'pantheon',
+    source_job_id:d.source_job_id,identity:'greenhouse:pantheon:'+d.source_job_id,
+    title:'WordPress Developer',url:d.url}),false);
+});
