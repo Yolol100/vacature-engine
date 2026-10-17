@@ -3,6 +3,39 @@ import {PILOT_SOURCES,buildRegisterIndex,matchRegister,preliminaryInterest,stron
 import {safeDiagnosticError} from './health.mjs';
 import {parseReviewState} from './review-state.mjs';
 export const MAX_REVIEW=10;
+// Read the existing ingestion radar manifest instead of hardcoding a second
+// production source list. Only adapters already shared with the Cloudflare
+// reader are selected; unsupported adapters remain explicitly out of scope.
+const ACTIONS_ADAPTERS=new Set(['greenhouse','lever','ashby']);
+const SOURCE_TOKEN=/^[a-z0-9][a-z0-9_-]{1,79}$/;
+export function selectSupportedSources(specs){
+  if(!Array.isArray(specs)||specs.length===0||specs.length>100)
+    throw new Error('Invalid radar source manifest');
+  const sources=[],unsupported=[],seen=new Set();
+  for(const spec of specs){
+    if(!spec||typeof spec!=='object'||Array.isArray(spec)||
+       typeof spec.source_id!=='string'||typeof spec.adapter!=='string')
+      throw new Error('Invalid radar source specification');
+    if(!ACTIONS_ADAPTERS.has(spec.adapter)){
+      unsupported.push(spec.source_id);
+      continue;
+    }
+    const owner=spec.options?.registry_source_id;
+    if(spec.source_type!=='ats'||spec.source_id!==spec.adapter||
+       !SOURCE_TOKEN.test(spec.account||'')||!SOURCE_TOKEN.test(owner||'')||
+       typeof spec.employer!=='string'||!spec.employer.trim()||
+       spec.employer.length>120)
+      throw new Error('Invalid supported radar source specification');
+    const key=spec.source_id+':'+spec.account.toLowerCase();
+    if(seen.has(key))throw new Error('Duplicate radar source specification');
+    seen.add(key);
+    sources.push({source_id:spec.source_id,account:spec.account,
+      employer_source_id:owner,employer:spec.employer});
+  }
+  if(!sources.length||sources.length>30)
+    throw new Error('No bounded supported radar sources');
+  return {sources,unsupported};
+}
 // One bounded 5xx retry for a public ATS source. Never retry a 429 immediately,
 // authentication failures, invalid payloads, policy changes or unknown errors.
 export async function pollWithRetry(source,publicJobs,wait=ms=>new Promise(resolve=>setTimeout(resolve,ms))){
@@ -56,8 +89,12 @@ function uniqueIdentity(rows,keyCol,urlCol) {
   }
   return {ids,roles};
 }
-export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandidates=5,priorState}) {
+export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandidates=5,priorState,
+  sources=PILOT_SOURCES,unsupportedSources=[]}) {
   const reviewHistory=parseReviewState(priorState);
+  if(!Array.isArray(sources)||sources.length===0||sources.length>30||
+     !Array.isArray(unsupportedSources)||unsupportedSources.length>100)
+    throw new Error('Invalid bounded radar source scope');
   if(!Number.isInteger(maxCandidates)||maxCandidates<1||maxCandidates>MAX_REVIEW)
     throw new Error('Invalid candidate limit');
   if(!env.GOOGLE_SERVICE_ACCOUNT_JSON||!env.VACATURE_REGISTER_ID||!env.RADAR_RESULT_ID)
@@ -128,7 +165,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     if(active.has(id))throw new Error('Duplicate source ID in live register');
     active.set(id,row[12]);
   }
-  const enabled=PILOT_SOURCES.filter(x=>active.get(x.source_id)==='active'&&
+  const enabled=sources.filter(x=>active.get(x.source_id)==='active'&&
     active.get(x.employer_source_id)==='active');
   if(enabled.length===0)throw new Error('No active registered source pair');
   const register=buildRegisterIndex(vacancyRows,applicationRows,eventRows);
@@ -160,7 +197,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     let jobs;
     try {
       jobs=await pollWithRetry(source,publicJobs);
-      if(!Array.isArray(jobs)||jobs.length>160)throw new Error('Unexpected public jobs payload');
+      if(!Array.isArray(jobs)||jobs.length>1000)throw new Error('Unexpected public jobs payload');
     }catch(error) {
       failures.push({source:source.source_id+':'+source.account,reason:safeDiagnosticError(error)});
       continue;
@@ -198,5 +235,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     baseline_records_read:baseline.ids.size,
     durable_review_observations:reviewHistory.observed.length,
     google_sheet_rows_written:0,application_submissions:0,
-    active_sources:enabled.length,counts,candidates,failures};
+    active_sources:enabled.length,configured_sources:sources.length,
+    unsupported_source_adapters:unsupportedSources.length,
+    counts,candidates,failures};
 }

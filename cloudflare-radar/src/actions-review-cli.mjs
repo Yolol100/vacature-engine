@@ -1,7 +1,7 @@
 // One source of business truth (Vacature Register), one existing technical
 // radar-state branch. The default execution is strictly read-only.
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-import {reviewOnce} from './actions-review.mjs';
+import {reviewOnce,selectSupportedSources} from './actions-review.mjs';
 import {parseReviewState,commitReviewReceipt} from './review-state.mjs';
 import {readOnlyAccessToken,readRanges} from './google-sheets.mjs';
 import {publicJobs} from './official-ats.mjs';
@@ -43,8 +43,14 @@ try{
       run_id:String(env.GITHUB_RUN_ID),google_sheet_rows_written:0,
       application_submissions:0,external_sources_polled:0}));
   }else {
+  const manifest=JSON.parse(readFileSync('ingestion/source-specs.radar.json','utf8'));
+  const {sources,unsupported}=selectSupportedSources(manifest);
+  console.log(JSON.stringify({technical_source_scope:{
+    supported:sources.length,unsupported:unsupported.length,
+    source_manifest:'ingestion/source-specs.radar.json'}}));
   const result=await reviewOnce({env,accessToken:readOnlyAccessToken,readRanges,
-    publicJobs,maxCandidates,priorState:prior});
+    publicJobs:source=>publicJobs(source,{maxJobs:1000,maxBytes:6_000_000}),
+    maxCandidates,priorState:prior,sources,unsupportedSources:unsupported});
   console.log(JSON.stringify(result));
   if(result.status!=='review_ready') {
     process.exitCode=1;
