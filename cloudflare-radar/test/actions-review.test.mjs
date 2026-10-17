@@ -244,7 +244,7 @@ test('retry after an interrupted transient ATS request remains read-only and saf
     publicJobs:async source=>{
       if(source.source_id!=='greenhouse')return [];
       n++;
-      if(n===1)throw new Error('Public API HTTP 503');
+      if(n<=2)throw new Error('Public API HTTP 503');
       return [j];
     }};
   const first=await reviewOnce(args);
