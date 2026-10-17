@@ -72,7 +72,13 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
   const vacancyRows=expand(chunks[2],[[0,2],[6,2]]);
   const applicationRows=expand(chunks[3],[[0,1],[2,1],[4,1]]);
   const eventRows=expand(chunks[4],[[0,2],[3,1],[5,1]]);
-  const active=new Map(sourceRows.slice(1).map(x=>[x[0],x[12]]));
+  const active=new Map();
+  for(const row of sourceRows.slice(1)) {
+    const id=String(row[0]||'').trim();
+    if(!id)continue;
+    if(active.has(id))throw new Error('Duplicate source ID in live register');
+    active.set(id,row[12]);
+  }
   const enabled=PILOT_SOURCES.filter(x=>active.get(x.source_id)==='active'&&
     active.get(x.employer_source_id)==='active');
   if(enabled.length===0)throw new Error('No active registered source pair');
