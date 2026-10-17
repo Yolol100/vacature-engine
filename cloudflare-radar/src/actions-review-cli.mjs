@@ -1,28 +1,54 @@
-// Only owner-authored issue commands or explicit workflow dispatch may invoke a read-only run.
+// One source of business truth (Vacature Register), one existing technical
+// radar-state branch. The default execution is strictly read-only.
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {reviewOnce} from './actions-review.mjs';
+import {parseReviewState,commitReviewReceipt} from './review-state.mjs';
 import {readOnlyAccessToken,readRanges} from './google-sheets.mjs';
 import {publicJobs} from './official-ats.mjs';
 import {safeDiagnosticError} from './health.mjs';
 
 const env=process.env;
+const event=env.GITHUB_EVENT_NAME;
 const title=env.RADAR_ISSUE_TITLE||'';
+const persist=env.RADAR_PERSIST==='1';
 let maxCandidates=5;
-if(env.GITHUB_EVENT_NAME==='issues') {
+if(event==='issues') {
   const match=/^\[radar\] review (5|10)$/.exec(title);
-  if(!match) {console.error('Unauthorized radar issue command');process.exit(1);}
+  if(!match||persist) {
+    console.error('Unauthorized radar issue command or write mode');
+    process.exit(1);
+  }
   maxCandidates=Number(match[1]);
-} else if(env.GITHUB_EVENT_NAME==='workflow_dispatch') {
+}else if(event==='workflow_dispatch') {
   maxCandidates=Number(env.RADAR_MAX_CANDIDATES||'5');
-} else {
-  console.error('Unsupported execution event');
+  if(persist&&env.RADAR_APPROVED_PERSIST!=='yes') {
+    console.error('Radar persistent review not explicitly enabled');
+    process.exit(1);
+  }
+}else{
+  console.error('Unsupported radar event');
   process.exit(1);
 }
-try {
-  const result=await reviewOnce({env,accessToken:readOnlyAccessToken,readRanges,publicJobs,maxCandidates});
-  // The Actions log is public: redact unpublished/private Google register rows and OAuth state.
+const path='.runtime/review-observations.json';
+try{
+  // A missing or corrupt fetched history is NOT silently replaced.
+  const prior=parseReviewState(readFileSync(path,'utf8'));
+  const result=await reviewOnce({env,accessToken:readOnlyAccessToken,readRanges,
+    publicJobs,maxCandidates,priorState:prior});
   console.log(JSON.stringify(result));
-  if(result.status!=='review_ready')process.exitCode=1;
-} catch(error) {
+  if(result.status!=='review_ready') {
+    process.exitCode=1;
+  }else if(persist) {
+    const {state,added,already_committed}=commitReviewReceipt(prior,{
+      runId:env.GITHUB_RUN_ID,result
+    });
+    mkdirSync('.runtime',{recursive:true});
+    writeFileSync('.runtime/review-observations.next.json',JSON.stringify(state)+'\n',
+      {flag:'wx',mode:0o600});
+    console.log(JSON.stringify({checkpoint_staged:true,added,
+      already_committed,persisted_runs:state.runs.length}));
+  }
+}catch(error){
   console.error('vacature_actions_review_failed:'+safeDiagnosticError(error));
   process.exitCode=1;
 }
