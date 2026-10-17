@@ -4,7 +4,8 @@ import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {reviewOnce,selectSupportedSources} from './actions-review.mjs';
 import {parseReviewState,commitReviewReceipt} from './review-state.mjs';
 import {readOnlyAccessToken,readRanges} from './google-sheets.mjs';
-import {actionsPublicJobs} from './official-ats.mjs';
+import {actionsPublicJobs,actionsPublicDiscoveryJobs} from './official-ats.mjs';
+import {selectTieredSources} from './tiered-discovery.mjs';
 import {safeDiagnosticError} from './health.mjs';
 
 const env=process.env;
@@ -12,15 +13,24 @@ const event=env.GITHUB_EVENT_NAME;
 const title=env.RADAR_ISSUE_TITLE||'';
 const persist=env.RADAR_PERSIST==='1';
 let maxCandidates=5;
+let tiered=false;
 if(event==='issues') {
-  const match=/^\[radar\] review (5|10)$/.exec(title);
+  const match=/^\[radar\] (review|discover) (5|10)$/.exec(title);
   if(!match||persist) {
     console.error('Unauthorized radar issue command or write mode');
     process.exit(1);
   }
-  maxCandidates=Number(match[1]);
+  maxCandidates=Number(match[2]);
+  tiered=match[1]==='discover';
 }else if(event==='workflow_dispatch') {
   maxCandidates=Number(env.RADAR_MAX_CANDIDATES||'5');
+  tiered=env.RADAR_DISCOVERY_SCOPE==='tiered';
+  if(!['','official_only','tiered'].includes(env.RADAR_DISCOVERY_SCOPE||''))
+    throw new Error('Invalid manual discovery mode');
+  if(persist&&tiered) {
+    console.error('Discovery-only mode cannot write a technical checkpoint');
+    process.exit(1);
+  }
   if(persist&&env.RADAR_APPROVED_PERSIST!=='yes') {
     console.error('Radar persistent review not explicitly enabled');
     process.exit(1);
@@ -45,6 +55,8 @@ try{
   }else {
   const manifest=JSON.parse(readFileSync('ingestion/source-specs.radar.json','utf8'));
   const {sources,unsupported,unverified}=selectSupportedSources(manifest);
+  const tieredSources=tiered?selectTieredSources(JSON.parse(
+    readFileSync('ingestion/source-specs.deploy.json','utf8'))):[];
   console.log(JSON.stringify({technical_source_scope:{
     supported:sources.length,unsupported:unsupported.length,
     unverified:unverified.length,
@@ -52,7 +64,8 @@ try{
   const result=await reviewOnce({env,accessToken:readOnlyAccessToken,readRanges,
     publicJobs:source=>actionsPublicJobs(source,{maxJobs:1000,maxBytes:6_000_000}),
     maxCandidates,priorState:prior,sources,unsupportedSources:unsupported,
-    unverifiedSources:unverified});
+    unverifiedSources:unverified,tieredSources,
+    publicDiscoveryJobs:tiered?actionsPublicDiscoveryJobs:null});
   console.log(JSON.stringify(result));
   if(result.status!=='review_ready') {
     process.exitCode=1;
