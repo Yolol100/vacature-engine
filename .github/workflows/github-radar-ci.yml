@@ -1,0 +1,20 @@
+name: GitHub Radar Node checks
+on:
+  push:
+    paths: ['radar/**', '.github/workflows/github-radar-ci.yml']
+  pull_request:
+    paths: ['radar/**', '.github/workflows/github-radar-ci.yml']
+permissions:
+  contents: read
+jobs:
+  node-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - run: npm run check
+        working-directory: radar
+      - run: npm test
+        working-directory: radar
