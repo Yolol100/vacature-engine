@@ -2,7 +2,7 @@
 // Live Vacature Register is authoritative for policy and application states.
 // Never store applicant details, credentials, CV material or applied status here.
 import {createHash} from 'node:crypto';
-import {canonicalUrl,strongRoleKeys} from './logic.mjs';
+import {canonicalUrl,strongRoleKeys,isValidJob} from './logic.mjs';
 
 export const REVIEW_STATE_VERSION=1;
 export const MAX_REVIEW_STATE_ITEMS=5000;
@@ -18,7 +18,9 @@ function validObservation(v) {
      typeof v.official_url!=='string'||typeof v.title!=='string'||
      typeof v.first_seen_utc!=='string')return false;
   const url=canonicalUrl(v.official_url);
-  if(!url||url!==v.official_url||!strongRoleKeys(url).length||
+  const [source_id,source_account,source_job_id]=v.identity.split(':');
+  if(!isValidJob({...v,url,source_id,source_account,source_job_id})||
+     !url||url!==v.official_url||!strongRoleKeys(url).length||
      v.title.length===0||v.title.length>240||
      !Number.isFinite(Date.parse(v.first_seen_utc)))return false;
   const keys=new Set(['identity','official_url','title','first_seen_utc']);
@@ -70,7 +72,12 @@ export function receiptDigest(result) {
     identity:c.observation_key,url:canonicalUrl(c.official_url),
     title:c.title
   })).sort((a,b)=>a.identity.localeCompare(b.identity));
-  if(simple.some(c=>!ID.test(c.identity)||!c.url||!c.title||c.title.length>240))
+  if(simple.some(c=>{
+    if(!ID.test(c.identity)||!c.url||!c.title||c.title.length>240)return true;
+    const [source_id,source_account,source_job_id]=c.identity.split(':');
+    return !isValidJob({identity:c.identity,source_id,source_account,
+      source_job_id,title:c.title,url:c.url});
+  }))
     throw new Error('Invalid radar review candidate');
   return createHash('sha256').update(JSON.stringify(simple)).digest('hex');
 }
