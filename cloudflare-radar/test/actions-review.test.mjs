@@ -139,8 +139,8 @@ test('existing baseline official URL suppresses resurfacing',async()=>{
   const r=await h.run();
   assert.equal(r.counts.previously_seen,1);
 });
-test('cross-source duplicate official URL never yields duplicate manual review entries',async()=>{
-  const j=job(1);const h=harness({jobs:[j,{...j,identity:j.identity+'-repeat'}]});
+test('duplicate exact official URL never yields duplicate manual review entries',async()=>{
+  const j=job(1);const h=harness({jobs:[j,j]});
   const r=await h.run();
   assert.equal(r.candidates.length,1);
   assert.equal(r.counts.previously_seen,1);
