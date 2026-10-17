@@ -179,14 +179,17 @@ test('two identical read-only attempts neither change nor lose baseline',async()
   assert.equal(h.data["'Radar State'!A1:A"].length,2);
 });
 test('workflow has no scheduled runner or privileged writes',()=>{
-  const yml=readFileSync('../.github/workflows/vacature-review-actions.yml','utf8');
+  const yml=readFileSync('../.github/workflows/vacature-radar.yml','utf8');
   assert.ok(yml.includes('workflow_dispatch:'));
   assert.ok(yml.includes('issues:'));
   assert.ok(yml.includes('github.event.issue.user.login'));
   assert.ok(yml.includes('queue: max'));
-  assert.ok(yml.includes('cancel-in-progress: false')===false);
+  assert.ok(!yml.includes('cancel-in-progress: true'));
+  assert.ok(yml.includes('checkpoint-review:'));
+  assert.ok(yml.includes("vars.RADAR_PERSIST_APPROVED == 'yes'"));
+  assert.ok(!yml.includes('live-radar:'));
   assert.ok(!/^\s+schedule:/m.test(yml));
-  assert.ok(!/^\s+contents: write/m.test(yml));
+  assert.ok(/^\s+contents: write/m.test(yml),'only the doubly approved checkpoint job has write permission');
   assert.ok(!/^\s+pull-requests: write/m.test(yml));
 });
 
