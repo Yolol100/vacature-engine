@@ -411,5 +411,7 @@ test('radar manifest-only pushes do not trigger legacy ingestion writer',()=>{
   // Real ingestion source updates still run normally; manual dispatch stays.
   assert.match(workflow,/  workflow_dispatch:/);
   assert.match(workflow,/  live-ingestion:/);
-  assert.match(workflow,/  pull_request:[\\s\\S]*?ingestion\\/\\*\\*/);
+  const pr=workflow.split('  pull_request:')[1]?.split('  workflow_dispatch:')[0]||'';
+  assert.ok(pr.includes("'ingestion/**'"));
+  assert.ok(pr.includes("'.github/workflows/vacature-ingestion.yml'"));
 });
