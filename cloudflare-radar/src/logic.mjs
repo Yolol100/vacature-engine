@@ -15,7 +15,8 @@ const CUSTOM_GREENHOUSE=Object.freeze({
 function greenhouseCustomRole(url){
   const entry=CUSTOM_GREENHOUSE[url.hostname];
   if(!entry||url.protocol!=='https:'||url.username||url.password||url.port||
-     url.pathname!==entry.path||url.searchParams.size!==1)return null;
+     (url.pathname.replace(/\\/+$/,'')||'/')!==entry.path||
+     url.searchParams.size!==1)return null;
   const ids=url.searchParams.getAll('gh_jid');
   if(ids.length!==1||!/^[1-9][0-9]{1,14}$/.test(ids[0]))return null;
   return {tenant:entry.tenant,id:ids[0]};
