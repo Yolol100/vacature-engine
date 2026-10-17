@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {monitoredTick} from '../src/health.mjs';
+import {monitoredTick,safeDiagnosticError} from '../src/health.mjs';
 
 class DB{
   constructor(){this.state=new Map();this.calls=0;}
@@ -47,4 +47,15 @@ test('secret-bearing runtime exception is not persisted to health metadata',asyn
   await assert.rejects(monitoredTick(env,async()=>{throw error},()=>now),x=>x===error);
   assert.ok(!JSON.stringify([...db.state]).includes('PRIVATE KEY SENSITIVE'));
   assert.equal(JSON.parse(db.state.get('health:last_result')).status,'failed');
+});
+
+test('safe diagnostic allows only bounded Sheets source and reason',()=>{
+  assert.equal(safeDiagnosticError(new Error('Sheets read HTTP 403 [radar:PERMISSION_DENIED]')),
+    'Sheets read HTTP 403 [radar:PERMISSION_DENIED]');
+  assert.equal(safeDiagnosticError(new Error('Sheets read HTTP 403 [register:SCOPE_INSUFFICIENT]')),
+    'Sheets read HTTP 403 [register:SCOPE_INSUFFICIENT]');
+  assert.equal(safeDiagnosticError(new Error('Sheets read HTTP 403 [private:secret@example.invalid]')),
+    'Unexpected runtime failure');
+  assert.equal(safeDiagnosticError(new Error('Sheets read HTTP 403 [radar:PERMISSION_DENIED] PRIVATE_KEY')),
+    'Unexpected runtime failure');
 });
