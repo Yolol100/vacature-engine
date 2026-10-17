@@ -1,6 +1,7 @@
 // Node.js review-only successor to the Cloudflare poll. NO external writes.
 import {PILOT_SOURCES,buildRegisterIndex,matchRegister,preliminaryInterest,strongRoleKeys,canonicalUrl,isValidJob} from './logic.mjs';
 import {safeDiagnosticError} from './health.mjs';
+import {parseReviewState} from './review-state.mjs';
 export const MAX_REVIEW=10;
 const REGISTER=[
   ["'Config'!A1:B"],
@@ -41,7 +42,8 @@ function uniqueIdentity(rows,keyCol,urlCol) {
   }
   return {ids,roles};
 }
-export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandidates=5}) {
+export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandidates=5,priorState}) {
+  const reviewHistory=parseReviewState(priorState);
   if(!Number.isInteger(maxCandidates)||maxCandidates<1||maxCandidates>MAX_REVIEW)
     throw new Error('Invalid candidate limit');
   if(!env.GOOGLE_SERVICE_ACCOUNT_JSON||!env.VACATURE_REGISTER_ID||!env.RADAR_RESULT_ID)
@@ -88,8 +90,10 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
   const baselineMinimum=Number(env.RADAR_BASELINE_MIN_RECORDS||26);
   if(!Number.isSafeInteger(baselineMinimum)||baselineMinimum<1||baseline.ids.size<baselineMinimum)
     throw new Error('Radar State baseline unavailable');
-  const seenIds=new Set([...previous.ids,...baseline.ids]);
-  const seenRoles=new Set([...previous.roles,...baseline.roles]);
+  const seenIds=new Set([...previous.ids,...baseline.ids,
+    ...reviewHistory.observed.map(v=>v.identity)]);
+  const seenRoles=new Set([...previous.roles,...baseline.roles,
+    ...reviewHistory.observed.flatMap(v=>strongRoleKeys(v.official_url))]);
   const candidates=[],failures=[];
   const counts={observed:0,previously_seen:0,already_in_register:0,previously_applied:0,
     unrelated:0,review_candidates:0};
@@ -132,6 +136,8 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
   counts.review_candidates=candidates.length;
   return {schema_version:1,status:failures.length?'partial':'review_ready',
     mode:'read_only',manual_review_required:true,register_authoritative:true,
-    baseline_records_read:baseline.ids.size,google_sheet_rows_written:0,application_submissions:0,
+    baseline_records_read:baseline.ids.size,
+    durable_review_observations:reviewHistory.observed.length,
+    google_sheet_rows_written:0,application_submissions:0,
     active_sources:enabled.length,counts,candidates,failures};
 }
