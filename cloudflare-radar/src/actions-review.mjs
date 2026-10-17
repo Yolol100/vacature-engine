@@ -87,7 +87,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
       if(attempt.status==='fulfilled')return 'OK';
       const err=attempt.reason;
       const status=Number(err?.httpStatus)||
-        Number(/^Sheets read HTTP ([45]\\d\\d)$/.exec(String(err?.message||''))?.[1]);
+        Number(/^Sheets read HTTP ([45][0-9][0-9])$/.exec(String(err?.message||''))?.[1]);
       const reason=String(err?.sheetReason||'UNCLASSIFIED');
       const allowed=['PERMISSION_DENIED','UNAUTHENTICATED','RESOURCE_EXHAUSTED',
         'NOT_FOUND','ACCESS_TOKEN_SCOPE_INSUFFICIENT','insufficientPermissions',
