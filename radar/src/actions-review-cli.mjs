@@ -4,7 +4,7 @@ import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {reviewOnce,selectSupportedSources} from './actions-review.mjs';
 import {parseReviewState,commitReviewReceipt} from './review-state.mjs';
 import {readOnlyAccessToken,readRanges} from './google-sheets.mjs';
-import {actionsPublicJobs} from './actions-official-ats.mjs';
+import {actionsPublicJobs} from './official-ats.mjs';
 import {safeDiagnosticError} from './health.mjs';
 
 const env=process.env;

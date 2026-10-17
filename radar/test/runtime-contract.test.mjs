@@ -27,7 +27,7 @@ test('Worker/D1 mutation fixtures are rejected by runtime sentinel',()=>{
 test('GitHub Radar has no active Worker, D1, Wrangler or Cloudflare runtime',()=>{
   assert.equal(existsSync(new URL('cloudflare-radar/',root)),false);
   const modules=readdirSync(new URL('radar/src/',root)).filter(p=>p.endsWith('.mjs'));
-  assert.equal(modules.length>=8,true);
+  assert.equal(modules.length>=7,true);
   for(const module of modules){
     const source=text('radar/src/'+module);
     assert.doesNotMatch(source,FORBIDDEN_RUNTIME,module);
@@ -50,4 +50,21 @@ test('review checkpoint requires separately approved owner manual dispatch',()=>
   assert.match(workflow,/run: bash radar\/scripts\/load-review-state\.sh/);
   assert.match(workflow,/run: bash radar\/scripts\/persist-review-state\.sh/);
   assert.doesNotMatch(workflow,/cloudflare-radar/);
+});
+
+test('one ATS reader and one Radar workflow preserve parallel read-only checks',()=>{
+  assert.equal(existsSync(new URL('radar/src/actions-official-ats.mjs',root)),false);
+  assert.equal(existsSync(new URL('.github/workflows/github-radar-ci.yml',root)),false);
+  const ats=text('radar/src/official-ats.mjs');
+  const cli=text('radar/src/actions-review-cli.mjs');
+  const workflow=text('.github/workflows/vacature-radar.yml');
+  assert.match(ats,/export async function actionsPublicJobs\(/);
+  assert.match(ats,/export \{publicJobs\}/);
+  assert.match(cli,/from '\.\/official-ats\.mjs'/);
+  assert.match(workflow,/^  node-checks:$/m);
+  assert.match(workflow,/^  radar-tests:$/m);
+  assert.match(workflow,/github\.event_name == 'push' \|\| github\.event_name == 'pull_request'/);
+  assert.match(workflow,/npm run check/);
+  assert.match(workflow,/npm test/);
+  assert.match(workflow,/working-directory: radar/);
 });
