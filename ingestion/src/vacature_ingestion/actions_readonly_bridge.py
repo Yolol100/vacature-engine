@@ -64,11 +64,86 @@ def read_public(provider: str, account: str, employer: str, client=None) -> list
     return jobs
 
 
+# The existing deploy manifest is the sole technical source inventory.
+# This extra read-only path never starts IngestionRunner or opens SQLite.
+from dataclasses import replace
+from hashlib import sha256
+from pathlib import Path
+from .adapters import ADAPTERS
+
+_DISCOVERY_ADAPTERS = {
+    "remotive": ("remotive", "discovery_api", None),
+    "jobicy-api": ("jobicy", "discovery_api", None),
+    "himalayas": ("himalayas", "discovery_api", None),
+    "we-work-remotely": ("weworkremotely", "job_board",
+                          "https://weworkremotely.com/categories/remote-programming-jobs.rss"),
+    "remote-ok": ("remoteok", "job_board", "https://remoteok.com/api"),
+}
+_DEPLOY_MANIFEST = Path(__file__).resolve().parents[2] / "source-specs.deploy.json"
+
+
+def read_discovery(provider: str, client=None, *, manifest_path=None) -> list[dict]:
+    """Bounded publicly documented API/RSS discovery; results are NOT verified jobs."""
+    expected = _DISCOVERY_ADAPTERS.get(provider)
+    if not expected:
+        raise ValueError("Unsupported discovery source")
+    path = manifest_path or _DEPLOY_MANIFEST
+    specs = json.loads(Path(path).read_text(encoding="utf-8"))
+    if not isinstance(specs, list):
+        raise ValueError("Invalid deployment source manifest")
+    matches = [row for row in specs if isinstance(row, dict) and row.get("source_id") == provider]
+    if len(matches) != 1:
+        raise ValueError("Missing or duplicate discovery source")
+    raw = matches[0]
+    if (raw.get("adapter"), raw.get("source_type"), raw.get("endpoint")) != expected:
+        raise ValueError("Unexpected discovery source contract")
+    if raw.get("account") not in {"global", "programming"} or not isinstance(raw.get("max_jobs"), int):
+        raise ValueError("Invalid discovery source limits")
+    if raw["max_jobs"] < 1 or raw["max_jobs"] > 20000:
+        raise ValueError("Invalid discovery source limits")
+    spec = replace(SourceSpec.from_dict(raw), max_jobs=min(raw["max_jobs"], 120),
+                   retries=0, timeout_seconds=8, max_response_bytes=12_000_000)
+    fetcher = client or HttpClient(timeout_seconds=8, retries=0, max_response_bytes=12_000_000)
+    adapter = ADAPTERS[spec.adapter]
+    records = adapter.fetch(fetcher, spec)
+    if not isinstance(records, list) or len(records) > spec.max_jobs:
+        raise ValueError("Invalid bounded discovery response")
+    out = []
+    for record in records:
+        if not isinstance(record, dict):
+            raise ValueError("Invalid discovery record")
+        row = adapter.normalize_record(record, spec, "")
+        if row is None:
+            continue
+        title = str(row.get("title") or "").strip()
+        employer = str(row.get("employer") or "").strip()
+        address = str(row.get("canonical_url") or "").strip()
+        parts = urlsplit(address)
+        if (not title or len(title) > 240 or len(address) > 2000 or
+            parts.scheme != "https" or not parts.netloc or parts.username or parts.password):
+            raise ValueError("Invalid public discovery role")
+        base_id = str(row.get("source_job_id") or address)
+        key = sha256(base_id.encode("utf-8")).hexdigest()[:24]
+        out.append({
+            "identity": f"{provider}:{spec.account}:{key}",
+            "source_id": provider, "source_account": spec.account,
+            "source_job_id": key, "employer": employer[:160], "title": title,
+            "url": address, "source_url": str(row.get("source_url") or "")[:240],
+            "location": str(row.get("location") or "")[:160],
+            "remote": ("remote" if row.get("remote") is True else
+                       str(row.get("workplace_type") or row.get("remote") or "")[:80]),
+        })
+    return out
+
+
 def main() -> int:
     try:
-        if len(sys.argv) != 4:
-            raise ValueError("Expected provider, account and employer")
-        jobs = read_public(*sys.argv[1:])
+        if len(sys.argv) == 3 and sys.argv[1] == "--discovery":
+            jobs = read_discovery(sys.argv[2])
+        elif len(sys.argv) == 4:
+            jobs = read_public(*sys.argv[1:])
+        else:
+            raise ValueError("Expected bounded public source arguments")
         print(json.dumps({"jobs": jobs}, ensure_ascii=False))
         return 0
     except FetchError as error:
