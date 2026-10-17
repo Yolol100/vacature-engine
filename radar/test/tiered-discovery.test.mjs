@@ -106,3 +106,18 @@ test('invalid public discovery contract is rejected before accepting any source 
   assert.equal(result.checked_sources.length,0);
   assert.equal(result.failures[0].reason,'Unexpected public discovery payload');
 });
+
+test('country-only API discovery does not fill the manual Netherlands review queue',async()=>{
+  const source=feeds.find(x=>x.source_id==='jobicy-api');
+  const rows=['LATAM','Hungary','Serbia','Europe'].map((location,i)=>({
+    ...job(source,String(i+1).repeat(24).slice(0,24),
+      'https://jobicy.com/jobs/wordpress-'+i),
+    location
+  }));
+  const result=await collectTieredDiscovery({...readerParams,
+    sources:[source],maxCandidates:5,fetchJobs:async()=>rows});
+  assert.equal(result.counts.geography_outside_nl,3);
+  assert.equal(result.candidates.length,1);
+  assert.equal(result.candidates[0].location,'Europe');
+  assert.equal(result.status,'review_ready');
+});
