@@ -255,3 +255,11 @@ test('candidate count from empty official feeds is not exaggerated into verified
   assert.equal(r.manual_review_required,true);
   assert.ok(!Object.hasOwn(r,'verified_vacancies'));
 });
+
+test('duplicated live source ID stops review even if one status is active',async()=>{
+  const h=harness();
+  h.data["'Bronnen'!A1:A"].push(['greenhouse']);
+  h.data["'Bronnen'!M1:M"].push(['active']);
+  await assert.rejects(()=>h.run(),/Duplicate source ID/);
+  assert.equal(h.calls.poll,0);
+});
