@@ -59,7 +59,9 @@ function harness(overrides={}) {
   };
   const run=(maxCandidates=5,environment=env)=>reviewOnce({
     env:environment,accessToken:async()=> 'mock-token',
-    readRanges,publicJobs,maxCandidates
+    readRanges,publicJobs,maxCandidates,
+    ...(overrides.sources?{sources:overrides.sources}:{}),
+    ...(overrides.unsupportedSources?{unsupportedSources:overrides.unsupportedSources}:{})
   });
   return {data,jobs,calls,run};
 }
@@ -361,4 +363,30 @@ test('dual Google 403 identifies both missing read permissions with no ATS calls
 test('free-form Google errors cannot be echoed into public GitHub logs',()=>{
   const err=new Error('Radar Sheets preflight failed register=HTTP403:PERMISSION_DENIED secret=abc radar=OK');
   assert.equal(safeDiagnosticError(err),'Unexpected runtime failure');
+});
+
+test('new official tenant is polled only when the live employer and ATS are active',async()=>{
+  const siteground={source_id:'lever',account:'siteground',
+    employer_source_id:'company-siteground',employer:'SiteGround'};
+  const h=harness({sources:[siteground],unsupportedSources:['workable']});
+  h.data["'Bronnen'!A1:A"].push(['company-siteground']);
+  h.data["'Bronnen'!M1:M"].push(['active']);
+  const r=await h.run();
+  assert.equal(r.status,'review_ready');
+  assert.equal(r.active_sources,1);
+  assert.equal(r.configured_sources,1);
+  assert.equal(r.unsupported_source_adapters,1);
+  assert.equal(h.calls.poll,1);
+  assert.equal(r.google_sheet_rows_written,0);
+  h.data["'Bronnen'!M1:M"].at(-1)[0]='consolidated';
+  await assert.rejects(()=>h.run(),/No active registered source pair/);
+  assert.equal(h.calls.poll,1);
+});
+
+test('technical review refuses invalid or excessive source scopes before Google',async()=>{
+  const h=harness({sources:Array.from({length:31},()=>({
+    source_id:'lever',account:'siteground',employer_source_id:'company-siteground'
+  }))});
+  await assert.rejects(()=>h.run(),/Invalid bounded radar source scope/);
+  assert.equal(h.calls.read,0);
 });
