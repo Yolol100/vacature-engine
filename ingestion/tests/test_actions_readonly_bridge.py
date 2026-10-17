@@ -1,6 +1,6 @@
 import unittest
 
-from vacature_ingestion.actions_readonly_bridge import read_public
+from vacature_ingestion.actions_readonly_bridge import read_public, read_discovery
 
 
 class FakeClient:
@@ -55,6 +55,71 @@ class ActionsReadonlyBridgeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Invalid public ATS job data"):
             read_public("personio", "syde", "Syde", FakeClient(xml="<jobs><position><id>123</id><name>" + "X"*300 + "</name></position></jobs>"))
 
+
+
+class DiscoveryClient:
+    def __init__(self):
+        self.calls = []
+
+    def get_json(self, url, headers=None):
+        self.calls.append(url)
+        if "jobicy.com/api/v2/remote-jobs" in url:
+            return {"jobs": [{"id": 400, "jobTitle": "Remote WordPress Developer",
+                              "url": "https://jobicy.com/jobs/400", "companyName": "Example",
+                              "jobGeo": "Europe"}]}
+        if "remotive.com/api/remote-jobs" in url:
+            return {"jobs": [{"id": 401, "title": "Remote WordPress Developer",
+                              "url": "https://remotive.com/remote-jobs/software-dev/401",
+                              "company_name": "Example", "candidate_required_location": "Europe"}]}
+        if "remoteok.com/api" in url:
+            return [{"legal": "terms"}, {"id": "402", "position": "Remote WordPress Developer",
+                    "url": "https://remoteok.com/remote-jobs/402", "company": "Example",
+                    "location": "Worldwide"}]
+        if "himalayas.app/jobs/api/search" in url:
+            if "page=2" in url:
+                return {"jobs": []}
+            return {"jobs": [{"guid": "403", "title": "Remote WordPress Developer",
+                    "applicationLink": "https://himalayas.app/jobs/403",
+                    "companyName": "Example", "locationRestrictions": []}]}
+        raise AssertionError("Unexpected discovery API URL")
+
+    def get_text(self, url, headers=None):
+        self.calls.append(url)
+        if url == "https://weworkremotely.com/categories/remote-programming-jobs.rss":
+            return "<rss><channel><item><title>Example: Remote WordPress Developer</title><link>https://weworkremotely.com/remote-jobs/example-wordpress-404</link><guid>404</guid><description>WordPress engineer</description></item></channel></rss>"
+        raise AssertionError("Unexpected discovery RSS URL")
+
+
+class ReadonlyDiscoveryBridgeTests(unittest.TestCase):
+    def test_existing_five_feeds_are_bounded_and_discovery_only(self):
+        for provider in ("remotive", "jobicy-api", "himalayas", "we-work-remotely", "remote-ok"):
+            with self.subTest(provider=provider):
+                client = DiscoveryClient()
+                rows = read_discovery(provider, client)
+                self.assertEqual(len(rows), 1)
+                row = rows[0]
+                self.assertEqual(row["source_id"], provider)
+                self.assertTrue(row["url"].startswith("https://"))
+                self.assertIn("WordPress", row["title"])
+                self.assertNotIn("verified", row)
+                self.assertNotIn("description", row)
+                self.assertEqual(len(row["source_job_id"]), 24)
+                self.assertLessEqual(len(client.calls), 2)
+
+    def test_discovery_unknown_source_cannot_access_arbitrary_host(self):
+        client = DiscoveryClient()
+        with self.assertRaisesRegex(ValueError, "Unsupported discovery source"):
+            read_discovery("../../secrets", client)
+        self.assertEqual(client.calls, [])
+
+    def test_discovery_rejects_untrusted_canonical_url(self):
+        class BadClient(DiscoveryClient):
+            def get_json(self, url, headers=None):
+                return {"jobs": [{"id": 123, "title": "WordPress Developer",
+                                  "url": "http://localhost/secret",
+                                  "company_name": "Unknown"}]}
+        with self.assertRaisesRegex(ValueError, "Invalid public discovery role"):
+            read_discovery("remotive", BadClient())
 
 if __name__ == "__main__":
     unittest.main()

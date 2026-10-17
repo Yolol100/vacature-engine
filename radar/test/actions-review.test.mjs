@@ -510,3 +510,42 @@ test('explicit workplace modes override loose remote hints without inventing NL 
   for(const city of ['Seattle','Boston','San Francisco','Austin','Denver'])
     assert.equal(preliminaryNetherlandsScope({location:city}),false,city);
 });
+
+
+test('tiered mode reuses the authoritative Sheets preflight and keeps official queue separate',async()=>{
+  const data=cells(),ids=data["'Bronnen'!A1:A"].slice(1).map(x=>x[0]);
+  data["'Config'!A1:B"].push(
+    ['direct_discovery_order','employer_direct,ats,discovery_api,job_board'],
+    ['high_source_order','linkedin-jobs,indeed-nl,himalayas,we-work-remotely,remote-ok']
+  );
+  data["'Bronnen'!A1:A"].push(['linkedin-jobs'],['himalayas']);
+  data["'Bronnen'!M1:M"].push(['active'],['active']);
+  data["'Bronnen'!C1:C"]=[['source_type'],...ids.map(x=>[x.startsWith('company-')?'employer_direct':'ats']),['job_board'],['job_board']];
+  data["'Bronnen'!E1:E"]=[['priority'],...ids.map(()=>['medium']),['high'],['high']];
+  const source={source_id:'himalayas',account:'global',source_type:'discovery_api'};
+  const key='a'.repeat(24);
+  const readRanges=async(_id,ranges)=>ranges.map(range=>{
+    if(!Object.hasOwn(data,range))throw new Error('Unexpected range '+range);
+    return data[range];
+  });
+  let discoveryCalls=0;
+  const result=await reviewOnce({
+    env,readRanges,accessToken:async()=> 'mock-token',
+    publicJobs:async()=>[],maxCandidates:5,tieredSources:[source],
+    publicDiscoveryJobs:async()=>{discoveryCalls++;return [{
+      source_id:'himalayas',source_account:'global',source_job_id:key,
+      identity:'himalayas:global:'+key,employer:'Test',title:'WordPress Developer',
+      url:'https://himalayas.app/jobs/wordpress-developer',
+      source_url:'https://himalayas.app/jobs/api',location:'Remote, EMEA',remote:'remote'
+    }];}
+  });
+  assert.equal(result.status,'review_ready');
+  assert.equal(result.candidates.length,0);
+  assert.equal(result.discovery.candidates.length,1);
+  assert.equal(result.discovery.candidates[0].verification.startsWith('discovery_only;'),true);
+  assert.equal(result.discovery.checked_sources[0],'himalayas');
+  assert.equal(discoveryCalls,1);
+  assert.deepEqual(result.discovery.manual_fallback_sources,['linkedin-jobs']);
+  assert.equal(result.google_sheet_rows_written,0);
+  assert.equal(result.application_submissions,0);
+});

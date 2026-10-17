@@ -58,3 +58,23 @@ test('unapproved manual persistence fails without touching staged output',()=>{
     assert.equal(existsSync(join(root,'.runtime','review-observations.next.json')),false);
   }finally{rmSync(root,{recursive:true,force:true});}
 });
+
+test('owner-approved checkpoint explicitly refuses broad discovery mode',()=>{
+  const {root}=fixture();
+  try{
+    const res=exec(root,{RADAR_DISCOVERY_SCOPE:'tiered'});
+    assert.notEqual(res.status,0);
+    assert.match(res.stderr,/Discovery-only mode cannot write a technical checkpoint/);
+    assert.equal(existsSync(join(root,'.runtime','review-observations.next.json')),false);
+  }finally{rmSync(root,{recursive:true,force:true});}
+});
+test('issue-based expanded discovery never permits checkpoint persistence',()=>{
+  const {root}=fixture();
+  try{
+    const res=exec(root,{GITHUB_EVENT_NAME:'issues',
+      RADAR_ISSUE_TITLE:'[radar] discover 5'});
+    assert.notEqual(res.status,0);
+    assert.match(res.stderr,/Unauthorized radar issue command or write mode/);
+    assert.equal(existsSync(join(root,'.runtime','review-observations.next.json')),false);
+  }finally{rmSync(root,{recursive:true,force:true});}
+});

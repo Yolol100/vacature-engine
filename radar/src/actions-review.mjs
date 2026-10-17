@@ -2,6 +2,7 @@
 import {PILOT_SOURCES,buildRegisterIndex,matchRegister,preliminaryInterest,strongRoleKeys,canonicalUrl,isValidJob} from './logic.mjs';
 import {safeDiagnosticError} from './health.mjs';
 import {parseReviewState} from './review-state.mjs';
+import {orderTieredSources,collectTieredDiscovery} from './tiered-discovery.mjs';
 export const MAX_REVIEW=10;
 
 
@@ -127,12 +128,16 @@ function uniqueIdentity(rows,keyCol,urlCol) {
   return {ids,roles};
 }
 export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandidates=5,priorState,
-  sources=PILOT_SOURCES,unsupportedSources=[],unverifiedSources=[]}) {
+  sources=PILOT_SOURCES,unsupportedSources=[],unverifiedSources=[],
+  tieredSources=[],publicDiscoveryJobs=null}) {
   const reviewHistory=parseReviewState(priorState);
   if(!Array.isArray(sources)||sources.length===0||sources.length>30||
      !Array.isArray(unsupportedSources)||unsupportedSources.length>100||
      !Array.isArray(unverifiedSources)||unverifiedSources.length>100)
     throw new Error('Invalid bounded radar source scope');
+  if(!Array.isArray(tieredSources)||tieredSources.length>5||
+     (tieredSources.length>0&&typeof publicDiscoveryJobs!=='function'))
+    throw new Error('Invalid bounded discovery scope');
   if(!Number.isInteger(maxCandidates)||maxCandidates<1||maxCandidates>MAX_REVIEW)
     throw new Error('Invalid candidate limit');
   if(!env.GOOGLE_SERVICE_ACCOUNT_JSON||!env.VACATURE_REGISTER_ID||!env.RADAR_RESULT_ID)
@@ -207,6 +212,26 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     active.get(x.employer_source_id)==='active');
   if(enabled.length===0)throw new Error('No active registered source pair');
   const register=buildRegisterIndex(vacancyRows,applicationRows,eventRows);
+  // Only expanded manual reviews read the extra live source type/priority data.
+  // The existing ATS-only/checkpoint paths use precisely the prior read contract.
+  let enabledDiscovery=[],skippedDiscovery=[];
+  if(tieredSources.length){
+    const extra=await readRanges(env.VACATURE_REGISTER_ID,
+      ["'Bronnen'!C1:C","'Bronnen'!E1:E"],token);
+    if(!Array.isArray(extra)||extra.length!==2||
+       extra[0]?.[0]?.[0]!=='source_type'||extra[1]?.[0]?.[0]!=='priority')
+      throw new Error('Radar discovery source metadata unavailable');
+    const meta=new Map();
+    for(let i=1;i<sourceRows.length;i++){
+      const id=String(sourceRows[i]?.[0]||'');
+      if(!id)continue;
+      meta.set(id,{type:extra[0][i]?.[0],priority:extra[1][i]?.[0],
+        status:sourceRows[i][12]});
+    }
+    const ordered=orderTieredSources(tieredSources,meta,config);
+    enabledDiscovery=ordered.enabled;
+    skippedDiscovery=ordered.skipped;
+  }
   const previous=uniqueIdentity(expand(chunks[5],[[0,1],[5,1]]),0,5);
   const baselineRows=expand(chunks[6],[[0,1],[2,1],[3,1]]);
   const baseline=uniqueIdentity(baselineRows,0,2);
@@ -270,7 +295,17 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     }
   }
   counts.review_candidates=candidates.length;
-  return {schema_version:1,status:failures.length?'partial':'review_ready',
+  // Phase 2/3 is strictly discovery-only. Unverified board results never enter
+  // the official ATS queue or persistent checkpoint/receipt state.
+  const discovery=tieredSources.length?await collectTieredDiscovery({
+    sources:enabledDiscovery,skipped:skippedDiscovery,
+    maxCandidates:Math.max(0,maxCandidates-candidates.length),
+    seenIds,seenRoles,register,fetchJobs:publicDiscoveryJobs,pollWithRetry,
+    preliminaryInterest,preliminaryRemoteEvidence,preliminaryNetherlandsScope,
+    matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError
+  }):null;
+  const result={schema_version:1,status:failures.length||discovery?.failures.length?
+      'partial':'review_ready',
     mode:'read_only',manual_review_required:true,register_authoritative:true,
     baseline_records_read:baseline.ids.size,
     durable_review_observations:reviewHistory.observed.length,
@@ -279,4 +314,15 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     unsupported_source_adapters:unsupportedSources.length,
     unverified_source_contracts:unverifiedSources.length,
     counts,candidates,failures};
+  if(discovery){
+    // High-priority web-only sources are explicit human handoff hints, NOT
+    // automatically polled feeds. No invented API/ATS integrations.
+    const automated=new Set([...sources.map(x=>x.source_id),
+      ...tieredSources.map(x=>x.source_id)]);
+    discovery.manual_fallback_sources=String(config.get('high_source_order')||'')
+      .split(',').map(x=>x.trim()).filter(id=>id&&active.get(id)==='active'&&
+        !automated.has(id)).slice(0,10);
+    result.discovery=discovery;
+  }
+  return result;
 }
