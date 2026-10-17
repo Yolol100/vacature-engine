@@ -54,7 +54,7 @@ export function preliminaryNetherlandsScope(job){
   // Lack of a match only means "unknown, requires specialist review".
   const abroad=/\b(?:costa rica|united kingdom|england|scotland|wales|uk|united states|usa|us|canada|india|bengaluru|bangalore|hyderabad|israel|australia|new zealand|singapore|philippines|south africa|brazil|mexico|argentina|colombia|japan|south korea|uae|united arab emirates|seattle|boston|san francisco|austin|denver|new york|nyc|toronto|vancouver|montreal|london|berlin|sofia|bulgaria|germany|france|spain|poland|romania|portugal|austria|italy|sweden|switzerland|belgium|ireland)\b/;
   return !abroad.test(place)&&
-    !/\b(?:latam|latin america|latin american|apac|asia pacific|north america|north american|middle east)\b/.test(place)&&
+    !/\b(?:latam|latin america|latin american|apac|asia pacific|north america|northern america|north american|middle east)\b/.test(place)&&
     !containsCountryOnly(place);
 }
 // Read the existing ingestion radar manifest instead of hardcoding a second
