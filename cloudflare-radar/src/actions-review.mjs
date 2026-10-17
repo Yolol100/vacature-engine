@@ -64,8 +64,8 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     throw new Error('Missing required bindings or secrets');
   const token=await accessToken(env);
   const chunks=await Promise.all([
-    ...REGISTER.map(r=>readRanges(env.VACATURE_REGISTER_ID,r,token)),
-    ...RADAR.map(r=>readRanges(env.RADAR_RESULT_ID,r,token))
+    ...REGISTER.map(r=>readRanges(env.VACATURE_REGISTER_ID,r,token,'register')),
+    ...RADAR.map(r=>readRanges(env.RADAR_RESULT_ID,r,token,'radar'))
   ]);
   header(chunks[0],['key']);
   if(chunks[0][0]?.[0]?.[1]!=='value')
