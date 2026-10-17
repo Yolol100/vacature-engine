@@ -183,6 +183,8 @@ test('workflow has no scheduled runner or privileged writes',()=>{
   assert.ok(yml.includes('workflow_dispatch:'));
   assert.ok(yml.includes('issues:'));
   assert.ok(yml.includes('github.event.issue.user.login'));
+  assert.ok(yml.includes('queue: max'));
+  assert.ok(yml.includes('cancel-in-progress: false')===false);
   assert.ok(!/^\s+schedule:/m.test(yml));
   assert.ok(!/^\s+contents: write/m.test(yml));
   assert.ok(!/^\s+pull-requests: write/m.test(yml));
