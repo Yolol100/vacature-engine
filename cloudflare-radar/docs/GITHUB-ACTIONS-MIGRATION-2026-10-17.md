@@ -1,77 +1,45 @@
-# Webactueel Vacature Radar: Cloudflare to GitHub Actions
+# Webactueel Vacature Radar — current GitHub Actions migration
 
-Status: **DRAFT PR #134; NO-GO for production activation or Cloudflare retirement.**
-Controller: webactueel-workflow. Vacancy policy/QA owner: vacature-search.
-Repository: Yolol100/vacature-engine.
+Updated: 2026-10-17. This document replaces the outdated draft-PR status.
 
-## Evidence-based baseline (2026-10-17)
-- PR #120 and PR #121 already merged on main before migration.
-- Live Cloudflare Worker vacature-radar had RADAR_ENABLED=0 and RADAR_PIPELINE_MODE=off. The old Cron remained configured but was gated off.
-- Live D1 database vacature-radar-state had 26 baseline observations and no temporary v2 observations. Never delete or reset its historical records.
-- Radar result spreadsheet, tab Radar State, had 26 exact five-field matches with D1 (no missing/extra/duplicate identities) at the verified readback.
-- Result tabs Nieuwe vacatures and Runs were header-only.
-- Vacature Register remains authoritative. Its Config includes radar_enabled=FALSE, radar_delivery=none and radar_state_branch=radar-state. Application history lives in Vacatures, Applications and ApplicationEvents.
-- GitHub already had a separate first-seen radar technical branch radar-state (SQLite, acknowledgements, queues and health). That branch is reused, not deleted or replaced.
+**Status: manual, read-only technical review LIVE and verified. Full migration and production persistence: NO-GO until separate approval and real recovery proof.**
 
-## Consolidated workflow
-One workflow: .github/workflows/vacature-radar.yml.
+## As-built architecture
+- Repository: Yolol100/vacature-engine. Main commit at this verification: 32c8a5229cd248c28d9283b4bf8f48131105e397.
+- PR #134 introduced the consolidated manual workflow; PR #143 expanded supported ATS scope; PR #145 quarantined two incompatible live ATS host mappings. All merged.
+- One review workflow: .github/workflows/vacature-radar.yml. Owner-only manual dispatch or exact owner-authored issue [radar] review 5 / [radar] review 10. PR/push run tests only. No GitHub schedule.
+- Node.js reviewer uses existing official-ats, logic and Google Sheets read-only APIs, plus ingestion/source-specs.radar.json as its only technical source manifest.
+- Technical state remains on the original radar-state branch. The Vacature Register (Config, Bronnen, Vacatures, Applications, ApplicationEvents, CandidateEvidence) is authoritative for all business/application policy and history. Technical preview is not an eligible or verified vacancy.
+- Six currently supported and live-checked employer/ATS pairs: Automattic/Greenhouse, Kinsta/Lever, SiteGround/Lever, Acquia/Greenhouse, GitLab/Greenhouse, Zapier/Ashby. Both provider and employer must be active in the live Bronnen tab.
+- Two Greenhouse pairs (DigitalOcean/digitalocean98 and Pantheon/pantheon) are marked actions_review_host_contract=unverified in that manifest after a real strict-host rejection. They are not retired from the register or ingested elsewhere by this change; no unverified URL host is accepted.
+- Three further manifest entries (Syde/Personio, Awesome Motive/Workable and Human Made/Workable) lack supported Actions review adapters. Do not describe source coverage as complete.
+- The manual Node reader supports at most 1,000 records / 6 MB per selected official source. Cloudflare Worker retains its existing smaller caps.
+- Manual requests are serialized with GitHub Actions queue:max. Review job token is read-only. Technical checkpoint job is separate, owner-only and requires both the persist_review dispatch input and repository variable RADAR_PERSIST_APPROVED=yes.
 
-| Trigger | Allowed action |
-| --- | --- |
-| push / pull_request | Python ingestion/first-seen tests only; Cloudflare Node checks run through the existing CI file |
-| workflow_dispatch (repository owner), persist_review=false | Read-only official-source technical review; no writes |
-| exact owner issue title [radar] review 5 or [radar] review 10 | Same read-only technical review |
-| workflow_dispatch (owner), persist_review=true AND repository variable RADAR_PERSIST_APPROVED=yes | Optional technical checkpoint on existing radar-state branch |
-| schedule | **Not configured** |
+## Production evidence
+- Earlier read-only workflow dispatch 39044976255: success, 3 pilot sources, 26 records already known, zero new observations.
+- Owner issue test 39046735779: success, verified ChatGPT owner-trigger transport to Actions and two-Sheet OAuth reads.
+- Initial expanded-source test 39047475406: partial, with 2 strict ATS host failures; no writes. PR #145 quarantined those mappings, without relaxing host validation.
+- After PR #145, owner issue #146 (run 39047802494): success, status=review_ready, six sources, 270 ATS observations, 26 previously known, five preliminary review candidates, zero failures.
+- Owner issue #147 (run 39047804812): success, status=review_ready, six sources, 270 observations, 26 previously known, ten preliminary review candidates, zero failures. The two issue-triggered runs were queued and processed separately.
+- For these live runs: application_submissions=0, google_sheet_rows_written=0 and manual_review_required=true. No vacancy has been promoted to a fully verified, Netherlands-eligible match by the technical reviewer.
+- **Separate ingestion side-effect:** changing `ingestion/source-specs.radar.json` on main also triggered the unrelated existing `.github/workflows/vacature-ingestion.yml` push writer. [Run 39047791175](https://github.com/Yolol100/vacature-engine/actions/runs/39047791175) failed at its **first write**, Google Sheets `Bronnen!G:L` values:batchUpdate, with HTTP 403; subsequent Runs append and technical checkpoint were not executed. Its integration state branch `ingestion-state` is unchanged at `489b7f53e2534088d91621dd8312ab1ce1b3c163`. This is not a Radar review write. Avoid touching the shared radar source manifest casually; future ingestion side-effects require separate review. No successful Google business write was observed from this failed run.
+- PR #143 and #145 CI, workflow regression, Cloudflare checks and applicable ingestion checks passed.
 
-The older first-seen live writer and separate duplicate .github/workflows/vacature-review-actions.yml workflow were removed from the *new workflow definition*. Existing ingestion code, historical radar-state branch and Cloudflare rollback code remain intact. The unrelated existing .github/workflows/vacature-ingestion.yml is unchanged.
+## Independent state readback after the two successful issue runs
+- Cloudflare D1: 26 baseline identities, all unique; the exact five-field tuples match the 26 rows in Google result spreadsheet Radar State (26/26).
+- Google result tabs Nieuwe vacatures and Runs: header only; no new rows. Vacature Register Config continues with radar_enabled=FALSE, radar_delivery=none, radar_state_branch=radar-state.
+- Existing radar-state branch head: c3043f7936d330b45d34f29a26b64a1e0702d333. Original files preserved: state.sqlite3, first-seen-queue.json, latest.json, radar-ack.json, source-health.json.
+- review-observations.json is still absent: no live production checkpoint was attempted or approved.
+- Cloudflare Worker settings: RADAR_ENABLED=0, RADAR_PIPELINE_MODE=off. Historic Cloudflare Cron (* * * * *) and D1 are retained intact for rollback. Do not confuse disabled execution with removed infrastructure.
+- The unrelated GitHub ingestion-state branch remained unchanged after an unwanted ingestion push trigger. Google Sheets write attempt returned 403 before the first batch update completed. No accepted register update or new run row from that attempt is evidenced.
 
-Workflow concurrency queue:max serializes manual radar executions (up to GitHub's documented queue limit) without replacing pending requests. PR/push tests share a separate CI concurrency group. All third-party actions are pinned by SHA.
+## Open release gates
+1. Obtain separate, explicit authorization before setting RADAR_PERSIST_APPROVED=yes and performing any real technical checkpoint write. A broad task request is not this specific production approval.
+2. Prove durable write/readback, repeated run idempotence, interruption/replay and branch compare-and-swap with real GitHub runner state. Existing isolated bare-Git and mock tests do not prove a real production restart.
+3. Verify current official role, fully remote/NL eligibility, NL/EN language, authenticity, CandidateEvidence, fit and score independently before calling any preliminary observation a qualified vacancy. Never auto-apply or email.
+4. Resolve the two quarantined host contracts using independent employer/ATS evidence, and extend only relevant Personio/Workable adapters if their official public read contracts can be implemented safely. Do not weaken current rules or widen into indiscriminate scraping.
+5. Preserve Cloudflare Worker, Cron, D1 and rollback until separate explicit retirement authorization after full migration proof. Do not enable automatic scheduling.
 
-## Technical review
-One bounded Node.js invocation reuses:
-- cloudflare-radar/src/google-sheets.mjs (Actions uses only spreadsheets.readonly OAuth);
-- cloudflare-radar/src/official-ats.mjs;
-- cloudflare-radar/src/logic.mjs for strict ATS IDs, URLs, source/account checks, and known/applied identity reconciliation;
-- read-only live Config/Bronnen/Vacatures/Applications/ApplicationEvents and Radar State/previous results;
-- cloudflare-radar/src/actions-review.mjs / actions-review-cli.mjs.
-
-Review fails closed when missing or invalid live policy flags, headers, baseline, auth, source/employer registration or history. Maximum 10 technical observations for manual review. It does NOT verify current publication/open status, scam/authenticity, remote/NL work eligibility, language, target family, candidate evidence or final score. Those remain vacature-search's live policy gates and must be completed before a job may be presented as an eligible verified match. No automatic applications, emails or registration status changes exist.
-
-## Durable technical receipts (guarded and opt-in)
-- Only the **existing** radar-state branch may contain a new file review-observations.json, schema_version=1. It contains public official ATS identity/URL/title, first-seen UTC and deterministic run digest. It is NOT a replacement for the Vacature Register.
-- The initial state file is absent until a separately approved run; restore fails if the underlying branch is absent rather than creating a new database/branch.
-- A valid checkpoint is built only from a complete status=review_ready, read-only receipt with zero errors, zero Sheets writes and zero submissions.
-- Read source branch and exact base SHA before ATS work; re-fetch and require same base SHA before commit; git push is non-force and has exact readback comparison. A changed branch fails closed and requires a fresh run.
-- GitHub Actions job token is contents:read by default. Only the separate, owner-only, double-gated checkpoint job gets contents:write.
-- After an interrupted job is re-run with its same GitHub run ID, an already committed receipt is detected before OAuth and ATS calls, staging an identical no-op checkpoint. If interruption happened before commit, an explicit new run can safely repeat a read-only crawl.
-- Partial source failure does not checkpoint. A conflicting same-run digest, duplicate identity, untrusted URL or exceeded history capacity causes a hard failure.
-- An operator can inspect last durable technical observations via radar-state:review-observations.json, or view read-only run output in official GitHub Actions logs. GitHub state does not determine application status.
-- The existing D1 baseline remains untouched and is independently checked against Radar State until a separately approved final retirement gate.
-
-## Independent testing and status
-- Regression tests mock Google and ATS failures, invalid providers, missing secrets, applied roles without IDs, prior shown vacancies, broken headers, 10-job cap, duplicate sources, concurrent read-only calls and replay.
-- Native local-bare-Git integration tests verify actual branch checkpoint commit, exact readback, stale-SHA rejection, no-op repeat, owner/approval restrictions and historical file preservation.
-- The new tests run through cloudflare-radar-ci.yml. Workflow PR tests have no secrets and must never launch live review jobs.
-- Green CI is *not* proof of live service account access or a complete migration. Check the exact final commit, GitHub job logs and live Sheets/D1 readback again before any release claim.
-
-## Remaining release gates (NO-GO)
-1. Verify the current GitHub Actions service-account secret is present/authorized. Do not extract or duplicate private keys from Cloudflare; do not put keys/tokens in logs or code.
-2. Obtain explicit permission to merge the default-branch workflow and perform a single bounded **read-only** end-to-end dispatch or ChatGPT issue command. Verify exact run ID and status, actual ATS/Google responses and public output.
-3. Verify unchanged 26 D1 baselines, unchanged business register and no unintended Sheet/mailbox/application writes after that live run.
-4. Separately approve any opt-in technical checkpoint activation. The RADAR_PERSIST_APPROVED repository variable is not configured or verified here. Do NOT set it automatically.
-5. Exercise real interrupted/crash/race scenarios under the authorized runner and confirm branch CAS / readback, identity dedupe and recovery. Unit tests alone are insufficient.
-6. Apply live vacature-search official-verification and candidate-evidence gates before claiming fully verified vacancies.
-7. Receive explicit permission before Cloudflare shutdown/removal, D1 migration or secret cleanup. Keep rollback until proof.
-
-## ChatGPT use after explicit default-branch activation
-- "Start de Vacature Radar": create repository-owner issue [radar] review 5.
-- "Zoek maximaal 10 nieuwe vacatures": create repository-owner issue [radar] review 10.
-- "Laat de laatste resultaten zien": inspect correlated Actions run and the existing radar-state branch read-only.
-- "Controleer gevonden vacatures": perform a new official-policy, authenticity, location and fit check under vacature-search; no auto-submit.
-- "Hervat een onderbroken run": read the run ID/receipt; rerun safely only after live-state and approval checks.
-
-Neither creating an issue nor the GitHub connector alone proves the job actually ran. Always correlate the issue, workflow run, exact head commit and results.
-
-## Rollback
-Leave draft PR #134 unmerged until acceptance. Revert only the merged workflow/source commits if later needed; do not delete D1, the 26 historical observations, Google sheets, existing radar-state branch or unrelated ingestion data. The optional technical receipt file is append-only and independent from application truth.
+## Safe resumption
+Read current main and latest runs; verify the live register and D1/Sheet baseline. Continue with a narrowly approved checkpoint run, compare its exact state readback, then run genuine crash/replay and concurrency tests. Leave all application and Google Sheets business data read-only. Do not claim COMPLETE while any above gate is open.

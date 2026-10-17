@@ -1,64 +1,42 @@
-# Independent acceptance audit: GitHub Actions Vacature Radar
-Date: 2026-10-17
-Repository: Yolol100/vacature-engine
-Change set: draft PR #134, based on main 39ed84e06aae9f23992eca84af1780cc9f65ee43
-Controller: webactueel-workflow; vacancy owner: vacature-search
-Disposition: NO-GO for production activation and Cloudflare retirement
+# Independent Vacature Radar acceptance — current evidence
+Date: 2026-10-17. Scope: GitHub Actions manual technical review, NOT full vacancy matching or production persistence.
+Main: 32c8a5229cd248c28d9283b4bf8f48131105e397. Status: READ-ONLY REVIEW GO; FULL MIGRATION NO-GO.
 
-## Evidence classes
-- LIVE READBACK: current Cloudflare, D1, Google Sheets and GitHub repository metadata checked without mutations.
-- CI INTEGRATION: code executed in official GitHub Actions with temporary local bare Git remotes and/or generated fake OAuth credentials. No live business-system write.
-- MOCK/UNIT: fixture source, failure and duplicate tests run in CI. This never proves live API credentials or official vacancy eligibility.
-- BLOCKED: exact production operation intentionally not performed without explicit authorization or required connector capability.
+## Evidence legend
+LIVE = actual GitHub/Google/Cloudflare readback; CI = isolated integration/regression test; BLOCKED = not executed under a separate required approval; PARTIAL = supported subset only.
 
-## Independent baseline readback
-- Cloudflare GET Worker binding: RADAR_ENABLED=0, RADAR_PIPELINE_MODE=off. The original * * * * * Cron remains configured but is gated off. Do not treat this as physical removal of its scheduler.
-- D1 live SELECT: exactly 26 observations, all status=baseline; zero micro:v2 metadata rows.
-- Google result sheet Radar State A1:E40: exactly 26 data rows; full five-field tuple (identity, source_instance, URL, status, first_seen_at) exact match 26/26 with live D1; 0 missing, extra or duplicate keys.
-- Google result tabs Nieuwe vacatures and Runs: exactly one header row, no data rows.
-- Register live Config: radar_enabled=FALSE, radar_delivery=none, radar_state_branch=radar-state.
-- Existing GitHub radar-state branch head c3043f7936d330b45d34f29a26b64a1e0702d333 contains its original five technical files (state.sqlite3, first-seen-queue.json, latest.json, radar-ack.json, source-health.json); new review-observations.json is NOT yet present.
-- Draft PR not merged; main remains unchanged. No production workflow dispatch or live issue event was run.
+| Scenario | Evidence / status |
+| --- | --- |
+| Successful ordinary owner request | LIVE PASS: issues #146/#147, runs 39047802494 / 39047804812, both review_ready |
+| No new candidates | LIVE PASS: original 3-source run 39044976255 returned 0 new; CI fixture coverage |
+| Bound at ten | LIVE PASS: issue #147 requested 10; ten technical observations, no verified vacancy claim |
+| Inactive/invalid source | CI PASS: both live provider and employer status gates; manifest contract tests |
+| Known vacancy | LIVE PASS: all 26 baseline jobs recognized as previously seen |
+| Previous application / missing vacancy ID | CI PASS: exact official URL and lifecycle dedupe scenarios |
+| Google read outage / 403 | CI PASS: sanitized fail-closed boundary diagnostics; historical real 403 fixed |
+| Temporary ATS error / 429 / wrong host | CI PASS and LIVE FAIL-CLOSED: 39047475406 partial on two invalid host mappings; PR #145 quarantined |
+| Missing/expired secret | CI PASS for missing/invalid; live access working, real expiry not forced |
+| Interrupted run + restart | CI isolated Git/CLI PASS, real runner interruption and persistent recovery BLOCKED |
+| Two nearly simultaneous starts | LIVE PASS: two separate owner issues #146/#147 serialized and completed |
+| Duplicates / checkpoint replay | CI PASS; cross-run production persistence BLOCKED |
+| History preservation | LIVE PASS: 26/26 exact D1–Sheet tuples; radar-state original five files unchanged |
+| No automatic applications/emails | LIVE output submissions=0; static reviewer has no application or mail writer |
+| Radar read-only Sheets writes | LIVE PASS: readonly OAuth and header-only result tabs after both runs. **Separate old ingestion** workflow attempted a Google Register sync, got HTTP 403 before initial batch update; no accepted write evidenced |
+| ChatGPT → issue → Action → result | LIVE PASS: matching owner issue events, same main SHA, successful review logs |
+| Adversarial invalid API/source + secret logs | CI PASS: malformed tenant, oversized payload, host mismatch, sanitized diagnostics |
+| Persistent technical checkpoint and readback | BLOCKED: separate owner/variable approval; review-observations.json absent |
+| Full official remote/NL/fit authenticity gates | BLOCKED/PARTIAL: technical candidates require vacancy-search semantic verification |
+| Full source reach | PARTIAL: six supported verified at transport; two quarantined, three unsupported provider adapters |
+| Cloudflare retirement | BLOCKED: prior rollback deliberately preserved |
 
-## Required acceptance matrix
-| # | Scenario | Current evidence | Disposition |
-|---|---|---|---|
-| 1 | Ordinary successful search | Deterministic official ATS fixture -> preliminary review only | MOCK PASS; LIVE NOT TESTED |
-| 2 | No new roles | Empty official feed returns empty review_ready | MOCK PASS |
-| 3 | Limit maximum 10 | 23 inputs -> at most 10 preliminary candidates | MOCK PASS |
-| 4 | Invalid/inactive source/employer | Registry status checks reject before polling | MOCK PASS |
-| 5 | Already-known vacancy | Live register identity logic suppresses known URL/ID | MOCK PASS |
-| 6 | Previously submitted application | Applied status and exact URL suppress role | MOCK PASS |
-| 7 | Missing vacancy ID, official URL available | Strong official URL suppresses submitted application | MOCK PASS |
-| 8 | Google API failure | Mock Sheets HTTP 503 blocks ATS and all writes | MOCK PASS |
-| 9 | Transient ATS failure | One bounded 5xx retry; 429 and long Retry-After fail closed | MOCK PASS |
-| 10 | Expired or missing authentication | Missing secret and fake OAuth failure/rotation tested | PARTIAL; REAL TOKEN EXPIRE UNTESTED |
-| 11 | Interrupted Actions run | Staged Git receipt and stale-branch CAS tested in temporary Git | CI INTEGRATION PASS; LIVE CANCELLATION UNTESTED |
-| 12 | Restart after interruption | Same run ID detects completed receipt, skips OAuth and ATS; no-op Git replay | CI INTEGRATION PASS; LIVE UNTESTED |
-| 13 | Two concurrent commands | Two read-only calls, branch-CAS conflict and queue:max contract | SIMULATED PASS; LIVE CONCURRENCY UNTESTED |
-| 14 | Prevent duplicate results | Strong identity/URL and durable receipt de-duplication tests | MOCK/CI PASS |
-| 15 | Preserve historical data | 26/26 D1->Sheet tuple readback, original Git state files unchanged | LIVE READBACK PASS |
-| 16 | Never submit applications | Review-only output: submissions=0, no submission path or email action | STATIC/MOCK PASS; NO LIVE SUBMISSION TEST |
-| 17 | No unwanted Google Sheets updates | OAuth spreadsheets.readonly; result sheet header-only after repo changes | STATIC + LIVE READBACK; END-TO-END STILL OPEN |
-| 18 | Complete new ChatGPT-triggered execution | Owner issue transport designed, but default-branch merge and live credentials not proven | BLOCKED |
+## Proof anchors
+- https://github.com/Yolol100/vacature-engine/pull/143
+- https://github.com/Yolol100/vacature-engine/pull/145
+- https://github.com/Yolol100/vacature-engine/actions/runs/39047475406
+- https://github.com/Yolol100/vacature-engine/actions/runs/39047802494
+- https://github.com/Yolol100/vacature-engine/actions/runs/39047804812
+- https://github.com/Yolol100/vacature-engine/actions/runs/39047791175 (unrelated legacy ingestion push trigger; first Google write denied)
+- Google Vacature Register and Radar result spreadsheet; live Cloudflare Worker settings and D1 readback; radar-state contents.
 
-## Architecture and security results
-- Reuses the original Cloudflare official ATS and dedupe logic without a second scanner.
-- One consolidated .github/workflows/vacature-radar.yml. An older duplicate review Actions workflow is removed from the PR. The old first-seen *live writer job* was removed from the new unified workflow; its persisted data is retained.
-- GitHub push/PR only runs tests; no schedule.
-- Read-only review requires repository owner command or explicit workflow dispatch; no Sheets writes or application side effects.
-- Technical receipts would be appended as a new file on the pre-existing radar-state branch only after owner manual persist_review=true AND repository variable RADAR_PERSIST_APPROVED=yes. This condition has NOT been enabled or verified.
-- Git write job has a separate contents:write permission; the default review job is contents:read. Commit is non-force, exact base SHA checked before write, and remote readback is byte-matched.
-- Replay after a successful but interrupted branch write is recognized by GitHub run ID and skips further network polling.
-- Existing source code, D1, Worker, credentials and archival project data were not deleted.
-
-## Release blockers / exact resumption
-1. Inspect GitHub Actions secret metadata and verify the required GOOGLE_SERVICE_ACCOUNT_JSON is available to the permitted read-only job. Do not copy or expose key material.
-2. Obtain specific permission to merge PR #134 and run a single restricted read-only end-to-end workflow. A draft PR + green CI is not that permission.
-3. Once permitted, test owner-authored ChatGPT issue command, correlate run ID, GitHub actor, requested limit, network/API success, and validate actual result output. Verify D1 and Sheet unchanged immediately afterward.
-4. Separately request approval to set RADAR_PERSIST_APPROVED=yes and perform one commit to radar-state, with preflight and readback. Never infer approval from the existence of an input.
-5. Independently test real timeout/cancellation, repeat-run, concurrency and restore. Check no unintended workflow was fired on push, PR or issue.
-6. Complete vacancy-search authenticity, location/fully-remote Netherlands eligibility, working/application language and evidence-grounded fit/score review before calling any vacancy verified.
-7. Only after all gates, request distinct permission to retire the Cloudflare Cron/Worker, D1 and old secrets. Preserve the 26 source records and rollback until transferred/verified.
-
-Resume at draft PR #134, updated branch migration/github-actions-review-only-20261017. Preserve existing radar-state branch and all 26 D1 records. 
+## Claim control
+The current manual read-only preview is reliable for the six scoped sources; it does not create or verify production vacancy matches, does not persist new review observations, and cannot prove durable recovery from an interrupted write. The complete GitHub migration remains NO-GO until the separate approval and live proof gates are satisfied.
