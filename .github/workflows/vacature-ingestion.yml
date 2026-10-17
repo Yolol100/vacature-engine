@@ -3,7 +3,11 @@ name: Vacature Ingestion
 on:
   push:
     branches: [main]
-    paths: ['ingestion/**', '.github/workflows/vacature-ingestion.yml']
+    # Radar-only source manifest changes must not invoke the unrelated
+    # legacy ingestion writer against the business Vacature Register.
+    paths:
+      - 'ingestion/**'
+      - '!ingestion/source-specs.radar.json'
   pull_request:
     paths: ['ingestion/**', '.github/workflows/vacature-ingestion.yml']
   workflow_dispatch:

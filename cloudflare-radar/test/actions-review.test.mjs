@@ -400,3 +400,18 @@ test('expanded manual provider feed still yields no more than ten preliminary ob
   assert.equal(r.failures.length,0);
   assert.equal(r.application_submissions,0);
 });
+
+test('radar manifest-only pushes do not trigger legacy ingestion writer',()=>{
+  const workflow=readFileSync('../.github/workflows/vacature-ingestion.yml','utf8');
+  const push=workflow.split('  push:')[1]?.split('  pull_request:')[0]||'';
+  assert.ok(push.includes("'ingestion/**'"));
+  assert.ok(push.includes("'!ingestion/source-specs.radar.json'"));
+  assert.ok(push.indexOf("'ingestion/**'")<push.indexOf("'!ingestion/source-specs.radar.json'"));
+  assert.ok(!push.includes("'.github/workflows/vacature-ingestion.yml'"));
+  // Real ingestion source updates still run normally; manual dispatch stays.
+  assert.match(workflow,/  workflow_dispatch:/);
+  assert.match(workflow,/  live-ingestion:/);
+  const pr=workflow.split('  pull_request:')[1]?.split('  workflow_dispatch:')[0]||'';
+  assert.ok(pr.includes("'ingestion/**'"));
+  assert.ok(pr.includes("'.github/workflows/vacature-ingestion.yml'"));
+});
