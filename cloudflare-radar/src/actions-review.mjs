@@ -3,6 +3,7 @@ import {PILOT_SOURCES,buildRegisterIndex,matchRegister,preliminaryInterest,stron
 import {safeDiagnosticError} from './health.mjs';
 export const MAX_REVIEW=10;
 const REGISTER=[
+  ["'Config'!A1:B"],
   ["'Bronnen'!A1:A","'Bronnen'!M1:M"],
   ["'Vacatures'!A1:B","'Vacatures'!G1:H"],
   ["'Applications'!A1:A","'Applications'!C1:C","'Applications'!E1:E"],
@@ -50,28 +51,37 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     ...REGISTER.map(r=>readRanges(env.VACATURE_REGISTER_ID,r,token)),
     ...RADAR.map(r=>readRanges(env.RADAR_RESULT_ID,r,token))
   ]);
-  header(chunks[0],['source_id','status']);
-  header(chunks[1],['vacancy_id','canonical_url']);
-  if(chunks[1][0][0][1]!=='status'||chunks[1][1][0][1]!=='official_url')
+  header(chunks[0],['key']);
+  if(chunks[0][0]?.[0]?.[1]!=='value')
     throw new Error('Spreadsheet header mismatch: stop before dedupe or writes');
-  header(chunks[2],['vacancy_id','status','application_url']);
-  header(chunks[3],['event_id','event_type','status_after']);
-  if(chunks[3][0]?.[0]?.[1]!=='vacancy_id')
+  const config=new Map(chunks[0][0].slice(1).map(x=>[x[0],x[1]]));
+  if(String(config.get('radar_enabled')).toUpperCase()!=='FALSE'||
+     config.get('radar_delivery')!=='none')
+    throw new Error('Radar is not in a read-only transition state');
+  header(chunks[1],['source_id','status']);
+  header(chunks[2],['vacancy_id','canonical_url']);
+  if(chunks[2][0][0][1]!=='status'||chunks[2][1][0][1]!=='official_url')
     throw new Error('Spreadsheet header mismatch: stop before dedupe or writes');
-  header(chunks[4],['observation_key','officiele_url']);
-  header(chunks[5],['identity','official_url','status']);
-  const sourceRows=expand(chunks[0],[[0,1],[12,1]]);
-  const vacancyRows=expand(chunks[1],[[0,2],[6,2]]);
-  const applicationRows=expand(chunks[2],[[0,1],[2,1],[4,1]]);
-  const eventRows=expand(chunks[3],[[0,2],[3,1],[5,1]]);
+  header(chunks[3],['vacancy_id','status','application_url']);
+  header(chunks[4],['event_id','event_type','status_after']);
+  if(chunks[4][0]?.[0]?.[1]!=='vacancy_id')
+    throw new Error('Spreadsheet header mismatch: stop before dedupe or writes');
+  header(chunks[5],['observation_key','officiele_url']);
+  header(chunks[6],['identity','official_url','status']);
+  const sourceRows=expand(chunks[1],[[0,1],[12,1]]);
+  const vacancyRows=expand(chunks[2],[[0,2],[6,2]]);
+  const applicationRows=expand(chunks[3],[[0,1],[2,1],[4,1]]);
+  const eventRows=expand(chunks[4],[[0,2],[3,1],[5,1]]);
   const active=new Map(sourceRows.slice(1).map(x=>[x[0],x[12]]));
   const enabled=PILOT_SOURCES.filter(x=>active.get(x.source_id)==='active'&&
     active.get(x.employer_source_id)==='active');
   if(enabled.length===0)throw new Error('No active registered source pair');
   const register=buildRegisterIndex(vacancyRows,applicationRows,eventRows);
-  const previous=uniqueIdentity(expand(chunks[4],[[0,1],[5,1]]),0,5);
-  const baseline=uniqueIdentity(expand(chunks[5],[[0,1],[2,1],[3,1]]),0,2);
-  if(baseline.ids.size===0)throw new Error('Radar State baseline unavailable');
+  const previous=uniqueIdentity(expand(chunks[5],[[0,1],[5,1]]),0,5);
+  const baseline=uniqueIdentity(expand(chunks[6],[[0,1],[2,1],[3,1]]),0,2);
+  const baselineMinimum=Number(env.RADAR_BASELINE_MIN_RECORDS||26);
+  if(!Number.isSafeInteger(baselineMinimum)||baselineMinimum<1||baseline.ids.size<baselineMinimum)
+    throw new Error('Radar State baseline unavailable');
   const seenIds=new Set([...previous.ids,...baseline.ids]);
   const seenRoles=new Set([...previous.roles,...baseline.roles]);
   const candidates=[],failures=[];
@@ -88,7 +98,9 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     }
     counts.observed+=jobs.length;
     for(const job of jobs) {
-      if(!isValidJob(job)) {
+      if(job.identity!==[source.source_id,source.account,job.source_job_id].join(':')||
+         job.source_id!==source.source_id||job.source_account!==source.account||
+         !isValidJob(job)) {
         failures.push({source:source.source_id+':'+source.account,reason:'Unexpected ATS job host: source contract changed'});
         continue;
       }
@@ -104,7 +116,8 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
         seenIds.add(job.identity);
         if(candidates.length<maxCandidates)candidates.push({
           observation_key:job.identity,source_id:job.source_id,employer:source.employer,
-          title:job.title,official_url:job.url,location:job.location,remote_text:job.remote,
+          title:String(job.title).slice(0,240),official_url:job.url,
+          location:String(job.location||'').slice(0,160),remote_text:String(job.remote||'').slice(0,160),
           verification:'official_ats_observed; manual authenticity, remote/NL eligibility and fit review required'
         });
       }
