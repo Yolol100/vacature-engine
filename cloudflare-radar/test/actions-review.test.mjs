@@ -4,11 +4,12 @@ import {readFileSync} from 'node:fs';
 import {reviewOnce,MAX_REVIEW} from '../src/actions-review.mjs';
 
 const reg='REGISTER',radar='RADAR';
-const env={GOOGLE_SERVICE_ACCOUNT_JSON:'test-only-sentinel',VACATURE_REGISTER_ID:reg,RADAR_RESULT_ID:radar};
+const env={GOOGLE_SERVICE_ACCOUNT_JSON:'test-only-sentinel',VACATURE_REGISTER_ID:reg,RADAR_RESULT_ID:radar,RADAR_BASELINE_MIN_RECORDS:'1'};
 const sourceKeys=['greenhouse','company-automattic','lever','company-kinsta','ashby','company-zapier'];
 
 function cells() {
   return {
+    "'Config'!A1:B":[['key','value'],['radar_enabled','FALSE'],['radar_delivery','none']],
     "'Bronnen'!A1:A":[['source_id'],...sourceKeys.map(x=>[x])],
     "'Bronnen'!M1:M":[['status'],...sourceKeys.map(()=>['active'])],
     "'Vacatures'!A1:B":[['vacancy_id','status']],
@@ -65,7 +66,7 @@ test('one official ATS observation reaches only manual review; no writes',async(
   assert.equal(r.baseline_records_read,1);
   assert.equal(r.google_sheet_rows_written,0);
   assert.equal(r.application_submissions,0);
-  assert.equal(h.calls.read,6);
+  assert.equal(h.calls.read,7);
 });
 test('zero fresh positions returns an empty, successful manual queue',async()=>{
   const r=await harness({jobs:[]}).run();
@@ -185,4 +186,39 @@ test('workflow has no scheduled runner or privileged writes',()=>{
   assert.ok(!/^\s+schedule:/m.test(yml));
   assert.ok(!/^\s+contents: write/m.test(yml));
   assert.ok(!/^\s+pull-requests: write/m.test(yml));
+});
+
+test('live Config blocks candidate processing when old delivery or new radar is enabled',async()=>{
+  const h=harness();
+  h.data["'Config'!A1:B"][1][1]='TRUE';
+  await assert.rejects(()=>h.run(),/read-only transition state/);
+  assert.equal(h.calls.poll,0);
+  h.data["'Config'!A1:B"][1][1]='FALSE';
+  h.data["'Config'!A1:B"][2][1]='email';
+  await assert.rejects(()=>h.run(),/read-only transition state/);
+  assert.equal(h.calls.poll,0);
+});
+test('missing historical baseline fails closed, no ATS fetch',async()=>{
+  const h=harness();
+  h.data["'Radar State'!A1:A"]=[['identity']];
+  h.data["'Radar State'!C1:C"]=[['official_url']];
+  h.data["'Radar State'!D1:D"]=[['status']];
+  await assert.rejects(()=>h.run(),/Radar State baseline unavailable/);
+  assert.equal(h.calls.poll,0);
+});
+test('inconsistent public ATS source identity is rejected',async()=>{
+  const j={...job(1),identity:'greenhouse:automatticcareers:other-id'};
+  const r=await harness({jobs:[j]}).run();
+  assert.equal(r.status,'partial');
+  assert.equal(r.candidates.length,0);
+});
+test('candidate log fields are strictly bounded',async()=>{
+  const j={...job(1),title:'WordPress Developer '+'X'.repeat(5000)};
+  const r=await harness({jobs:[j]}).run();
+  assert.equal(r.candidates.length,1);
+  assert.ok(r.candidates[0].title.length<=240);
+});
+test('a live baseline minimum larger than available observations blocks read-only review',async()=>{
+  const h=harness();
+  await assert.rejects(()=>h.run(5,{...env,RADAR_BASELINE_MIN_RECORDS:'26'}),/Radar State baseline unavailable/);
 });
