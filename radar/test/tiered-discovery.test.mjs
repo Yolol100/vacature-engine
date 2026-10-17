@@ -78,15 +78,15 @@ test('read-only discovery returns unverified leads only and stops after manual q
 
 test('cross-feed URL duplicates, register submissions and foreign-only locations never fill review queue',async()=>{
   const {enabled}=orderTieredSources(feeds,metadata,config);
-  const applied='https://remoteok.com/remote-jobs/submitted-wordpress';
-  const existing='https://remoteok.com/remote-jobs/old-wordpress';
+  const applied='https://example.com/jobs/submitted-wordpress';
+  const existing='https://example.com/jobs/old-wordpress';
   const index={known:new Set(strongRoleKeys(existing)),applied:new Set(strongRoleKeys(applied))};
   const result=await collectTieredDiscovery({...readerParams,sources:enabled.slice(0,2),
     register:index,maxCandidates:5,fetchJobs:async source=>[
       job(source,'1'.repeat(24),applied),
       job(source,'2'.repeat(24),existing),
       {...job(source,'3'.repeat(24)),location:'Remote - United States'},
-      job(source,'4'.repeat(24),'https://remoteok.com/remote-jobs/new-wordpress')
+      job(source,'4'.repeat(24),'https://example.com/jobs/new-wordpress')
     ]});
   assert.equal(result.status,'review_ready');
   assert.equal(result.counts.previously_applied,2);
