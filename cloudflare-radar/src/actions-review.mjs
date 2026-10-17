@@ -3,6 +3,20 @@ import {PILOT_SOURCES,buildRegisterIndex,matchRegister,preliminaryInterest,stron
 import {safeDiagnosticError} from './health.mjs';
 import {parseReviewState} from './review-state.mjs';
 export const MAX_REVIEW=10;
+// One bounded 5xx retry for a public ATS source. Never retry a 429 immediately,
+// authentication failures, invalid payloads, policy changes or unknown errors.
+export async function pollWithRetry(source,publicJobs,wait=ms=>new Promise(resolve=>setTimeout(resolve,ms))){
+  try{return await publicJobs(source);}
+  catch(error){
+    const status=Number(error?.status)||
+      Number(/^Public API HTTP (5\d\d)$/.exec(String(error?.message||''))?.[1]);
+    if(!Number.isSafeInteger(status)||status<500||status>599||
+       (Number.isFinite(error?.retryAfterSeconds)&&error.retryAfterSeconds>3))
+      throw error;
+    await wait(300);
+    return publicJobs(source);
+  }
+}
 const REGISTER=[
   ["'Config'!A1:B"],
   ["'Bronnen'!A1:A","'Bronnen'!M1:M"],
@@ -101,7 +115,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
   for(const source of enabled) {
     let jobs;
     try {
-      jobs=await publicJobs(source);
+      jobs=await pollWithRetry(source,publicJobs);
       if(!Array.isArray(jobs)||jobs.length>160)throw new Error('Unexpected public jobs payload');
     }catch(error) {
       failures.push({source:source.source_id+':'+source.account,reason:safeDiagnosticError(error)});
