@@ -1,6 +1,6 @@
 # Independent Vacature Radar acceptance — current evidence
 Date: 2026-10-17. Scope: GitHub Actions manual technical review, NOT full vacancy matching or production persistence.
-Main: 32c8a5229cd248c28d9283b4bf8f48131105e397. Status: READ-ONLY REVIEW GO; FULL MIGRATION NO-GO.
+Live acceptance main: dafd8f191bdb551c23bdfa991771d8124dbdce0c. Status: READ-ONLY REVIEW GO; FULL MIGRATION NO-GO.
 
 ## Evidence legend
 LIVE = actual GitHub/Google/Cloudflare readback; CI = isolated integration/regression test; BLOCKED = not executed under a separate required approval; PARTIAL = supported subset only.
@@ -26,12 +26,14 @@ LIVE = actual GitHub/Google/Cloudflare readback; CI = isolated integration/regre
 | Adversarial invalid API/source + secret logs | CI PASS: malformed tenant, oversized payload, host mismatch, sanitized diagnostics |
 | Persistent technical checkpoint and readback | BLOCKED: separate owner/variable approval; review-observations.json absent |
 | Full official remote/NL/fit authenticity gates | BLOCKED/PARTIAL: technical candidates require vacancy-search semantic verification |
-| Full source reach | PARTIAL: six supported verified at transport; two quarantined, three unsupported provider adapters |
+| Full source reach | PARTIAL: nine supported and live-reviewed; two Greenhouse tenants quarantined, no remaining unsupported adapters in the 11-entry manifest |
 | Cloudflare retirement | BLOCKED: prior rollback deliberately preserved |
 
 ## Proof anchors
 - https://github.com/Yolol100/vacature-engine/pull/143
 - https://github.com/Yolol100/vacature-engine/pull/145
+- https://github.com/Yolol100/vacature-engine/pull/150
+- https://github.com/Yolol100/vacature-engine/actions/runs/39050720551 (owner issue #151, nine live source pairs, 295 observations, no failures)
 - https://github.com/Yolol100/vacature-engine/actions/runs/39047475406
 - https://github.com/Yolol100/vacature-engine/actions/runs/39047802494
 - https://github.com/Yolol100/vacature-engine/actions/runs/39047804812
@@ -39,4 +41,4 @@ LIVE = actual GitHub/Google/Cloudflare readback; CI = isolated integration/regre
 - Google Vacature Register and Radar result spreadsheet; live Cloudflare Worker settings and D1 readback; radar-state contents.
 
 ## Claim control
-The current manual read-only preview is reliable for the six scoped sources; it does not create or verify production vacancy matches, does not persist new review observations, and cannot prove durable recovery from an interrupted write. The complete GitHub migration remains NO-GO until the separate approval and live proof gates are satisfied.
+The current manual read-only preview is working for nine scoped sources; it does not create or verify production vacancy matches, does not persist new review observations, and cannot prove durable recovery from an interrupted write. The complete GitHub migration remains NO-GO until the separate approval and live proof gates are satisfied.

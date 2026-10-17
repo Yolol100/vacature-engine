@@ -8,6 +8,8 @@ on:
     paths:
       - 'ingestion/**'
       - '!ingestion/source-specs.radar.json'
+      - '!ingestion/src/vacature_ingestion/actions_readonly_bridge.py'
+      - '!ingestion/tests/test_actions_readonly_bridge.py'
   pull_request:
     paths: ['ingestion/**', '.github/workflows/vacature-ingestion.yml']
   workflow_dispatch:
