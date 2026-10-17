@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {reviewOnce,MAX_REVIEW} from '../src/actions-review.mjs';
+import {reviewOnce,pollWithRetry,MAX_REVIEW} from '../src/actions-review.mjs';
 
 const reg='REGISTER',radar='RADAR';
 const env={GOOGLE_SERVICE_ACCOUNT_JSON:'test-only-sentinel',VACATURE_REGISTER_ID:reg,RADAR_RESULT_ID:radar,RADAR_BASELINE_MIN_RECORDS:'1'};
@@ -274,4 +274,45 @@ test('live state branch policy drift fails closed before official ATS requests',
   h.data["'Config'!A1:B"][3][1]='other-state';
   await assert.rejects(()=>h.run(),/read-only transition state/);
   assert.equal(h.calls.poll,0);
+});
+
+test('one transient public ATS 5xx is retried once then succeeds',async()=>{
+  let calls=0,delays=[];
+  const fn=async()=>{
+    calls++;
+    if(calls===1)throw Object.assign(new Error('Public API HTTP 503'),{status:503});
+    return [job('retried')];
+  };
+  const rows=await pollWithRetry({source_id:'greenhouse'},fn,ms=>{delays.push(ms);});
+  assert.equal(calls,2);
+  assert.equal(rows.length,1);
+  assert.deepEqual(delays,[300]);
+});
+test('persistent 5xx is not retried without bound',async()=>{
+  let calls=0;
+  await assert.rejects(()=>pollWithRetry({},async()=>{
+    calls++;throw Object.assign(new Error('Public API HTTP 502'),{status:502});
+  },async()=>{}),/Public API HTTP 502/);
+  assert.equal(calls,2);
+});
+test('HTTP 429 is never immediately retried against provider rate limits',async()=>{
+  let calls=0;
+  await assert.rejects(()=>pollWithRetry({},async()=>{
+    calls++;throw Object.assign(new Error('Public API HTTP 429'),{status:429,retryAfterSeconds:60});
+  },async()=>{}),/Public API HTTP 429/);
+  assert.equal(calls,1);
+});
+test('long Retry-After on 5xx is honored by deferring entire source',async()=>{
+  let calls=0;
+  await assert.rejects(()=>pollWithRetry({},async()=>{
+    calls++;throw Object.assign(new Error('Public API HTTP 503'),{status:503,retryAfterSeconds:45});
+  },async()=>{}),/Public API HTTP 503/);
+  assert.equal(calls,1);
+});
+test('invalid ATS payload is not retried under the transient HTTP policy',async()=>{
+  let calls=0;
+  await assert.rejects(()=>pollWithRetry({},async()=>{
+    calls++;throw new Error('Unexpected public jobs payload');
+  },async()=>{}),/Unexpected public jobs payload/);
+  assert.equal(calls,1);
 });
