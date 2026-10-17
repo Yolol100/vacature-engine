@@ -516,12 +516,12 @@ test('tiered mode reuses the authoritative Sheets preflight and keeps official q
   const data=cells(),ids=data["'Bronnen'!A1:A"].slice(1).map(x=>x[0]);
   data["'Config'!A1:B"].push(
     ['direct_discovery_order','employer_direct,ats,discovery_api,job_board'],
-    ['high_source_order','himalayas,we-work-remotely,remote-ok']
+    ['high_source_order','linkedin-jobs,indeed-nl,himalayas,we-work-remotely,remote-ok']
   );
-  data["'Bronnen'!A1:A"].push(['himalayas']);
-  data["'Bronnen'!M1:M"].push(['active']);
-  data["'Bronnen'!C1:C"]=[['source_type'],...ids.map(x=>[x.startsWith('company-')?'employer_direct':'ats']),['job_board']];
-  data["'Bronnen'!E1:E"]=[['priority'],...ids.map(()=>['medium']),['high']];
+  data["'Bronnen'!A1:A"].push(['linkedin-jobs'],['himalayas']);
+  data["'Bronnen'!M1:M"].push(['active'],['active']);
+  data["'Bronnen'!C1:C"]=[['source_type'],...ids.map(x=>[x.startsWith('company-')?'employer_direct':'ats']),['job_board'],['job_board']];
+  data["'Bronnen'!E1:E"]=[['priority'],...ids.map(()=>['medium']),['high'],['high']];
   const source={source_id:'himalayas',account:'global',source_type:'discovery_api'};
   const key='a'.repeat(24);
   const readRanges=async(_id,ranges)=>ranges.map(range=>{
@@ -545,6 +545,7 @@ test('tiered mode reuses the authoritative Sheets preflight and keeps official q
   assert.equal(result.discovery.candidates[0].verification.startsWith('discovery_only;'),true);
   assert.equal(result.discovery.checked_sources[0],'himalayas');
   assert.equal(discoveryCalls,1);
+  assert.deepEqual(result.discovery.manual_fallback_sources,['linkedin-jobs']);
   assert.equal(result.google_sheet_rows_written,0);
   assert.equal(result.application_submissions,0);
 });
