@@ -272,3 +272,12 @@ CPU profiling confirmed Google `source_gate` at **11.700ms** on Cloudflare Free 
 ### Short slim Worker Free CPU canary (17 October 2026)
 
 After the review-only bundle reduction from 57.05 KiB to 42.28 KiB, a private, short-lived four-minute test in PR #129 independently measured **4.081 ms (bootstrap), 7.883 ms (source gate), 6.816 ms (ID boundary) and 7.533 ms (first 16-row history page)** using Cloudflare GraphQL. All four were below the 10ms Free Cron limit, with zero errors. The test was intentionally incomplete: later history pages and the seven downstream review-only stages were not reached and older versions exceeded 10ms. The temporary D1 permit was revoked; all test-owned v2 metadata removed; 26 original D1 baselines preserved; safe non-canary version restored; PR #130 removes temporary code/config. Full evidence, primary sources, independent developer case study and Free-vs-Paid decision: [CPU-FREE-SLIM-WORKER-2026-10-17.md](docs/CPU-FREE-SLIM-WORKER-2026-10-17.md). **No production CPU GO, no applications and no business Sheet writes.**
+
+
+### Slim Worker Free CPU sample — 17 October 2026
+
+The live entrypoint is now the *same* existing `vacature-radar` Worker using `src/review-worker.mjs` (PR #121), 42.28 KiB raw / 11.10 KiB gzip vs the previous 57.05 KiB / 14.54 KiB. A six-minute, privately D1-authorized **read-only** canary in PR #131 ran with real production switches still `RADAR_ENABLED=0` / `RADAR_PIPELINE_MODE=off`. Independent Cloudflare GraphQL measured five invocations at **6.649, 8.365, 7.096, 9.258 and 7.553 ms** (bootstrap, live source, vacancy-ID bounds, 16-row history pages 1 and 2); all had zero errors. A sixth page was 7ms in raw logs but lacked an independently confirmed GraphQL sample in the initial query. No later pipeline stages were reached.
+
+The private D1 marker was revoked, the pre-canary non-active version `74d7735f-b0d3-4695-b0d2-d54e58aace78` restored, the five test-owned v2 keys purged, and all **26 baseline** records preserved. Cleanup PR #133 removes temporary canary source/config while preserving the slimmer Worker. See `docs/RADAR-CPU-AUDIT-2026-10-16.md` for the exact timestamped measurements and independent checks.
+
+**Still NO-GO for production:** the complete review-only pipeline has not been live CPU-tested from beginning to end, the 9.258ms page has insufficient engineering headroom, and the publishing/application path was never enabled nor CPU-audited. Do not activate either real production switch; no extra Cron or paid resources.
