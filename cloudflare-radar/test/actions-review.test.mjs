@@ -9,7 +9,7 @@ const sourceKeys=['greenhouse','company-automattic','lever','company-kinsta','as
 
 function cells() {
   return {
-    "'Config'!A1:B":[['key','value'],['radar_enabled','FALSE'],['radar_delivery','none']],
+    "'Config'!A1:B":[['key','value'],['radar_enabled','FALSE'],['radar_delivery','none'],['radar_state_branch','radar-state']],
     "'Bronnen'!A1:A":[['source_id'],...sourceKeys.map(x=>[x])],
     "'Bronnen'!M1:M":[['status'],...sourceKeys.map(()=>['active'])],
     "'Vacatures'!A1:B":[['vacancy_id','status']],
@@ -266,5 +266,12 @@ test('duplicated live source ID stops review even if one status is active',async
   h.data["'Bronnen'!A1:A"].push(['greenhouse']);
   h.data["'Bronnen'!M1:M"].push(['active']);
   await assert.rejects(()=>h.run(),/Duplicate source ID/);
+  assert.equal(h.calls.poll,0);
+});
+
+test('live state branch policy drift fails closed before official ATS requests',async()=>{
+  const h=harness();
+  h.data["'Config'!A1:B"][3][1]='other-state';
+  await assert.rejects(()=>h.run(),/read-only transition state/);
   assert.equal(h.calls.poll,0);
 });
