@@ -5,6 +5,24 @@ import {join} from 'node:path';
 
 const root=new URL('../../',import.meta.url);
 const text=path=>readFileSync(new URL(path,root),'utf8');
+// Boundaries apply to each token separately: punctuation like '(' after
+// .prepare is not a word boundary, so one outer \\b misses D1 calls.
+const FORBIDDEN_RUNTIME=/(?:\bRADAR_DB\b|\bwrangler\b|\bcloudflare:|\.prepare\s*\(|\.scheduled\b)/i;
+
+test('Worker/D1 mutation fixtures are rejected by runtime sentinel',()=>{
+  for(const bad of [
+    'env.RADAR_DB',
+    'import "cloudflare:workers"',
+    'db.prepare("SELECT 1")',
+    'db.prepare ("SELECT 1")',
+    'worker.scheduled()',
+    'import wrangler from "wrangler"'
+  ]) assert.match(bad,FORBIDDEN_RUNTIME);
+  for(const allowed of [
+    'export async function readRanges() {}',
+    'return fetch("https://jobs.example.com")'
+  ]) assert.doesNotMatch(allowed,FORBIDDEN_RUNTIME);
+});
 
 test('GitHub Radar has no active Worker, D1, Wrangler or Cloudflare runtime',()=>{
   assert.equal(existsSync(new URL('cloudflare-radar/',root)),false);
@@ -12,7 +30,7 @@ test('GitHub Radar has no active Worker, D1, Wrangler or Cloudflare runtime',()=
   assert.equal(modules.length>=8,true);
   for(const module of modules){
     const source=text('radar/src/'+module);
-    assert.doesNotMatch(source,/\b(?:RADAR_DB|wrangler|cloudflare:|\.prepare\(|\.scheduled\b)\b/i,module);
+    assert.doesNotMatch(source,FORBIDDEN_RUNTIME,module);
   }
   assert.doesNotMatch(text('radar/package.json'),/wrangler|cloudflare/i);
 });
