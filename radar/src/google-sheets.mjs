@@ -1,5 +1,4 @@
 // Shared read-only Google Sheets transport. Never persist keys or tokens.
-const GOOGLE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
 const READ_SCOPE='https://www.googleapis.com/auth/spreadsheets.readonly';
 const TOKEN_URL='https://oauth2.googleapis.com/token';
 const TIMEOUT_MS=10000;
@@ -18,11 +17,11 @@ function privateKeyBytes(pem){
   const stripped=pem.replace(/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s/g,'');
   return Uint8Array.from(atob(stripped),c=>c.charCodeAt(0));
 }
-async function accessToken(env,scope=GOOGLE_SCOPE){
-  if(scope!==GOOGLE_SCOPE&&scope!==READ_SCOPE)throw new Error('Invalid Google OAuth scope');
+async function accessToken(env){
+  const scope=READ_SCOPE;
   const secret=env.GOOGLE_SERVICE_ACCOUNT_JSON||'{}';
   if(tokenCache?.secret===secret&&tokenCache.scope===scope&&tokenCache.expires>Date.now())return tokenCache.token;
-  // Multiple scheduled invocations in one isolate should never repeat the
+  // Parallel technical review calls should never repeat the
   // same RSA import, signature and OAuth request concurrently.
   if(pendingToken?.secret===secret&&pendingToken.scope===scope)return pendingToken.promise;
   const task=(async()=>{
@@ -32,7 +31,7 @@ async function accessToken(env,scope=GOOGLE_SCOPE){
       if(!svc.private_key||!svc.client_email)
         throw new Error('Missing Google Sheets service account secret');
       // CryptoKey is non-extractable and lives in isolate memory only: no
-      // OAuth token, key or raw credential is written to D1, KV or logs.
+      // OAuth token, key or raw credential is written to disk or logs.
       entry={secret,email:svc.client_email,keyPromise:crypto.subtle.importKey(
         'pkcs8',privateKeyBytes(svc.private_key),
         {name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['sign']
@@ -95,5 +94,5 @@ async function readRanges(id,ranges,token){
   if(!Array.isArray(body.valueRanges)||body.valueRanges.length!==ranges.length)throw new Error('Sheets response incomplete');
   return body.valueRanges.map(item=>item.values||[]);
 }
-const readOnlyAccessToken=env=>accessToken(env,READ_SCOPE);
-export {accessToken,readOnlyAccessToken,readRanges};
+export {readRanges};
+export const readOnlyAccessToken=env=>accessToken(env);
