@@ -58,7 +58,8 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     throw new Error('Spreadsheet header mismatch: stop before dedupe or writes');
   const config=new Map(chunks[0][0].slice(1).map(x=>[x[0],x[1]]));
   if(String(config.get('radar_enabled')).toUpperCase()!=='FALSE'||
-     config.get('radar_delivery')!=='none')
+     config.get('radar_delivery')!=='none'||
+     config.get('radar_state_branch')!=='radar-state')
     throw new Error('Radar is not in a read-only transition state');
   header(chunks[1],['source_id','status']);
   header(chunks[2],['vacancy_id','canonical_url']);
