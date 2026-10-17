@@ -1,4 +1,4 @@
-name: Vacature Radar (manual review and legacy first-seen)
+name: Vacature Radar (manual technical review)
 
 on:
   push:
@@ -14,40 +14,32 @@ on:
       - '.github/workflows/vacature-radar.yml'
   workflow_dispatch:
     inputs:
-      radar_mode:
-        description: 'Run review-only discovery, or explicitly use the previous first-seen pipeline'
-        type: choice
-        required: true
-        default: review_only
-        options:
-          - review_only
-          - legacy_first_seen
       max_candidates:
-        description: 'Maximum preliminary manual-review candidates'
+        description: 'Maximum official ATS candidates for manual specialist review'
         type: choice
         required: true
         default: '5'
-        options:
-          - '5'
-          - '10'
+        options: ['5', '10']
+      persist_review:
+        description: 'Explicit durable technical checkpoint (requires separate repository approval gate)'
+        type: boolean
+        required: true
+        default: false
   issues:
     types: [opened]
 
 permissions:
   contents: read
 
-# Only PR/push tests are automatic. Manual runs are serialized without replacing
-# earlier queued issues. Neither a push nor an issue may run the legacy writer.
+# PR/push execute only tests. Manual commands serialize, never silently replace
+# a queued run. No schedule, no legacy ingestion writer or application delivery.
 concurrency:
   group: vacature-radar-${{ (github.event_name == 'push' || github.event_name == 'pull_request') && 'ci' || 'manual' }}
   queue: max
 
 jobs:
   radar-tests:
-    if: >-
-      github.event_name == 'push' || github.event_name == 'pull_request' ||
-      (github.event_name == 'workflow_dispatch' &&
-       inputs.radar_mode == 'legacy_first_seen' && github.actor == 'Yolol100')
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -61,157 +53,11 @@ jobs:
       - run: python -m unittest discover -s ingestion/tests -p 'test_source_specs.py' -v
       - run: python -m compileall -q ingestion/src
 
-  live-radar:
-    # Explicitly chosen legacy manual path; never run on code push or issue.
-    if: >-
-      github.event_name == 'workflow_dispatch' &&
-      inputs.radar_mode == 'legacy_first_seen' && github.actor == 'Yolol100'
-    needs: radar-tests
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: '3.13'
-      - run: python -m pip install -e ingestion
-
-      - name: Restore isolated radar state
-        id: restore
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p .runtime
-          printf '%s\n' '{"schema_version":1,"acked_keys":[],"migrations":[]}' > .runtime/radar-ack.json
-          printf '%s\n' '{"schema_version":1,"items":[],"pending_count":0}' > .runtime/previous-first-seen-queue.json
-          bootstrap=true
-          git fetch origin radar-state || true
-          if git show-ref --verify --quiet refs/remotes/origin/radar-state; then
-            bootstrap=false
-            if git cat-file -e origin/radar-state:state.sqlite3 2>/dev/null; then
-              git show origin/radar-state:state.sqlite3 > .runtime/state.sqlite3
-            fi
-            if git cat-file -e origin/radar-state:first-seen-queue.json 2>/dev/null; then
-              git show origin/radar-state:first-seen-queue.json > .runtime/previous-first-seen-queue.json
-            fi
-            if git cat-file -e origin/radar-state:radar-ack.json 2>/dev/null; then
-              git show origin/radar-state:radar-ack.json > .runtime/radar-ack.json
-            fi
-          fi
-          python -m vacature_ingestion.workflow_state normalize-ack --path .runtime/radar-ack.json
-          echo "bootstrap=$bootstrap" >> "$GITHUB_OUTPUT"
-
-      - name: Resolve active direct sources from Vacature Register
-        env:
-          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-        run: >-
-          python -m vacature_ingestion filter-specs
-          --specs ingestion/source-specs.radar.json
-          --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0
-          --out .runtime/active-radar-specs.json
-
-      - name: Poll direct employer and ATS sources
-        id: ingest
-        shell: bash
-        run: |
-          set +e
-          python -m vacature_ingestion ingest-many \
-            --specs .runtime/active-radar-specs.json \
-            --state .runtime/state.sqlite3 \
-            --out .runtime/latest.json \
-            --allow-partial > .runtime/ingest-console.json
-          code=$?
-          set -e
-          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
-          cat .runtime/ingest-console.json
-
-      - name: Build first-seen alert queue
-        shell: bash
-        run: |
-          set -euo pipefail
-          bootstrap_arg=()
-          if [[ "${{ steps.restore.outputs.bootstrap }}" == "true" ]]; then
-            bootstrap_arg=(--bootstrap)
-          fi
-          python -m vacature_ingestion.radar_queue \
-            --current .runtime/latest.json \
-            --previous .runtime/previous-first-seen-queue.json \
-            --ack .runtime/radar-ack.json \
-            --out .runtime/first-seen-queue.json \
-            --ttl-hours 72 \
-            "${bootstrap_arg[@]}"
-
-      - name: Export radar source health
-        run: python -m vacature_ingestion export-state --state .runtime/state.sqlite3 --health-out .runtime/source-health.json
-
-      - name: Persist isolated radar state without clobbering alert acknowledgements
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          merge_remote_ack() {
-            printf '%s\n' '{"schema_version":1,"acked_keys":[],"migrations":[]}' > .runtime/remote-radar-ack.json
-            if git show-ref --verify --quiet refs/remotes/origin/radar-state && \
-               git cat-file -e origin/radar-state:radar-ack.json 2>/dev/null; then
-              git show origin/radar-state:radar-ack.json > .runtime/remote-radar-ack.json
-            fi
-            python -m vacature_ingestion.workflow_state merge-ack \
-              --local .runtime/radar-ack.json \
-              --remote .runtime/remote-radar-ack.json
-          }
-
-          success=0
-          for attempt in 1 2; do
-            cd "$GITHUB_WORKSPACE"
-            git worktree remove --force /tmp/vacature-radar-state >/dev/null 2>&1 || true
-            rm -rf /tmp/vacature-radar-state
-            git fetch origin radar-state || true
-            merge_remote_ack
-
-            if git show-ref --verify --quiet refs/remotes/origin/radar-state; then
-              git worktree add --detach /tmp/vacature-radar-state origin/radar-state
-              cd /tmp/vacature-radar-state
-              git switch -c "radar-state-update-${GITHUB_RUN_ID}-${attempt}"
-            else
-              git worktree add --detach /tmp/vacature-radar-state HEAD
-              cd /tmp/vacature-radar-state
-              git switch --orphan "radar-state-update-${GITHUB_RUN_ID}-${attempt}"
-              git rm -rf . >/dev/null 2>&1 || true
-            fi
-
-            cp "$GITHUB_WORKSPACE/.runtime/state.sqlite3" state.sqlite3
-            cp "$GITHUB_WORKSPACE/.runtime/latest.json" latest.json
-            cp "$GITHUB_WORKSPACE/.runtime/first-seen-queue.json" first-seen-queue.json
-            cp "$GITHUB_WORKSPACE/.runtime/radar-ack.json" radar-ack.json
-            cp "$GITHUB_WORKSPACE/.runtime/source-health.json" source-health.json
-
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add state.sqlite3 latest.json first-seen-queue.json radar-ack.json source-health.json
-            if git diff --cached --quiet; then
-              success=1
-              break
-            fi
-            git commit -m "chore: persist first-seen vacancy radar snapshot"
-            if git push origin HEAD:radar-state; then
-              success=1
-              break
-            fi
-          done
-          test "$success" = "1"
-
-      - name: Enforce radar ingestion success threshold
-        if: always()
-        run: test "${{ steps.ingest.outputs.exit_code }}" = "0"
 
   review:
-    # No service-account exposure on pull requests or pushes.
     if: >-
       (github.event_name == 'workflow_dispatch' &&
-       inputs.radar_mode == 'review_only' && github.actor == 'Yolol100') ||
+       github.actor == 'Yolol100' && inputs.persist_review != true) ||
       (github.event_name == 'issues' &&
        github.actor == 'Yolol100' &&
        github.event.issue.user.login == 'Yolol100' &&
@@ -234,8 +80,55 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22'
-      - name: Syntax and dependency checks
-        working-directory: cloudflare-radar
-        run: npm run check
-      - name: Read-only official ATS review
+      - name: Restore existing technical history without any writes
+        run: bash cloudflare-radar/scripts/load-review-state.sh
+      - name: Review official ATS without Sheets or state writes
         run: node cloudflare-radar/src/actions-review-cli.mjs
+
+  checkpoint-review:
+    # Double approval: owner-initiated workflow_dispatch boolean AND explicit
+    # repository variable. A normal ChatGPT issue can NEVER enter this job.
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.actor == 'Yolol100' &&
+      inputs.persist_review == true &&
+      vars.RADAR_PERSIST_APPROVED == 'yes'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    env:
+      GITHUB_EVENT_NAME: ${{ github.event_name }}
+      RADAR_MAX_CANDIDATES: ${{ inputs.max_candidates }}
+      RADAR_PERSIST: '1'
+      RADAR_APPROVED_PERSIST: ${{ vars.RADAR_PERSIST_APPROVED }}
+      VACATURE_REGISTER_ID: '1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0'
+      RADAR_RESULT_ID: '1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ'
+      RADAR_BASELINE_MIN_RECORDS: '26'
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Restore and bind existing technical history to its base SHA
+        run: bash cloudflare-radar/scripts/load-review-state.sh
+      - name: Review and stage completed-only technical receipt
+        run: node cloudflare-radar/src/actions-review-cli.mjs
+      - name: Checkpoint on existing radar-state branch with compare-and-swap and readback
+        run: bash cloudflare-radar/scripts/persist-review-state.sh
+
+  checkpoint-denied:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      inputs.persist_review == true &&
+      (github.actor != 'Yolol100' || vars.RADAR_PERSIST_APPROVED != 'yes')
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    permissions:
+      contents: read
+    steps:
+      - name: Fail closed without repository owner plus explicit approval
+        run: |
+          echo "Technical persistence is not approved. No data changed."
+          exit 1
