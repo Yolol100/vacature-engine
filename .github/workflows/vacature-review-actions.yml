@@ -22,10 +22,10 @@ permissions:
   contents: read
 
 concurrency:
-  # Read-only commands can run independently; a single pending concurrency slot may
-  # otherwise silently replace an earlier issue command.
-  group: vacature-actions-review-${{ github.event.issue.number || github.run_id }}
-  cancel-in-progress: false
+  # GitHub queue:max serializes up to 100 pending runs without replacing
+  # an earlier pending request; do not enable cancel-in-progress.
+  group: vacature-actions-review
+  queue: max
 
 jobs:
   review-tests:
