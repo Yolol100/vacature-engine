@@ -74,7 +74,23 @@ async function readRanges(id,ranges,token){
   // Google supports partial responses: parse just the values, not range metadata.
   url.searchParams.set('fields','valueRanges(values)');
   const response=await fetch(url,{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(TIMEOUT_MS)});
-  if(!response.ok)throw new Error('Sheets read HTTP '+response.status);
+  if(!response.ok){
+    // Only classified API error codes may reach public GitHub logs. Never
+    // propagate Google's free-form message, sheet contents or OAuth details.
+    let reason='UNCLASSIFIED';
+    try{
+      const payload=await response.json();
+      const raw=String(payload?.error?.status||payload?.error?.errors?.[0]?.reason||'');
+      if(['PERMISSION_DENIED','UNAUTHENTICATED','RESOURCE_EXHAUSTED',
+          'NOT_FOUND','ACCESS_TOKEN_SCOPE_INSUFFICIENT','insufficientPermissions',
+          'rateLimitExceeded','accessNotConfigured','forbidden'].includes(raw))
+        reason=raw;
+    }catch{}
+    const error=new Error('Sheets read HTTP '+response.status);
+    error.sheetReason=reason;
+    error.httpStatus=response.status;
+    throw error;
+  }
   const body=await response.json();
   if(!Array.isArray(body.valueRanges)||body.valueRanges.length!==ranges.length)throw new Error('Sheets response incomplete');
   return body.valueRanges.map(item=>item.values||[]);
