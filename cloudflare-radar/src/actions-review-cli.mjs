@@ -1,6 +1,7 @@
 // One source of business truth (Vacature Register), one existing technical
 // radar-state branch. The default execution is strictly read-only.
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {reviewOnce} from './actions-review.mjs';
 import {parseReviewState,commitReviewReceipt} from './review-state.mjs';
 import {readOnlyAccessToken,readRanges} from './google-sheets.mjs';
@@ -60,6 +61,18 @@ try{
   }
   }
 }catch(error){
-  console.error('vacature_actions_review_failed:'+safeDiagnosticError(error));
+  const category=safeDiagnosticError(error);
+  console.error('vacature_actions_review_failed:'+category);
+  if(/^Sheets read HTTP 403 \[(register|radar):/.test(category)){
+    // A non-reversible account fingerprint lets the owner compare GitHub's
+    // credential against file permissions, without logging an email or key.
+    try{
+      const email=JSON.parse(env.GOOGLE_SERVICE_ACCOUNT_JSON||'{}').client_email;
+      if(typeof email==='string'&&email.endsWith('.gserviceaccount.com'))
+        console.error('radar_service_account_fingerprint_sha256_16:'+
+          createHash('sha256').update(email.trim().toLowerCase())
+            .digest('hex').slice(0,16));
+    }catch{/* credential material is never printed */}
+  }
   process.exitCode=1;
 }
