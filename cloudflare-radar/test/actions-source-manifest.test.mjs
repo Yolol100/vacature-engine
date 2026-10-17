@@ -11,14 +11,13 @@ const sample={source_id:'greenhouse',adapter:'greenhouse',source_type:'ats',
 
 test('manual Actions review reuses existing radar source specs, not a second source registry',()=>{
   const {sources,unsupported,unverified}=selectSupportedSources(manifest);
-  assert.equal(sources.length,9);
+  assert.equal(sources.length,11);
   assert.equal(unsupported.length,0);
-  assert.deepEqual(unverified,[
-    'greenhouse:digitalocean98','greenhouse:pantheon'
-  ]);
+  assert.deepEqual(unverified,[]);
   assert.deepEqual(sources.map(s=>s.source_id+':'+s.account),[
     'greenhouse:automatticcareers','lever:kinsta','lever:siteground',
-    'greenhouse:acquia','greenhouse:gitlab','ashby:zapier',
+    'greenhouse:acquia','greenhouse:gitlab',
+    'greenhouse:digitalocean98','greenhouse:pantheon','ashby:zapier',
     'personio:syde','workable:awesomemotive','workable:humanmade'
   ]);
   assert.ok(sources.every(s=>s.employer_source_id.startsWith('company-')));
@@ -76,10 +75,11 @@ test('manual feed max bytes remains bounded independently from job-count allowan
   }finally{globalThis.fetch=original;}
 });
 
-test('live incompatible hosts are excluded by the shared radar manifest without weakening URL validation',()=>{
+test('provider-confirmed custom Greenhouse tenants are present in bounded source scope',()=>{
   const {sources,unverified}=selectSupportedSources(manifest);
-  assert.equal(unverified.length,2);
-  assert.equal(sources.some(s=>s.account==='digitalocean98'||s.account==='pantheon'),false);
+  assert.equal(unverified.length,0);
+  assert.equal(sources.some(s=>s.account==='digitalocean98'),true);
+  assert.equal(sources.some(s=>s.account==='pantheon'),true);
 });
 
 test('new official employers must have a bounded registered live tenant',()=>{
@@ -90,4 +90,29 @@ test('new official employers must have a bounded registered live tenant',()=>{
       options:{registry_source_id:'../invalid'}
     }]),/Invalid supported radar source specification/);
   }
+});
+
+test('official Greenhouse employer-host jobs are accepted without broad domain exceptions',async()=>{
+  const cases=[
+    {source_id:'greenhouse',account:'digitalocean98',employer:'DigitalOcean',
+      id:8249366,url:'https://www.digitalocean.com/careers/position/apply/?gh_jid=8249366'},
+    {source_id:'greenhouse',account:'pantheon',employer:'Pantheon',
+      id:8202241,url:'https://pantheon.io/about/careers/detail?gh_jid=8202241'}
+  ];
+  const original=globalThis.fetch;
+  try{
+    for(const sample of cases){
+      const payload={jobs:[{id:sample.id,title:'WordPress Engineer',
+        location:{name:'Remote'},absolute_url:sample.url}]};
+      globalThis.fetch=async()=>({ok:true,headers:{get:()=>null},
+        text:async()=>JSON.stringify(payload)});
+      const result=await publicJobs(sample,{maxJobs:1000,maxBytes:6_000_000});
+      assert.equal(result.length,1);
+      assert.equal(result[0].identity,
+        'greenhouse:'+sample.account+':'+sample.id);
+      payload.jobs[0].absolute_url='https://evil.invalid/role?gh_jid='+sample.id;
+      await assert.rejects(()=>publicJobs(sample,{maxJobs:1000,maxBytes:6_000_000}),
+        /Unexpected ATS job host/);
+    }
+  }finally{globalThis.fetch=original;}
 });
