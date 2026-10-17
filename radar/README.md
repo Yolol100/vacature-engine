@@ -11,4 +11,14 @@ Independent read-only technical review using the 11 official ATS tenants from `i
 - Node checks: `cd radar && npm run check && npm test`.
 - Python regression: `python -m unittest discover -s ingestion/tests`.
 
-The legacy Cloudflare Worker, Cron and D1 are retired separately only after complete CI, real read-only review and checkpoint readback acceptance. No new state store or schedule is introduced.
+## Cloudflare retirement (2026-10-17)
+
+The project-owned Cloudflare Cron, Worker `vacature-radar`, and D1 database `vacature-radar-state` were **permanently deleted**, in that order, after passing the GitHub migration acceptance. Cloudflare account readback reported zero Workers and zero D1 databases. Legacy D1 metadata was intentionally not backed up, per explicit owner authorization. No unrelated account resources were changed.
+
+Evidence:
+- [Migration PR #163](https://github.com/Yolol100/vacature-engine/pull/163)
+- [Post-migration owner-initiated read-only review](https://github.com/Yolol100/vacature-engine/actions/runs/39061114257): 11/11 active ATS sources, no failures; existing checkpoint restored
+- [Post-deletion owner-initiated read-only review](https://github.com/Yolol100/vacature-engine/actions/runs/39061366550): 11/11 active ATS sources, no failures, zero Google Sheets writes and zero applications
+- [Acceptance issue #165](https://github.com/Yolol100/vacature-engine/issues/165)
+
+The preserved GitHub `radar-state` and `ingestion-state` branches and the live Google Sheets history remain authoritative for their respective records. No new scheduler, state store or delivery pipeline was introduced.

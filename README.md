@@ -53,6 +53,12 @@ This remains caller-owned policy. `vacature-engine` does not generate CV or moti
 
 `ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. GitHub Actions voert deze component alleen handmatig of bij relevante codewijzigingen uit; periodieke vacaturediscovery blijft caller-owned. In de eenvoudige modus is de ChatGPT-automation de enige scheduler. Source-health kan bij zo'n expliciete run compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
 
+## GitHub-only Vacature Radar
+
+The independent [GitHub Actions Radar](radar/README.md) runs owner-initiated, read-only technical reviews of 11 official ATS tenants from `ingestion/source-specs.radar.json`. It reuses the existing `radar-state` branch for durable technical checkpoints, protected by manual owner dispatch plus the separate `RADAR_PERSIST_APPROVED` gate. No unattended applications, mailbox operations or Sheets writes are performed.
+
+The project-owned Cloudflare Worker, Cron and D1 database were removed on 2026-10-17 after CI, CodeQL, checkpoint recovery and real 11/11 ATS acceptance. [Post-deletion proof](https://github.com/Yolol100/vacature-engine/actions/runs/39061366550).
+
 ## CV artifact contract v1.0
 
 Vacature-specifieke CV-tailoring blijft volledig bij `vacature-search`. De helper mag alleen reproduceerbare artifactmetadata valideren:
