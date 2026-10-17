@@ -101,7 +101,19 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
   if(enabled.length===0)throw new Error('No active registered source pair');
   const register=buildRegisterIndex(vacancyRows,applicationRows,eventRows);
   const previous=uniqueIdentity(expand(chunks[5],[[0,1],[5,1]]),0,5);
-  const baseline=uniqueIdentity(expand(chunks[6],[[0,1],[2,1],[3,1]]),0,2);
+  const baselineRows=expand(chunks[6],[[0,1],[2,1],[3,1]]);
+  const baseline=uniqueIdentity(baselineRows,0,2);
+  for(const row of baselineRows.slice(1)){
+    const identity=String(row[0]||'').trim();
+    if(!identity)continue;
+    const parts=identity.split(':');
+    const url=canonicalUrl(row[2]||'');
+    if(parts.length!==3||row[3]!=='baseline'||
+       !isValidJob({identity,source_id:parts[0],
+         source_account:parts[1],source_job_id:parts[2],
+         title:'historical baseline',url}))
+      throw new Error('Radar State baseline unavailable');
+  }
   const baselineMinimum=Number(env.RADAR_BASELINE_MIN_RECORDS||26);
   if(!Number.isSafeInteger(baselineMinimum)||baselineMinimum<1||baseline.ids.size<baselineMinimum)
     throw new Error('Radar State baseline unavailable');
