@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from urllib.parse import urlsplit
 
 from .adapters.personio import PersonioAdapter
 from .adapters.workable import WorkableAdapter
@@ -41,6 +42,14 @@ def read_public(provider: str, account: str, employer: str, client=None) -> list
             raise ValueError("Invalid public ATS job")
         title = normalized.get("title") or ""
         url = normalized.get("canonical_url") or ""
+        if provider == "workable":
+            # Public tenant feed proves job ownership; shortlinks omit tenant.
+            parts = urlsplit(url)
+            allowed = {f"/j/{job_id}", f"/{account}/j/{job_id}"}
+            if (parts.scheme != "https" or parts.netloc.lower() != "apply.workable.com"
+                    or parts.path.rstrip("/") not in allowed or parts.username or parts.password):
+                raise ValueError("Invalid public ATS job data")
+            url = f"https://apply.workable.com/{account}/j/{job_id}"
         if not title or not url or len(title) > 240:
             raise ValueError("Invalid public ATS job data")
         jobs.append({
