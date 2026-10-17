@@ -21,7 +21,7 @@ LIVE = actual GitHub/Google/Cloudflare readback; CI = isolated integration/regre
 | Duplicates / checkpoint replay | CI PASS; cross-run production persistence BLOCKED |
 | History preservation | LIVE PASS: 26/26 exact D1–Sheet tuples; radar-state original five files unchanged |
 | No automatic applications/emails | LIVE output submissions=0; static reviewer has no application or mail writer |
-| No unauthorized Sheets writes | LIVE PASS: readonly OAuth and header-only result tabs after both runs |
+| Radar read-only Sheets writes | LIVE PASS: readonly OAuth and header-only result tabs after both runs. **Separate old ingestion** workflow attempted a Google Register sync, got HTTP 403 before initial batch update; no accepted write evidenced |
 | ChatGPT → issue → Action → result | LIVE PASS: matching owner issue events, same main SHA, successful review logs |
 | Adversarial invalid API/source + secret logs | CI PASS: malformed tenant, oversized payload, host mismatch, sanitized diagnostics |
 | Persistent technical checkpoint and readback | BLOCKED: separate owner/variable approval; review-observations.json absent |
@@ -35,6 +35,7 @@ LIVE = actual GitHub/Google/Cloudflare readback; CI = isolated integration/regre
 - https://github.com/Yolol100/vacature-engine/actions/runs/39047475406
 - https://github.com/Yolol100/vacature-engine/actions/runs/39047802494
 - https://github.com/Yolol100/vacature-engine/actions/runs/39047804812
+- https://github.com/Yolol100/vacature-engine/actions/runs/39047791175 (unrelated legacy ingestion push trigger; first Google write denied)
 - Google Vacature Register and Radar result spreadsheet; live Cloudflare Worker settings and D1 readback; radar-state contents.
 
 ## Claim control

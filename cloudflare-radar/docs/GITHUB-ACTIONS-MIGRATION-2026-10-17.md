@@ -23,6 +23,7 @@ Updated: 2026-10-17. This document replaces the outdated draft-PR status.
 - After PR #145, owner issue #146 (run 39047802494): success, status=review_ready, six sources, 270 ATS observations, 26 previously known, five preliminary review candidates, zero failures.
 - Owner issue #147 (run 39047804812): success, status=review_ready, six sources, 270 observations, 26 previously known, ten preliminary review candidates, zero failures. The two issue-triggered runs were queued and processed separately.
 - For these live runs: application_submissions=0, google_sheet_rows_written=0 and manual_review_required=true. No vacancy has been promoted to a fully verified, Netherlands-eligible match by the technical reviewer.
+- **Separate ingestion side-effect:** changing `ingestion/source-specs.radar.json` on main also triggered the unrelated existing `.github/workflows/vacature-ingestion.yml` push writer. [Run 39047791175](https://github.com/Yolol100/vacature-engine/actions/runs/39047791175) failed at its **first write**, Google Sheets `Bronnen!G:L` values:batchUpdate, with HTTP 403; subsequent Runs append and technical checkpoint were not executed. Its integration state branch `ingestion-state` is unchanged at `489b7f53e2534088d91621dd8312ab1ce1b3c163`. This is not a Radar review write. Avoid touching the shared radar source manifest casually; future ingestion side-effects require separate review. No successful Google business write was observed from this failed run.
 - PR #143 and #145 CI, workflow regression, Cloudflare checks and applicable ingestion checks passed.
 
 ## Independent state readback after the two successful issue runs
@@ -31,6 +32,7 @@ Updated: 2026-10-17. This document replaces the outdated draft-PR status.
 - Existing radar-state branch head: c3043f7936d330b45d34f29a26b64a1e0702d333. Original files preserved: state.sqlite3, first-seen-queue.json, latest.json, radar-ack.json, source-health.json.
 - review-observations.json is still absent: no live production checkpoint was attempted or approved.
 - Cloudflare Worker settings: RADAR_ENABLED=0, RADAR_PIPELINE_MODE=off. Historic Cloudflare Cron (* * * * *) and D1 are retained intact for rollback. Do not confuse disabled execution with removed infrastructure.
+- The unrelated GitHub ingestion-state branch remained unchanged after an unwanted ingestion push trigger. Google Sheets write attempt returned 403 before the first batch update completed. No accepted register update or new run row from that attempt is evidenced.
 
 ## Open release gates
 1. Obtain separate, explicit authorization before setting RADAR_PERSIST_APPROVED=yes and performing any real technical checkpoint write. A broad task request is not this specific production approval.
