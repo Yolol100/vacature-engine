@@ -22,6 +22,24 @@ jobs:
         working-directory: cloudflare-radar
       - run: node --test test/*.test.mjs
         working-directory: cloudflare-radar
+      - name: Read-only official ATS smoke (temporary PR acceptance)
+        if: github.event_name == 'pull_request' && github.head_ref == 'feat/radar-reuse-official-personio-workable-20261017'
+        shell: bash
+        run: |
+          set -uo pipefail
+          while IFS='|' read -r provider account employer; do
+            if PYTHONPATH=ingestion/src python3 -m vacature_ingestion.actions_readonly_bridge "$provider" "$account" "$employer" >/tmp/radar-ats-probe.json 2>/tmp/radar-ats-probe.err; then
+              python3 -c "import json; r=json.load(open('/tmp/radar-ats-probe.json')); print('PROBE_OK '+str(len(r['jobs']))+' jobs '+str([x['url'] for x in r['jobs'][:2]]))"
+            else
+              printf 'PROBE_ERROR %s:%s ' "$provider" "$account"
+              tr -d '\\n' </tmp/radar-ats-probe.err
+              echo
+            fi
+          done <<'ATS'
+          personio|syde|Syde
+          workable|awesomemotive|Awesome Motive
+          workable|humanmade|Human Made
+          ATS
       - name: Install Wrangler for build-only verification
         run: npm install --no-audit --no-fund
         working-directory: cloudflare-radar
