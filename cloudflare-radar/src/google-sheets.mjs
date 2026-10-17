@@ -68,13 +68,38 @@ async function accessToken(env,scope=GOOGLE_SCOPE){
   try{return await task;}
   finally{if(pendingToken?.promise===task)pendingToken=undefined;}
 }
-async function readRanges(id,ranges,token){
+// Optional bounded error classification is only used by the read-only Actions
+// runner. The original Cloudflare Worker call semantics are unchanged.
+function googleReadFailureClass(payload){
+  const error=payload?.error;
+  const vals=[error?.status,error?.errors?.[0]?.reason,
+    error?.details?.[0]?.reason].map(x=>String(x||'').toUpperCase());
+  if(vals.some(v=>v.includes('SERVICE_DISABLED')||v.includes('ACCESSNOTCONFIGURED')))
+    return 'SERVICE_DISABLED';
+  if(vals.some(v=>v.includes('SCOPE_INSUFFICIENT')||v.includes('INSUFFICIENTPERMISSIONS')))
+    return 'SCOPE_INSUFFICIENT';
+  if(vals.some(v=>v.includes('RESOURCE_EXHAUSTED')||v.includes('RATELIMITEXCEEDED')))
+    return 'QUOTA_EXCEEDED';
+  if(vals.some(v=>v.includes('PERMISSION_DENIED')||v.includes('FORBIDDEN')))
+    return 'PERMISSION_DENIED';
+  return 'UNCLASSIFIED';
+}
+async function readRanges(id,ranges,token,diagnosticLabel){
   const url=new URL('https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(id)+'/values:batchGet');
   for(const range of ranges)url.searchParams.append('ranges',range);
   // Google supports partial responses: parse just the values, not range metadata.
   url.searchParams.set('fields','valueRanges(values)');
   const response=await fetch(url,{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(TIMEOUT_MS)});
-  if(!response.ok)throw new Error('Sheets read HTTP '+response.status);
+  if(!response.ok){
+    if(diagnosticLabel==='register'||diagnosticLabel==='radar'){
+      let reason='UNCLASSIFIED';
+      try{reason=googleReadFailureClass(await response.json());}
+      catch{/* never print raw Google error bodies, URLs or tokens */}
+      throw new Error('Sheets read HTTP '+response.status+
+        ' ['+diagnosticLabel+':'+reason+']');
+    }
+    throw new Error('Sheets read HTTP '+response.status);
+  }
   const body=await response.json();
   if(!Array.isArray(body.valueRanges)||body.valueRanges.length!==ranges.length)throw new Error('Sheets response incomplete');
   return body.valueRanges.map(item=>item.values||[]);
