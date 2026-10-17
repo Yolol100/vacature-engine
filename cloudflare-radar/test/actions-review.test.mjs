@@ -222,3 +222,36 @@ test('a live baseline minimum larger than available observations blocks read-onl
   const h=harness();
   await assert.rejects(()=>h.run(5,{...env,RADAR_BASELINE_MIN_RECORDS:'26'}),/Radar State baseline unavailable/);
 });
+
+test('two concurrent read-only commands produce the same results without state writes',async()=>{
+  const h=harness();
+  const [first,second]=await Promise.all([h.run(),h.run()]);
+  assert.deepEqual(first,second);
+  assert.equal(first.application_submissions+second.application_submissions,0);
+  assert.equal(first.google_sheet_rows_written+second.google_sheet_rows_written,0);
+  assert.equal(h.data["'Radar State'!A1:A"].length,2);
+});
+test('retry after an interrupted transient ATS request remains read-only and safe',async()=>{
+  const data=cells(),j=job('new-after-error');
+  let n=0;
+  const readRanges=async(_id,ranges)=>ranges.map(range=>data[range]);
+  const args={env,accessToken:async()=> 'mock-token',readRanges,
+    publicJobs:async source=>{
+      if(source.source_id!=='greenhouse')return [];
+      n++;
+      if(n===1)throw new Error('Public API HTTP 503');
+      return [j];
+    }};
+  const first=await reviewOnce(args);
+  const second=await reviewOnce(args);
+  assert.equal(first.status,'partial');
+  assert.equal(second.status,'review_ready');
+  assert.equal(second.candidates.length,1);
+  assert.equal(second.google_sheet_rows_written,0);
+});
+test('candidate count from empty official feeds is not exaggerated into verified vacancies',async()=>{
+  const r=await harness({jobs:[]}).run();
+  assert.equal(r.candidates.length,0);
+  assert.equal(r.manual_review_required,true);
+  assert.ok(!Object.hasOwn(r,'verified_vacancies'));
+});
