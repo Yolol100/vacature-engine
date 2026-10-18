@@ -313,9 +313,12 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
         for(const k of roleKeys)seenRoles.add(k);
         seenIds.add(job.identity);
         if(candidates.length<maxCandidates)candidates.push({
-          observation_key:job.identity,source_id:job.source_id,employer:source.employer,
+          observation_key:job.identity,source_id:job.source_id,
+          source_account:job.source_account,source_job_id:job.source_job_id,
+          employer:source.employer,
           title:String(job.title).slice(0,240),official_url:job.url,
           location:String(job.location||'').slice(0,160),remote_text:String(job.remote||'').slice(0,160),
+          confirmed_published_at:String(job.confirmed_published_at||'').slice(0,45),
           verification:'official_ats_observed; manual authenticity, remote/NL eligibility and fit review required'
         });
       }

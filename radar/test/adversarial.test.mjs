@@ -49,11 +49,11 @@ test('Do not treat a prepared draft as a submitted application',()=>{
   assert.equal(matchRegister({url:'https://jobs.lever.co/kinsta/123',source_url:''},index).applied,false);
 });
 
-test('Source timestamps never become an invented publication timestamp',()=>{
+test('official Ashby publishedAt is evidence, but first seen never invents a publication timestamp',()=>{
   const a=sample(PILOT_SOURCES[2],{title:'Web Developer',jobUrl:'https://jobs.ashbyhq.com/zapier/123',isListed:true,publishedAt:'2026-10-15T12:00:00Z'});
   const row=toRadarRow(a,'2026-10-15T20:00:00Z','run-1');
   assert.equal(row.length,21);
-  assert.equal(row[10],'');
+  assert.equal(row[10],'2026-10-15T12:00:00.000Z');
   assert.equal(row[11],'2026-10-15T20:00:00Z');
   assert.equal(row[14],'ontdekt');
   assert.equal(row[16],'niet_beoordeeld');

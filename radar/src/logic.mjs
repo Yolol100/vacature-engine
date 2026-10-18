@@ -110,11 +110,20 @@ export function normalizeJobs(source,payload){
     const title=String(source.source_id==='lever'?job.text??'':job.title??'').trim();
     const location=String(source.source_id==='lever'?job.categories?.location??'':typeof job.location==='string'?job.location:job.location?.name??'').trim();
     const remote=String(job.workplaceType??(job.isRemote===true?'remote':'')).trim();
+    // Only an explicit publication timestamp from the official ATS counts.
+    // Lever createdAt / Greenhouse updated_at are not publication evidence.
+    const officialPublished=source.source_id==='ashby'?job.publishedAt:
+      source.source_id==='greenhouse'?job.first_published:null;
+    const parsedPublished=typeof officialPublished==='string'&&
+      /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)$/.test(officialPublished)?
+      Date.parse(officialPublished):NaN;
+    const confirmedPublished=Number.isFinite(parsedPublished)?
+      new Date(parsedPublished).toISOString():'';
     return {
       identity:source.source_id+':'+source.account+':'+id,source_id:source.source_id,source_account:source.account,source_job_id:id,
       employer:source.employer,title,url,source_url:url,location,remote,language:'',
-      // first-seen is NEVER employer publication evidence
-      confirmed_published_at:''
+      // First-seen is NEVER employer publication evidence.
+      confirmed_published_at:confirmedPublished
     };
   }).filter(job=>job.source_job_id&&job.title&&job.url);
 }
