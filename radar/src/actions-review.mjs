@@ -326,7 +326,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
   // the official ATS queue or persistent checkpoint/receipt state.
   const discovery=tieredSources.length?await collectTieredDiscovery({
     sources:enabledDiscovery,skipped:skippedDiscovery,
-    maxCandidates:Math.max(0,maxCandidates-candidates.length),
+    maxCandidates:scanAllDiscovery?maxCandidates:Math.max(0,maxCandidates-candidates.length),
     seenIds,seenRoles,register,fetchJobs:publicDiscoveryJobs,pollWithRetry,
     preliminaryInterest,preliminaryRemoteEvidence,preliminaryNetherlandsScope,
     matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError,

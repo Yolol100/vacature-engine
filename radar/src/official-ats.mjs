@@ -2,6 +2,19 @@
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {adapterUrl,isValidJob,normalizeJobs} from './logic.mjs';
+function bridgeError(error,kind){
+  const stderr=String(error?.stderr||'');
+  const status=/public_ats_http_([45][0-9][0-9])/.exec(stderr)?.[1];
+  const fetch=/public_ats_fetch_(timeout_or_network|malformed_result|response_too_large|rate_limited|upstream_transient|blocked_or_auth_required|other_technical_failure|http_error)/.exec(stderr)?.[1];
+  const reason=status?'Public API HTTP '+status:
+    fetch?'Public API fetch '+fetch:
+    stderr.includes('public_ats_contract_error')?'Public API contract mismatch':
+    stderr.includes('public_ats_internal_error')?'Public API adapter internal failure':
+    kind==='ats'?'Public ATS adapter failed':'Public discovery adapter failed';
+  const safe=new Error(reason);
+  if(status)safe.status=Number(status);
+  return safe;
+}
 const MAX_SOURCE_JOBS=160;
 const TIMEOUT_MS=10000;
 async function publicJobs(source,limits={}){
@@ -54,10 +67,7 @@ export async function actionsPublicJobs(source,limits={maxJobs:1000,maxBytes:6_0
       timeout:20_000,maxBuffer:6_000_000
     }));
   }catch(error){
-    const status=/public_ats_http_([45][0-9][0-9])/.exec(String(error?.stderr||''))?.[1];
-    const safe=new Error(status?'Public API HTTP '+status:'Public ATS adapter failed');
-    if(status)safe.status=Number(status);
-    throw safe;
+    throw bridgeError(error,'ats');
   }
   let data;
   try{data=JSON.parse(stdout);}catch{throw new Error('Unexpected public ATS payload');}
@@ -67,7 +77,7 @@ export async function actionsPublicJobs(source,limits={maxJobs:1000,maxBytes:6_0
 }
 
 // This path has no credentials and cannot write state; provider data stays unverified.
-// Each read is a bounded child process reusing the five pre-existing Python adapters.
+// Each read is a bounded child process reusing the existing Python adapters.
 export async function actionsPublicDiscoveryJobs(source) {
   if(!['remotive','jobicy-api','himalayas','we-work-remotely','remote-ok',
       'remote-landers-api','remotejobs-org','arbeitnow-api'].includes(source?.source_id))
@@ -81,10 +91,7 @@ export async function actionsPublicDiscoveryJobs(source) {
       timeout:30000,maxBuffer:2_000_000
     }));
   }catch(error){
-    const status=/public_ats_http_([45][0-9][0-9])/.exec(String(error?.stderr||''))?.[1];
-    const safe=new Error(status?'Public API HTTP '+status:'Public discovery adapter failed');
-    if(status)safe.status=Number(status);
-    throw safe;
+    throw bridgeError(error,'discovery');
   }
   let parsed;
   try{parsed=JSON.parse(stdout);}catch{throw new Error('Unexpected public discovery payload');}

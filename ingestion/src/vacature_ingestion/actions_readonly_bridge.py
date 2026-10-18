@@ -150,10 +150,18 @@ def main() -> int:
         print(json.dumps({"jobs": jobs}, ensure_ascii=False))
         return 0
     except FetchError as error:
-        # Do not print arbitrary provider URLs, bodies, credentials or request headers.
-        print(f"public_ats_http_{error.status}" if error.status else "public_ats_fetch_error", file=sys.stderr)
-    except Exception:
+        # One fixed category only; never emit response bodies, URLs or credentials.
+        category = error.category if error.category in {
+            "timeout_or_network", "malformed_result", "response_too_large",
+            "rate_limited", "upstream_transient", "blocked_or_auth_required",
+            "other_technical_failure", "http_error",
+        } else "other_technical_failure"
+        print(f"public_ats_http_{error.status}" if error.status else
+              f"public_ats_fetch_{category}", file=sys.stderr)
+    except ValueError:
         print("public_ats_contract_error", file=sys.stderr)
+    except Exception:
+        print("public_ats_internal_error", file=sys.stderr)
     return 1
 
 

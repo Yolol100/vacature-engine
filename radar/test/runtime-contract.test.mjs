@@ -52,6 +52,13 @@ test('review checkpoint requires separately approved owner manual dispatch',()=>
   assert.doesNotMatch(workflow,/cloudflare-radar/);
 });
 
+test('ingestion source-code pushes cannot launch the separate Sheets writer',()=>{
+  const workflow=text('.github/workflows/vacature-ingestion.yml');
+  assert.match(workflow,/^  live-ingestion:\n    #[^\n]*\n    if: github\.event_name == 'workflow_dispatch'$/m);
+  assert.match(workflow,/^  ingestion-tests:$/m);
+  assert.match(workflow,/^  push:$/m);
+});
+
 test('one ATS reader and one Radar workflow preserve parallel read-only checks',()=>{
   assert.equal(existsSync(new URL('radar/src/actions-official-ats.mjs',root)),false);
   assert.equal(existsSync(new URL('.github/workflows/github-radar-ci.yml',root)),false);

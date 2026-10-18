@@ -4,6 +4,7 @@ import {
   PILOT_SOURCES,canonicalUrl,strongRoleKeys,isValidJob,
   normalizeJobs,preliminaryInterest,buildRegisterIndex,matchRegister,toRadarRow
 } from '../src/logic.mjs';
+import {safeDiagnosticError} from '../src/health.mjs';
 
 const sample=(source,job)=>normalizeJobs(source,source.source_id==='lever'?[job]:{jobs:[job]})[0];
 
@@ -76,4 +77,14 @@ test('reject mismatched provider job IDs even on the right ATS tenant',()=>{
     absolute_url:'https://job-boards.greenhouse.io/automatticcareers/jobs/999'
   });
   assert.equal(isValidJob(greenhouse),false,'Greenhouse URL points to a different job than provider ID');
+});
+
+test('public source diagnostics are useful but never print provider-supplied secrets',()=>{
+  for(const value of ['Public API fetch timeout_or_network',
+    'Public API fetch malformed_result','Public API contract mismatch',
+    'Public API adapter internal failure']){
+    assert.equal(safeDiagnosticError(new Error(value)),value);
+  }
+  assert.equal(safeDiagnosticError(new Error('https://private.example/?token=secret')),
+    'Unexpected runtime failure');
 });

@@ -135,5 +135,33 @@ class ReadonlyDiscoveryBridgeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Invalid public discovery role"):
             read_discovery("remotive", BadClient())
 
+
+class SafeBridgeDiagnosticsTests(unittest.TestCase):
+    def test_only_bounded_categories_reach_stderr(self):
+        import io
+        import sys
+        from contextlib import redirect_stderr
+        from unittest.mock import patch
+        from vacature_ingestion import actions_readonly_bridge as bridge
+        from vacature_ingestion.http import FetchError
+
+        cases = [
+            (FetchError("timeout_or_network", "https://private.example/?token=secret"),
+             "public_ats_fetch_timeout_or_network"),
+            (FetchError("blocked_or_auth_required", "secret", status=403),
+             "public_ats_http_403"),
+            (ValueError("secret provider response"), "public_ats_contract_error"),
+            (TypeError("private token"), "public_ats_internal_error"),
+        ]
+        for err, expected in cases:
+            with (self.subTest(expected=expected),
+                  patch.object(sys, "argv", ["radar", "--discovery", "arbeitnow-api"]),
+                  patch.object(bridge, "read_discovery", side_effect=err)):
+                stderr = io.StringIO()
+                with redirect_stderr(stderr):
+                    self.assertEqual(bridge.main(), 1)
+                self.assertEqual(stderr.getvalue().strip(), expected)
+
+
 if __name__ == "__main__":
     unittest.main()
