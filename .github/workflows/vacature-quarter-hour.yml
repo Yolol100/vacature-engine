@@ -29,7 +29,8 @@ jobs:
     permissions:
       contents: read
     env:
-      GITHUB_EVENT_NAME: 'workflow_dispatch'
+      RADAR_RUN_MODE: 'quarter_hour_readonly'
+      RADAR_ISSUE_TITLE: ${{ github.event.issue.title }}
       RADAR_MAX_CANDIDATES: '10'
       RADAR_DISCOVERY_SCOPE: 'official_only'
       VACATURE_REGISTER_ID: '1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0'

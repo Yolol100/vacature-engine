@@ -15,7 +15,21 @@ const persist=env.RADAR_PERSIST==='1';
 let maxCandidates=5;
 let tiered=false;
 let maximum=false;
-if(event==='issues') {
+// Dedicated quarter-hour route: accept only the real GitHub event and read-only
+// workflow identity. Never spoof GITHUB_EVENT_NAME or inherit checkpoint rights.
+if(env.RADAR_RUN_MODE==='quarter_hour_readonly') {
+  const allowedEvent=event==='schedule' ||
+    (event==='issues' && env.GITHUB_ACTOR==='Yolol100' &&
+     title==='[radar] quarter 10') ||
+    (event==='workflow_dispatch' && env.GITHUB_ACTOR==='Yolol100');
+  if(!allowedEvent || env.GITHUB_WORKFLOW!=='Vacature Radar quarter-hour observations' ||
+     persist || env.RADAR_DISCOVERY_SCOPE!=='official_only' ||
+     env.RADAR_MAX_CANDIDATES!=='10') {
+    console.error('Unauthorized quarter-hour read-only event');
+    process.exit(1);
+  }
+  maxCandidates=10;
+}else if(event==='issues') {
   const match=/^\[radar\] (review|discover|maximum) (5|10)$/.exec(title);
   if(!match||persist) {
     console.error('Unauthorized radar issue command or write mode');
