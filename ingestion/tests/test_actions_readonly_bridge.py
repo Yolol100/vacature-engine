@@ -81,6 +81,19 @@ class DiscoveryClient:
             return {"jobs": [{"guid": "403", "title": "Remote WordPress Developer",
                     "applicationLink": "https://himalayas.app/jobs/403",
                     "companyName": "Example", "locationRestrictions": []}]}
+        if url == "https://www.arbeitnow.com/api/job-board-api":
+            return {"data": [{"slug": "wordpress-dev", "title": "Remote WordPress Developer",
+                 "company_name": "Example", "url": "https://www.arbeitnow.com/jobs/wordpress-dev",
+                 "remote": True, "location": "Europe"}]}
+        if url.startswith("https://remotelanders.com/api/jobs?"):
+            return {"jobs": ([{"slug": "wordpress-dev", "title": "Remote WordPress Developer",
+                  "company": "Example", "url": "https://remotelanders.com/jobs/wordpress-dev",
+                  "location": "Europe"}] if "Engineering" in url else [])}
+        if url.startswith("https://remotejobs.org/api/v1/jobs?"):
+            return {"data": ([{"id": "wordpress-dev", "title": "Remote WordPress Developer",
+                     "company": {"name": "Example"}, "location": "Europe",
+                     "url": "https://remotejobs.org/remote-jobs/wordpress-dev"}]
+                    if "wordpress" in url else []), "pagination": {"has_more": False}}
         raise AssertionError("Unexpected discovery API URL")
 
     def get_text(self, url, headers=None):
@@ -91,8 +104,9 @@ class DiscoveryClient:
 
 
 class ReadonlyDiscoveryBridgeTests(unittest.TestCase):
-    def test_existing_five_feeds_are_bounded_and_discovery_only(self):
-        for provider in ("remotive", "jobicy-api", "himalayas", "we-work-remotely", "remote-ok"):
+    def test_existing_eight_feeds_are_bounded_and_discovery_only(self):
+        for provider in ("remotive", "jobicy-api", "himalayas", "we-work-remotely", "remote-ok",
+                         "remote-landers-api", "remotejobs-org", "arbeitnow-api"):
             with self.subTest(provider=provider):
                 client = DiscoveryClient()
                 rows = read_discovery(provider, client)
