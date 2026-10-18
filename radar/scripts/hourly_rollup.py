@@ -188,7 +188,7 @@ def summarize(runs, artifacts_by_run, start, end):
     failed = len(outcomes) - passed
     # A delayed/replayed schedule event must not masquerade as a different
     # quarter merely because the hour contains four distinct run IDs.
-    expected_minute_bins = (7, 22, 37, 52)
+    expected_minute_bins = (6, 21, 36, 51)
     distinct_bins = set()
     for run in included:
         minute = parse_utc(run['created_at']).minute
