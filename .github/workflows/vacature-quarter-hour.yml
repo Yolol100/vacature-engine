@@ -10,7 +10,9 @@ on:
 permissions:
   contents: read
 
-# Read-only evidence; cannot write sheets, commit technical state or apply.
+# Official ATS scanning remains read-only. The restricted intake step only
+# appends recent candidates to the existing private Radar result Google Sheet.
+# The Vacature Register, application history and GitHub technical state are never written.
 concurrency:
   group: vacature-radar-quarter-hour
   cancel-in-progress: false
@@ -55,6 +57,9 @@ jobs:
           set -euo pipefail
           mkdir -p .runtime
           node radar/src/actions-review-cli.mjs > .runtime/scheduled-observations.log
+      - name: Save only recent, unmatched ATS observations to private Radar intake
+        if: success()
+        run: node radar/src/drive-intake.mjs
       - name: Preserve result and failure diagnostics for the three-hour ChatGPT reader
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
