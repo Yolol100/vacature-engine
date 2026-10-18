@@ -12,6 +12,8 @@ on:
       - 'ingestion/**'
       - 'radar/**'
       - '.github/workflows/vacature-radar.yml'
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       max_candidates:
@@ -74,6 +76,44 @@ jobs:
       - run: python -m unittest discover -s ingestion/tests -p 'test_source_specs.py' -v
       - run: python -m compileall -q ingestion/src
 
+
+  scheduled-observation:
+    # Read-only, bounded official ATS discovery; no Sheets writes or applications.
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      GITHUB_EVENT_NAME: 'workflow_dispatch'
+      RADAR_MAX_CANDIDATES: '10'
+      RADAR_DISCOVERY_SCOPE: 'official_only'
+      VACATURE_REGISTER_ID: '1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0'
+      RADAR_RESULT_ID: '1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ'
+      RADAR_BASELINE_MIN_RECORDS: '26'
+      RADAR_EXPECTED_SERVICE_ACCOUNT_EMAIL: 'vacature-radar@leads-507621.iam.gserviceaccount.com'
+      GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e ingestion
+      - name: Restore technical history (read only)
+        run: bash radar/scripts/load-review-state.sh
+      - name: Collect bounded verified-source observations (read only)
+        run: node radar/src/actions-review-cli.mjs | tee .runtime/scheduled-observations.log
+      - name: Upload private hourly-consumable run evidence
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: radar-observations-${{ github.run_id }}
+          path: .runtime/scheduled-observations.log
+          retention-days: 7
+          if-no-files-found: error
 
   review:
     if: >-
