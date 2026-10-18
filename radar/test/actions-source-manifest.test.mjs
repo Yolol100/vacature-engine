@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {selectSupportedSources} from '../src/actions-review.mjs';
-import {publicJobs} from '../src/official-ats.mjs';
+import {publicJobs,bridgeError} from '../src/official-ats.mjs';
 
 const manifest=JSON.parse(readFileSync('../ingestion/source-specs.radar.json','utf8'));
 const sample={source_id:'greenhouse',adapter:'greenhouse',source_type:'ats',
@@ -116,4 +116,17 @@ test('official Greenhouse employer-host jobs are accepted without broad domain e
         /Unexpected ATS job host/);
     }
   }finally{globalThis.fetch=original;}
+});
+
+test('public discovery failure labels remain fixed and never leak provider URLs',()=>{
+  const errors=[
+    ['public_ats_contract_job_url_malformed','job_url_malformed'],
+    ['public_ats_contract_job_url_uk_apex','job_url_uk_apex'],
+    ['public_ats_contract_job_url_untrusted_host','job_url_untrusted_host']
+  ];
+  for(const [raw,label] of errors){
+    const result=bridgeError({stderr:raw+' https://private.example/token'},'discovery');
+    assert.equal(result.message,'Public API contract '+label);
+    assert.equal(result.message.includes('private.example'),false);
+  }
 });
