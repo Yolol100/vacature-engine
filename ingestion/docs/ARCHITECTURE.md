@@ -6,7 +6,7 @@ The runner owns public read acquisition, source-specific parsing, bounded normal
 
 It does not own discovery priorities, WordPress relevance, candidate fit/evidence scoring, remote/language/salary eligibility policy, Applications, outreach or submission.
 
-The live `Vacature Register` owns source activation. Repository source specs are technical board/account targets only. Before live acquisition, GitHub Actions reads `Bronnen` and retains only specs whose provider source row is `active`; specs with `options.registry_source_id` also require that concrete employer row to be active. Register read failure is fail-closed.
+The live `Vacature Register` owns source activation. Repository source specs are technical board/account targets only. Before an explicitly requested scan, the caller checks the live `Bronnen` tab. Only sources with `active` status qualify; specs bound to an employer also require an active matching employer row. Failure to read the Register blocks acquisition.
 
 ## Identity
 
@@ -24,11 +24,11 @@ Provider account/board is prefixed into `source_job_id`. Employer/title/location
 
 A successful complete snapshot resets missing state for observed memberships. Failed/partial runs never increment missing state. A globally deduplicated job closes only when every known source membership has reached its configured missing threshold, which prevents one stale or failing source from closing a vacancy still visible elsewhere.
 
-The semantic review handoff is at-least-once. Pending items persist until their `review_key` is explicitly acknowledged. The queue is paginated for bounded connector reads and exposes backlog age/count telemetry.
+There is no persistent background review queue. The caller directly checks observed vacancies against the live Register, validates the official job page and candidate-fit evidence, and decides what is new.
 
 ## Scaling
 
-The runner starts as one bounded process with provider pagination and SQLite state. Controlled-runtime tests process 10,000 synthetic observations quickly enough that distributed queues/workers are not justified. Target-runtime network throughput and end-to-end source gating are measured in GitHub Actions.
+The runner starts as one bounded process with provider pagination and SQLite state. Controlled-runtime tests process 10,000 synthetic observations quickly enough that distributed queues/workers are not justified. Source reachability and verification must be checked at the time of a user-requested scan; historical GitHub run results are not current evidence.
 
 ## Source roster
 
