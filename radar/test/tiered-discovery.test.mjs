@@ -30,10 +30,11 @@ const job=(source,id='a'.repeat(24),url='https://remoteok.com/remote-jobs/exampl
   location:'Remote, Europe',remote:'remote'
 });
 
-test('tiered public discovery reuses exactly five existing non-private providers',()=>{
-  assert.equal(feeds.length,5);
+test('tiered public discovery reuses eight registered public non-private providers',()=>{
+  assert.equal(feeds.length,8);
   assert.deepEqual(feeds.map(x=>x.source_id),[
-    'we-work-remotely','remote-ok','himalayas','jobicy-api','remotive'
+    'we-work-remotely','remote-ok','himalayas','jobicy-api','remotive',
+    'remote-landers-api','remotejobs-org','arbeitnow-api'
   ]);
   assert.equal(feeds.some(x=>x.account.includes('/')),false);
   assert.throws(()=>selectTieredSources(specs.slice(0,-1)),/Missing approved public discovery adapters/);
@@ -47,7 +48,8 @@ test('tiered public discovery reuses exactly five existing non-private providers
 test('live Config orders available API sources before boards; skips retired IDs',()=>{
   const {enabled,skipped}=orderTieredSources(feeds,metadata,config);
   assert.deepEqual(enabled.map(x=>x.source_id),[
-    'jobicy-api','remotive','himalayas','we-work-remotely','remote-ok'
+    'arbeitnow-api','jobicy-api','remote-landers-api','remotejobs-org',
+    'remotive','himalayas','we-work-remotely','remote-ok'
   ]);
   assert.deepEqual(skipped,[]);
   const blocked=new Map(metadata);blocked.set('remote-ok',{...metadata.get('remote-ok'),status:'retired'});
@@ -68,12 +70,12 @@ test('read-only discovery returns unverified leads only and stops after manual q
   assert.equal(result.status,'review_ready');
   assert.equal(result.mode,'discovery_only');
   assert.equal(result.candidates.length,1);
-  assert.equal(result.candidates[0].source_id,'jobicy-api');
+  assert.equal(result.candidates[0].source_id,'arbeitnow-api');
   assert.equal(result.candidates[0].verification.startsWith('discovery_only;'),true);
   assert.equal(Object.hasOwn(result.candidates[0],'official_url'),false);
   assert.equal(result.stopped_when_manual_queue_full,true);
-  assert.equal(result.not_polled_sources.length,4);
-  assert.deepEqual(calls,['jobicy-api']);
+  assert.equal(result.not_polled_sources.length,7);
+  assert.deepEqual(calls,['arbeitnow-api']);
 });
 
 test('cross-feed URL duplicates, register submissions and foreign-only locations never fill review queue',async()=>{
@@ -120,5 +122,21 @@ test('country-only API discovery does not fill the manual Netherlands review que
   assert.equal(result.counts.geography_outside_nl,3);
   assert.equal(result.candidates.length,1);
   assert.equal(result.candidates[0].location,'Europe');
+  assert.equal(result.status,'review_ready');
+});
+
+test('maximum manual mode visits all eight approved feeds even after review queue is full',async()=>{
+  const {enabled}=orderTieredSources(feeds,metadata,config);
+  const ids=[],result=await collectTieredDiscovery({...readerParams,
+    sources:enabled,maxCandidates:1,scanAll:true,seenIds:new Set(),seenRoles:new Set(),
+    fetchJobs:async source=>{ids.push(source.source_id);return [job(source,source.source_id.padEnd(24,'0').slice(0,24),
+      'https://example.com/jobs/'+source.source_id)];}
+  });
+  assert.equal(ids.length,8);
+  assert.equal(result.checked_sources.length,8);
+  assert.deepEqual(result.not_polled_sources,[]);
+  assert.equal(result.stopped_when_manual_queue_full,false);
+  assert.equal(result.candidates.length,1);
+  assert.equal(result.eligible_not_queued,7);
   assert.equal(result.status,'review_ready');
 });
