@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
+  issues:
+    types: [opened]
 
 permissions:
   contents: read
@@ -15,7 +17,13 @@ concurrency:
 
 jobs:
   observe:
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.actor == 'Yolol100')
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.actor == 'Yolol100' &&
+       (github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'issues' &&
+         github.event.issue.user.login == 'Yolol100' &&
+         github.event.issue.title == '[radar] quarter 10')))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
