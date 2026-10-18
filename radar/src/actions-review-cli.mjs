@@ -14,18 +14,21 @@ const title=env.RADAR_ISSUE_TITLE||'';
 const persist=env.RADAR_PERSIST==='1';
 let maxCandidates=5;
 let tiered=false;
+let maximum=false;
 if(event==='issues') {
-  const match=/^\[radar\] (review|discover) (5|10)$/.exec(title);
+  const match=/^\[radar\] (review|discover|maximum) (5|10)$/.exec(title);
   if(!match||persist) {
     console.error('Unauthorized radar issue command or write mode');
     process.exit(1);
   }
   maxCandidates=Number(match[2]);
-  tiered=match[1]==='discover';
+  tiered=match[1]!=='review';
+  maximum=match[1]==='maximum';
 }else if(event==='workflow_dispatch') {
   maxCandidates=Number(env.RADAR_MAX_CANDIDATES||'5');
-  tiered=env.RADAR_DISCOVERY_SCOPE==='tiered';
-  if(!['','official_only','tiered'].includes(env.RADAR_DISCOVERY_SCOPE||''))
+  tiered=['tiered','maximum'].includes(env.RADAR_DISCOVERY_SCOPE);
+  maximum=env.RADAR_DISCOVERY_SCOPE==='maximum';
+  if(!['','official_only','tiered','maximum'].includes(env.RADAR_DISCOVERY_SCOPE||''))
     throw new Error('Invalid manual discovery mode');
   if(persist&&tiered) {
     console.error('Discovery-only mode cannot write a technical checkpoint');
@@ -65,7 +68,8 @@ try{
     publicJobs:source=>actionsPublicJobs(source,{maxJobs:1000,maxBytes:6_000_000}),
     maxCandidates,priorState:prior,sources,unsupportedSources:unsupported,
     unverifiedSources:unverified,tieredSources,
-    publicDiscoveryJobs:tiered?actionsPublicDiscoveryJobs:null});
+    publicDiscoveryJobs:tiered?actionsPublicDiscoveryJobs:null,
+    scanAllDiscovery:maximum});
   console.log(JSON.stringify(result));
   if(result.status!=='review_ready') {
     process.exitCode=1;

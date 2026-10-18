@@ -25,7 +25,7 @@ on:
         type: choice
         required: true
         default: 'official_only'
-        options: ['official_only', 'tiered']
+        options: ['official_only', 'tiered', 'maximum']
       persist_review:
         description: 'Explicit durable technical checkpoint (requires separate repository approval gate)'
         type: boolean
@@ -85,7 +85,9 @@ jobs:
        (github.event.issue.title == '[radar] review 5' ||
         github.event.issue.title == '[radar] review 10' ||
         github.event.issue.title == '[radar] discover 5' ||
-        github.event.issue.title == '[radar] discover 10'))
+        github.event.issue.title == '[radar] discover 10' ||
+        github.event.issue.title == '[radar] maximum 5' ||
+        github.event.issue.title == '[radar] maximum 10'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -121,7 +123,7 @@ jobs:
       github.event_name == 'workflow_dispatch' &&
       github.actor == 'Yolol100' &&
       inputs.persist_review == true &&
-      inputs.discovery_scope != 'tiered' &&
+      inputs.discovery_scope == 'official_only' &&
       vars.RADAR_PERSIST_APPROVED == 'yes'
     runs-on: ubuntu-latest
     timeout-minutes: 12
@@ -158,7 +160,7 @@ jobs:
       github.event_name == 'workflow_dispatch' &&
       inputs.persist_review == true &&
       (github.actor != 'Yolol100' || vars.RADAR_PERSIST_APPROVED != 'yes' ||
-       inputs.discovery_scope == 'tiered')
+       inputs.discovery_scope != 'official_only')
     runs-on: ubuntu-latest
     timeout-minutes: 1
     permissions:

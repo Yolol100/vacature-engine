@@ -154,13 +154,13 @@ function uniqueIdentity(rows,keyCol,urlCol) {
 }
 export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandidates=5,priorState,
   sources=PILOT_SOURCES,unsupportedSources=[],unverifiedSources=[],
-  tieredSources=[],publicDiscoveryJobs=null}) {
+  tieredSources=[],publicDiscoveryJobs=null,scanAllDiscovery=false}) {
   const reviewHistory=parseReviewState(priorState);
   if(!Array.isArray(sources)||sources.length===0||sources.length>30||
      !Array.isArray(unsupportedSources)||unsupportedSources.length>100||
      !Array.isArray(unverifiedSources)||unverifiedSources.length>100)
     throw new Error('Invalid bounded radar source scope');
-  if(!Array.isArray(tieredSources)||tieredSources.length>5||
+  if(!Array.isArray(tieredSources)||tieredSources.length>8||
      (tieredSources.length>0&&typeof publicDiscoveryJobs!=='function'))
     throw new Error('Invalid bounded discovery scope');
   if(!Number.isInteger(maxCandidates)||maxCandidates<1||maxCandidates>MAX_REVIEW)
@@ -240,6 +240,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
   // Only expanded manual reviews read the extra live source type/priority data.
   // The existing ATS-only/checkpoint paths use precisely the prior read contract.
   let enabledDiscovery=[],skippedDiscovery=[];
+  const sourceMeta=new Map();
   if(tieredSources.length){
     const extra=await readRanges(env.VACATURE_REGISTER_ID,
       ["'Bronnen'!C1:C","'Bronnen'!E1:E"],token);
@@ -253,6 +254,7 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
       meta.set(id,{type:extra[0][i]?.[0],priority:extra[1][i]?.[0],
         status:sourceRows[i][12]});
     }
+    for(const [key,value] of meta)sourceMeta.set(key,value);
     const ordered=orderTieredSources(tieredSources,meta,config);
     enabledDiscovery=ordered.enabled;
     skippedDiscovery=ordered.skipped;
@@ -327,7 +329,8 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     maxCandidates:Math.max(0,maxCandidates-candidates.length),
     seenIds,seenRoles,register,fetchJobs:publicDiscoveryJobs,pollWithRetry,
     preliminaryInterest,preliminaryRemoteEvidence,preliminaryNetherlandsScope,
-    matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError
+    matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError,
+    scanAll:scanAllDiscovery
   }):null;
   const result={schema_version:1,status:failures.length||discovery?.failures.length?
       'partial':'review_ready',
@@ -347,6 +350,28 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     discovery.manual_fallback_sources=String(config.get('high_source_order')||'')
       .split(',').map(x=>x.trim()).filter(id=>id&&active.get(id)==='active'&&
         !automated.has(id)).slice(0,10);
+    if(scanAllDiscovery){
+      const activeTypes={},unautomatedTypes={};
+      let registeredActive=0,automatedActive=0;
+      const mapped=new Set([...sources.map(x=>x.employer_source_id),
+        ...sources.map(x=>x.source_id),...tieredSources.map(x=>x.source_id)]);
+      for(const [id,meta] of sourceMeta){
+        if(meta.status!=='active')continue;
+        registeredActive++;
+        const type=String(meta.type||'unknown');
+        activeTypes[type]=(activeTypes[type]||0)+1;
+        if(mapped.has(id))automatedActive++;
+        else unautomatedTypes[type]=(unautomatedTypes[type]||0)+1;
+      }
+      discovery.registry_coverage={
+        active_registered:registeredActive,
+        automated_identifiers:automatedActive,
+        manual_or_other_identifiers:registeredActive-automatedActive,
+        registered_types:activeTypes,
+        manual_or_other_types:unautomatedTypes,
+        complete_automatic_coverage:false
+      };
+    }
     result.discovery=discovery;
   }
   return result;

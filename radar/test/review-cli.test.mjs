@@ -78,3 +78,18 @@ test('issue-based expanded discovery never permits checkpoint persistence',()=>{
     assert.equal(existsSync(join(root,'.runtime','review-observations.next.json')),false);
   }finally{rmSync(root,{recursive:true,force:true});}
 });
+
+test('maximum discovery cannot bypass manual owner checkpoint approval',()=>{
+ const {root}=fixture();
+ try{
+  for(const overrides of [
+    {RADAR_DISCOVERY_SCOPE:'maximum'},
+    {GITHUB_EVENT_NAME:'issues',RADAR_ISSUE_TITLE:'[radar] maximum 5'}
+  ]){
+    const result=exec(root,overrides);
+    assert.notEqual(result.status,0);
+    assert.match(result.stderr,/Discovery-only mode cannot write a technical checkpoint|Unauthorized radar issue command or write mode/);
+    assert.equal(existsSync(join(root,'.runtime','review-observations.next.json')),false);
+  }
+ }finally{rmSync(root,{recursive:true,force:true});}
+});

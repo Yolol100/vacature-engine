@@ -5,6 +5,7 @@ from .jobicy import JobicyAdapter
 from .jsonld import JsonLdAdapter
 from .lever import LeverAdapter
 from .personio import PersonioAdapter
+from .publicfeeds import PublicFeedsAdapter
 from .remoteok import RemoteOkAdapter
 from .remotive import RemotiveAdapter
 from .smartrecruiters import SmartRecruitersAdapter
@@ -19,6 +20,7 @@ ADAPTERS = {
     "jsonld": JsonLdAdapter(),
     "lever": LeverAdapter(),
     "personio": PersonioAdapter(),
+    "publicfeeds": PublicFeedsAdapter(),
     "remoteok": RemoteOkAdapter(),
     "remotive": RemotiveAdapter(),
     "smartrecruiters": SmartRecruitersAdapter(),

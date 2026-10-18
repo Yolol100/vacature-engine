@@ -78,6 +78,9 @@ _DISCOVERY_ADAPTERS = {
     "we-work-remotely": ("weworkremotely", "job_board",
                           "https://weworkremotely.com/categories/remote-programming-jobs.rss"),
     "remote-ok": ("remoteok", "job_board", "https://remoteok.com/api"),
+    "remote-landers-api": ("publicfeeds", "discovery_api", None),
+    "remotejobs-org": ("publicfeeds", "discovery_api", None),
+    "arbeitnow-api": ("publicfeeds", "discovery_api", None),
 }
 _DEPLOY_MANIFEST = Path(__file__).resolve().parents[2] / "source-specs.deploy.json"
 
