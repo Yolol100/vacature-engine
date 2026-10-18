@@ -84,6 +84,21 @@ const urlKeys=u=>{
   const x=canonicalUrl(u);
   return x?[x,...strongRoleKeys(x)]:[];
 };
+// Prepared CVs/letters are NOT applications. Only actual submitted/applied
+// application URLs exclude fresh discovery in addition to canonical Vacatures.
+export function submittedApplicationUrls(statusRows,urlRows){
+  if(!Array.isArray(statusRows)||!Array.isArray(urlRows)||
+     statusRows[0]?.[0]!=='status'||urlRows[0]?.[0]!=='application_url')
+    throw Error('scan_application_history_schema');
+  const urls=[];
+  for(let i=1;i<Math.max(statusRows.length,urlRows.length);i++){
+    const status=String(statusRows[i]?.[0]||'').trim().toLowerCase();
+    const url=String(urlRows[i]?.[0]||'').trim();
+    if(['submitted','applied','rejected','interview','offered'].includes(status)&&
+       url&&canonicalUrl(url))urls.push(url);
+  }
+  return urls;
+}
 export function selectDiscoveryRows(discovery,existing,now,runId){
   if(discovery===null)return [];
   if(discovery?.schema_version!==1||discovery?.mode!=='read_only_discovery_only'||
@@ -179,14 +194,15 @@ async function appendUnique(key,range,rows){
 export async function syncDrive({env,sweep,discovery,now=new Date().toISOString()}){
   assertOrigin(env);
   const key=await token(env);
-  const [r,c,leads,rv,lv,history,runs]=await Promise.all([
+  const [r,c,leads,rv,lv,history,runs,applications]=await Promise.all([
     ranges(REG,["'Bronnen'!A1:M350"],key),
     ranges(RAD,["'Brondekking'!A1:L500"],key),
     ranges(RAD,["'Bronvondsten'!A1:N10000"],key),
     ranges(REG,["'Vacatures'!G1:H2000"],key),
     ranges(RAD,["'Nieuwe vacatures'!A1:F10000"],key),
     ranges(RAD,["'Toonhistorie'!A1:B10000"],key),
-    ranges(RAD,["'Runs'!A1:L1000"],key)
+    ranges(RAD,["'Runs'!A1:L1000"],key),
+    ranges(REG,["'Applications'!C1:C2000","'Applications'!E1:E2000"],key)
   ]);
   const register=r[0].values||[],coverage=c[0].values||[],found=leads[0].values||[],
     vac=rv[0].values||[],intake=lv[0].values||[],shown=history[0].values||[],
@@ -197,12 +213,15 @@ export async function syncDrive({env,sweep,discovery,now=new Date().toISOString(
     intake[0]?.[0]!=='observation_key'||intake[0]?.[5]!=='officiele_url'||
     shown[0]?.[0]!=='vacature_identity'||shown[0]?.[1]!=='officiele_url')
     throw Error('scan_history_schema');
+  const appliedLinks=submittedApplicationUrls(applications[0].values||[],
+    applications[1].values||[]);
   const merged=mergeCoverage(register,coverage,sweep,env.GITHUB_RUN_ID);
   const identities=[...found.slice(1).map(x=>x[0]),...intake.slice(1).map(x=>x[0]),
     ...shown.slice(1).map(x=>x[0])].filter(Boolean);
   const knownUrls=[...found.slice(1).map(x=>x[5]),
     ...vac.slice(1).flatMap(x=>x.slice(0,2)),
-    ...intake.slice(1).map(x=>x[5]),...shown.slice(1).map(x=>x[1])].filter(Boolean);
+    ...intake.slice(1).map(x=>x[5]),...shown.slice(1).map(x=>x[1]),
+    ...appliedLinks].filter(Boolean);
   const feedRows=selectDiscoveryRows(discovery,{ids:identities,urls:knownUrls},
     now,env.GITHUB_RUN_ID);
   const publicRows=selectPublicClueRows(sweep,{

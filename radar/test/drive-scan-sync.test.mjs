@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {extractPublicRoleClues,inspectSource} from '../src/source-sweep.mjs';
-import {mergeCoverage,selectDiscoveryRows,selectPublicClueRows} from '../src/drive-scan-sync.mjs';
+import {mergeCoverage,selectDiscoveryRows,selectPublicClueRows,submittedApplicationUrls} from '../src/drive-scan-sync.mjs';
 
 const run='39155142052',now=new Date().toISOString();
 const coverHead=['bron_id','bronnaam','brontype','prioriteit','registratiestatus','bron_url','controlekanaal','laatst_bezocht_utc','resultaat','bewijs_url','laatste_run_id','opmerkingen'];
@@ -96,4 +96,33 @@ test('public clues reuse prior IDs and tracked role URLs with no duplicate write
   assert.equal(selectPublicClueRows(s,{ids:[],urls:[rows[0][5]+'?utm_source=scan']},now,run).length,0);
   s.source_statuses[0].jobposting_discoveries[0].url='https://untrusted.invalid/jobs/wordpress';
   assert.throws(()=>selectPublicClueRows(s,{ids:[],urls:[]},now,run),/public_clue_invalid/);
+});
+
+test('live submitted and applied Application URLs exclude discovery, but drafts do not',()=>{
+  const url='https://himalayas.app/jobs/wordpress-developer';
+  const statuses=[['status'],['drafted'],['submitted'],['applied'],['prepared_cv_ready']];
+  const urls=[['application_url'],[url],[url+'?utm_source=application'],
+    ['https://jobs.ashbyhq.com/company/role-id'],['https://other.example.org/new']];
+  const applied=submittedApplicationUrls(statuses,urls);
+  assert.equal(applied.length,2);
+  assert.equal(applied.includes(url),false);
+  const d={schema_version:1,mode:'read_only_discovery_only',github_run_id:run,
+    application_submissions:0,google_sheet_rows_written:0,candidates:[{
+      observation_key:'himalayas:global:0123456789abcdef01234567',source_id:'himalayas',
+      title:'WordPress Developer',discovery_url:url,source_url:'https://himalayas.app/jobs'
+    }]};
+  assert.equal(selectDiscoveryRows(d,{ids:[],urls:applied},now,run).length,0);
+  assert.throws(()=>submittedApplicationUrls([['not_status']],urls),/scan_application_history_schema/);
+});
+
+test('generic board landing pages and irrelevant WordPress skill tags are not vacancies',()=>{
+  const base='https://example.org/careers';
+  const html='<a href="/careers">WordPress jobs</a>'+
+    '<a href="/jobs/wordpress">WordPress jobs</a>'+
+    '<a href="/jobs/graphic-designer">Graphic Designer WordPress Canva</a>'+
+    '<a href="/jobs/wordpress-content-writer">WordPress Content Writer</a>'+
+    '<a href="/jobs/wordpress-web-developer">WordPress Web Developer</a>';
+  const clues=extractPublicRoleClues(html,base);
+  assert.equal(clues.length,1);
+  assert.equal(clues[0].url,'https://example.org/jobs/wordpress-web-developer');
 });

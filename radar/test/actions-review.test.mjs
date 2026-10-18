@@ -576,6 +576,11 @@ test('tiered mode reuses the authoritative Sheets preflight and keeps official q
     env,readRanges,accessToken:async()=> 'mock-token',
     publicJobs:async()=>[],maxCandidates:5,tieredSources:[source],
     publicDiscoveryJobs:async()=>{discoveryCalls++;return [{
+      source_id:'himalayas',source_account:'global',source_job_id:'b'.repeat(24),
+      identity:'himalayas:global:'+'b'.repeat(24),employer:'Test',title:'Lead Product Designer',
+      url:'https://himalayas.app/jobs/lead-product-designer',
+      source_url:'https://himalayas.app/jobs/api',location:'Remote, EMEA',remote:'remote'
+    },{
       source_id:'himalayas',source_account:'global',source_job_id:key,
       identity:'himalayas:global:'+key,employer:'Test',title:'WordPress Developer',
       url:'https://himalayas.app/jobs/wordpress-developer',
@@ -585,6 +590,8 @@ test('tiered mode reuses the authoritative Sheets preflight and keeps official q
   assert.equal(result.status,'review_ready');
   assert.equal(result.candidates.length,0);
   assert.equal(result.discovery.candidates.length,1);
+  assert.equal(result.discovery.candidates[0].title,'WordPress Developer');
+  assert.equal(result.discovery.counts.unrelated,1);
   assert.equal(result.discovery.candidates[0].verification.startsWith('discovery_only;'),true);
   assert.equal(result.discovery.checked_sources[0],'himalayas');
   assert.equal(discoveryCalls,1);
