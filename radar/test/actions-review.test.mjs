@@ -217,6 +217,9 @@ test('quarter-hour reader is separate, scheduled and cannot gain write permissio
   assert.doesNotMatch(scheduled,/persist-review-state\.sh|sync-register|send-email|application-submit/);
   assert.match(scheduled,/actions-review-cli\.mjs/);
   assert.match(scheduled,/upload-artifact@/);
+  assert.match(scheduled,/RADAR_RUN_MODE: 'quarter_hour_readonly'/);
+  assert.match(scheduled,/RADAR_ISSUE_TITLE:/);
+  assert.doesNotMatch(scheduled,/^\s+GITHUB_EVENT_NAME:/m);
   assert.match(scheduled,/retention-days: 2/);
   assert.match(scheduled,/if: always\(\)/);
   assert.match(scheduled,/if-no-files-found: warn/);
