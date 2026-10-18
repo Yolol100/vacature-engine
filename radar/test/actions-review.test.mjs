@@ -548,6 +548,24 @@ test('tiered mode reuses the authoritative Sheets preflight and keeps official q
   assert.deepEqual(result.discovery.manual_fallback_sources,['linkedin-jobs']);
   assert.equal(result.google_sheet_rows_written,0);
   assert.equal(result.application_submissions,0);
+  // Maximum mode has TWO independent bounded lists: official ATS and unverified feeds.
+  const maximum=await reviewOnce({
+    env,readRanges,accessToken:async()=> 'mock-token',
+    publicJobs:async()=>Array.from({length:5},(_,i)=>job('max-'+i)),
+    maxCandidates:5,tieredSources:[source],scanAllDiscovery:true,
+    publicDiscoveryJobs:async()=>[{
+      source_id:'himalayas',source_account:'global',source_job_id:key,
+      identity:'himalayas:global:'+key,employer:'Test',title:'WordPress Developer',
+      url:'https://himalayas.app/jobs/wordpress-developer',
+      source_url:'https://himalayas.app/jobs/api',location:'Remote, EMEA',remote:'remote'
+    }]
+  });
+  assert.equal(maximum.candidates.length,5);
+  assert.equal(maximum.discovery.candidates.length,1);
+  assert.equal(maximum.discovery.eligible_not_queued,0);
+  assert.equal(maximum.discovery.candidates[0].verification.startsWith('discovery_only;'),true);
+  assert.equal(maximum.google_sheet_rows_written,0);
+  assert.equal(maximum.application_submissions,0);
 });
 
 test('live API location restrictions cannot waste manual slots on foreign-only countries',()=>{
