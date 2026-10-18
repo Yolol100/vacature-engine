@@ -139,6 +139,32 @@ class ReadonlyDiscoveryBridgeTests(unittest.TestCase):
         self.assertEqual(result["jobs"][0]["url"], "https://www.arbeitnow.com/jobs/valid")
         self.assertNotIn("malicious.example", str(result))
 
+    def test_arbeitnow_malformed_authority_quarantines_only_the_bad_record(self):
+        class Malformed(DiscoveryClient):
+            def get_json(self, url, headers=None):
+                self.asserted_url = url
+                return {"data": [
+                    {"slug": "good", "title": "Remote WordPress Developer",
+                     "company_name": "Example", "remote": True,
+                     "url": "https://www.arbeitnow.com/jobs/good"},
+                    {"slug": "bad", "title": "Remote WordPress Developer",
+                     "company_name": "Example", "remote": True,
+                     "url": "https://[bad"},
+                ]}
+        result = read_discovery("arbeitnow-api", Malformed())
+        self.assertEqual(result["quarantined"], 1)
+        self.assertEqual(len(result["jobs"]), 1)
+        self.assertEqual(result["jobs"][0]["url"], "https://www.arbeitnow.com/jobs/good")
+        self.assertNotIn("[bad", str(result))
+
+    def test_malformed_authority_on_other_feed_still_fails_closed(self):
+        class Invalid(DiscoveryClient):
+            def get_json(self, url, headers=None):
+                return {"data": [{"id": "bad", "title": "Remote WordPress Developer",
+                                  "url": "https://[bad"}]}
+        with self.assertRaisesRegex(ValueError, "Unexpected public feed job URL: malformed"):
+            read_discovery("remotejobs-org", Invalid())
+
     def test_non_arbeitnow_bad_link_fails_closed(self):
         class Invalid(DiscoveryClient):
             def get_json(self, url, headers=None):

@@ -64,7 +64,11 @@ class PublicFeedsAdapter(Adapter):
         title = clean_text(record.get("title"))
         if not url or not title:
             return None
-        target = urlsplit(url)
+        try:
+            target = urlsplit(url)
+        except ValueError as error:
+            # A malformed authority must be quarantinable without leaking its URL.
+            raise ValueError("Unexpected public feed job URL: malformed") from error
         # The official .com feed also links to Arbeitnow's documented UK site.
         allowed_hosts = {base_host, "arbeitnow.com", "www.arbeitnow.co.uk"} if source == "arbeitnow-api" else {base_host}
         # Keep the strict host gate. Distinguish a small, fixed family of
