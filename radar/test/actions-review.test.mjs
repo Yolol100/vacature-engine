@@ -202,11 +202,11 @@ test('workflow has no scheduled runner or privileged writes',()=>{
   assert.ok(!/^\s+pull-requests: write/m.test(yml));
 });
 
-test('quarter-hour reader is separate, scheduled and cannot gain write permissions',()=>{
+test('two-hour read-only observer is separate, scheduled and cannot gain write permissions',()=>{
   const manual=readFileSync('../.github/workflows/vacature-radar.yml','utf8');
   const scheduled=readFileSync('../.github/workflows/vacature-quarter-hour.yml','utf8');
   assert.ok(!/^\s+schedule:/m.test(manual));
-  assert.match(scheduled,/cron: '6,21,36,51 \* \* \* \*'/);
+  assert.match(scheduled,/cron: '17 \*\/2 \* \* \*'/);
   assert.match(scheduled,/github\.event_name == 'schedule'/);
   assert.match(scheduled,/issues:\n    types: \[opened\]/);
   assert.match(scheduled,/github\.actor == 'Yolol100'/);
@@ -225,10 +225,11 @@ test('quarter-hour reader is separate, scheduled and cannot gain write permissio
   assert.match(scheduled,/if-no-files-found: warn/);
 });
 
-test('hourly rollup checks only true scheduled runs and cannot write business state',()=>{
+test('legacy hourly diagnostic is manual-only and cannot write business state',()=>{
   const yml=readFileSync('../.github/workflows/vacature-hourly-evidence.yml','utf8');
   const reader=readFileSync('scripts/hourly_rollup.py','utf8');
-  assert.match(yml,/cron: '4 \* \* \* \*'/);
+  assert.doesNotMatch(yml,/^\s+schedule:/m);
+  assert.match(yml,/  workflow_dispatch:/);
   assert.match(yml,/actions: read/);
   assert.match(yml,/contents: read/);
   assert.doesNotMatch(yml,/contents: write|pull-requests: write|sync-register|persist-review-state/);
