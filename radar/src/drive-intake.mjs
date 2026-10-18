@@ -34,7 +34,8 @@ export function verifiedObservation(text){
   if(lines.length!==2||text.length>100000)
     throw new Error('observation_format');
   const [scope,result]=lines.map(x=>JSON.parse(x));
-  if(scope?.technical_source_scope?.supported!==13||
+  if(!Number.isSafeInteger(scope?.technical_source_scope?.supported)||
+     scope.technical_source_scope.supported<1||scope.technical_source_scope.supported>30||
      scope.technical_source_scope.source_manifest!=='ingestion/source-specs.radar.json'||
      result?.schema_version!==1||result.status!=='review_ready'||
      result.mode!=='read_only'||result.manual_review_required!==true||
@@ -80,15 +81,17 @@ export function selectFreshRows({candidates,index,existingIds,existingUrls,now,r
   for(const c of candidates){
     if(!c||typeof c!=='object'||Array.isArray(c))throw new Error('candidate_type');
     const identity=String(c.observation_key||'');
-    const parts=identity.split(':');
     const sourceId=String(c.source_id||'');
+    const sourceAccount=String(c.source_account||'');
+    const sourceJobId=String(c.source_job_id||'');
     const title=String(c.title||'');
     const url=String(c.official_url||'');
-    if(parts.length!==3||parts[0]!==sourceId||!parts[1]||!parts[2]||
-       identity.length>210||title.length>240||url.length>500||
+    if(!sourceId||!sourceAccount||!sourceJobId||
+       identity!==[sourceId,sourceAccount,sourceJobId].join(':')||
+       identity.length>800||sourceJobId.length>500||title.length>240||url.length>500||
        String(c.employer||'').length>160||String(c.location||'').length>160)
       throw new Error('candidate_contract');
-    const job={identity,source_id:sourceId,source_account:parts[1],source_job_id:parts[2],
+    const job={identity,source_id:sourceId,source_account:sourceAccount,source_job_id:sourceJobId,
       title,url,source_url:url};
     if(!isValidJob(job)||strongRoleKeys(url).length===0)
       throw new Error('candidate_official_url');
@@ -104,7 +107,7 @@ export function selectFreshRows({candidates,index,existingIds,existingUrls,now,r
     if(matched.applied||matched.known)continue;
     const hash=createHash('sha256').update([identity,title,url,published].join('\n')).digest('hex');
     rows.push([
-      identity,sourceId,parts[2],String(c.employer||''),title,url,url,
+      identity,sourceId,sourceJobId,String(c.employer||''),title,url,url,
       String(c.remote_text||'').slice(0,160),String(c.location||'').slice(0,160),
       '',published,now,now,'geen_ingediende_sollicitatie_in_register',
       'officiele_ats_observatie_nog_te_verifieren','handmatige_nl_check',
