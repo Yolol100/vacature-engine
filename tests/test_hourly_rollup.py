@@ -20,7 +20,7 @@ class HourlyRollupTests(unittest.TestCase):
             {'id': i, 'name': rollup.WORKFLOW_NAME, 'event': 'schedule',
              'head_branch': 'main', 'status': 'completed', 'conclusion': 'success',
              'created_at': f'2026-10-18T12:{minute:02d}:00Z'}
-            for i, minute in enumerate([7, 22, 37, 52], 1)
+            for i, minute in enumerate([6, 21, 36, 51], 1)
         ]
         self.scope = {'technical_source_scope': {'supported': 13}}
         self.payload = {
