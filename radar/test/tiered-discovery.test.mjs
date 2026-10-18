@@ -111,7 +111,7 @@ test('invalid public discovery contract is rejected before accepting any source 
 
 test('country-only API discovery does not fill the manual Netherlands review queue',async()=>{
   const source=feeds.find(x=>x.source_id==='jobicy-api');
-  const rows=['LATAM','Hungary','Serbia','Europe'].map((location,i)=>({
+  const rows=['LATAM','Hungary','Serbia','Americas','Europe'].map((location,i)=>({
     ...job(source,String(i+1).repeat(24).slice(0,24),
       'https://jobicy.com/jobs/wordpress-'+i),
     location
@@ -119,7 +119,7 @@ test('country-only API discovery does not fill the manual Netherlands review que
   const result=await collectTieredDiscovery({...readerParams,
     sources:[source],maxCandidates:5,seenIds:new Set(),seenRoles:new Set(),
     fetchJobs:async()=>rows});
-  assert.equal(result.counts.geography_outside_nl,3);
+  assert.equal(result.counts.geography_outside_nl,4);
   assert.equal(result.candidates.length,1);
   assert.equal(result.candidates[0].location,'Europe');
   assert.equal(result.status,'review_ready');

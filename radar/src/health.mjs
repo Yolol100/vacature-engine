@@ -14,7 +14,8 @@ export function safeDiagnosticError(error){
      /^(Missing required Worker bindings or secrets|Missing required bindings or secrets|Missing Google Sheets service account secret|Invalid candidate limit|Invalid Google OAuth scope|Radar is not in a read-only transition state|Radar State baseline unavailable|Duplicate identity in Radar history|Duplicate source ID in live register|No active registered source pair|Invalid radar review state|Invalid or duplicate review observation|Duplicate review official URL|Conflicting radar identity in durable state|Conflicting radar review replay|Radar review state capacity reached|Spreadsheet header mismatch: stop before dedupe or writes|No active ATS\+employer source pairs|Source exceeds safe job limit|Source payload too large|Unexpected public jobs payload|Unexpected ATS job host: source contract changed)$/.test(raw))
     return raw.slice(0,110);
   if(/^Public API fetch (?:timeout_or_network|malformed_result|response_too_large|rate_limited|upstream_transient|blocked_or_auth_required|other_technical_failure|http_error)$/.test(raw) ||
-     ['Public API contract mismatch','Public API adapter internal failure'].includes(raw))
+     (['Public API contract mismatch','Public API adapter internal failure'].includes(raw) ||
+      /^Public API contract (?:schema|job_url|normalized_role|other)$/.test(raw)))
     return raw;
   // These are fixed internal discovery status labels; never print provider bodies.
   if(['Public discovery adapter failed','Unexpected public discovery payload',
