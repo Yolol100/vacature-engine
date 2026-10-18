@@ -1,4 +1,6 @@
-# Vacature Ingestion
+# Vacature Ingestion (codebibliotheek, geen automatische runs)
+
+**Status 2026-10-18:** De eerdere GitHub Actions-ingestieworkflow is verwijderd. Deze component blijft beschikbaar voor deterministische adapters en tests; oude beschrijvingen van GitHub-ingestie en state zijn historische documentatie, geen actieve scheduler of schrijver. Live vacaturezoeken gebeurt alleen op expliciete ChatGPT-opdracht met de bestaande Google Sheets.
 
 Policy-free bulk ingestion component for the Webactueel vacancy system. It converts public ATS/API/JobPosting data into `JobObservation 1.1` compatible observations and owns only technical ingest state.
 

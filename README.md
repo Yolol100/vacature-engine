@@ -49,15 +49,20 @@ Herbruikbare antwoorden mogen alleen uit door de gebruiker goedgekeurde `Applica
 
 This remains caller-owned policy. `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience. See [docs/BILINGUAL-APPLICATION-PACK.md](docs/BILINGUAL-APPLICATION-PACK.md); the legacy filename is retained for compatibility.
 
-## Ingestion component
+## Vacature zoeken op verzoek (vanaf 2026-10-18)
 
-`ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. De algemene ingestion-workflow draait handmatig of bij relevante codewijzigingen. Een aparte, strikt read-only GitHub Actions-workflow observeert officiële ATS-bronnen elk kwartier; alleen bewezen schedule-runs met geldige artifacts tellen mee. Vacatureverificatie en periodieke kandidaatdiscovery blijven caller-owned. In de eenvoudige modus is de ChatGPT-automation de enige scheduler. Source-health kan bij zo'n expliciete run compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
+Deze repository is alleen een **hulpmiddel** voor `vacature-search`. Vacatures zoeken gebeurt uitsluitend wanneer de gebruiker ChatGPT daarom vraagt; er is **geen automatische vacatureplanning, GitHub Radar-run of automatische import**.
 
-## GitHub-only Vacature Radar
+1. Lees eerst de live `Vacature Register`-tabs `Config`, `Bronnen`, `Vacatures`, `Applications` en `CandidateEvidence` plus relevante bestaande bewijs- en historieregels.
+2. Doorzoek op verzoek de actieve bronnen, directe werkgevers-/ATS-vacatures eerst, gevolgd door goedgekeurde feeds en webzoekresultaten. Richt je standaard op vacatures van maximaal zeven dagen oud; eis een verifieerbare officiële publicatiedatum.
+3. Controleer volledig remote vanuit Nederland, Nederlands/Engels, materiële WordPress/WooCommerce/Elementor/Gutenberg- of AI-workflowautomatiseringsmatch en bewijsgebonden kandidaatfit. Sluit al bekende, behandelde, afgewezen en ingediende vacatures uit op canonieke URL/ATS-ID.
+4. Toon alleen nieuwe officieel geverifieerde rollen. Hergebruik desgewenst uitsluitend de bestaande sheet `Vacature Radar - Nieuwe Vacatures`; de canonieke sollicitatiehistorie blijft in `Vacature Register`. Geen automatisch CV, e-mail, sollicitatie of nieuw bestand.
 
-The independent [GitHub Actions Radar](radar/README.md) runs owner-initiated, read-only technical reviews of 11 official ATS tenants from `ingestion/source-specs.radar.json`. It reuses the existing `radar-state` branch for durable technical checkpoints, protected by manual owner dispatch plus the separate `RADAR_PERSIST_APPROVED` gate. No unattended applications, mailbox operations or Sheets writes are performed.
+De oude dedicated GitHub Actions-routes `vacature-quarter-hour.yml`, `vacature-hourly-evidence.yml`, `vacature-radar.yml` en `vacature-ingestion.yml` zijn beëindigd. De Python-engine, publieke ingestieadapters en hun tests blijven beschikbaar als codebibliotheek; reguliere CI, CodeQL en releasecontroles blijven uitsluitend voor softwarekwaliteit actief. Historische GitHub-runrecords en technische Sheet-tabs blijven bewaard maar zijn geen actuele zoek- of statusbron.
 
-The project-owned Cloudflare Worker, Cron and D1 database were removed on 2026-10-17 after CI, CodeQL, checkpoint recovery and real 11/11 ATS acceptance. [Post-deletion proof](https://github.com/Yolol100/vacature-engine/actions/runs/39061366550).
+## Technische ingestiecode (niet automatisch uitgevoerd)
+
+`ingestion/` normaliseert publieke ATS/API/Schema.org-data. De gescheiden `radar/`-hulpmiddelen en historische state kunnen nog als naslag worden gelezen, maar zij starten geen GitHub-job en schrijven niet autonoom naar Sheets.
 
 ## CV artifact contract v1.0
 
@@ -206,7 +211,7 @@ best = top_vacancies(vacancies, today=today_from_config, policy=config_values)
 - CV-artifacttests bewaken stabiele vacancy-bound bestandsnamen, provenance-hashes en fail-closed manifestvalidatie; semantische CV-tailoring blijft expliciet buiten de helper.
 - Observatietests bewaken sterke identiteit, false-mergepreventie, URL-fail-closed en publication-conflictprovenance.
 - Structured-data-tests bewaken dat Schema.org-signalen nooit remote/geografie/open-statusbeleid overnemen.
-- De ingestiecomponent heeft eigen regressietests, 10.000-record benchmark en live GitHub Actions-netwerkgate.
+- De ingestiecomponent heeft eigen regressietests en een 10.000-record benchmark; er is geen automatische vacature-ingestie of live Radar-netwerkgate.
 - CodeQL en dependency-policygates blijven actief.
 - Release-evidence blijft reproduceerbaar met SBOM, checksums en provenance receipt.
 

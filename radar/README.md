@@ -1,4 +1,6 @@
-# GitHub Actions Vacature Radar
+# Vacature Radar technische hulpmiddelen (historisch)
+
+**Status 2026-10-18:** De GitHub Actions Radar-, uurlijkse bewijs- en vieruurs-observatieworkflows zijn verwijderd op verzoek van de gebruiker. Het onderstaande beschrijft alleen historische bediening en technische code; er is geen actieve automatische of handmatige GitHub-radaruitvoering. Nieuwe vacatures worden uitsluitend op expliciete ChatGPT-opdracht via de live Register-bronnen gezocht.
 
 Independent read-only technical review using the 13 official ATS tenants from `ingestion/source-specs.radar.json`.
 
