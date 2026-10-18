@@ -218,6 +218,8 @@ test('quarter-hour reader is separate, scheduled and cannot gain write permissio
   assert.match(scheduled,/actions-review-cli\.mjs/);
   assert.match(scheduled,/upload-artifact@/);
   assert.match(scheduled,/retention-days: 2/);
+  assert.match(scheduled,/if: always\(\)/);
+  assert.match(scheduled,/if-no-files-found: warn/);
 });
 
 test('live Config blocks candidate processing when old delivery or new radar is enabled',async()=>{
