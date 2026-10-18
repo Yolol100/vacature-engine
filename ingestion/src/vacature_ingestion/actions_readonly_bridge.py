@@ -158,8 +158,14 @@ def main() -> int:
         } else "other_technical_failure"
         print(f"public_ats_http_{error.status}" if error.status else
               f"public_ats_fetch_{category}", file=sys.stderr)
-    except ValueError:
-        print("public_ats_contract_error", file=sys.stderr)
+    except ValueError as error:
+        # Provider-controlled exception messages are never printed.
+        category = {
+            "Invalid Arbeitnow response": "schema",
+            "Unexpected public feed job URL": "job_url",
+            "Invalid public discovery role": "normalized_role",
+        }.get(str(error), "other")
+        print(f"public_ats_contract_{category}", file=sys.stderr)
     except Exception:
         print("public_ats_internal_error", file=sys.stderr)
     return 1
