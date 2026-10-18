@@ -205,13 +205,13 @@ test('workflow has no scheduled runner or privileged writes',()=>{
 test('quarter-hour reader is separate, scheduled and cannot gain write permissions',()=>{
   const manual=readFileSync('../.github/workflows/vacature-radar.yml','utf8');
   const scheduled=readFileSync('../.github/workflows/vacature-quarter-hour.yml','utf8');
-  assert.ok(!/^\\s+schedule:/m.test(manual));
-  assert.match(scheduled,/cron: '7,22,37,52 \\* \\* \\* \\*'/);
-  assert.match(scheduled,/github\\.event_name == 'schedule'/);
+  assert.ok(!/^\s+schedule:/m.test(manual));
+  assert.match(scheduled,/cron: '7,22,37,52 \* \* \* \*'/);
+  assert.match(scheduled,/github\.event_name == 'schedule'/);
   assert.match(scheduled,/contents: read/);
   assert.doesNotMatch(scheduled,/contents: write|pull-requests: write|RADAR_PERSIST: '1'/);
-  assert.doesNotMatch(scheduled,/persist-review-state\\.sh|sync-register|send-email|application-submit/);
-  assert.match(scheduled,/actions-review-cli\\.mjs/);
+  assert.doesNotMatch(scheduled,/persist-review-state\.sh|sync-register|send-email|application-submit/);
+  assert.match(scheduled,/actions-review-cli\.mjs/);
   assert.match(scheduled,/upload-artifact@/);
   assert.match(scheduled,/retention-days: 2/);
 });
