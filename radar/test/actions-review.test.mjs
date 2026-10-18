@@ -225,6 +225,22 @@ test('quarter-hour reader is separate, scheduled and cannot gain write permissio
   assert.match(scheduled,/if-no-files-found: warn/);
 });
 
+test('hourly rollup checks only true scheduled runs and cannot write business state',()=>{
+  const yml=readFileSync('../.github/workflows/vacature-hourly-evidence.yml','utf8');
+  const reader=readFileSync('scripts/hourly_rollup.py','utf8');
+  assert.match(yml,/cron: '4 \* \* \* \*'/);
+  assert.match(yml,/actions: read/);
+  assert.match(yml,/contents: read/);
+  assert.doesNotMatch(yml,/contents: write|pull-requests: write|sync-register|persist-review-state/);
+  assert.match(yml,/github\.actor == 'Yolol100'/);
+  assert.match(yml,/upload-artifact@/);
+  assert.match(reader,/run\.get\('event'\) == 'schedule'/);
+  assert.match(reader,/run\.get\('head_branch'\) == 'main'/);
+  assert.match(reader,/google_sheet_rows_written/);
+  assert.match(reader,/application_submissions/);
+  assert.match(reader,/coverage_incomplete/);
+});
+
 test('live Config blocks candidate processing when old delivery or new radar is enabled',async()=>{
   const h=harness();
   h.data["'Config'!A1:B"][1][1]='TRUE';
