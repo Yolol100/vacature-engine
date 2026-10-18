@@ -67,8 +67,14 @@ class PublicFeedsAdapter(Adapter):
         target = urlsplit(url)
         # The official .com feed also links to Arbeitnow's documented UK site.
         allowed_hosts = {base_host, "arbeitnow.com", "www.arbeitnow.co.uk"} if source == "arbeitnow-api" else {base_host}
-        if target.scheme != "https" or target.hostname not in allowed_hosts or target.username or target.password:
-            raise ValueError("Unexpected public feed job URL")
+        # Keep the strict host gate. Distinguish a small, fixed family of
+        # failures without echoing provider-controlled URLs to public CI logs.
+        if target.scheme != "https" or target.username or target.password:
+            raise ValueError("Unexpected public feed job URL: malformed")
+        if target.hostname not in allowed_hosts:
+            if source == "arbeitnow-api" and target.hostname == "arbeitnow.co.uk":
+                raise ValueError("Unexpected public feed job URL: uk_apex")
+            raise ValueError("Unexpected public feed job URL: untrusted_host")
         company = record.get("company")
         if isinstance(company, dict):
             company = company.get("name")

@@ -75,6 +75,26 @@ class PublicFeedsTests(unittest.TestCase):
                 adapter.normalize_record({"title": "WordPress Developer", "url": url},
                                          spec("arbeitnow-api"), "")
 
+    def test_arbeitnow_rejection_has_safe_fixed_diagnostic_categories(self):
+        adapter = ADAPTERS["publicfeeds"]
+        cases = (
+            ("http://www.arbeitnow.com/jobs/role", "malformed"),
+            ("https://user:password@www.arbeitnow.com/jobs/role", "malformed"),
+            ("https://arbeitnow.co.uk/jobs/role", "uk_apex"),
+            ("https://arbeitnow.co.uk.evil.test/jobs/role", "untrusted_host"),
+            ("https://untrusted.example/jobs/role", "untrusted_host"),
+        )
+        for url, category in cases:
+            with self.subTest(category=category):
+                with self.assertRaises(ValueError) as caught:
+                    adapter.normalize_record(
+                        {"slug": "role", "title": "Remote WordPress Developer",
+                         "url": url, "remote": True}, spec("arbeitnow-api"), "")
+                self.assertEqual(str(caught.exception),
+                                 "Unexpected public feed job URL: " + category)
+                self.assertNotIn("evil.test", str(caught.exception))
+                self.assertNotIn("untrusted.example", str(caught.exception))
+
     def test_no_arbitrary_endpoints_or_unapproved_source_ids(self):
         adapter = ADAPTERS["publicfeeds"]
         client = FakeClient()

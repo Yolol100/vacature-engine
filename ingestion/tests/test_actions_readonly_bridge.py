@@ -153,6 +153,9 @@ class SafeBridgeDiagnosticsTests(unittest.TestCase):
             (ValueError("secret provider response"), "public_ats_contract_other"),
             (ValueError("Invalid Arbeitnow response"), "public_ats_contract_schema"),
             (ValueError("Unexpected public feed job URL"), "public_ats_contract_job_url"),
+            (ValueError("Unexpected public feed job URL: malformed"), "public_ats_contract_job_url_malformed"),
+            (ValueError("Unexpected public feed job URL: uk_apex"), "public_ats_contract_job_url_uk_apex"),
+            (ValueError("Unexpected public feed job URL: untrusted_host"), "public_ats_contract_job_url_untrusted_host"),
             (ValueError("Invalid public discovery role"), "public_ats_contract_normalized_role"),
             (TypeError("private token"), "public_ats_internal_error"),
         ]
