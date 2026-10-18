@@ -6,7 +6,10 @@ const FEEDS=Object.freeze({
   'jobicy-api':['jobicy','discovery_api'],
   'himalayas':['himalayas','discovery_api'],
   'we-work-remotely':['weworkremotely','job_board'],
-  'remote-ok':['remoteok','job_board']
+  'remote-ok':['remoteok','job_board'],
+  'remote-landers-api':['publicfeeds','discovery_api'],
+  'remotejobs-org':['publicfeeds','discovery_api'],
+  'arbeitnow-api':['publicfeeds','discovery_api']
 });
 const SAFE=/^[a-z0-9][a-z0-9_-]{1,79}$/;
 export function selectTieredSources(specs){
@@ -29,11 +32,11 @@ export function selectTieredSources(specs){
     seen.add(source.source_id);
     selected.push({source_id:source.source_id,source_type:type,account:source.account});
   }
-  if(selected.length!==5)throw new Error('Missing approved public discovery adapters');
+  if(selected.length!==8)throw new Error('Missing approved public discovery adapters');
   return selected;
 }
 export function orderTieredSources(sources,meta,config){
-  if(!(meta instanceof Map)||!(config instanceof Map)||sources.length>5)
+  if(!(meta instanceof Map)||!(config instanceof Map)||sources.length>8)
     throw new Error('Invalid live discovery policy');
   const order=String(config.get('direct_discovery_order')||'').split(',').map(x=>x.trim());
   const high=String(config.get('high_source_order')||'').split(',').map(x=>x.trim());
@@ -62,17 +65,17 @@ export function orderTieredSources(sources,meta,config){
 export async function collectTieredDiscovery({
   sources,skipped=[],maxCandidates,seenIds,seenRoles,register,fetchJobs,pollWithRetry,
   preliminaryInterest,preliminaryRemoteEvidence,preliminaryNetherlandsScope,
-  matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError
+  matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError,scanAll=false
 }){
   const result={mode:'discovery_only',manual_official_verification_required:true,
     checked_sources:[],skipped_sources:[...skipped],not_polled_sources:[],
     counts:{observed:0,previously_seen:0,already_in_register:0,previously_applied:0,
       unrelated:0,remote_evidence_missing:0,geography_outside_nl:0,review_candidates:0},
-    candidates:[],failures:[]};
+    candidates:[],failures:[],eligible_not_queued:0};
   if(!Number.isSafeInteger(maxCandidates)||maxCandidates<0||maxCandidates>10)
     throw new Error('Invalid discovery review limit');
   for(const [i,source] of sources.entries()){
-    if(result.candidates.length>=maxCandidates){
+    if(!scanAll&&result.candidates.length>=maxCandidates){
       result.not_polled_sources=sources.slice(i).map(x=>x.source_id);
       break;
     }
@@ -115,7 +118,11 @@ export async function collectTieredDiscovery({
       else {
         seenIds.add(job.identity);
         for(const key of keys)seenRoles.add(key);
-        if(result.candidates.length<maxCandidates)result.candidates.push({
+        if(result.candidates.length>=maxCandidates){
+          result.eligible_not_queued++;
+          continue;
+        }
+        result.candidates.push({
           observation_key:job.identity,source_id:source.source_id,
           employer:String(job.employer||'').slice(0,160),title:job.title,
           discovery_url:canonicalUrl(job.url),source_url:String(job.source_url||'').slice(0,240),
