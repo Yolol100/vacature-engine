@@ -163,6 +163,9 @@ def main() -> int:
         category = {
             "Invalid Arbeitnow response": "schema",
             "Unexpected public feed job URL": "job_url",
+            "Unexpected public feed job URL: malformed": "job_url_malformed",
+            "Unexpected public feed job URL: uk_apex": "job_url_uk_apex",
+            "Unexpected public feed job URL: untrusted_host": "job_url_untrusted_host",
             "Invalid public discovery role": "normalized_role",
         }.get(str(error), "other")
         print(f"public_ats_contract_{category}", file=sys.stderr)
