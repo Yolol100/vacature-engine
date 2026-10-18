@@ -150,7 +150,10 @@ class SafeBridgeDiagnosticsTests(unittest.TestCase):
              "public_ats_fetch_timeout_or_network"),
             (FetchError("blocked_or_auth_required", "secret", status=403),
              "public_ats_http_403"),
-            (ValueError("secret provider response"), "public_ats_contract_error"),
+            (ValueError("secret provider response"), "public_ats_contract_other"),
+            (ValueError("Invalid Arbeitnow response"), "public_ats_contract_schema"),
+            (ValueError("Unexpected public feed job URL"), "public_ats_contract_job_url"),
+            (ValueError("Invalid public discovery role"), "public_ats_contract_normalized_role"),
             (TypeError("private token"), "public_ats_internal_error"),
         ]
         for err, expected in cases:
