@@ -47,6 +47,7 @@ test('already applied or already known official URLs are excluded before write',
   assert.equal(take([candidate()],{known:new Set(keys),applied:new Set()}).length,0);
   assert.equal(take([candidate()],emptyIndex(),new Set([candidate().observation_key])).length,0);
   assert.equal(take([candidate()],emptyIndex(),new Set(),new Set([url])).length,0);
+  assert.equal(take([candidate()],emptyIndex(),new Set(),new Set([url+'?utm_source=board'])).length,0);
 });
 test('two identical candidate records are idempotent inside one batch',()=>{
   assert.equal(take([candidate(),candidate()]).length,1);
