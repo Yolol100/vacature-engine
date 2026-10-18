@@ -53,6 +53,14 @@ class HourlyRollupTests(unittest.TestCase):
         self.assertEqual(result['repeated_candidates_within_hour'], 3)
         self.assertEqual(result['verified_eligible_vacancies'], [])
 
+    def test_four_runs_in_same_slot_are_not_four_valid_quarters(self):
+        runs = [dict(r, created_at=f'2026-10-18T12:{8+i:02d}:00Z')
+                for i, r in enumerate(self.runs)]
+        result = self.summary(runs)
+        self.assertEqual(result['actual_schedule_events'], 4)
+        self.assertEqual(result['missing_or_unattributed_quarter_slots'], 3)
+        self.assertEqual(result['status'], 'coverage_incomplete')
+
     def test_missing_quarters_are_unknown_not_zero(self):
         result = self.summary(self.runs[:1], {1: (self.scope, self.payload)})
         self.assertEqual(result['missing_or_late_events'], 3)
