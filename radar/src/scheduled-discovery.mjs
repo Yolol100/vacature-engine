@@ -30,7 +30,6 @@ const HISTORY=[
 const EXPECTED_HEADERS=['source_id','source_type','priority','status'];
 const HISTORY_HEADERS=['observation_key','officiele_url','identity','official_url'];
 const RESULT='.runtime/scheduled-discovery.json';
-function rows(x){return x?.values||[];}
 export function authorizeDiscovery(env){
   const safeActor=env.GITHUB_ACTOR==='Yolol100'&&(
     env.GITHUB_EVENT_NAME==='workflow_dispatch'||
@@ -87,18 +86,20 @@ export async function runApprovedDiscovery({env,token,read,loadSpecs,fetchJobs})
     read(REG,REGS,auth),
     read(RAD,HISTORY,auth)
   ]);
-  if(configRows?.length!==1||rows(configRows[0])[0]?.[0]!=='key'||
-     rows(configRows[0])[0]?.[1]!=='value')
+  if(configRows?.length!==1||configRows[0]?.[0]?.[0]!=='key'||
+     configRows[0]?.[0]?.[1]!=='value')
     throw new Error('discovery_config_schema');
-  const config=new Map(rows(configRows[0]).slice(1).map(r=>[r[0],r[1]]));
+  const config=new Map(configRows[0].slice(1).map(r=>[r[0],r[1]]));
   if(String(config.get('radar_enabled')).toUpperCase()!=='FALSE'||
      config.get('radar_delivery')!=='none')
     throw new Error('discovery_unexpected_radar_mode');
   if(sourceRanges?.length!==4||registerRanges?.length!==8||historical?.length!==4)
     throw new Error('discovery_ranges_incomplete');
-  const registry=sourceIndex(sourceRanges.map(rows));
-  const history=seenKeys(historical.map(rows));
-  const index=registerIndex(registerRanges);
+  // The production readRanges transport returns bare 2D value matrices,
+  // whereas registerIndex is the legacy wrapper expecting {values:matrix}.
+  const registry=sourceIndex(sourceRanges);
+  const history=seenKeys(historical);
+  const index=registerIndex(registerRanges.map(values=>({values})));
   const sourceSpecs=selectTieredSources(loadSpecs());
   const ordered=orderTieredSources(sourceSpecs,registry.map,config);
   const result=await collectTieredDiscovery({
