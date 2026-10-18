@@ -571,12 +571,12 @@ test('tiered mode reuses the authoritative Sheets preflight and keeps official q
 test('live API location restrictions cannot waste manual slots on foreign-only countries',()=>{
   for(const place of ['LATAM','APAC','Hungary','Hongarije','Serbia','Servië',
     'Remote, Hungary','Remote, Serbia','Remote, LATAM','Remote, APAC',
-    'Remote, Northern America']) {
+    'Remote, Northern America','Americas','Remote, Americas']) {
     assert.equal(preliminaryNetherlandsScope({location:place}),false,place);
   }
   for(const place of ['Remote, Europe','Remote, European Union','Remote, EMEA',
     'Remote, Netherlands','Remote, Nederland','Worldwide',
-    'Remote, Europe, USA']) {
+    'Remote, Europe, USA','United States / Canada / Americas / Europe']) {
     assert.equal(preliminaryNetherlandsScope({location:place}),true,place);
   }
 });
