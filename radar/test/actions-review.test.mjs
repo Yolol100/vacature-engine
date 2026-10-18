@@ -206,7 +206,7 @@ test('quarter-hour reader is separate, scheduled and cannot gain write permissio
   const manual=readFileSync('../.github/workflows/vacature-radar.yml','utf8');
   const scheduled=readFileSync('../.github/workflows/vacature-quarter-hour.yml','utf8');
   assert.ok(!/^\s+schedule:/m.test(manual));
-  assert.match(scheduled,/cron: '7,22,37,52 \* \* \* \*'/);
+  assert.match(scheduled,/cron: '6,21,36,51 \* \* \* \*'/);
   assert.match(scheduled,/github\.event_name == 'schedule'/);
   assert.match(scheduled,/issues:\n    types: \[opened\]/);
   assert.match(scheduled,/github\.actor == 'Yolol100'/);
