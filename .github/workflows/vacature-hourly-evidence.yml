@@ -1,8 +1,6 @@
 name: Vacature hourly evidence rollup
 
 on:
-  schedule:
-    - cron: '4 * * * *'
   workflow_dispatch:
   issues:
     types: [opened]
@@ -18,12 +16,11 @@ concurrency:
 jobs:
   summarize:
     if: >-
-      github.event_name == 'schedule' ||
-      (github.actor == 'Yolol100' &&
-       (github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'issues' &&
-         github.event.issue.user.login == 'Yolol100' &&
-         github.event.issue.title == '[radar] hourly evidence')))
+      github.actor == 'Yolol100' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'issues' &&
+        github.event.issue.user.login == 'Yolol100' &&
+        github.event.issue.title == '[radar] hourly evidence'))
     runs-on: ubuntu-latest
     timeout-minutes: 8
     permissions:
@@ -37,7 +34,7 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.13'
-      - name: Audit last complete hour of true scheduled quarter runs
+      - name: Historical read-only hourly scheduled-event diagnostic
         run: python radar/scripts/hourly_rollup.py
       - name: Keep only bounded technical rollup evidence
         if: always()

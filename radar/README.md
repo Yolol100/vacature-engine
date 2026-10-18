@@ -7,7 +7,7 @@ Independent read-only technical review using the 13 official ATS tenants from `i
 - State restoration: `radar/scripts/load-review-state.sh`
 - Durable checkpoint: `radar/scripts/persist-review-state.sh` on existing `radar-state` branch
 - Checkpoint requires manual `workflow_dispatch` by repository owner, `persist_review=true`, and `RADAR_PERSIST_APPROVED=yes`.
-- No automated application, email, Google Sheets writes or unattended technical-state writes. The separate `vacature-quarter-hour.yml` is configured for read-only official ATS observations at UTC :06/:21/:36/:51, with `vacature-hourly-evidence.yml` configured for a read-only rollup at UTC :04. GitHub schedules are best-effort; only completed `schedule` events with valid artifacts count as quarter coverage.
+- No automated application, email, Google Sheets writes or unattended technical-state writes. The existing observation workflow `.github/workflows/vacature-quarter-hour.yml` retains its historical filename and workflow name for consumer compatibility, but now runs **once every two UTC hours at :17** (`17 */2 * * *`), starting at 00:17 UTC. Its bounded artifacts are read directly by the existing ChatGPT `Vacature Radar` task **every three hours**. The previous `vacature-hourly-evidence.yml` cron has been removed; that workflow remains an owner-gated manual historical diagnostic only and must not be counted as a scheduled deliverable. In each rolling three-hour interval, compute the actual expected two-hour slots (normally one or two); only real GitHub `event=schedule` executions with valid artifacts count. GitHub schedules are best-effort and may be delayed or skipped. The task independently verifies official vacancies even when no GitHub event occurs. No new scheduler or state writer is introduced.
 - Node checks: `cd radar && npm run check && npm test`.
 - Node and focused Python regression jobs run in parallel in `.github/workflows/vacature-radar.yml` on code changes.
 - Python regression: `python -m unittest discover -s ingestion/tests`.
@@ -22,7 +22,7 @@ Evidence:
 - [Post-deletion owner-initiated read-only review](https://github.com/Yolol100/vacature-engine/actions/runs/39061366550): 11/11 active ATS sources, no failures, zero Google Sheets writes and zero applications
 - [Acceptance issue #165](https://github.com/Yolol100/vacature-engine/issues/165)
 
-The preserved GitHub `radar-state` and `ingestion-state` branches and the live Google Sheets history remain authoritative for their respective records. No replacement scheduler, state store or delivery pipeline was introduced during the 2026-10-17 Cloudflare retirement. A separate read-only GitHub Actions quarter-hour schedule and hourly evidence rollup were configured on 2026-10-18; neither is an application, Sheets writer or candidate-verification pipeline.
+The preserved GitHub `radar-state` and `ingestion-state` branches and the live Google Sheets history remain authoritative for their respective records. No replacement scheduler, state store or delivery pipeline was introduced during the 2026-10-17 Cloudflare retirement. On 2026-10-18 the read-only observation workflow was changed from quarterly to two-hourly and its old hourly rollup became manual-only; neither is an application, Sheets writer or candidate-verification pipeline.
 
 ## Optional tiered discovery (read-only)
 

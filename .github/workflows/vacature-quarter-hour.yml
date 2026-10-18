@@ -2,7 +2,7 @@ name: Vacature Radar quarter-hour observations
 
 on:
   schedule:
-    - cron: '6,21,36,51 * * * *'
+    - cron: '17 */2 * * *'
   workflow_dispatch:
   issues:
     types: [opened]
@@ -55,7 +55,7 @@ jobs:
           set -euo pipefail
           mkdir -p .runtime
           node radar/src/actions-review-cli.mjs > .runtime/scheduled-observations.log
-      - name: Preserve result and failure diagnostics for hourly consumer
+      - name: Preserve result and failure diagnostics for the three-hour ChatGPT reader
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
