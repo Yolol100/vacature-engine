@@ -6,7 +6,7 @@ function bridgeError(error,kind){
   const stderr=String(error?.stderr||'');
   const status=/public_ats_http_([45][0-9][0-9])/.exec(stderr)?.[1];
   const fetch=/public_ats_fetch_(timeout_or_network|malformed_result|response_too_large|rate_limited|upstream_transient|blocked_or_auth_required|other_technical_failure|http_error)/.exec(stderr)?.[1];
-  const contract=/public_ats_contract_(schema|job_url|normalized_role|other)/.exec(stderr)?.[1];
+  const contract=/public_ats_contract_(schema|job_url_malformed|job_url_uk_apex|job_url_untrusted_host|job_url|normalized_role|other)/.exec(stderr)?.[1];
   const reason=status?'Public API HTTP '+status:
     fetch?'Public API fetch '+fetch:
     contract?'Public API contract '+contract:
@@ -49,7 +49,7 @@ async function publicJobs(source,limits={}){
   if(valid.length!==items.length)throw new Error('Unexpected ATS job host: source contract changed');
   return valid;
 }
-export {publicJobs};
+export {publicJobs,bridgeError};
 
 // Read-only Node bridge for Personio/Workable via existing ingestion adapters.
 const execFileAsync=promisify(execFile);
