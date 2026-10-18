@@ -139,5 +139,17 @@
     "options": {
       "registry_source_id": "company-elevenlabs"
     }
+  },
+  {
+    "source_id": "ashby",
+    "source_type": "ats",
+    "adapter": "ashby",
+    "account": "n8n",
+    "employer": "n8n",
+    "listing_language": "en",
+    "max_jobs": 20000,
+    "options": {
+      "registry_source_id": "company-n8n"
+    }
   }
 ]
