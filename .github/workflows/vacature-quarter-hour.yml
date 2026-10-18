@@ -27,7 +27,7 @@ jobs:
          github.event.issue.user.login == 'Yolol100' &&
          github.event.issue.title == '[radar] quarter 10')))
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 18
     permissions:
       contents: read
     env:
@@ -66,5 +66,19 @@ jobs:
         with:
           name: radar-observations-${{ github.run_id }}
           path: .runtime/scheduled-observations.log
+          retention-days: 2
+          if-no-files-found: warn
+      - name: Search eight additional vetted public API/RSS feeds (unverified discovery only)
+        if: always()
+        continue-on-error: true
+        env:
+          RADAR_DISCOVERY_SCOPE: 'approved_feeds_readonly'
+        run: node radar/src/scheduled-discovery.mjs
+      - name: Preserve independent feed-discovery evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: radar-discovery-${{ github.run_id }}
+          path: .runtime/scheduled-discovery.json
           retention-days: 2
           if-no-files-found: warn
