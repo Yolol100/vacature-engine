@@ -28,7 +28,7 @@ Structured fields must be answered in the accepted structure. Keep normal answer
 ## Answer classes
 
 - `verified_factual`: direct from verified candidate evidence or explicit current user input.
-- `approved_reuse`: only from a user-approved `ApplicationAnswers` entry for an exact or semantically equivalent question.
+- `approved_reuse`: only when the user has explicitly approved the answer for an equivalent question and that approval can be verified from the current conversation or another authorized live source. The retired `ApplicationAnswers` sheet does not exist and must never be silently recreated.
 - `evidence_bound_draft`: a concise draft for motivation/experience, using verified candidate facts only.
 - `user_confirmation_required`: salary, availability/start date, work authorization/legal declarations, relocation, or other current-state decisions.
 - `user_action_only`: privacy/GDPR acknowledgement, e-signature/attestation, CAPTCHA, voluntary demographic/EEO questions, or sensitive choices the user must make personally.
