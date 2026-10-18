@@ -112,10 +112,23 @@ def read_discovery(provider: str, client=None, *, manifest_path=None) -> list[di
     if not isinstance(records, list) or len(records) > spec.max_jobs:
         raise ValueError("Invalid bounded discovery response")
     out = []
+    quarantined = 0
     for record in records:
         if not isinstance(record, dict):
             raise ValueError("Invalid discovery record")
-        row = adapter.normalize_record(record, spec, "")
+        try:
+            row = adapter.normalize_record(record, spec, "")
+        except ValueError as error:
+            # Only Arbeitnow's known third-party URL contract may be isolated.
+            # Never accept that URL, never print it, and never claim a full pass.
+            if (provider == "arbeitnow-api" and str(error) in {
+                "Unexpected public feed job URL: untrusted_host",
+                "Unexpected public feed job URL: uk_apex",
+                "Unexpected public feed job URL: malformed",
+            }):
+                quarantined += 1
+                continue
+            raise
         if row is None:
             continue
         title = str(row.get("title") or "").strip()
@@ -136,18 +149,19 @@ def read_discovery(provider: str, client=None, *, manifest_path=None) -> list[di
             "remote": ("remote" if row.get("remote") is True else
                        str(row.get("workplace_type") or row.get("remote") or "")[:80]),
         })
-    return out
+    return {"jobs": out, "quarantined": quarantined}
 
 
 def main() -> int:
     try:
         if len(sys.argv) == 3 and sys.argv[1] == "--discovery":
-            jobs = read_discovery(sys.argv[2])
+            result = read_discovery(sys.argv[2])
+            jobs = result["jobs"]
         elif len(sys.argv) == 4:
             jobs = read_public(*sys.argv[1:])
         else:
             raise ValueError("Expected bounded public source arguments")
-        print(json.dumps({"jobs": jobs}, ensure_ascii=False))
+        print(json.dumps({"jobs": jobs, "quarantined": result["quarantined"] if len(sys.argv) == 3 else 0}, ensure_ascii=False))
         return 0
     except FetchError as error:
         # One fixed category only; never emit response bodies, URLs or credentials.

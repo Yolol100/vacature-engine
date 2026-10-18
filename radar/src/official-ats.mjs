@@ -98,7 +98,12 @@ export async function actionsPublicDiscoveryJobs(source) {
   }
   let parsed;
   try{parsed=JSON.parse(stdout);}catch{throw new Error('Unexpected public discovery payload');}
-  if(!Array.isArray(parsed?.jobs)||parsed.jobs.length>120)
+  if(!Array.isArray(parsed?.jobs)||parsed.jobs.length>120||
+     !Number.isSafeInteger(parsed.quarantined)||parsed.quarantined<0||
+     parsed.quarantined>120||
+     (source.source_id!=='arbeitnow-api'&&parsed.quarantined!==0))
     throw new Error('Unexpected public discovery payload');
+  // Metadata is not a job and cannot enter candidate selection.
+  Object.defineProperty(parsed.jobs,'quarantined',{value:parsed.quarantined});
   return parsed.jobs;
 }
