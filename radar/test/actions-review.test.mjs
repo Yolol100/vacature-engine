@@ -208,10 +208,10 @@ test('quarter-hour reader is separate, scheduled and cannot gain write permissio
   assert.ok(!/^\s+schedule:/m.test(manual));
   assert.match(scheduled,/cron: '7,22,37,52 \* \* \* \*'/);
   assert.match(scheduled,/github\.event_name == 'schedule'/);
-  assert.match(scheduled,/issues:\\n    types: \\[opened\\]/);
-  assert.match(scheduled,/github\\.actor == 'Yolol100'/);
-  assert.match(scheduled,/github\\.event\\.issue\\.user\\.login == 'Yolol100'/);
-  assert.match(scheduled,/github\\.event\\.issue\\.title == '\\[radar\\] quarter 10'/);
+  assert.match(scheduled,/issues:\n    types: \[opened\]/);
+  assert.match(scheduled,/github\.actor == 'Yolol100'/);
+  assert.match(scheduled,/github\.event\.issue\.user\.login == 'Yolol100'/);
+  assert.match(scheduled,/github\.event\.issue\.title == '\[radar\] quarter 10'/);
   assert.match(scheduled,/contents: read/);
   assert.doesNotMatch(scheduled,/contents: write|pull-requests: write|RADAR_PERSIST: '1'/);
   assert.doesNotMatch(scheduled,/persist-review-state\.sh|sync-register|send-email|application-submit/);
