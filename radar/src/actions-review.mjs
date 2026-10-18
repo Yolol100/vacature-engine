@@ -154,13 +154,13 @@ function uniqueIdentity(rows,keyCol,urlCol) {
 }
 export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandidates=5,priorState,
   sources=PILOT_SOURCES,unsupportedSources=[],unverifiedSources=[],
-  tieredSources=[],publicDiscoveryJobs=null}) {
+  tieredSources=[],publicDiscoveryJobs=null,scanAllDiscovery=false}) {
   const reviewHistory=parseReviewState(priorState);
   if(!Array.isArray(sources)||sources.length===0||sources.length>30||
      !Array.isArray(unsupportedSources)||unsupportedSources.length>100||
      !Array.isArray(unverifiedSources)||unverifiedSources.length>100)
     throw new Error('Invalid bounded radar source scope');
-  if(!Array.isArray(tieredSources)||tieredSources.length>5||
+  if(!Array.isArray(tieredSources)||tieredSources.length>8||
      (tieredSources.length>0&&typeof publicDiscoveryJobs!=='function'))
     throw new Error('Invalid bounded discovery scope');
   if(!Number.isInteger(maxCandidates)||maxCandidates<1||maxCandidates>MAX_REVIEW)
@@ -327,7 +327,8 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     maxCandidates:Math.max(0,maxCandidates-candidates.length),
     seenIds,seenRoles,register,fetchJobs:publicDiscoveryJobs,pollWithRetry,
     preliminaryInterest,preliminaryRemoteEvidence,preliminaryNetherlandsScope,
-    matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError
+    matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError,
+    scanAll:scanAllDiscovery
   }):null;
   const result={schema_version:1,status:failures.length||discovery?.failures.length?
       'partial':'review_ready',
