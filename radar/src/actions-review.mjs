@@ -332,7 +332,9 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
     sources:enabledDiscovery,skipped:skippedDiscovery,
     maxCandidates:scanAllDiscovery?maxCandidates:Math.max(0,maxCandidates-candidates.length),
     seenIds,seenRoles,register,fetchJobs:publicDiscoveryJobs,pollWithRetry,
-    preliminaryInterest,preliminaryRemoteEvidence,preliminaryNetherlandsScope,
+    // Public discovery is a limited specialist queue: generic design/backend
+    // roles must not displace actual WordPress or AI-automation titles.
+    preliminaryInterest:targetFamilyInterest,preliminaryRemoteEvidence,preliminaryNetherlandsScope,
     matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError,
     scanAll:scanAllDiscovery
   }):null;
