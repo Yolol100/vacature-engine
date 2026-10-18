@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {authorizeDiscovery,sourceIndex,seenKeys,runApprovedDiscovery}
-  from '../src/scheduled-discovery.mjs';
+import {authorizeDiscovery,sourceIndex,seenKeys,runApprovedDiscovery,
+  specialistTitleInterest} from '../src/scheduled-discovery.mjs';
 
 const context=()=>({
   GITHUB_REPOSITORY:'Yolol100/vacature-engine',GITHUB_REF:'refs/heads/main',
@@ -65,6 +65,7 @@ test('all eight active official approved API/RSS feed adapters checked, but lead
   }
   const config=[
     ['key','value'],['radar_enabled','FALSE'],['radar_delivery','none'],
+    ['target_role_families','wordpress_ecosystem,ai_workflow_automation'],
     ['direct_discovery_order','employer_direct,ats,discovery_api,wordpress_discovery,google,job_board,discovery'],
     ['high_source_order','himalayas,remote-ok']
   ];
@@ -112,4 +113,14 @@ test('non-active or missing feeds remain explicitly skipped, never counted as ch
   const s=sourceIndex([[['source_id'],['himalayas']],[['source_type'],['job_board']],
     [['priority'],['high']],[['status'],['retired']]]);
   assert.equal(s.active.length,0);
+});
+
+test('feed candidate queue excludes generic frontend, product design and non-workflow AI roles',()=>{
+  for(const title of ['Senior Frontend Engineer (m/f/x)',
+    'Lead Product Designer','Senior React Full-stack Developer',
+    'Generic Software Engineer','Machine Learning Research Scientist'])
+    assert.equal(specialistTitleInterest({title,remote:'remote',location:'Remote Worldwide'}),false,title);
+  for(const title of ['WordPress Developer','WooCommerce Engineer',
+    'n8n Workflow Specialist','AI Automation Engineer','API Integrations Specialist'])
+    assert.equal(specialistTitleInterest({title,remote:'remote',location:'Remote Worldwide'}),true,title);
 });
