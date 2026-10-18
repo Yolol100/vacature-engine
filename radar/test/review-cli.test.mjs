@@ -93,3 +93,57 @@ test('maximum discovery cannot bypass manual owner checkpoint approval',()=>{
   }
  }finally{rmSync(root,{recursive:true,force:true});}
 });
+
+
+test('scheduled and owner-started quarter-hour events pass authorization without state writes',()=>{
+  const {root}=fixture();
+  const base={RADAR_RUN_MODE:'quarter_hour_readonly',
+    GITHUB_WORKFLOW:'Vacature Radar quarter-hour observations',
+    GITHUB_RUN_ID:'124',RADAR_PERSIST:'0',RADAR_MAX_CANDIDATES:'10',
+    RADAR_DISCOVERY_SCOPE:'official_only'};
+  try{
+    for(const custom of [
+      {GITHUB_EVENT_NAME:'schedule',GITHUB_ACTOR:'github-actions[bot]'},
+      {GITHUB_EVENT_NAME:'issues',GITHUB_ACTOR:'Yolol100',
+        RADAR_ISSUE_TITLE:'[radar] quarter 10'},
+      {GITHUB_EVENT_NAME:'workflow_dispatch',GITHUB_ACTOR:'Yolol100'}
+    ]){
+      const result=exec(root,{...base,...custom});
+      // Fixture has deliberately no public source manifest: authorization must
+      // pass but the run must fail closed before accessing external resources.
+      assert.notEqual(result.status,0);
+      assert.doesNotMatch(result.stderr,/Unauthorized quarter-hour read-only event|Unsupported radar event/);
+      assert.equal(existsSync(join(root,'.runtime','review-observations.next.json')),false);
+    }
+  }finally{rmSync(root,{recursive:true,force:true});}
+});
+
+test('quarter-hour rejects spoofed owners, events, modes, scopes and persistence',()=>{
+  const {root}=fixture();
+  const base={RADAR_RUN_MODE:'quarter_hour_readonly',
+    GITHUB_WORKFLOW:'Vacature Radar quarter-hour observations',
+    GITHUB_EVENT_NAME:'issues',GITHUB_ACTOR:'Yolol100',
+    RADAR_ISSUE_TITLE:'[radar] quarter 10',
+    RADAR_PERSIST:'0',RADAR_MAX_CANDIDATES:'10',
+    RADAR_DISCOVERY_SCOPE:'official_only'};
+  try{
+    for(const custom of [
+      {GITHUB_ACTOR:'other-user'},
+      {RADAR_ISSUE_TITLE:'[radar] quarter 100'},
+      {GITHUB_WORKFLOW:'Vacature Radar (manual technical review)'},
+      {GITHUB_EVENT_NAME:'push'},
+      {RADAR_PERSIST:'1'},
+      {RADAR_DISCOVERY_SCOPE:'maximum'},
+      {RADAR_MAX_CANDIDATES:'5'}
+    ]){
+      const result=exec(root,{...base,...custom});
+      assert.notEqual(result.status,0);
+      assert.match(result.stderr,/Unauthorized quarter-hour read-only event/);
+      assert.equal(existsSync(join(root,'.runtime','review-observations.next.json')),false);
+    }
+    const manual=exec(root,{GITHUB_EVENT_NAME:'schedule',RADAR_PERSIST:'0',
+      RADAR_RUN_MODE:''});
+    assert.notEqual(manual.status,0);
+    assert.match(manual.stderr,/Unsupported radar event/);
+  }finally{rmSync(root,{recursive:true,force:true});}
+});
