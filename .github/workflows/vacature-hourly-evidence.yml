@@ -47,3 +47,142 @@ jobs:
           path: .runtime/hourly-rollup.json
           retention-days: 2
           if-no-files-found: warn
+
+  restore-existing-schedules-once:
+    if: >-
+      github.event_name == 'issues' &&
+      github.actor == 'Yolol100' &&
+      github.event.issue.user.login == 'Yolol100' &&
+      github.event.issue.title == '[radar] restore schedules 20261018-a79f2c'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - name: Restore only the two existing schedules with readback
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python - <<'PYCODE'
+          import json
+          import os
+          import urllib.request
+          import urllib.error
+          from datetime import datetime, timezone
+          from pathlib import Path
+          
+          REPO = 'Yolol100/vacature-engine'
+          TITLE = '[radar] restore schedules 20261018-a79f2c'
+          TARGETS = (
+              (388421130, 'Vacature Radar quarter-hour observations', '.github/workflows/vacature-quarter-hour.yml'),
+              (388458982, 'Vacature hourly evidence rollup', '.github/workflows/vacature-hourly-evidence.yml'),
+          )
+          ROOT = 'https://api.github.com/repos/' + REPO
+          
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+          
+          def validate_context(env, event, now):
+              required = {'GITHUB_REPOSITORY': REPO, 'GITHUB_ACTOR': 'Yolol100',
+                          'GITHUB_EVENT_NAME': 'issues', 'GITHUB_REF': 'refs/heads/main',
+                          'GITHUB_WORKFLOW': 'Vacature hourly evidence rollup', 'GITHUB_RUN_ATTEMPT': '1'}
+              if any(env.get(k) != v for k, v in required.items()):
+                  raise ValueError('unauthorized_context')
+              issue = event.get('issue', {})
+              if (event.get('action') != 'opened' or issue.get('title') != TITLE or
+                      issue.get('user', {}).get('login') != 'Yolol100' or
+                      event.get('repository', {}).get('full_name') != REPO):
+                  raise ValueError('unauthorized_request')
+              created = datetime.fromisoformat(issue['created_at'].replace('Z', '+00:00'))
+              if created.tzinfo is None or not 0 <= (now - created).total_seconds() <= 900:
+                  raise ValueError('expired_request')
+              if now.date().isoformat() != '2026-10-18':
+                  raise ValueError('expired_maintenance')
+          
+          def recover(api, receipt):
+              repo = api('GET', '')
+              if repo.get('default_branch') != 'main' or repo.get('archived') or repo.get('fork'):
+                  raise ValueError('repository_drift')
+              for ident, name, path in TARGETS:
+                  data = api('GET', '/actions/workflows/' + str(ident))
+                  if (data.get('id'), data.get('name'), data.get('path'), data.get('state')) != (ident, name, path, 'active'):
+                      raise ValueError('workflow_drift')
+              receipt['preflight'] = 'passed'
+              for ident, name, path in TARGETS:
+                  endpoint = '/actions/workflows/' + str(ident)
+                  row = {'workflow_id': ident, 'name': name, 'before': 'active'}
+                  receipt['workflows'].append(row)
+                  # Verify the independently granted Actions permission before disabling.
+                  api('PUT', endpoint + '/enable')
+                  try:
+                      api('PUT', endpoint + '/disable')
+                      row['disabled'] = True
+                  finally:
+                      # Always compensate an uncertain disable response. No expanded scope.
+                      api('PUT', endpoint + '/enable')
+                      row['enable_returned'] = True
+                  data = api('GET', endpoint)
+                  if data.get('id') != ident or data.get('state') != 'active':
+                      raise ValueError('restore_readback_failed')
+                  row['after'] = 'active'
+              receipt['status'] = 'reactivation_applied'
+              receipt['automatic_execution_proven'] = False
+          
+          def main():
+              receipt = {'status': 'failed', 'workflows': [], 'schedule_times_changed': False,
+                         'new_scheduler': False, 'sheets_writes': 0, 'applications': 0,
+                         'notifications_changed': False, 'automatic_execution_proven': False}
+              try:
+                  env = os.environ
+                  event = json.loads(Path(env['GITHUB_EVENT_PATH']).read_text())
+                  validate_context(env, event, datetime.now(timezone.utc))
+                  token = env.get('GITHUB_TOKEN', '')
+                  if not token:
+                      raise ValueError('missing_token')
+                  allowed = {''}
+                  for ident, _, _ in TARGETS:
+                      path = '/actions/workflows/' + str(ident)
+                      allowed.update((path, path + '/enable', path + '/disable'))
+                  opener = urllib.request.build_opener(NoRedirect)
+                  def api(method, path):
+                      if path not in allowed or method not in ('GET', 'PUT'):
+                          raise ValueError('unapproved_endpoint')
+                      if (method == 'PUT') != path.endswith(('/enable', '/disable')):
+                          raise ValueError('unapproved_method')
+                      req = urllib.request.Request(ROOT + path, method=method, headers={
+                          'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json',
+                          'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'vacature-owner-schedule-recovery'})
+                      with opener.open(req, timeout=12) as response:
+                          raw = response.read(100001)
+                          if len(raw) > 100000:
+                              raise ValueError('oversized_response')
+                          if response.status != (204 if method == 'PUT' else 200):
+                              raise ValueError('unexpected_status')
+                          return json.loads(raw) if raw else {}
+                  recover(api, receipt)
+              except Exception as error:
+                  receipt['status'] = 'failed'
+                  receipt['error_category'] = type(error).__name__
+                  if isinstance(error, urllib.error.HTTPError):
+                      receipt['http_status'] = error.code
+              receipt['completed_at_utc'] = datetime.now(timezone.utc).isoformat()
+              output = Path('.runtime/schedule-recovery.json')
+              output.parent.mkdir(parents=True, exist_ok=True)
+              output.write_text(json.dumps(receipt, sort_keys=True) + '\n')
+              print(json.dumps(receipt, sort_keys=True))
+              return 0 if receipt['status'] == 'reactivation_applied' else 1
+          
+          if __name__ == '__main__':
+              raise SystemExit(main())
+          PYCODE
+      - name: Preserve bounded recovery receipt
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: radar-schedule-recovery-${{ github.run_id }}
+          path: .runtime/schedule-recovery.json
+          retention-days: 2
+          if-no-files-found: error
