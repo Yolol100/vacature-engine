@@ -49,7 +49,8 @@ async function publicJobs(source,limits={}){
   if(valid.length!==items.length)throw new Error('Unexpected ATS job host: source contract changed');
   return valid;
 }
-export {publicJobs,bridgeError};
+export {publicJobs};
+export {bridgeError};
 
 // Read-only Node bridge for Personio/Workable via existing ingestion adapters.
 const execFileAsync=promisify(execFile);
