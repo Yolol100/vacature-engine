@@ -11,14 +11,15 @@ const sample={source_id:'greenhouse',adapter:'greenhouse',source_type:'ats',
 
 test('manual Actions review reuses existing radar source specs, not a second source registry',()=>{
   const {sources,unsupported,unverified}=selectSupportedSources(manifest);
-  assert.equal(sources.length,11);
+  assert.equal(sources.length,12);
   assert.equal(unsupported.length,0);
   assert.deepEqual(unverified,[]);
   assert.deepEqual(sources.map(s=>s.source_id+':'+s.account),[
     'greenhouse:automatticcareers','lever:kinsta','lever:siteground',
     'greenhouse:acquia','greenhouse:gitlab',
     'greenhouse:digitalocean98','greenhouse:pantheon','ashby:zapier',
-    'personio:syde','workable:awesomemotive','workable:humanmade'
+    'personio:syde','workable:awesomemotive','workable:humanmade',
+    'ashby:elevenlabs'
   ]);
   assert.ok(sources.every(s=>s.employer_source_id.startsWith('company-')));
   assert.deepEqual(unsupported,[]);
