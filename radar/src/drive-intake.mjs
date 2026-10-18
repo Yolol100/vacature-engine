@@ -123,14 +123,14 @@ export function selectFreshRows({candidates,index,existingIds,existingUrls,now,r
   }
   return rows;
 }
-async function checkedFetch(url,options={}){
+export async function checkedFetch(url,options={}){
   const result=await fetch(url,{...options,redirect:'error',signal:AbortSignal.timeout(15000)});
   if(!result.ok)throw new Error('google_http_'+result.status);
   const raw=await result.text();
   if(raw.length>MAX_BYTES)throw new Error('google_response_too_large');
   return JSON.parse(raw);
 }
-async function token(env){
+export async function token(env){
   const secret=JSON.parse(env.GOOGLE_SERVICE_ACCOUNT_JSON||'{}');
   if(secret.client_email!==env.RADAR_EXPECTED_SERVICE_ACCOUNT_EMAIL||
      secret.client_email!=='vacature-radar@leads-507621.iam.gserviceaccount.com'||
@@ -150,7 +150,7 @@ async function token(env){
   if(typeof reply.access_token!=='string'||!reply.access_token)throw new Error('oauth_invalid');
   return reply.access_token;
 }
-async function ranges(id,names,key){
+export async function ranges(id,names,key){
   const endpoint=new URL(API+id+'/values:batchGet');
   for(const range of names)endpoint.searchParams.append('ranges',range);
   const data=await checkedFetch(endpoint.toString(),{headers:{Authorization:'Bearer '+key}});

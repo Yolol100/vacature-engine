@@ -94,3 +94,14 @@ jobs:
           path: .runtime/source-sweep.json
           retention-days: 2
           if-no-files-found: warn
+      - name: Persist source-scan receipts and unverified leads in EXISTING Google Radar tabs
+        if: always()
+        run: node radar/src/drive-scan-sync.mjs
+      - name: Preserve private Drive sync receipts (counts only)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: radar-drive-sync-${{ github.run_id }}
+          path: .runtime/sheet-sync-receipt.json
+          retention-days: 2
+          if-no-files-found: warn
