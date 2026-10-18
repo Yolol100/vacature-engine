@@ -86,6 +86,7 @@ class PublicFeedsTests(unittest.TestCase):
         adapter = ADAPTERS["publicfeeds"]
         class Duplicate(FakeClient):
             def get_json(self, url, headers=None):
+                self.calls.append(url)
                 return {"data": [{"id": "1", "url": "https://remotejobs.org/remote-jobs/wp",
                                   "title": "WordPress Developer"}]}
         client = Duplicate()
