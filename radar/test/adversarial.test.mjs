@@ -83,6 +83,8 @@ test('public source diagnostics are useful but never print provider-supplied sec
   for(const value of ['Public API fetch timeout_or_network',
     'Public API fetch malformed_result','Public API contract mismatch',
     'Public API contract schema','Public API contract job_url',
+    'Public API contract job_url_malformed','Public API contract job_url_uk_apex',
+    'Public API contract job_url_untrusted_host',
     'Public API contract normalized_role','Public API contract other',
     'Public API adapter internal failure']){
     assert.equal(safeDiagnosticError(new Error(value)),value);
