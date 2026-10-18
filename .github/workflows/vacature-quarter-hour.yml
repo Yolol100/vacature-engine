@@ -2,7 +2,7 @@ name: Vacature Radar quarter-hour observations
 
 on:
   schedule:
-    - cron: '17 */2 * * *'
+    - cron: '17 */4 * * *'
   workflow_dispatch:
   issues:
     types: [opened]
@@ -27,7 +27,7 @@ jobs:
          github.event.issue.user.login == 'Yolol100' &&
          github.event.issue.title == '[radar] quarter 10')))
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 45
     permissions:
       contents: read
     env:
@@ -80,5 +80,17 @@ jobs:
         with:
           name: radar-discovery-${{ github.run_id }}
           path: .runtime/scheduled-discovery.json
+          retention-days: 2
+          if-no-files-found: warn
+      - name: Attempt all active registered public source surfaces
+        if: always()
+        continue-on-error: true
+        run: node radar/src/source-sweep.mjs
+      - name: Preserve full source-coverage attempt evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: radar-source-sweep-${{ github.run_id }}
+          path: .runtime/source-sweep.json
           retention-days: 2
           if-no-files-found: warn

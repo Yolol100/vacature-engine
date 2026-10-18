@@ -202,11 +202,11 @@ test('workflow has no scheduled runner or privileged writes',()=>{
   assert.ok(!/^\s+pull-requests: write/m.test(yml));
 });
 
-test('two-hour read-only observer is separate, scheduled and cannot gain write permissions',()=>{
+test('four-hour read-only observer is separate, scheduled and cannot gain write permissions',()=>{
   const manual=readFileSync('../.github/workflows/vacature-radar.yml','utf8');
   const scheduled=readFileSync('../.github/workflows/vacature-quarter-hour.yml','utf8');
   assert.ok(!/^\s+schedule:/m.test(manual));
-  assert.match(scheduled,/cron: '17 \*\/2 \* \* \*'/);
+  assert.match(scheduled,/cron: '17 \*\/4 \* \* \*'/);
   assert.match(scheduled,/github\.event_name == 'schedule'/);
   assert.match(scheduled,/issues:\n    types: \[opened\]/);
   assert.match(scheduled,/github\.actor == 'Yolol100'/);
