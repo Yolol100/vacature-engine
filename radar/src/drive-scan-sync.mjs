@@ -68,7 +68,7 @@ export function mergeCoverage(register,coverage,sweep,runId){
       !['public_surface_reachable_not_vacancies_verified',
         'redirect_requires_official_verification','access_limited','http_failure',
         'network_timeout_or_blocked','unsupported_or_unsafe_url',
-        'structured_jobposting_discovery_unverified'].includes(p.status))
+        'public_vacancy_link_discovery_unverified'].includes(p.status))
       throw Error('scan_status_invalid');
     seen.add(p.source_id);
     const iso=new Date(p.checked_at);
@@ -113,6 +113,40 @@ export function selectDiscoveryRows(discovery,existing,now,runId){
   }
   return out;
 }
+
+export function selectPublicClueRows(sweep,existing,now,runId){
+  if(!Array.isArray(sweep?.source_statuses))throw Error('public_clues_schema');
+  const knownIds=new Set(existing.ids),knownUrls=new Set(existing.urls.flatMap(urlKeys));
+  const rows=[];
+  for(const source of sweep.source_statuses){
+    const clues=source.jobposting_discoveries||[];
+    if(!Array.isArray(clues)||clues.length>3||
+      clues.length>0&&source.status!=='public_vacancy_link_discovery_unverified')
+      throw Error('public_clues_contract');
+    for(const clue of clues){
+      const url=String(clue.url||''),canon=canonicalUrl(url),keys=urlKeys(url);
+      const sourceURL=String(source.evidence_url||'');
+      if(!safeSourceUrl(url)||!safeSourceUrl(sourceURL)||
+        new URL(url).hostname!==new URL(sourceURL).hostname||
+        !['onsite_public_job_link','json_ld_jobposting'].includes(clue.method)||
+        !canon||String(clue.title||'').length<8||String(clue.title||'').length>200)
+        throw Error('public_clue_invalid');
+      const id='web:'+source.source_id+':'+
+        createHash('sha256').update(canon).digest('hex').slice(0,24);
+      if(knownIds.has(id)||keys.some(k=>knownUrls.has(k)))continue;
+      if(rows.length>=75)break;
+      rows.push([id,String(source.source_id),'openbare_werkgever_of_carrierepagina',
+        String(source.source_id),String(clue.title),canon,sourceURL,
+        String(clue.source_date_hint||'').slice(0,40),now,
+        'onbevestigde_bronvondst',clue.method,String(runId),
+        'Openbare bronhint; publicatiedatum, exacte werkgeversvacature, remote NL, taal en sollicitatiehistorie nog inhoudelijk verifiëren.',
+        createHash('sha256').update(id+'\n'+canon).digest('hex')]);
+      knownIds.add(id);for(const k of keys)knownUrls.add(k);
+    }
+  }
+  return rows;
+}
+
 async function writeValues(key,range,values,append=false){
   const path=append?'/values/'+encodeURIComponent(range)+':append':'/values:batchUpdate';
   const endpoint=new URL(BASE+RAD+path);
@@ -169,8 +203,13 @@ export async function syncDrive({env,sweep,discovery,now=new Date().toISOString(
   const knownUrls=[...found.slice(1).map(x=>x[5]),
     ...vac.slice(1).flatMap(x=>x.slice(0,2)),
     ...intake.slice(1).map(x=>x[5]),...shown.slice(1).map(x=>x[1])].filter(Boolean);
-  const toAppend=selectDiscoveryRows(discovery,{ids:identities,urls:knownUrls},
+  const feedRows=selectDiscoveryRows(discovery,{ids:identities,urls:knownUrls},
     now,env.GITHUB_RUN_ID);
+  const publicRows=selectPublicClueRows(sweep,{
+    ids:[...identities,...feedRows.map(row=>row[0])],
+    urls:[...knownUrls,...feedRows.map(row=>row[5])]
+  },now,env.GITHUB_RUN_ID);
+  const toAppend=[...feedRows,...publicRows];
   const coveredRange="'Brondekking'!H2:K"+coverage.length;
   await writeValues(key,coveredRange,merged);
   await verify(key,coveredRange,merged);
