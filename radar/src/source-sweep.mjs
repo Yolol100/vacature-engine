@@ -40,6 +40,9 @@ export function activeRegistry(rows){
 const MAX_HTML=384000;
 const FAMILY=/\b(?:wordpress|woo(?:\s|-)commerce|elementor|gutenberg|acf|n8n|zapier|make\.com|workflow automation|ai automation|process automation|automation specialist)\b/i;
 const JOB_PATH=/(?:\/(?:jobs?|careers?|positions|vacancies|openings|apply|job-details?)\/|\/remote-jobs?\/)/i;
+// A career landing page, category listing or graphic-design tag is not a role.
+const ROLE=/\b(?:developers?|engineers?|architects?|specialists?|technical leads?|consultants?|administrators?|admins?|web designers?|website designers?|webmasters?|plugin developers?)\b/i;
+const LANDING=/(?:^|\/)(?:jobs?|careers?|positions|vacancies|openings|remote-jobs?|wordpress|woocommerce|elementor|category|categories|all|search)\/?$/i;
 function publicRoleUrl(url,base){
   try{
     const absolute=new URL(url,base);
@@ -54,8 +57,9 @@ export function extractPublicRoleClues(html,base){
     if(result.length>=3)return;
     const cleaned=String(title||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,200);
     const link=publicRoleUrl(String(url||''),base);
-    if(!FAMILY.test(cleaned)||cleaned.length<8||!link||
-       !JOB_PATH.test(new URL(link).pathname)||seen.has(link))return;
+    const pathname=link?new URL(link).pathname:'';
+    if(!FAMILY.test(cleaned)||!ROLE.test(cleaned)||cleaned.length<8||!link||
+       !JOB_PATH.test(pathname)||LANDING.test(pathname)||seen.has(link))return;
     seen.add(link);
     result.push({title:cleaned,url:link,source_url:base,
       source_date_hint:/^20\d{2}-\d\d-\d\d(?:$|T)/.test(String(published||''))?
