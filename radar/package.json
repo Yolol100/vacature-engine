@@ -4,6 +4,6 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "check": "node --check src/actions-review-cli.mjs && node --check src/drive-intake.mjs && node --check src/actions-review.mjs && node --check src/google-sheets.mjs && node --check src/official-ats.mjs && node --check src/tiered-discovery.mjs && node --check src/logic.mjs && node --check src/review-state.mjs && node --check src/health.mjs && bash -n scripts/load-review-state.sh scripts/persist-review-state.sh"
+    "check": "node --check src/actions-review-cli.mjs && node --check src/drive-intake.mjs && node --check src/scheduled-discovery.mjs && node --check src/actions-review.mjs && node --check src/google-sheets.mjs && node --check src/official-ats.mjs && node --check src/tiered-discovery.mjs && node --check src/logic.mjs && node --check src/review-state.mjs && node --check src/health.mjs && bash -n scripts/load-review-state.sh scripts/persist-review-state.sh"
   }
 }
