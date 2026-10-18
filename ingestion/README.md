@@ -67,7 +67,7 @@ The resulting `source-coverage.json` is persisted on `ingestion-state`. It is an
 
 - `source-specs.live.json`: targeted ATS sources for an explicit/manual ingestion run.
 - `source-specs.daily.json`: slower public discovery feeds retained for deliberate maintenance or backfill runs.
-- `source-specs.deploy.json`: both classes together, used on ingestion-code deployments as an end-to-end smoke test.
+- `source-specs.deploy.json`: combined sources for coverage checks and explicitly requested full ingestion.
 
 The simplified production mode has no repository cron scheduler. Periodic vacancy discovery belongs to the caller/automation. Before any explicit ingestion run, the selected class is reduced to the sources that are currently `active` in live `Bronnen`.
 
@@ -80,6 +80,8 @@ For each strong technical vacancy identity, every distinct `content_hash` is ret
 Closure is conservative: a globally deduplicated vacancy closes only after every known source membership has met its own consecutive-missing threshold. A failed or partial source run never advances missing state.
 
 ## Google Sheet integration
+
+Only owner-initiated **manual** Ingestion dispatch performs business Sheets or `ingestion-state` writes. Code pushes and pull requests run tests only. The writer currently needs a separately authorized Sheet Editor; a 403 remains a hard failure, never silently ignored.
 
 GitHub Actions uses `GOOGLE_SERVICE_ACCOUNT_JSON` to read active source status from `Bronnen` before acquisition and to write compact source-health/run evidence after acquisition. The service account therefore needs editor access to the Vacature Register and the Google Sheets API enabled.
 
