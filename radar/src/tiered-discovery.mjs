@@ -96,6 +96,10 @@ export async function collectTieredDiscovery({
       result.failures.push({source:source.source_id,reason:safeDiagnosticError(error)});
       continue;
     }
+    if(jobs.quarantined>0){
+      result.failures.push({source:source.source_id,reason:'Public API contract quarantined_untrusted_jobs'});
+      result.quarantined_jobs=(result.quarantined_jobs||0)+jobs.quarantined;
+    }
     result.checked_sources.push(source.source_id);
     result.counts.observed+=jobs.length;
     for(const job of jobs){
