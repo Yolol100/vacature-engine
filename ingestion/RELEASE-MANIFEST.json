@@ -9,7 +9,7 @@
   ],
   "job_observation_contract": "1.1",
   "vacature_engine_reference": {
-    "version": "5.6.0",
+    "version": "5.8.0",
     "modified": false
   },
   "adapters": [
@@ -30,16 +30,13 @@
   "source_activation_authority": "Vacature Register:Bronnen",
   "source_activation_fail_closed": true,
   "scheduler_included": false,
-  "scheduler": "No repository cron scheduler. GitHub Actions runs on relevant ingestion code pushes and workflow_dispatch; periodic discovery cadence is caller/automation-owned.",
+  "scheduler": "Geen GitHub Actions, cron, push, issue-trigger of automatische vacaturezoekrun; alleen handmatig op expliciete gebruikersopdracht vanuit ChatGPT.",
   "jobicy_fallback_policy": "REST primary; public RSS fallback is limited to expected transport failures or malformed provider payloads. Unexpected adapter/programming errors fail visibly. Optional targeted HEAD checks treat only 404/410 as closed.",
-  "technical_state": "separate GitHub radar-state and ingestion-state branches + SQLite; shared workflow_state helper owns ACK normalization/merge and review queue handoff preparation",
-  "first_seen_radar": "isolated direct employer/ATS first-seen workflow available on relevant push/manual dispatch + persistent ingestion_change=new semantics + bootstrap-safe 72-hour ACK queue",
+  "technical_state": "Eventuele SQLite state is lokaal en tijdelijk voor een expliciete broncontrole; de oude GitHub radar-state en ingestion-state zijn niet langer onderdeel van de uitvoering.",
   "vacancy_snapshot_history": "SQLite job_snapshots keyed by job_id + content_hash",
-  "semantic_review_handoff": "at-least-once persistent ACK queue + Config-owned priority-hint triage + bounded 25-item pages + backlog telemetry; final semantic verification remains vacature-search-owned",
-  "queue_workers_included": true,
-  "register_sync": "configured service-account read gate + ingestion Bronnen source-health + compact Runs row; radar state stays isolated",
-  "target_runtime_gate": "GitHub Actions live ingestion and first-seen radar after repository-triggered or manually dispatched run",
-  "release_evidence": "deterministic source bundle + SPDX SBOM + GitHub provenance/SBOM attestations",
-  "queue_worker_scope": "Technical priority-hint triage only. Live Config owns terms/employers; nonpriority ingestion hints are acknowledged only from this optimization queue while mandatory normal discovery/expansion remains unchanged. No authenticity, hard-gate, fit, score, source-priority or application decision is made by ingestion.",
-  "review_triage_evidence": "review-triage.json persisted on ingestion-state with input, priority-pending, auto-acked nonpriority, policy version and fail-closed missing-key counts."
+  "semantic_review_handoff": "Direct naar vacature-search, officiële werkgever-/ATS-verificatie en dedupe met live Vacature Register; geen persistente ACK- of achtergrondwachtrij.",
+  "queue_workers_included": false,
+  "register_sync": "Leest uitsluitend de actieve bronstatus uit live Vacature Register > Bronnen; geen automatische brongezondheidswijziging of Runs-writer.",
+  "target_runtime_gate": "Handmatige bronadapter-/filtertesten plus live officiële verificatie wanneer de gebruiker om vacatures vraagt.",
+  "release_evidence": "Deterministische sourcebundle en SPDX SBOM kunnen lokaal op verzoek worden gemaakt; geen GitHub Actions release-attestatie."
 }
