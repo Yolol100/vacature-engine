@@ -140,3 +140,17 @@ test('maximum manual mode visits all eight approved feeds even after review queu
   assert.equal(result.eligible_not_queued,7);
   assert.equal(result.status,'review_ready');
 });
+
+test('quarantined Arbeitnow rows remain visible as partial, never accepted as URLs',async()=>{
+  const source=feeds.find(x=>x.source_id==='arbeitnow-api');
+  const safe=[job(source,'b'.repeat(24),'https://www.arbeitnow.com/jobs/valid')];
+  Object.defineProperty(safe,'quarantined',{value:2});
+  const result=await collectTieredDiscovery({...readerParams,
+    sources:[source],maxCandidates:5,seenIds:new Set(),seenRoles:new Set(),
+    fetchJobs:async()=>safe});
+  assert.equal(result.status,'partial');
+  assert.equal(result.quarantined_jobs,2);
+  assert.equal(result.failures[0].reason,'Public API contract quarantined_untrusted_jobs');
+  assert.equal(result.candidates.length,1);
+  assert.equal(result.candidates[0].discovery_url,'https://www.arbeitnow.com/jobs/valid');
+});
