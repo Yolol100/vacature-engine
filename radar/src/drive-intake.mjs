@@ -78,6 +78,7 @@ export function selectFreshRows({candidates,index,existingIds,existingUrls,now,r
      !Number.isSafeInteger(Date.parse(now))||!/^\d{5,30}$/.test(String(runId)))
     throw new Error('intake_input');
   const nowMs=Date.parse(now),rows=[];
+  const urlKeys=new Set([...existingUrls].flatMap(strongRoleKeys));
   for(const c of candidates){
     if(!c||typeof c!=='object'||Array.isArray(c))throw new Error('candidate_type');
     const identity=String(c.observation_key||'');
@@ -102,7 +103,9 @@ export function selectFreshRows({candidates,index,existingIds,existingUrls,now,r
     if(!published)continue;
     const age=nowMs-Date.parse(published);
     if(age< -15*60*1000||age>MAX_AGE_MS)continue;
-    if(existingIds.has(identity)||existingUrls.has(url))continue;
+    const roleKeys=strongRoleKeys(url);
+    if(existingIds.has(identity)||existingUrls.has(url)||
+       roleKeys.some(key=>urlKeys.has(key)))continue;
     const matched=matchRegister(job,index);
     if(matched.applied||matched.known)continue;
     const hash=createHash('sha256').update([identity,title,url,published].join('\n')).digest('hex');
@@ -116,6 +119,7 @@ export function selectFreshRows({candidates,index,existingIds,existingUrls,now,r
       hash,String(runId)
     ]);
     existingIds.add(identity);existingUrls.add(url);
+    for(const key of roleKeys)urlKeys.add(key);
   }
   return rows;
 }
