@@ -157,6 +157,18 @@
     }
   },
   {
+    "source_id": "ashby",
+    "source_type": "ats",
+    "adapter": "ashby",
+    "account": "n8n",
+    "employer": "n8n",
+    "listing_language": "en",
+    "max_jobs": 20000,
+    "options": {
+      "registry_source_id": "company-n8n"
+    }
+  },
+  {
     "source_id": "we-work-remotely",
     "source_type": "job_board",
     "adapter": "weworkremotely",

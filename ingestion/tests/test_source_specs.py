@@ -46,6 +46,13 @@ class SourceSpecTests(unittest.TestCase):
         )
         self.assertTrue(all(spec.get("listing_language") == "en" for spec in fast))
 
+    def test_n8n_public_ashby_source_is_available_in_manual_live_lane(self):
+        specs = _load("source-specs.live.json")
+        matches = [spec for spec in specs if spec.get("source_id") == "ashby" and spec.get("account") == "n8n"]
+        self.assertEqual(1, len(matches))
+        self.assertEqual("n8n", matches[0].get("employer"))
+        self.assertEqual("company-n8n", matches[0].get("options", {}).get("registry_source_id"))
+
     def test_human_made_uses_public_workable_adapter_in_live(self):
         specs = _load("source-specs.live.json")
         matches = [spec for spec in specs if spec.get("employer") == "Human Made"]
