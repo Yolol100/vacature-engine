@@ -51,7 +51,7 @@ This remains caller-owned policy. `vacature-engine` does not generate CV or moti
 
 ## Ingestion component
 
-`ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. GitHub Actions voert deze component alleen handmatig of bij relevante codewijzigingen uit; periodieke vacaturediscovery blijft caller-owned. In de eenvoudige modus is de ChatGPT-automation de enige scheduler. Source-health kan bij zo'n expliciete run compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
+`ingestion/` normaliseert publieke ATS/API/Schema.org-data naar JobObservation 1.1-compatible records. De technische state wordt gescheiden gehouden van kandidaatstate. De algemene ingestion-workflow draait handmatig of bij relevante codewijzigingen. Een aparte, strikt read-only GitHub Actions-workflow observeert officiële ATS-bronnen elk kwartier; alleen bewezen schedule-runs met geldige artifacts tellen mee. Vacatureverificatie en periodieke kandidaatdiscovery blijven caller-owned. In de eenvoudige modus is de ChatGPT-automation de enige scheduler. Source-health kan bij zo'n expliciete run compact naar het Vacature Register worden teruggeschreven. Zie `ingestion/README.md` voor grenzen en uitvoering.
 
 ## GitHub-only Vacature Radar
 
