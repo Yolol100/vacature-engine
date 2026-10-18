@@ -8,6 +8,7 @@ function bridgeError(error,kind){
   const fetch=/public_ats_fetch_(timeout_or_network|malformed_result|response_too_large|rate_limited|upstream_transient|blocked_or_auth_required|other_technical_failure|http_error)/.exec(stderr)?.[1];
   const reason=status?'Public API HTTP '+status:
     fetch?'Public API fetch '+fetch:
+    /public_ats_contract_(schema|job_url|normalized_role|other)/.exec(stderr)?.[1]?'Public API contract '+/public_ats_contract_(schema|job_url|normalized_role|other)/.exec(stderr)[1]:
     stderr.includes('public_ats_contract_error')?'Public API contract mismatch':
     stderr.includes('public_ats_internal_error')?'Public API adapter internal failure':
     kind==='ats'?'Public ATS adapter failed':'Public discovery adapter failed';
