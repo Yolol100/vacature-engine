@@ -65,8 +65,8 @@ class PublicFeedsAdapter(Adapter):
         if not url or not title:
             return None
         target = urlsplit(url)
-        # Arbeitnow's official site uses both apex and www; never trust other hosts.
-        allowed_hosts = {base_host, "arbeitnow.com"} if source == "arbeitnow-api" else {base_host}
+        # The official .com feed also links to Arbeitnow's documented UK site.
+        allowed_hosts = {base_host, "arbeitnow.com", "www.arbeitnow.co.uk"} if source == "arbeitnow-api" else {base_host}
         if target.scheme != "https" or target.hostname not in allowed_hosts or target.username or target.password:
             raise ValueError("Unexpected public feed job URL")
         company = record.get("company")
