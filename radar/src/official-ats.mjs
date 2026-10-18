@@ -77,7 +77,7 @@ export async function actionsPublicJobs(source,limits={maxJobs:1000,maxBytes:6_0
 }
 
 // This path has no credentials and cannot write state; provider data stays unverified.
-// Each read is a bounded child process reusing the five pre-existing Python adapters.
+// Each read is a bounded child process reusing the existing Python adapters.
 export async function actionsPublicDiscoveryJobs(source) {
   if(!['remotive','jobicy-api','himalayas','we-work-remotely','remote-ok',
       'remote-landers-api','remotejobs-org','arbeitnow-api'].includes(source?.source_id))
