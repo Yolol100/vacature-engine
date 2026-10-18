@@ -96,7 +96,7 @@ class WriterPermissionProbeTests(unittest.TestCase):
 
     def test_requires_exact_updated_cells(self):
         def bad_response(url, token, *, method='GET', body=None):
-            if method == 'PUT':
+            if method == 'POST':
                 return {'totalUpdatedCells': 0}
             return self.request(url, token, method=method, body=body)
         with self.assertRaisesRegex(ValueError, 'exactly one updated cell'):
