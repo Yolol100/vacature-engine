@@ -216,6 +216,9 @@ test('two-hour read-only observer is separate, scheduled and cannot gain write p
   assert.doesNotMatch(scheduled,/contents: write|pull-requests: write|RADAR_PERSIST: '1'/);
   assert.doesNotMatch(scheduled,/persist-review-state\.sh|sync-register|send-email|application-submit/);
   assert.match(scheduled,/actions-review-cli\.mjs/);
+  assert.match(scheduled,/scheduled-discovery\.mjs/);
+  assert.match(scheduled,/RADAR_DISCOVERY_SCOPE: 'approved_feeds_readonly'/);
+  assert.match(scheduled,/continue-on-error: true/);
   assert.match(scheduled,/upload-artifact@/);
   assert.match(scheduled,/RADAR_RUN_MODE: 'quarter_hour_readonly'/);
   assert.match(scheduled,/RADAR_ISSUE_TITLE:/);
