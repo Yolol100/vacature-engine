@@ -43,11 +43,20 @@ def prove_without_data_change(credentials, request_json=_request_json, token_fn=
         raise ValueError('Concurrent source-health change; probe aborted')
     # Write exactly the pre-existing value to the same exact cell. No business
     # contents change and all cell formatting and validation are preserved.
-    outcome = request_json(url + '?valueInputOption=RAW', token, method='PUT',
-                           body={'range': CELL, 'majorDimension': 'ROWS',
-                                 'values': [[existing]]})
-    if not isinstance(outcome, dict) or outcome.get('updatedCells') != 1:
-        raise ValueError('Writer probe did not confirm exactly one updated cell')
+    # Exercise the EXACT values:batchUpdate endpoint that previously returned
+    # HTTP 403, with the same pre-existing cell content (no semantic change).
+    outcome = request_json(
+        base + '/values:batchUpdate', token, method='POST',
+        body={'valueInputOption': 'RAW', 'includeValuesInResponse': True,
+              'data': [{'range': CELL, 'majorDimension': 'ROWS',
+                        'values': [[existing]]}]})
+    if not isinstance(outcome, dict) or outcome.get('totalUpdatedCells') != 1:
+        raise ValueError('Writer batch probe did not confirm exactly one updated cell')
+    replies = outcome.get('responses')
+    if (not isinstance(replies, list) or len(replies) != 1 or
+            replies[0].get('updatedRange') != CELL or
+            replies[0].get('updatedData', {}).get('values') != [[existing]]):
+        raise ValueError('Writer batch probe response did not return original value')
     final = request_json(url, token, method='GET')
     if final.get('values') != [[existing]]:
         raise ValueError('Writer probe readback mismatch')
