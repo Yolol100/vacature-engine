@@ -15,7 +15,7 @@ export function safeDiagnosticError(error){
     return raw.slice(0,110);
   if(/^Public API fetch (?:timeout_or_network|malformed_result|response_too_large|rate_limited|upstream_transient|blocked_or_auth_required|other_technical_failure|http_error)$/.test(raw) ||
      (['Public API contract mismatch','Public API adapter internal failure'].includes(raw) ||
-      /^Public API contract (?:schema|job_url|normalized_role|other)$/.test(raw)))
+      /^Public API contract (?:schema|job_url|job_url_malformed|job_url_uk_apex|job_url_untrusted_host|normalized_role|other)$/.test(raw)))
     return raw;
   // These are fixed internal discovery status labels; never print provider bodies.
   if(['Public discovery adapter failed','Unexpected public discovery payload',
