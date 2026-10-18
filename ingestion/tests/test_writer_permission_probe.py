@@ -19,12 +19,15 @@ class WriterPermissionProbeTests(unittest.TestCase):
         self.calls.append((method, url, body))
         self.assertEqual(token, "mock-writer-token")
         self.assertIn(REGISTER_ID, url)
+        if method == "POST":
+            self.assertTrue(url.endswith("/values:batchUpdate"))
+            self.assertEqual(body, {
+                'valueInputOption': 'RAW', 'includeValuesInResponse': True,
+                'data': [{'range': CELL, 'majorDimension': 'ROWS',
+                          'values': [[self.value]]}]})
+            return {'totalUpdatedCells': 1, 'responses': [
+                {'updatedRange': CELL, 'updatedData': {'values': [[self.value]]}}]}
         self.assertIn(CELL, url)
-        if method == "PUT":
-            self.assertEqual(url.split("?")[-1], "valueInputOption=RAW")
-            self.assertEqual(body, {'range': CELL, 'majorDimension': 'ROWS',
-                                    'values': [[self.value]]})
-            return {'updatedCells': 1}
         self.assertEqual(method, "GET")
         self.assertIsNone(body)
         return {'values': [[self.value]]}
@@ -40,7 +43,7 @@ class WriterPermissionProbeTests(unittest.TestCase):
         self.assertEqual(out['changed_business_values'], 0)
         self.assertEqual(out['application_submissions'], 0)
         self.assertEqual([call[0] for call in self.calls],
-                         ['GET', 'GET', 'PUT', 'GET'])
+                         ['GET', 'GET', 'POST', 'GET'])
 
     def test_refuses_unexpected_service_account(self):
         with self.assertRaisesRegex(ValueError, 'Unexpected Google service account'):
@@ -56,7 +59,7 @@ class WriterPermissionProbeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Concurrent source-health'):
             prove_without_data_change(self.credentials,
                                       request_json=concurrent, token_fn=self.token)
-        self.assertEqual(len([c for c in self.calls if c[0] == 'PUT']), 0)
+        self.assertEqual(len([c for c in self.calls if c[0] == 'POST']), 0)
 
     def test_refuses_missing_timestamp(self):
         self.value = ''
@@ -82,7 +85,7 @@ class WriterPermissionProbeTests(unittest.TestCase):
 
     def test_preserves_authorized_http_errors(self):
         def forbidden(url, token, *, method='GET', body=None):
-            if method == 'PUT':
+            if method == 'POST':
                 raise HTTPError(url, 403, 'Forbidden', {}, None)
             return self.request(url, token, method=method, body=body)
         with self.assertRaises(HTTPError) as ctx:
@@ -93,8 +96,8 @@ class WriterPermissionProbeTests(unittest.TestCase):
 
     def test_requires_exact_updated_cells(self):
         def bad_response(url, token, *, method='GET', body=None):
-            if method == 'PUT':
-                return {'updatedCells': 0}
+            if method == 'POST':
+                return {'totalUpdatedCells': 0}
             return self.request(url, token, method=method, body=body)
         with self.assertRaisesRegex(ValueError, 'exactly one updated cell'):
             prove_without_data_change(self.credentials,
