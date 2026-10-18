@@ -186,9 +186,20 @@ def summarize(runs, artifacts_by_run, start, end):
         outcomes.append(out)
     passed = sum(x['status'] == 'ok' for x in outcomes)
     failed = len(outcomes) - passed
+    # A delayed/replayed schedule event must not masquerade as a different
+    # quarter merely because the hour contains four distinct run IDs.
+    expected_minute_bins = (7, 22, 37, 52)
+    distinct_bins = set()
+    for run in included:
+        minute = parse_utc(run['created_at']).minute
+        for slot in reversed(expected_minute_bins):
+            if minute >= slot:
+                distinct_bins.add(slot)
+                break
+    missing_bins = len(expected_minute_bins) - len(distinct_bins)
     return {
         'schema_version': 1,
-        'status': 'coverage_complete' if passed == len(included) == 4 else 'coverage_incomplete',
+        'status': 'coverage_complete' if passed == len(included) == 4 and missing_bins == 0 else 'coverage_incomplete',
         'policy': 'official_ats_technical_observation_only',
         'window_start_utc': start.isoformat().replace('+00:00', 'Z'),
         'window_end_utc': end.isoformat().replace('+00:00', 'Z'),
@@ -197,6 +208,7 @@ def summarize(runs, artifacts_by_run, start, end):
         'validated_successful_quarter_checks': passed,
         'failed_or_unverified_runs': failed,
         'missing_or_late_events': max(0, 4 - len(included)),
+        'missing_or_unattributed_quarter_slots': missing_bins,
         'observations_scanned_across_valid_runs': observed_total,
         'unique_unverified_review_candidates': len(unique),
         'repeated_candidates_within_hour': duplicates,
