@@ -78,12 +78,12 @@ test('all eight active official approved API/RSS feed adapters checked, but lead
   const result=await runApprovedDiscovery({
     env:context(),token:async()=> 'mock',
     read:async(id,names)=>{
-      if(names.length===1)return[{values:config}];
+      if(names.length===1)return[config];
       if(names.length===4&&names[0].includes('Bronnen'))return[
-        {values:ids.map(x=>[x])},{values:types.map(x=>[x])},
-        {values:priorities.map(x=>[x])},{values:states.map(x=>[x])}];
-      if(names.length===8)return reg;
-      if(names.length===4&&names[0].includes('Nieuwe vacatures'))return radar;
+        ids.map(x=>[x]),types.map(x=>[x]),
+        priorities.map(x=>[x]),states.map(x=>[x])];
+      if(names.length===8)return reg.map(x=>x.values);
+      if(names.length===4&&names[0].includes('Nieuwe vacatures'))return radar.map(x=>x.values);
       throw Error('unexpected test range');
     },
     loadSpecs:()=>specs,
