@@ -100,6 +100,12 @@ export function preliminaryInterest(job){
     return false;
   return INTEREST.test([job.title,job.remote,job.location].join(' '));
 }
+// Candidate-queue relevance is only a first-pass user-family check. Full fit,
+// language, official publication and NL remote policy require specialist review.
+const TARGET_ROLE_TITLE=/\b(?:wordpress|woocommerce|elementor|gutenberg|acf|wp[- ]?cli|wp\s+engine|wpengine|yoast|n8n|make\.com|zapier|automation|automations|workflow|workflows|ai[- ]?(?:agents?|integrations?)|api[- ]?integrations?|systems?[- ]?integrations?)\b/i;
+export function targetFamilyInterest(job){
+  return TARGET_ROLE_TITLE.test(String(job?.title||''))&&preliminaryInterest(job);
+}
 export function normalizeJobs(source,payload){
   const jobs=Array.isArray(payload)?payload:payload?.jobs;
   if(!Array.isArray(jobs))throw new Error('Unexpected public jobs payload');

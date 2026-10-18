@@ -9,7 +9,8 @@ import {selectTieredSources,orderTieredSources,collectTieredDiscovery} from './t
 import {actionsPublicDiscoveryJobs} from './official-ats.mjs';
 import {pollWithRetry,preliminaryRemoteEvidence,
   preliminaryNetherlandsScope} from './actions-review.mjs';
-import {preliminaryInterest,matchRegister,strongRoleKeys,canonicalUrl} from './logic.mjs';
+import {targetFamilyInterest as specialistTitleInterest,matchRegister,strongRoleKeys,canonicalUrl} from './logic.mjs';
+export {specialistTitleInterest};
 import {safeDiagnosticError} from './health.mjs';
 
 const REG='1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0';
@@ -30,13 +31,6 @@ const HISTORY=[
 const EXPECTED_HEADERS=['source_id','source_type','priority','status'];
 const HISTORY_HEADERS=['observation_key','officiele_url','identity','official_url'];
 const RESULT='.runtime/scheduled-discovery.json';
-// Broad web/software/design titles are not user target families. Feed entries
-// without explicit family hints should go to independent ChatGPT web discovery,
-// not consume this ten-slot technical feed candidate cap.
-const FAMILY_TITLE=/\b(?:wordpress|woocommerce|elementor|gutenberg|acf|wp[- ]?cli|wp\s+engine|wpengine|yoast|n8n|make\.com|zapier|automation|automations|workflow|workflows|ai[- ]?(?:agents?|integrations?)|api[- ]?integrations?|systems?[- ]?integrations?)\b/i;
-export function specialistTitleInterest(job){
-  return FAMILY_TITLE.test(String(job?.title||''))&&preliminaryInterest(job);
-}
 export function authorizeDiscovery(env){
   const safeActor=env.GITHUB_ACTOR==='Yolol100'&&(
     env.GITHUB_EVENT_NAME==='workflow_dispatch'||

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   PILOT_SOURCES,adapterUrl,buildRegisterIndex,canonicalUrl,chooseSource,cooldownMinutes,
-  isValidJob,matchRegister,normalizeJobs,preliminaryInterest,runStatsRow,
+  isValidJob,matchRegister,normalizeJobs,preliminaryInterest,targetFamilyInterest,runStatsRow,
   sourceActive,strongRoleKeys,toRadarRow
 } from '../src/logic.mjs';
 
@@ -129,4 +129,11 @@ test('custom Greenhouse employer URLs require exact tenant, official host, path 
   assert.equal(isValidJob({source_id:'greenhouse',source_account:'pantheon',
     source_job_id:d.source_job_id,identity:'greenhouse:pantheon:'+d.source_job_id,
     title:'WordPress Developer',url:d.url}),false);
+});
+
+test('official automated candidate queue only accepts WordPress/AI-workflow target families',()=>{
+  for(const title of ['Senior Software Engineer','Senior Frontend Engineer','Lead Product Designer','React Full-stack Developer'])
+    assert.equal(targetFamilyInterest({title,remote:'remote',location:'Remote EMEA'}),false,title);
+  for(const title of ['WordPress Engineer','WooCommerce Developer','Elementor Specialist','AI Workflow Automation Engineer','n8n Developer'])
+    assert.equal(targetFamilyInterest({title,remote:'remote',location:'Remote EMEA'}),true,title);
 });

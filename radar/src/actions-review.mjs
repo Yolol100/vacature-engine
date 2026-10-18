@@ -1,5 +1,5 @@
 // Node.js review-only successor to the Cloudflare poll. NO external writes.
-import {PILOT_SOURCES,buildRegisterIndex,matchRegister,preliminaryInterest,strongRoleKeys,canonicalUrl,isValidJob} from './logic.mjs';
+import {PILOT_SOURCES,buildRegisterIndex,matchRegister,preliminaryInterest,targetFamilyInterest,strongRoleKeys,canonicalUrl,isValidJob} from './logic.mjs';
 import {safeDiagnosticError} from './health.mjs';
 import {parseReviewState} from './review-state.mjs';
 import {orderTieredSources,collectTieredDiscovery} from './tiered-discovery.mjs';
@@ -306,7 +306,8 @@ export async function reviewOnce({env,accessToken,readRanges,publicJobs,maxCandi
       if(match.applied)counts.previously_applied++;
       else if(match.known)counts.already_in_register++;
       else if(duplicate)counts.previously_seen++;
-      else if(!preliminaryInterest(job))counts.unrelated++;
+      else if(!preliminaryInterest(job)||
+        (env.RADAR_RUN_MODE==='quarter_hour_readonly'&&!targetFamilyInterest(job)))counts.unrelated++;
       else if(!preliminaryRemoteEvidence(job))counts.remote_evidence_missing++;
       else if(!preliminaryNetherlandsScope(job))counts.geography_outside_nl++;
       else {
