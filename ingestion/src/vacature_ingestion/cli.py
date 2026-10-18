@@ -9,7 +9,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .models import SourceSpec
-from .register_sync import sync_register
 from .registry_filter import filter_source_specs, read_active_source_ids, read_active_source_rows
 from .source_coverage import build_source_coverage
 from .runner import IngestionRunner
@@ -103,34 +102,6 @@ def cmd_source_coverage(args: argparse.Namespace) -> int:
     return 0 if coverage["coverage_complete"] else 2
 
 
-def cmd_export_state(args: argparse.Namespace) -> int:
-    runner = IngestionRunner(args.state)
-    try:
-        document = runner.state.export_state()
-        if args.out:
-            _write_json(args.out, document)
-        if args.health_out:
-            _write_json(args.health_out, {"source_health": document["source_health"]})
-        print(json.dumps({
-            "jobs": len(document["jobs"]),
-            "job_snapshots": int(document.get("job_snapshot_count") or 0),
-            "source_runs": len(document["source_runs"]),
-            "sources": len(document["source_health"]),
-        }, sort_keys=True))
-        return 0
-    finally:
-        runner.close()
-
-
-def cmd_sync_register(args: argparse.Namespace) -> int:
-    result = sync_register(
-        spreadsheet_id=args.spreadsheet_id,
-        summary_path=args.summary,
-        health_path=args.health,
-        queue_path=args.queue,
-    )
-    print(json.dumps(result, sort_keys=True))
-    return 0
 
 
 def _synthetic_greenhouse(count: int) -> list[dict[str, object]]:
@@ -190,17 +161,6 @@ def build_parser() -> argparse.ArgumentParser:
     coverage.add_argument("--spreadsheet-id", required=True)
     coverage.add_argument("--out", required=True)
     coverage.set_defaults(func=cmd_source_coverage)
-    export_state = sub.add_parser("export-state")
-    export_state.add_argument("--state", required=True)
-    export_state.add_argument("--out")
-    export_state.add_argument("--health-out")
-    export_state.set_defaults(func=cmd_export_state)
-    sync = sub.add_parser("sync-register")
-    sync.add_argument("--spreadsheet-id", required=True)
-    sync.add_argument("--summary", required=True)
-    sync.add_argument("--health", required=True)
-    sync.add_argument("--queue")
-    sync.set_defaults(func=cmd_sync_register)
     bench = sub.add_parser("benchmark")
     bench.add_argument("--count", type=int, default=10_000)
     bench.set_defaults(func=cmd_benchmark)
