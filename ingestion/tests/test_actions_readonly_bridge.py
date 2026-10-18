@@ -154,9 +154,9 @@ class SafeBridgeDiagnosticsTests(unittest.TestCase):
             (TypeError("private token"), "public_ats_internal_error"),
         ]
         for err, expected in cases:
-            with self.subTest(expected=expected), \\
-                 patch.object(sys, "argv", ["radar", "--discovery", "arbeitnow-api"]), \\
-                 patch.object(bridge, "read_discovery", side_effect=err):
+            with (self.subTest(expected=expected),
+                  patch.object(sys, "argv", ["radar", "--discovery", "arbeitnow-api"]),
+                  patch.object(bridge, "read_discovery", side_effect=err)):
                 stderr = io.StringIO()
                 with redirect_stderr(stderr):
                     self.assertEqual(bridge.main(), 1)
