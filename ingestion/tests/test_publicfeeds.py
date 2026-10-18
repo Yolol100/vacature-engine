@@ -58,7 +58,8 @@ class PublicFeedsTests(unittest.TestCase):
     def test_arbeitnow_apex_and_www_are_allowed_but_lookalikes_fail(self):
         adapter = ADAPTERS["publicfeeds"]
         for url in ("https://arbeitnow.com/jobs/official-role",
-                    "https://www.arbeitnow.com/jobs/official-role"):
+                    "https://www.arbeitnow.com/jobs/official-role",
+                    "https://www.arbeitnow.co.uk/jobs/official-role"):
             result = adapter.normalize_record({
                 "slug": "official-role", "title": "Remote WordPress Developer",
                 "url": url, "remote": True, "location": "Europe",
@@ -66,6 +67,8 @@ class PublicFeedsTests(unittest.TestCase):
             self.assertEqual(result["url"], url)
         for url in ("http://arbeitnow.com/jobs/role",
                     "https://arbeitnow.com.evil.example/jobs/role",
+                    "https://www.arbeitnow.co.uk.evil.example/jobs/role",
+                    "https://arbeitnow.co.uk/jobs/role",
                     "https://other.example/jobs/role",
                     "https://user:password@arbeitnow.com/jobs/role"):
             with self.subTest(url=url), self.assertRaisesRegex(ValueError, "Unexpected public feed job URL"):
