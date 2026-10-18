@@ -129,7 +129,7 @@ test('maximum manual mode visits all eight approved feeds even after review queu
   const {enabled}=orderTieredSources(feeds,metadata,config);
   const ids=[],result=await collectTieredDiscovery({...readerParams,
     sources:enabled,maxCandidates:1,scanAll:true,seenIds:new Set(),seenRoles:new Set(),
-    fetchJobs:async source=>{ids.push(source.source_id);return [job(source,source.source_id.padEnd(24,'0').slice(0,24),
+    fetchJobs:async source=>{ids.push(source.source_id);return [job(source,ids.length.toString(16).padStart(24,'0'),
       'https://example.com/jobs/'+source.source_id)];}
   });
   assert.equal(ids.length,8);
