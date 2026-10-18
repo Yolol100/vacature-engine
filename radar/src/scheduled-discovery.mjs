@@ -30,6 +30,13 @@ const HISTORY=[
 const EXPECTED_HEADERS=['source_id','source_type','priority','status'];
 const HISTORY_HEADERS=['observation_key','officiele_url','identity','official_url'];
 const RESULT='.runtime/scheduled-discovery.json';
+// Broad web/software/design titles are not user target families. Feed entries
+// without explicit family hints should go to independent ChatGPT web discovery,
+// not consume this ten-slot technical feed candidate cap.
+const FAMILY_TITLE=/\b(?:wordpress|woocommerce|elementor|gutenberg|acf|wp[- ]?cli|wp\s+engine|wpengine|yoast|n8n|make\.com|zapier|automation|automations|workflow|workflows|ai[- ]?(?:agents?|integrations?)|api[- ]?integrations?|systems?[- ]?integrations?)\b/i;
+export function specialistTitleInterest(job){
+  return FAMILY_TITLE.test(String(job?.title||''))&&preliminaryInterest(job);
+}
 export function authorizeDiscovery(env){
   const safeActor=env.GITHUB_ACTOR==='Yolol100'&&(
     env.GITHUB_EVENT_NAME==='workflow_dispatch'||
@@ -91,7 +98,8 @@ export async function runApprovedDiscovery({env,token,read,loadSpecs,fetchJobs})
     throw new Error('discovery_config_schema');
   const config=new Map(configRows[0].slice(1).map(r=>[r[0],r[1]]));
   if(String(config.get('radar_enabled')).toUpperCase()!=='FALSE'||
-     config.get('radar_delivery')!=='none')
+     config.get('radar_delivery')!=='none'||
+     String(config.get('target_role_families'))!=='wordpress_ecosystem,ai_workflow_automation')
     throw new Error('discovery_unexpected_radar_mode');
   if(sourceRanges?.length!==4||registerRanges?.length!==8||historical?.length!==4)
     throw new Error('discovery_ranges_incomplete');
@@ -106,7 +114,8 @@ export async function runApprovedDiscovery({env,token,read,loadSpecs,fetchJobs})
     sources:ordered.enabled,skipped:ordered.skipped,maxCandidates:10,
     seenIds:history.ids,seenRoles:history.roles,register:index,
     fetchJobs,pollWithRetry,
-    preliminaryInterest,preliminaryRemoteEvidence,preliminaryNetherlandsScope,
+    preliminaryInterest:specialistTitleInterest,
+    preliminaryRemoteEvidence,preliminaryNetherlandsScope,
     matchRegister,strongRoleKeys,canonicalUrl,safeDiagnosticError,scanAll:true
   });
   return {
