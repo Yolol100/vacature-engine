@@ -2,7 +2,7 @@ name: Vacature Radar quarter-hour observations
 
 on:
   schedule:
-    - cron: '7,22,37,52 * * * *'
+    - cron: '6,21,36,51 * * * *'
   workflow_dispatch:
   issues:
     types: [opened]
