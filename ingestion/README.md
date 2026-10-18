@@ -1,102 +1,19 @@
-# Vacature Ingestion (codebibliotheek, geen automatische runs)
+# Vacature Ingestion — bronadapters op verzoek
 
-**Status 2026-10-18:** De eerdere GitHub Actions-ingestieworkflow is verwijderd. Deze component blijft beschikbaar voor deterministische adapters en tests; oude beschrijvingen van GitHub-ingestie en state zijn historische documentatie, geen actieve scheduler of schrijver. Live vacaturezoeken gebeurt alleen op expliciete ChatGPT-opdracht met de bestaande Google Sheets.
+Dit Python-onderdeel leest publieke werkgever-, ATS-, API-, RSS- en JobPosting-informatie als technisch hulpmiddel bij **expliciet gestart** vacaturezoeken. Het draait niet automatisch. Er zijn geen GitHub Actions of Cloudflare-schedulers gekoppeld.
 
-Policy-free bulk ingestion component for the Webactueel vacancy system. It converts public ATS/API/JobPosting data into `JobObservation 1.1` compatible observations and owns only technical ingest state.
+## Bronwaarheid en werkwijze
 
-## Boundaries
+1. Lees de actuele `Config` en **actieve** `Bronnen` uit het bestaande Vacature Register.
+2. Gebruik alleen passende publieke adapters of gecontroleerde rechtstreekse webzoekopdrachten. Statische `source-specs.*.json` bevatten uitsluitend technische voorbeelden en mogen een inactieve bron nooit activeren.
+3. De adapters leveren ruwe observaties. De skill `vacature-search` verifieert officiële vacature, werkbaarheid vanuit Nederland, taal, echte publicatiedatum, authenticiteit en bewezen kandidaatfit.
+4. Vergelijk met het bestaande Register en Radar-overzicht; nooit een tweede canonieke vacature- of sollicitatiedatabase maken.
+5. Alleen op een expliciete opdracht gegevens opslaan in bestaande geautoriseerde Sheets, met deduplicatie en readback. Geen automatische berichten, CV-bestanden of sollicitaties.
 
-This component does **not** own candidate fit, WordPress relevance, salary/language/remote policy, application state, scoring or outreach. Those remain with `vacature-search`, the live Vacature Register and the deterministic `vacature_engine` package.
+De code bevat provideradapters, normalisatie, HTTP-beperkingen en optionele lokale technische state voor gecontroleerd onderhoud. Die state is geen bronwaarheid en start nooit zelfstandig een scan.
 
-The live `Vacature Register` also owns source activation. The repository may contain provider/account specifications as technical acquisition targets, but GitHub Actions filters every selected source class against `Bronnen.status=active` before any network ingestion. A concrete company source can additionally bind to its employer row through `options.registry_source_id`. Missing Register access fails closed rather than silently running stale source policy.
+## Code en tests
 
-## Adapters
+`src/vacature_ingestion/adapters/` bevat onder andere Greenhouse-, Lever-, Ashby-, Workable-, SmartRecruiters-, Personio- en publieke feedadapters. `cli.py` biedt handmatig te starten opties. Tests staan in `ingestion/tests/`.
 
-Fast/targeted public sources:
-- Greenhouse public Job Board API
-- Lever public Postings API
-- Ashby public Job Postings API
-- SmartRecruiters public postings API
-- Generic public HTML pages exposing Schema.org `JobPosting` JSON-LD
-- Workable public account jobs endpoint
-- Personio public XML jobs feed
-
-Secondary discovery feeds:
-- Himalayas public JSON API with cursor pagination
-- Jobicy public Remote Jobs REST API with public RSS fallback; optional targeted HEAD checks treat only 404/410 as closed evidence
-- Remotive public API (24h-delayed; attribution metadata retained)
-
-Secondary feeds remain discovery evidence. `vacature-search` must verify a promising role on the canonical employer/ATS page before eligibility and ranking. Jobicy REST remains primary. RSS fallback is limited to expected transport failures or a malformed provider payload; unexpected adapter/programming errors fail visibly instead of being masked. Optional HEAD verification remains targeted, and statuses other than 404/410 do not silently close a vacancy.
-
-## Review queue
-
-Every `ingest-many` output contains the observations that changed in that ingestion. Only observations classified against persisted technical state as `new` or `updated` are nominated for semantic review; unchanged observations remain in run evidence without forcing semantic re-review.
-
-GitHub Actions persists a compact `review-queue.json` plus `review-ack.json` on the `ingestion-state` branch. The compact queue is **at-least-once**: unacknowledged items from the previous snapshot are merged into the next queue, so a later ingestion cannot silently replace pending review work. Every queue item gets a stable `review_key` derived from strong vacancy identity plus its content hash. A content change therefore produces a new review key and requires a fresh semantic review.
-
-To keep large queues connector-readable, the handoff stores an allowlisted technical summary plus a bounded plain-text description excerpt instead of the complete provider description. It also writes `review-queue-index.json` and bounded pages under `review-queue-pages/`, currently 25 items per page. The index exposes pending count, page count, oldest/newest pending origin time and per-origin-run counts for backlog observability. Review consumers should read the index first and then only the page(s) they can safely process in that run.
-
-Full semantic eligibility still requires canonical employer/ATS verification; the queue excerpt is only discovery/triage evidence.
-
-`review-ack.json` contains only technical acknowledgement keys and migration markers. It does not contain candidate policy or scoring. The ChatGPT review workflow should acknowledge every handled queue item, including cheap obvious non-relevant rejects, only after its intended review action has completed. A technical row already existing in `Runs` must never be treated as semantic acknowledgement.
-
-Before persistence, the live workflow now applies a Config-owned technical priority triage. The triage reads `ingestion_review_priority_terms`, `ingestion_review_priority_employers`, `ingestion_review_auto_ack_nonpriority` and `ingestion_review_triage_policy_version` from the live Vacature Register. Items with a priority hint stay pending for semantic review. Nonpriority ingestion hints are acknowledged only from this optimization queue; they are not marked ineligible and do not suppress the mandatory fast-lane, Google/direct discovery or full active-source expansion routes. Missing review keys fail closed and stay pending. The triage writes `review-triage.json` with counts and policy version.
-
-The intended handoff is:
-
-`GitHub ingestion -> persistent review queue -> Config-owned priority triage -> bounded priority queue -> vacature-search canonical verification/CV evidence -> vacature-engine -> Vacature Register/output -> review-ack.json`
-
-No authenticity, eligibility, candidate fit, scoring, source-priority or application decision happens inside ingestion.
-
-## Recovery
-
-`review_backlog.load_review_backlog()` can rebuild pending review candidates from persisted SQLite first-seen state after a handoff failure. GitHub Actions only runs such a recovery when an explicit `ingestion/review-backlog-recovery.json` request is present and its migration ID is not already recorded in `review-ack.json`. Recovery is technical transport repair only; it does not decide vacancy relevance or candidate fit.
-
-## Complete source coverage handoff
-
-The live `Bronnen` registry may contain far more active sources than the repository has dedicated API/feed adapters for. No active source may now disappear silently.
-
-Before live ingestion, `source-coverage` reads every active registry row and assigns exactly one execution mode:
-
-- `github_adapter`: covered by a verified repository source spec/adapter;
-- `live_web_required`: must be searched by the caller's public web/X-ray discovery using the source's native filters where available, followed by canonical employer/ATS verification;
-- `mailbox_read_only`: application-evidence sources handled by mailbox reconciliation;
-- `blocked_*`: no safe execution route exists; the workflow fails closed.
-
-The resulting `source-coverage.json` is persisted on `ingestion-state`. It is an execution handoff, not vacancy evidence. A `live_web_required` source is not considered checked until the caller actually attempts it and records source health. GitHub does not bypass logins, paywalls, bot protection or private APIs to force unsupported boards into an adapter.
-
-## Source classes
-
-- `source-specs.live.json`: targeted ATS sources for an explicit/manual ingestion run.
-- `source-specs.daily.json`: slower public discovery feeds retained for deliberate maintenance or backfill runs.
-- `source-specs.deploy.json`: combined sources for coverage checks and explicitly requested full ingestion.
-
-The simplified production mode has no repository cron scheduler. Periodic vacancy discovery belongs to the caller/automation. Before any explicit ingestion run, the selected class is reduced to the sources that are currently `active` in live `Bronnen`.
-
-## State and history
-
-The runner keeps technical cross-run state in SQLite (`new`, `updated`, `unchanged`, `missing`, `closed`). In GitHub Actions this database is persisted on the dedicated `ingestion-state` branch, separate from code and policy.
-
-For each strong technical vacancy identity, every distinct `content_hash` is retained in `job_snapshots`. Repeated unchanged observations update the snapshot's last-seen time without duplicating it. This preserves an auditable historical copy when a posting changes or later disappears, while the current `jobs` row remains optimized for live state.
-
-Closure is conservative: a globally deduplicated vacancy closes only after every known source membership has met its own consecutive-missing threshold. A failed or partial source run never advances missing state.
-
-## Google Sheet integration
-
-Only owner-initiated **manual** Ingestion dispatch performs business Sheets or `ingestion-state` writes. Code pushes and pull requests run tests only. The writer currently needs a separately authorized Sheet Editor; a 403 remains a hard failure, never silently ignored.
-
-GitHub Actions uses `GOOGLE_SERVICE_ACCOUNT_JSON` to read active source status from `Bronnen` before acquisition and to write compact source-health/run evidence after acquisition. The service account therefore needs editor access to the Vacature Register and the Google Sheets API enabled.
-
-The write side updates only source-health columns in `Bronnen` and appends one compact technical row to `Runs`. It never bulk-writes raw jobs into `Vacatures`. The Runs note includes current-run review candidates plus persistent pending-review count/page/age telemetry.
-
-Because `Bronnen` is the source-policy authority, missing or unreadable Google credentials now block live ingestion instead of falling back to repository source activation.
-
-## Commands
-
-```bash
-python -m vacature_ingestion filter-specs --specs source-specs.live.json --spreadsheet-id <ID> --out active.json
-python -m vacature_ingestion ingest-many --specs active.json --state state.sqlite3 --out latest.json --allow-partial
-python -m vacature_ingestion export-state --state state.sqlite3 --health-out source-health.json
-python -m vacature_ingestion sync-register --spreadsheet-id <ID> --summary latest.json --health source-health.json --queue review-queue-index.json
-python -m vacature_ingestion benchmark --count 10000
-```
+De hoofdengine in `src/vacature_engine/` is gescheiden van deze publieke acquisitiecode.

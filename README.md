@@ -1,220 +1,30 @@
-# vacature-engine
+# Vacature Engine — zoeken op verzoek
 
-> **Portfoliostatus:** Actief ondersteunend · deterministische vacatureselectiehelper + geïsoleerde ingestielaag
+Dit project ondersteunt **handmatig gestart vacaturezoeken vanuit ChatGPT** met de skills `vacature-search` en `webactueel-workflow`. Er zijn geen GitHub Actions, cronruns, autonome Radar-scans, pushmeldingen of automatische sollicitaties.
 
-`vacature-engine` ondersteunt `vacature-search`. De repo bezit geen discoverybeleid, kandidaatprofiel, bronprioriteiten of sollicitatiestatus. Veranderlijke runtimewaarheid blijft in het `Vacature Register`.
+## Bestaande bronnen en gegevens
 
-**Developer profile:** [Andrew Baeten](https://github.com/Yolol100) · [GitHub project index](https://github.com/Yolol100?tab=repositories)
+- **Vacature Register**: https://docs.google.com/spreadsheets/d/1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0/edit
+  - `Config`: actuele zoekregels
+  - `Bronnen`: enige bronregister; doorzoek alleen `active`
+  - `Vacatures`, `Feedback`, `Applications`, `ApplicationEvents`, `CandidateEvidence`, `JobSnapshots`: deduplicatie, uitkomsten en bewezen fit
+- **Vacature Radar – Nieuwe Vacatures**: https://docs.google.com/spreadsheets/d/1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ/edit
+  - Alleen bestaand tabblad `Nieuwe vacatures` als optioneel resultatenoverzicht. Geen tweede masterregister.
 
-## What it demonstrates
+## Werkwijze bij een expliciete ChatGPT-opdracht
 
-| Area | Implementation |
-| --- | --- |
-| Deterministic selection | Hard vacancy gates, fixed scoring anchors and stable tie-breaking |
-| Data normalization | Conservative Schema.org JobPosting signal parsing and observation canonicalization |
-| Provenance | Vacancy-bound artifact identities, hashes and reproducible metadata validation |
-| Ingestion boundaries | Public-source acquisition isolated from candidate and ranking policy |
-| Reliability | Boundary, golden, property/metamorphic and adversarial tests |
-| Safety | No candidate inference, no form submission, no mailbox mutation and no filler results |
+1. Lees `Config`, de actieve `Bronnen` en de bestaande vacatures en sollicitaties in het Register.
+2. Zoek nieuwe WordPress/WooCommerce/Elementor/Gutenberg-, webdesign/frontend- en AI-workflowautomatiseringsvacatures. Begin bij officiële werkgever-/ATS-pagina's; gebruik goedgekeurde publieke API/RSS, webzoekopdrachten en jobboards aanvullend als ontdekking.
+3. Controleer op de actuele officiële detailpagina dat de vacature **open**, **echt recent geplaatst** (standaard maximaal 7 dagen), **volledig remote vanuit Nederland uitvoerbaar** en **in het Nederlands of Engels** is. Een first-seen-, scrape- of update-datum is geen bewezen publicatiedatum.
+4. Vergelijk op canonieke vacature-URL en ATS/provider-job-ID met `Vacatures`, `Applications`, `ApplicationEvents` en de bestaande Radar-rijen. Toon geen eerder getoonde, afgewezen, behandelde of ingediende rol opnieuw als nieuw.
+5. Beoordeel match met alleen bewezen kandidaatervaring uit `CandidateEvidence`. Toon uitsluitend officieel geverifieerde passende vacatures met werkgever, functie, publicatiedatum, directe URL en matchreden. Schrijf uitsluitend volgens live Register-beleid en voorkom dubbele rijen.
 
-Het `vacature_engine`-pakket doet alleen:
-1. deterministische same-run observatiecanonicalisatie;
-2. harde vacaturefilters;
-3. vaste 100-puntsscore;
-4. sterke matches selecteren en sorteren;
-5. conservatieve normalisatie van Schema.org `JobPosting`-signalen;
-6. deterministische metadata-validatie voor vacature-specifieke CV-artifacts.
+**Voorbeeldopdracht:** 'Zoek nieuwe passende vacatures van de afgelopen zeven dagen.'
 
-Het `vacature_engine`-pakket bevat geen scraping, netwerkdiscovery, jobboardlijst, bronprioritering, e-mail of sollicitatieformulieren. Het schrijft ook geen CV-proza en leidt geen kandidaatervaring af. De repository bevat daarnaast een strikt gescheiden sibling-component onder `ingestion/` voor publieke read-acquisitie, technische cross-run state en source-health. Die component is geen onderdeel van het `vacature_engine` runtimepakket en bezit geen kandidaat-, score-, bronprioriteits- of sollicitatiebeleid.
+## Code die blijft
 
-## Fast decision contract
+- `src/vacature_engine/`: deterministische normalisatie, harde filters, scoring, prioritering en optionele CV-metadata.
+- `ingestion/`: publieke ATS/API/feed-adapters voor expliciete, gecontroleerde scans; de bestanden `source-specs.*` zijn technische voorbeelden, **niet** de bronwaarheid. Het live Register bepaalt actieve bronnen.
+- `tests/` en `ingestion/tests/`: onderhouds- en regressietests die lokaal kunnen worden uitgevoerd.
 
-Normal discovery now uses a live Register-owned fast lane and expands only when the verified result target is not filled. The repository still owns no changing source policy: it receives normalized candidates only after caller-side discovery/verification and keeps deterministic gates/ranking unchanged. See [docs/FAST-DECISION-CONTRACT.md](docs/FAST-DECISION-CONTRACT.md).
-
-## Mailbox application reconciliation
-
-`vacature-search` mag, wanneer de gebruiker daarvoor verbonden mailboxen beschikbaar heeft, sollicitatiehistorie en lifecycle-evidence read-only reconciliëren met Gmail en Outlook. Dit blijft caller-owned beleid: er komen geen mailboxcredentials, persoonlijke maildata of e-mailnetwerkcalls in `vacature_engine` of `ingestion/`.
-
-De live waarheid blijft het `Vacature Register`. Alleen sterk vacature-specifiek bewijs mag een sollicitatiestatus of dedupebeslissing ondersteunen. Inbox, Sent en Spam/Junk mogen worden gecontroleerd, maar mailboxstate mag niet worden gewijzigd. Zie [`docs/MAILBOX-APPLICATION-RECONCILIATION.md`](docs/MAILBOX-APPLICATION-RECONCILIATION.md) voor het volledige contract.
-
-## Form application packs
-
-Wanneer een geverifieerde vacature via een officieel werkgever-/ATS-formulier loopt, mag `vacature-search` vooraf een invulpakket maken met de exacte vacaturenaam, de zichtbare formulier-vragen met bewijsgebonden conceptantwoorden en een vacature-specifieke CV. Dit blijft volledig caller-owned: de engine leest of verstuurt geen formulieren, schrijft geen antwoordproza, maakt geen accounts aan en omzeilt geen login/CAPTCHA.
-
-Herbruikbare antwoorden mogen alleen uit door de gebruiker goedgekeurde `ApplicationAnswers` komen. Salaris, work authorization, juridische/sensitieve/current-state velden vereisen menselijke bevestiging; assessments of expliciet AI-verboden antwoorden blijven handmatig. Zie [`docs/FORM-APPLICATION-PACK.md`](docs/FORM-APPLICATION-PACK.md).
-
-## Application-pack contract
-
-`vacature-search` owns the candidate-facing application prose and CV tailoring. By default it prepares exactly one CV + motivation pair in the official vacancy/application language. A second Dutch/English variant is created only when the user explicitly asks for it or the employer requires it; when present, both versions use the same verified evidence map. Named projects/cases/repositories stay out of the CV and may appear only as verified work-sample links in the motivation when requested or materially useful. The stable public portfolio index is `https://andrewbaeten.nl/category/cases`; exact case/repository URLs must be verified and never guessed. Default motivation sign-offs use only the first name: Dutch `Vriendelijke groet,` + `Andrew`; English `Kind regards,` + `Andrew`.
-
-This remains caller-owned policy. `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience. See [docs/BILINGUAL-APPLICATION-PACK.md](docs/BILINGUAL-APPLICATION-PACK.md); the legacy filename is retained for compatibility.
-
-## Vacature zoeken op verzoek (vanaf 2026-10-18)
-
-Deze repository is alleen een **hulpmiddel** voor `vacature-search`. Vacatures zoeken gebeurt uitsluitend wanneer de gebruiker ChatGPT daarom vraagt; er is **geen automatische vacatureplanning, GitHub Radar-run of automatische import**.
-
-1. Lees eerst de live `Vacature Register`-tabs `Config`, `Bronnen`, `Vacatures`, `Applications` en `CandidateEvidence` plus relevante bestaande bewijs- en historieregels.
-2. Doorzoek op verzoek de actieve bronnen, directe werkgevers-/ATS-vacatures eerst, gevolgd door goedgekeurde feeds en webzoekresultaten. Richt je standaard op vacatures van maximaal zeven dagen oud; eis een verifieerbare officiële publicatiedatum.
-3. Controleer volledig remote vanuit Nederland, Nederlands/Engels, materiële WordPress/WooCommerce/Elementor/Gutenberg- of AI-workflowautomatiseringsmatch en bewijsgebonden kandidaatfit. Sluit al bekende, behandelde, afgewezen en ingediende vacatures uit op canonieke URL/ATS-ID.
-4. Toon alleen nieuwe officieel geverifieerde rollen. Hergebruik desgewenst uitsluitend de bestaande sheet `Vacature Radar - Nieuwe Vacatures`; de canonieke sollicitatiehistorie blijft in `Vacature Register`. Geen automatisch CV, e-mail, sollicitatie of nieuw bestand.
-
-De oude dedicated GitHub Actions-routes `vacature-quarter-hour.yml`, `vacature-hourly-evidence.yml`, `vacature-radar.yml` en `vacature-ingestion.yml` zijn beëindigd. De Python-engine, publieke ingestieadapters en hun tests blijven beschikbaar als codebibliotheek; reguliere CI, CodeQL en releasecontroles blijven uitsluitend voor softwarekwaliteit actief. Historische GitHub-runrecords en technische Sheet-tabs blijven bewaard maar zijn geen actuele zoek- of statusbron.
-
-## Technische ingestiecode (niet automatisch uitgevoerd)
-
-`ingestion/` normaliseert publieke ATS/API/Schema.org-data. De gescheiden `radar/`-hulpmiddelen en historische state kunnen nog als naslag worden gelezen, maar zij starten geen GitHub-job en schrijven niet autonoom naar Sheets.
-
-## CV artifact contract v1.0
-
-Vacature-specifieke CV-tailoring blijft volledig bij `vacature-search`. De helper mag alleen reproduceerbare artifactmetadata valideren:
-
-- een veilige, stabiele `.docx`-bestandsnaam die aan `vacancy_id`, werkgever en titel is gekoppeld;
-- SHA-256-provenance voor de canonieke bron-CV en vacature-snapshot;
-- de canonieke vacature-URL;
-- een deterministische artifact identity voor readback/dedupe.
-
-```python
-from vacature_engine import build_cv_artifact_manifest, cv_artifact_identity
-
-manifest = build_cv_artifact_manifest(
-    candidate_name="Andrew Baeten",
-    vacancy_id="vacancy-123",
-    employer="Example",
-    title="WordPress Developer",
-    canonical_url="https://jobs.example.com/123",
-    source_cv_sha256="a" * 64,
-    job_snapshot_sha256="b" * 64,
-)
-artifact_id = cv_artifact_identity(manifest)
-```
-
-Dit contract beslist nooit welke ervaring relevant is, schrijft nooit CV-tekst, verandert geen vacaturegates en voert geen sollicitatie uit.
-
-## Observatiecontract v1.1
-
-Gebruik `canonicalize_observations()` op door de Skill verzamelde `JobObservation`-records.
-
-```python
-from vacature_engine import canonicalize_observations
-
-canonical = canonicalize_observations(observations)
-```
-
-Sterke automatische identiteit:
-- genormaliseerde canonieke URL;
-- `source_id + source_job_id`.
-
-`employer + title + location` is alleen een zwak duplicate-candidate-signaal. Twee observaties met verschillende sterke identiteiten worden nooit alleen op die fingerprint automatisch samengevoegd. De Skill beslist zulke twijfelgevallen semantisch.
-
-De canonicalisatielaag:
-- verwijdert bekende trackingparameters en fragments uit publieke HTTP(S)-URL's;
-- faalt gesloten op corrupte URL/port-data;
-- geeft officiële werkgever-/ATS-evidence een stabiele canonicalisatievoorkeur;
-- bewaart `source_ids`, `source_types`, `source_urls`, `first_seen_at`, `last_seen_at` en `observation_count`;
-- exposeert `duplicate_candidate`, `duplicate_candidate_count` en de fingerprint voor semantische adjudicatie;
-- exposeert alle gevonden `published_at_candidates` en `published_at_conflict`;
-- promoveert `first_seen_at` nooit naar `published_at`;
-- laat kandidaatgerichte cross-run deduplicatie bij `Vacature Register:Vacatures`; technische ingestie-lifecycle blijft in de geïsoleerde ingestiestate.
-
-## Structured JobPosting contract v1.0
-
-`jobposting_signals()` normaliseert alleen conservatieve signalen uit reeds opgehaalde Schema.org `JobPosting`-data.
-
-```python
-from vacature_engine import jobposting_signals
-
-signals = jobposting_signals(jobposting_json, today=today_from_config)
-```
-
-De functie kan onder meer teruggeven:
-- identifier, titel en hiring organization;
-- `datePosted` en `validThrough` als valideerbare datumsignalen;
-- `jobLocationType=TELECOMMUTE` als remote-signaal;
-- `applicantLocationRequirements` als ruwe locatiesignalen;
-- employment type en `directApply`;
-- ruwe `baseSalary` currency/unit/value/min/max-signalen.
-
-Deze data is aanvullend bewijs, geen beleidsbeslissing. De functie beslist nooit zelfstandig:
-- of een vacature open is;
-- `fully_remote`;
-- `geography_compatible`;
-- salarisconversie of maandloon;
-- kandidaatfit of score.
-
-Een verstreken geldige `validThrough` is een sterk expiry-signaal. Een toekomstige `validThrough` bewijst niet zelfstandig dat de vacature nog open is.
-
-## Remote-first contract
-
-Discovery is wereldwijd en gebeurt in de Skill. Nederland is alleen de uitvoeringslocatie van de kandidaat voor `geography_compatible`.
-
-Hard vereist:
-- `fully_remote=true`;
-- `geography_compatible=true`;
-- minstens één rol-familie uit live `target_role_families`;
-- geen centrale harde mismatch;
-- actieve taalpoort moet passeren.
-
-Live zijn nu drie families toegestaan:
-- `wordpress_ecosystem`: WordPress, WooCommerce, Elementor, Gutenberg, support, maintenance, performance, technical SEO en breder webdevelopment wanneer WordPress materieel is;
-- `web_design_development`: webdesign, UX/UI voor websites, frontend, design systems, toegankelijkheid, performance, technische SEO en breder webdevelopment wanneer het webproduct materieel is;
-- `ai_workflow_automation`: AI-workflow-, automation-, integration-, agentic- en GenAI-operationsrollen wanneer workflow/integratie materieel is.
-
-Generieke AI/ML/data-sciencefuncties zonder workflow-/automationcomponent vallen niet automatisch binnen scope. Generieke productdesign- of softwarefuncties zonder materiële website/webinterfacecomponent vallen evenmin onder `web_design_development`. Zonder `target_role_families` blijft de engine backward-compatible WordPress-only.
-
-Een werkgeverland, vacatureland of tijdzoneverschil is op zichzelf geen blocker. Alleen concrete country-only-, payroll-, work-authorization-, legal-, security-, fysieke-aanwezigheids- of aantoonbaar onuitvoerbare verplichte werkuren/overlap blokkeren.
-
-WordPress-gerelateerd mag ook aantoonbaar WooCommerce, Elementor, Gutenberg, support, maintenance, performance, technical SEO of breder webdevelopment omvatten wanneer WordPress materieel is.
-
-## Runtime-policy
-
-De caller geeft per run expliciet deze live Config-waarden door:
-- `min_monthly_salary_eur`
-- `max_posting_age_days`
-- `max_output_roles`
-- `min_output_score`
-- `min_core_fit`
-- `min_evidence_fit`
-- `allowed_listing_languages`
-- optioneel `target_role_families` (default: `wordpress_ecosystem`)
-
-Voor de eenvoudige standaardzoekmodus staat `max_output_roles` live op `5`. De Skill blijft actieve bronlagen doorzoeken totdat vijf echte, geverifieerde, nog niet eerder getoonde kandidaten beschikbaar zijn of de toegestane zoekruimte is uitgeput. `vacature-engine` beperkt alleen de uiteindelijke geldige set tot `max_output_roles`; de engine verzint nooit filler en bezit geen bronlijst.
-
-`min_monthly_salary_eur` is een voorkeur. Geldig lager salaris krijgt `salary_below_preference`; onbekend salaris `salary_unknown`. Beide mogen verder. Corrupte salarisdata faalt gesloten als `salary_invalid`.
-
-`max_posting_age_days=0` betekent geen harde leeftijdslimiet. Ontbrekende datum geeft `date_missing`; een ongeldige of toekomstige datum faalt gesloten.
-
-Bij actieve taalpoort moeten vacaturetekst, sollicitatieflow en verplichte functie-/werktalen bewezen binnen de toegestane talen vallen.
-
-## Scorecontract
-
-Vaste ankers:
-- `core_fit`: `0 / 25 / 40 / 50`
-- `evidence_fit`: `0 / 10 / 18 / 25`
-- `workstyle_fit`: `0 / 5 / 10 / 15`
-- actualiteit: `10 / 8 / 6 / 4 / 2` voor `0-14 / 15-30 / 31-60 / 61-90 / 91+` dagen
-
-De score-ankers en minimumfitdrempels veranderen niet zonder onafhankelijke benchmark. Bekend salaris komt vóór onbekend salaris. Bij gelijke score: hogere core -> hoger bewijs -> nieuwere vacature -> stabiele URL/titel-tie-break.
-
-`today` moet altijd expliciet uit de canonieke Config-timezone komen.
-
-```python
-from vacature_engine import top_vacancies
-
-best = top_vacancies(vacancies, today=today_from_config, policy=config_values)
-```
-
-## Assurance
-
-- Python 3.11 t/m 3.14 in engine-CI.
-- Het `vacature_engine` runtimepakket houdt runtime-dependencies leeg.
-- Boundary-, golden-, property/metamorphic-, adversarial-, wereldwijde-geografie- en taalpoorttests.
-- CV-artifacttests bewaken stabiele vacancy-bound bestandsnamen, provenance-hashes en fail-closed manifestvalidatie; semantische CV-tailoring blijft expliciet buiten de helper.
-- Observatietests bewaken sterke identiteit, false-mergepreventie, URL-fail-closed en publication-conflictprovenance.
-- Structured-data-tests bewaken dat Schema.org-signalen nooit remote/geografie/open-statusbeleid overnemen.
-- De ingestiecomponent heeft eigen regressietests en een 10.000-record benchmark; er is geen automatische vacature-ingestie of live Radar-netwerkgate.
-- CodeQL en dependency-policygates blijven actief.
-- Release-evidence blijft reproduceerbaar met SBOM, checksums en provenance receipt.
-
-## Licentie
-
-Deze repository bevat momenteel geen open-sourcelicentie. Hergebruik, distributie of afgeleide werken zijn niet toegestaan zonder expliciete toestemming van de rechthebbende.
+Geen GitHub-gestuurde scheduler, automatische statusbestanden of nieuwe Google Drive-bestanden. CV's, conceptmails of sollicitatievoorbereiding uitsluitend op aparte gebruikersopdracht; nooit automatisch verzenden of solliciteren.
