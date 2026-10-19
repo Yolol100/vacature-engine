@@ -39,6 +39,8 @@ class _Markup(HTMLParser):
         self._json_active = False
         self._scripts: list[str] = []
         self._buffer: list[str] = []
+        self._visible: list[str] = []
+        self._hidden_depth = 0
 
     def handle_starttag(self, tag, attrs):
         info = dict(attrs)
@@ -47,13 +49,18 @@ class _Markup(HTMLParser):
             if isinstance(language, str):
                 norm = language.strip().casefold().split("-")[0]
                 self.language = norm if norm in {"en", "nl", "de", "fr", "es", "pt"} else None
+        if tag in {"script", "style", "noscript", "template"}:
+            self._hidden_depth += 1
         if tag == "script" and info.get("type", "").casefold() == "application/ld+json":
             self._json_active = True
             self._buffer = []
 
     def handle_data(self, data):
-        if self._json_active and sum(len(x) for x in self._buffer) < 100_000:
-            self._buffer.append(data)
+        if self._json_active:
+            if sum(len(x) for x in self._buffer) < 100_000:
+                self._buffer.append(data)
+        elif not self._hidden_depth and sum(len(x) for x in self._visible) < 100_000:
+            self._visible.append(data)
 
     def handle_endtag(self, tag):
         if tag == "script" and self._json_active:
@@ -62,6 +69,8 @@ class _Markup(HTMLParser):
             if len(snippet) <= 100_000 and len(self._scripts) < 12:
                 self._scripts.append(snippet)
             self._buffer = []
+        if tag in {"script", "style", "noscript", "template"}:
+            self._hidden_depth = max(0, self._hidden_depth - 1)
 
 
 def _jobposting_nodes(value: Any):
@@ -109,7 +118,15 @@ def extract_ats_page_signals(html: str, *, title: str, employer: str, today: dat
         # Multiple conflicting JobPosting records cannot be picked arbitrarily.
         return {"page_language": parser.language, "structured": None,
                 "status": "no_unique_matching_first_party_jobposting"}
-    return {"page_language": parser.language, "structured": matching[0], "status": "matching_first_party_jobposting"}
+    # Search Central requires structured facts to match visible page content.
+    # Script/meta/hidden text must never by itself establish a real opening.
+    visible = " ".join(" ".join(parser._visible).casefold().split())
+    expected = " ".join(title.casefold().split())
+    if not expected or expected not in visible:
+        return {"page_language": parser.language, "structured": None,
+                "status": "structured_role_not_visible_on_page"}
+    return {"page_language": parser.language, "structured": matching[0],
+            "status": "matching_first_party_jobposting"}
 
 
 def _trusted_tenant_url(url: Any, *, provider: str, account: str) -> bool:

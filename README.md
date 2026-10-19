@@ -65,6 +65,18 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   The canonical `vacature_engine.simple.top_vacancies` function is the only
   final ranking authority after all hard gates and fit anchors are grounded;
   missing evidence must never be converted into invented scores.
+  The evidence-match preflight now examines **explicit technical requirements**
+  from trusted ATS descriptions and compares them with **active, source-backed
+  CandidateEvidence**. It reports counts for mapped, unproven and ambiguous
+  requirements, never raw personal claims or evidence IDs. Optional skills,
+  marketing copy, unverified language or experience requirements cannot
+  become invented fit. The existing validated 30-case ranking benchmark and
+  score anchors are unchanged; even full mapped skill coverage is **not**
+  a final ranked recommendation until the official job route, candidate
+  eligibility, full semantic fit and scoring anchor evidence are established.
+  The tenant-bound official-page checker also requires the exact job title
+  to appear in visible page content alongside matching first-party JobPosting
+  markup. A matching JSON-LD script alone is not sufficient.
 
 Google discovery is optional. It requires a verified free SerpApi account
 and active `google-jobs` registration, uses no paid plan, and returns

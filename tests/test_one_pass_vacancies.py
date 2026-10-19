@@ -213,7 +213,8 @@ class OnePassTests(unittest.TestCase):
                     title="AI Automation Manager", location="Remote - Costa Rica", remote=None,
                     source_metadata={"provider": "greenhouse", "provider_job_id": 8205142},
                 ),
-                source_id="greenhouse", employer="Acquia",
+                source_id="greenhouse", source_instance="greenhouse:acquia",
+                employer="Acquia",
             ),
         ], tables() | {
             "Bronnen": tables()["Bronnen"] + [
@@ -248,6 +249,54 @@ class OnePassTests(unittest.TestCase):
         ], tables(), policy_from_config(CONFIG), today=date(2026, 10, 19))
         self.assertEqual(rows, [])
         self.assertEqual(counts["off_target"], 1)
+
+    def test_official_candidate_gets_evidence_coverage_not_a_score(self):
+        t = tables()
+        t["CandidateEvidence"] = [{
+            "evidence_id": "verified-wp",
+            "claim": "Private customer project WordPress and WooCommerce",
+            "source_type": "canonical_cv", "active": "TRUE", "confidence": "high",
+        }]
+        row = observation(
+            "https://jobs.ashbyhq.com/acme/clear-wp",
+            title="WooCommerce Developer",
+            description="Requirements:" + chr(10) + "Experience with WordPress and WooCommerce.",
+            source_instance="ashby:acme",
+            source_metadata={"provider": "ashby"},
+            location="Remote - European Union",
+            remote=True,
+        )
+        rows, _counts = screen_review_candidates(
+            [row], t, policy_from_config(CONFIG), today=date(2026, 10, 19),
+        )
+        self.assertEqual(len(rows), 1)
+        review = rows[0]["technical_requirement_review"]
+        self.assertEqual(review["status"], "mapped_skills_have_evidence")
+        self.assertEqual(review["requirements_with_candidate_evidence"], 2)
+        self.assertFalse(review["final_score_authorized"])
+        self.assertNotIn("Private customer project", str(rows))
+
+    def test_fake_same_host_different_tenant_not_official_or_matched(self):
+        t = tables()
+        t["CandidateEvidence"] = [{
+            "evidence_id": "verified-wp", "claim": "WordPress",
+            "source_type": "canonical_cv", "active": "TRUE", "confidence": "high",
+        }]
+        row = observation(
+            "https://jobs.ashbyhq.com/acme/open",
+            title="WordPress Engineer",
+            source_instance="ashby:another-company",
+            source_metadata={"provider": "ashby"},
+            description="Requirements: Experience with WordPress.",
+        )
+        rows, _ = screen_review_candidates(
+            [row], t, policy_from_config(CONFIG), today=date(2026, 10, 19),
+        )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["official_checks"]["official_role"], "unverified")
+        self.assertEqual(
+            rows[0]["technical_requirement_review"]["status"], "requirements_unverified"
+        )
 
     def test_missing_key_and_quota_fallback(self):
         s = SourceSpec("google-jobs", "discovery", "serpapi_google", "worldwide",

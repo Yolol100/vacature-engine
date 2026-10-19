@@ -27,6 +27,7 @@ def official(location="Remote - Costa Rica", **changes):
     row = {
         "source_id": "greenhouse",
         "source_type": "ats",
+        "source_instance": "greenhouse:acquia",
         "canonical_url": "https://job-boards.greenhouse.io/acquia/jobs/8205142",
         "employer": "Acquia", "title": "WordPress Developer",
         "location": location, "workplace_type": "remote",

@@ -10,7 +10,7 @@ def row():
     return {"source_type":"ats","source_id":"ashby","source_instance":"ashby:acme",
       "source_metadata":{"provider":"ashby"},"canonical_url":"https://jobs.ashbyhq.com/acme/job-123",
       "apply_url":"https://jobs.ashbyhq.com/acme/job-123/apply","title":"WordPress Developer","employer":"Acme"}
-HTML='''<html lang="en"><script type="application/ld+json">{"@type":"JobPosting","title":"WordPress Developer","hiringOrganization":{"name":"Acme"},"datePosted":"2026-10-18","jobLocationType":"TELECOMMUTE","applicantLocationRequirements":{"name":"Netherlands"}}</script></html>'''
+HTML='''<html lang="en"><script type="application/ld+json">{"@type":"JobPosting","title":"WordPress Developer","hiringOrganization":{"name":"Acme"},"datePosted":"2026-10-18","jobLocationType":"TELECOMMUTE","applicantLocationRequirements":{"name":"Netherlands"}}</script><body><h1>WordPress Developer</h1><p>Apply for our open engineering role.</p></body></html>'''
 class OfficialPageTests(unittest.TestCase):
     def test_account_bound_and_invalid_domain_rejected(self):
         self.assertEqual(verified_source_account(row(),active_ids={"ashby"}),("ashby","acme"))
@@ -23,6 +23,22 @@ class OfficialPageTests(unittest.TestCase):
         self.assertEqual(result["status"],"matching_first_party_jobposting")
         self.assertEqual(result["structured"]["applicant_locations"],["Netherlands"])
         self.assertEqual(result["page_language"],"en")
+    def test_schema_without_visible_role_is_not_official_page_proof(self):
+        hidden = HTML.replace("<h1>WordPress Developer</h1>", "<h1>Some other job</h1>")
+        result = extract_ats_page_signals(
+            hidden, title="WordPress Developer", employer="Acme", today=TODAY
+        )
+        self.assertIsNone(result["structured"])
+        self.assertEqual(result["status"], "structured_role_not_visible_on_page")
+
+    def test_hidden_script_or_style_title_is_not_visible_proof(self):
+        no_body = HTML.replace("<h1>WordPress Developer</h1>", "")
+        no_body = no_body.replace("<p>Apply", "<style>WordPress Developer</style><p>Apply")
+        result = extract_ats_page_signals(
+            no_body, title="WordPress Developer", employer="Acme", today=TODAY
+        )
+        self.assertIsNone(result["structured"])
+
     def test_wrong_employer_not_authoritative(self):
         result=extract_ats_page_signals(HTML,title="WordPress Developer",employer="Other",today=TODAY)
         self.assertIsNone(result["structured"])
