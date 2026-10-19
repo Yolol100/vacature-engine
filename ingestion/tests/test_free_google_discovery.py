@@ -276,6 +276,61 @@ class FreeDiscoveryTests(unittest.TestCase):
         self.assertEqual(get.call_count, 2)
 
     @patch("vacature_ingestion.adapters.serpapi_google._get_json")
+    def test_documented_empty_success_continues_other_queries(self, get):
+        # SerpApi uses an error field for a successful search with no hits.
+        get.side_effect = [
+            free_account(),
+            {
+                "search_metadata": {"status": "Success"},
+                "search_information": {"organic_results_state": "Fully empty"},
+                "error": "Google hasn't returned any results for this query.",
+            },
+            {"organic_results": [
+                {"title": "WordPress Engineer",
+                 "link": "https://jobs.ashbyhq.com/acme/42"},
+            ]},
+        ]
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            results = SerpApiGoogleAdapter().fetch(None, spec(
+                queries=["query alpha", "query beta"],
+                max_pages=10, max_requests_per_run=2,
+            ))
+        self.assertEqual(get.call_count, 3)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["query"], "query beta")
+        self.assertEqual(results[0]["page"], 1)
+
+    @patch("vacature_ingestion.adapters.serpapi_google._get_json")
+    def test_empty_error_requires_success_and_fully_empty_evidence(self, get):
+        message = "Google hasn't returned any results for this query."
+        valid = {
+            "error": message,
+            "search_metadata": {"status": "Success"},
+            "search_information": {"organic_results_state": "Fully empty"},
+        }
+        failures = [
+            {"error": message},
+            {**valid, "search_metadata": {"status": "Error"}},
+            {**valid, "search_information": {"organic_results_state": "Unknown"}},
+            {**valid, "organic_results": [
+                {"title": "Do not ignore", "link": "https://example.org/1"},
+            ]},
+            {**valid, "error": "Authentication failed"},
+        ]
+        for payload in failures:
+            with self.subTest(payload=payload), patch.dict(
+                os.environ, {"SERPAPI_API_KEY": "test"}
+            ):
+                get.reset_mock()
+                get.side_effect = [free_account(), payload]
+                with self.assertRaises(FetchError) as error:
+                    SerpApiGoogleAdapter().fetch(None, spec(
+                        max_pages=1, max_requests_per_run=1,
+                    ))
+                self.assertEqual(error.exception.category, "provider_error")
+                self.assertEqual(get.call_count, 2)
+
+    @patch("vacature_ingestion.adapters.serpapi_google._get_json")
     def test_malformed_search_results_fail_closed(self, get):
         get.side_effect = [free_account(), {"organic_results": {"url": "bad"}}]
         with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
