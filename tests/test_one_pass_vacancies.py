@@ -156,6 +156,25 @@ class OnePassTests(unittest.TestCase):
         self.assertEqual(counts["off_target"], 75)
         self.assertEqual(rows[0]["source_types"], ["ats"])
 
+    def test_wordpress_brand_sales_jobs_are_not_web_developer_roles(self):
+        items = [
+            observation("https://job-boards.greenhouse.io/automatticcareers/jobs/5867610",
+                        title="Account Executive, WordPress VIP",
+                        source_type="ats"),
+            observation("https://job-boards.greenhouse.io/automatticcareers/jobs/8000156",
+                        title="Director of Professional Services, WordPress VIP",
+                        source_type="ats"),
+            observation("https://jobs.ashbyhq.com/acme/real-dev",
+                        title="WordPress VIP Plugin Developer",
+                        source_type="ats"),
+        ]
+        rows, counts = screen_review_candidates(
+            items, tables(), policy_from_config(CONFIG), today=date(2026, 10, 19),
+        )
+        self.assertEqual(counts["off_target"], 2)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["title"], "WordPress VIP Plugin Developer")
+
     def test_unrelated_ats_titles_do_not_pass_on_company_boilerplate(self):
         noise = [
             observation("https://jobs.ashbyhq.com/acme/account", title="Account Manager",
@@ -372,6 +391,53 @@ class OnePassTests(unittest.TestCase):
             return_value={"plan_id": "paid"}
         ):
             self.assertEqual(google_free_gate(s, 1), "not_verified_free_or_insufficient_quota")
+
+    def test_free_source_order_follows_live_priority_and_curated_tenants(self):
+        t = tables()
+        t["Bronnen"] = [
+            {"source_id": name, "status": "active", "source_type": kind,
+             "priority": "high" if kind == "job_board" else "medium"}
+            for name, kind in [
+                ("greenhouse", "ats"), ("ashby", "ats"),
+                ("remote-ok", "job_board"), ("we-work-remotely", "job_board"),
+            ]
+        ]
+        config = {**CONFIG,
+                  "direct_discovery_order": "ats,job_board",
+                  "high_source_order": "we-work-remotely,remote-ok"}
+        raw = [
+            {"source_id": "greenhouse", "source_type": "ats",
+             "adapter": "greenhouse", "account": "wordpress-first"},
+            {"source_id": "ashby", "source_type": "ats",
+             "adapter": "ashby", "account": "alphabetically-first"},
+            {"source_id": "remote-ok", "source_type": "job_board",
+             "adapter": "remoteok", "account": "global"},
+            {"source_id": "we-work-remotely", "source_type": "job_board",
+             "adapter": "weworkremotely", "account": "programming"},
+        ]
+        selected = select_free_specs(raw, t, config, limit=4)
+        self.assertEqual(
+            [s.instance_id for s in selected],
+            ["greenhouse:wordpress-first", "ashby:alphabetically-first",
+             "we-work-remotely:programming", "remote-ok:global"],
+        )
+
+    def test_free_source_order_cannot_override_register_status(self):
+        t = tables()
+        t["Bronnen"] = [
+            {"source_id": "ashby", "status": "retired", "source_type": "ats",
+             "priority": "high"},
+            {"source_id": "greenhouse", "status": "active", "source_type": "ats",
+             "priority": "medium"},
+        ]
+        raw = [
+            {"source_id": "ashby", "source_type": "ats",
+             "adapter": "ashby", "account": "retired"},
+            {"source_id": "greenhouse", "source_type": "ats",
+             "adapter": "greenhouse", "account": "active"},
+        ]
+        selected = select_free_specs(raw, t, CONFIG, limit=2)
+        self.assertEqual([s.instance_id for s in selected], ["greenhouse:active"])
 
     def test_existing_ats_and_feeds_preserved(self):
         specs = json.loads((ROOT / "ingestion/source-specs.deploy.json").read_text())

@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import tempfile
 from dataclasses import replace
 from datetime import date
@@ -126,7 +127,15 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
     approved, _ = filter_source_specs(raw, active_ids)
     sources = {row["source_id"]: row for row in tables["Bronnen"] if row.get("status", "").lower() == "active"}
     order = [part.strip() for part in config.get("direct_discovery_order", "").split(",")]
+    configured_sources = [part.strip() for part in config.get("high_source_order", "").split(",") if part.strip()]
     priorities = {"high": 0, "medium": 1, "low": 2}
+    # The existing deploy source order is curated. Sorting by account name
+    # discards that ordering and lets irrelevant employers displace priority
+    # WordPress sources in a bounded free-only run.
+    instance_order = {
+        SourceSpec.from_dict(item).instance_id: i for i, item in enumerate(raw)
+        if isinstance(item, dict) and item.get("source_id") and item.get("account")
+    }
     unique: dict[str, dict[str, Any]] = {}
     for item in approved:
         if item.get("adapter") == "serpapi_google":
@@ -136,11 +145,16 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
         spec = SourceSpec.from_dict(item)
         unique.setdefault(spec.instance_id, item)
 
-    def rank(item: dict[str, Any]) -> tuple[int, int, str]:
+    def rank(item: dict[str, Any]) -> tuple[int, int, int, int, str]:
         row = sources.get(item["source_id"], {})
-        return (order.index(item["source_type"]) if item["source_type"] in order else 999,
-                priorities.get(row.get("priority", ""), 3),
-                item["source_id"] + ":" + item["account"])
+        return (
+            order.index(item["source_type"]) if item["source_type"] in order else 999,
+            priorities.get(row.get("priority", ""), 3),
+            configured_sources.index(item["source_id"])
+            if item["source_id"] in configured_sources else len(configured_sources),
+            instance_order.get(SourceSpec.from_dict(item).instance_id, len(raw)),
+            item["source_id"] + ":" + item["account"],
+        )
 
     ordered = sorted(unique.values(), key=rank)
     ats = [x for x in ordered if x["source_type"] in _ATS]
@@ -221,6 +235,16 @@ def _previous_index(tables: dict[str, list[dict[str, str]]]) -> tuple[set[str], 
     return urls, weak
 
 
+# A product name (e.g. "WordPress VIP") is not proof of a technical job.
+# Exclude clear sales, recruiting and nontechnical management titles only.
+_NON_TECH_BUSINESS_TITLE = re.compile(
+    r"\b(?:account executive|sales development|business development|"
+    r"director of professional services|customer success manager|"
+    r"marketing manager|talent acquisition|recruiter|"
+    r"finance manager)\b", re.I,
+)
+
+
 # Generic technical titles may need an ATS description to reveal the domain.
 # "Account Manager", "Security Engineer" or "Talent Community" must not match
 # simply because their employer's boilerplate mentions WordPress/n8n.
@@ -244,6 +268,8 @@ _ATS_DESCRIPTION_TERMS = {
 def _role_hints(row: dict[str, Any], policy: VacancyPolicy) -> list[str]:
     """Strict review hints only: not eligibility or candidate fit evidence."""
     title = str(row.get("title") or "").casefold()
+    if _NON_TECH_BUSINESS_TITLE.search(title):
+        return []
     matched = {name for name, tokens in _ROLE_TERMS.items()
                if name in policy.target_role_families
                and any(term in title for term in tokens)}
