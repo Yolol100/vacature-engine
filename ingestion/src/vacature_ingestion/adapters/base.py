@@ -15,6 +15,7 @@ def utc_now() -> str:
 
 class Adapter(ABC):
     name: str
+    complete_snapshot: bool = True  # A partial search must not close unseen jobs.
 
     @abstractmethod
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:

@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 import vacature_ingestion
+from vacature_ingestion.adapters import ADAPTERS
 
 
 class VersionTests(unittest.TestCase):
@@ -21,6 +22,7 @@ class VersionTests(unittest.TestCase):
         self.assertEqual(manifest["version"], metadata["project"]["version"])
         self.assertEqual(manifest["version"], vacature_ingestion.__version__)
         self.assertEqual(manifest["runtime_dependencies"], metadata["project"].get("dependencies", []))
+        self.assertEqual(sorted(manifest["adapters"]), sorted(ADAPTERS))
 
 
 if __name__ == "__main__":

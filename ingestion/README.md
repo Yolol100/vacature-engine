@@ -1,29 +1,44 @@
-# Vacature Ingestion — bronadapters op verzoek
+# Vacancy Ingestion — Read-Only Source Adapters
 
-Dit Python-onderdeel leest publieke werkgever-, ATS-, API-, RSS- en JobPosting-informatie als technisch hulpmiddel bij **expliciet gestart** vacaturezoeken. Het draait niet automatisch. Er draaien geen automatische vacaturezoekrondes via GitHub Actions of Cloudflare; een pull-request-testworkflow mag uitsluitend offline regressietests uitvoeren.
+This independent Python package retrieves public employer, ATS, API,
+RSS and JobPosting data **only when explicitly requested**.
 
-## Bronwaarheid en werkwijze
+## Boundaries
 
-1. Lees de actuele `Config` en **actieve** `Bronnen` uit het bestaande Vacature Register.
-2. Gebruik alleen passende publieke adapters of gecontroleerde rechtstreekse webzoekopdrachten. Statische `source-specs.*.json` bevatten uitsluitend technische voorbeelden en mogen een inactieve bron nooit activeren.
-3. De adapters leveren ruwe observaties. De skill `vacature-search` verifieert officiële vacature, werkbaarheid vanuit Nederland, taal, echte publicatiedatum, authenticiteit en bewezen kandidaatfit.
-4. Vergelijk met het bestaande Register en Radar-overzicht; nooit een tweede canonieke vacature- of sollicitatiedatabase maken.
-5. Alleen op een expliciete opdracht gegevens opslaan in bestaande geautoriseerde Sheets, met deduplicatie en readback. Geen automatische berichten, CV-bestanden of sollicitaties.
+1. Read current `Config` and the active `Bronnen` entries in the existing
+   Vacature Register before acquisition. A registry access failure blocks scans.
+2. Use permitted public source adapters. The repository's static
+   `source-specs.*.json` are configuration *examples*, not a source registry.
+3. Normalize observations without asserting vacancy authenticity, first
+   publication date, language eligibility or candidate suitability.
+4. The `vacature-search` skill verifies the actual role on the employer's
+   official page and compares strong vacancy IDs with the Register.
+5. Never write to the Register, send messages or apply automatically.
 
-De code bevat provideradapters, normalisatie, HTTP-beperkingen en optionele lokale technische state voor gecontroleerd onderhoud. Die state is geen bronwaarheid en start nooit zelfstandig een scan.
+The local SQLite store is temporary technical state for explicit runs;
+it is **not** an authoritative application or vacancy database.
 
-## Code en tests
+## Packages and tests
 
-`src/vacature_ingestion/adapters/` bevat onder andere Greenhouse-, Lever-, Ashby-, Workable-, SmartRecruiters-, Personio- en publieke feedadapters. `cli.py` biedt handmatig te starten opties. Tests staan in `ingestion/tests/`.
+- `src/vacature_ingestion/adapters/`: provider-specific public adapters.
+- `src/vacature_ingestion/ats_resolver.py`: URL-to-ATS hints, not employer proof.
+- `src/vacature_ingestion/runner.py`: safe snapshots and observation history.
+- `cli.py`: bounded, explicitly invoked technical commands.
+- `tests/`: offline unit, security and regression tests.
 
-De hoofdengine in `src/vacature_engine/` is gescheiden van deze publieke acquisitiecode.
+The deterministic scoring and eligibility engine lives separately in the
+repository root package `src/vacature_engine/`.
 
-## Optionele gratis Google-ontdekking
+## Optional free Google discovery
 
-De bestaande publieke ATS/feed-zoekroutes blijven de standaard. Voor een expliciet
-handmatig gestarte aanvullende Google-zoekronde is er nu een optionele
-`serpapi_google`-adapter met gratis-plan/quota-blokkade en veilige paginering
-(1–10 pagina's). Zonder API-sleutel blijft deze route uitgeschakeld.
+The `serpapi_google` adapter retrieves organic Google results through a
+**verified free SerpApi plan**; the key never belongs in code or committed
+configuration. Only the registered `google-jobs` discovery source is allowed.
+Search hits are *not* final verified vacancies and are never complete
+snapshots for vacancy closure.
 
-Zie [FREE-GOOGLE-DISCOVERY.md](docs/FREE-GOOGLE-DISCOVERY.md). Zoekresultaten zijn
-nooit geverifieerde vacatures; officiële werkgever/ATS-controle blijft vereist.
+The repository includes a **manual-only** GitHub Actions workflow for
+account checks and bounded discovery. There is no recurring scheduler,
+automatic application or forced API usage.
+
+See [FREE-GOOGLE-DISCOVERY.md](docs/FREE-GOOGLE-DISCOVERY.md).

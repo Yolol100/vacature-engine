@@ -1,99 +1,239 @@
-"""No-network regression tests for optional free Google discovery and ATS hints."""
+"""Offline regression cases for safely bounded free Google discovery."""
 from __future__ import annotations
 
 import os
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
+from urllib.error import HTTPError
+from urllib.parse import parse_qs, urlsplit
 
+from vacature_ingestion.adapters.serpapi_google import (
+    SerpApiGoogleAdapter, _get_json, _is_safe_free_account, _safe_candidate_url,
+)
 from vacature_ingestion.ats_resolver import resolve_ats_url
-from vacature_ingestion.adapters.serpapi_google import SerpApiGoogleAdapter
 from vacature_ingestion.http import FetchError
 from vacature_ingestion.models import SourceSpec
 from vacature_ingestion.runner import IngestionRunner
 
 
-def spec(**opts):
-    return SourceSpec("google-jobs", "discovery", "serpapi_google", "worldwide",
-                      max_jobs=100, options={"queries": ["WordPress remote"], "max_pages": 2,
-                                             "max_requests_per_run": 2, "free_quota_reserve": 10, **opts})
+def free_account(**overrides):
+    result = {
+        "account_status": "Active", "plan_id": "free", "plan_name": "Free Plan",
+        "plan_monthly_price": 0.0, "searches_per_month": 250,
+        "plan_searches_left": 200, "total_searches_left": 200,
+        "extra_credits": 0, "this_hour_searches": 0,
+        "account_rate_limit_per_hour": 50,
+    }
+    result.update(overrides)
+    return result
+
+
+def spec(**options):
+    opts = {
+        "queries": ["WordPress remote"], "max_pages": 2,
+        "max_requests_per_run": 2, "free_quota_reserve": 10,
+    }
+    opts.update(options)
+    return SourceSpec("google-jobs", "discovery", "serpapi_google",
+                      "worldwide", max_jobs=100, options=opts)
 
 
 class FreeDiscoveryTests(unittest.TestCase):
-    def test_resolves_only_valid_ats_tenants(self):
+    def test_valid_ats_accounts_are_hints_not_proof(self):
         self.assertEqual(resolve_ats_url("https://jobs.ashbyhq.com/Eneba/abc")["account"], "Eneba")
         self.assertEqual(resolve_ats_url("https://syde.jobs.personio.com/job/123")["provider"], "personio")
         self.assertEqual(resolve_ats_url("https://jobs.lever.co/kinsta/xyz")["provider"], "lever")
-        for url in ("http://jobs.ashbyhq.com/evil", "https://jobs.ashbyhq.com.evil.test/foo",
-                    "https://jobs.ashbyhq.com/%2e%2e/job", "https://apply.workable.com/j/1234",
-                    "https://user:password@jobs.ashbyhq.com/acme", "javascript:alert(1)"):
-            self.assertIsNone(resolve_ats_url(url), url)
 
-    def test_no_key_fails_closed(self):
+    def test_malicious_or_ambiguous_ats_links_are_rejected(self):
+        for url in (
+            "http://jobs.ashbyhq.com/evil",
+            "https://jobs.ashbyhq.com.evil.test/acme",
+            "https://jobs.ashbyhq.com/%2e%2e/job",
+            "https://jobs.ashbyhq.com/%252e%252e/job",
+            "https://apply.workable.com/j/1234",
+            "https://user:secret@jobs.ashbyhq.com/acme",
+            "javascript:alert(1)",
+        ):
+            with self.subTest(url=url):
+                self.assertIsNone(resolve_ats_url(url))
+
+    def test_malicious_candidate_links_are_rejected(self):
+        for url in (
+            "javascript:alert(1)", "http://example.com/job",
+            "https://user:pwd@example.com/job", "https://localhost/job",
+            "https://127.0.0.1/job", "https://example.com:8443/job",
+            "https://example.test/job", "https://example.com:broken/job",
+        ):
+            with self.subTest(url=url):
+                self.assertIsNone(_safe_candidate_url(url))
+
+    def test_no_api_key_is_safe_failure(self):
         with patch.dict(os.environ, {}, clear=True):
-            with self.assertRaises(FetchError) as result:
+            with self.assertRaises(FetchError) as error:
                 SerpApiGoogleAdapter().fetch(None, spec())
-            self.assertEqual(result.exception.category, "not_configured")
+        self.assertEqual(error.exception.category, "not_configured")
+
+    def test_not_free_and_ambiguous_accounts_cannot_spend(self):
+        invalid = (
+            {"plan_name": "Developer Plan"},
+            {"plan_name": "Not Free"},
+            {"plan_name": "Free Trial"},
+            {"plan_id": "developer"},
+            {"plan_id": "free-premium"},
+            {"plan_monthly_price": 0.01},
+            {"plan_monthly_price": None},
+            {"searches_per_month": 1000},
+            {"plan_searches_left": 1},
+            {"total_searches_left": 1},
+            {"extra_credits": 3},
+            {"account_status": "Paused"},
+            {"account_rate_limit_per_hour": 1, "this_hour_searches": 1},
+            {"account_rate_limit_per_hour": "50"},
+        )
+        for change in invalid:
+            with self.subTest(change=change):
+                self.assertFalse(_is_safe_free_account(free_account(**change), 2, 10))
 
     @patch("vacature_ingestion.adapters.serpapi_google._get_json")
-    def test_refuses_paid_or_unknown_plan(self, get):
-        for account in ({"plan_name": "Developer", "total_searches_left": 5000},
-                        {"plan_name": "Free"}, {"plan_name": "Free", "total_searches_left": 1}):
-            with self.subTest(account=account), patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
-                get.return_value = account
-                with self.assertRaises(FetchError) as result:
-                    SerpApiGoogleAdapter().fetch(None, spec())
-                self.assertEqual(result.exception.category, "free_quota_blocked")
+    def test_invalid_accounts_never_start_search(self, get):
+        get.return_value = free_account(plan_monthly_price=5.0)
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            with self.assertRaises(FetchError) as err:
+                SerpApiGoogleAdapter().fetch(None, spec())
+        self.assertEqual(err.exception.category, "free_quota_blocked")
+        self.assertEqual(get.call_count, 1)  # Free account lookup only.
+
+    def test_valid_free_account_must_keep_reserve(self):
+        self.assertTrue(_is_safe_free_account(free_account(total_searches_left=12, plan_searches_left=12), 2, 10))
+        self.assertFalse(_is_safe_free_account(free_account(total_searches_left=11), 2, 10))
 
     @patch("vacature_ingestion.adapters.serpapi_google._get_json")
-    def test_pages_are_bounded_and_never_infer_date(self, get):
+    def test_pages_and_canonical_urls_never_infer_post_date(self, get):
         get.side_effect = [
-            {"plan_name": "Free", "total_searches_left": 200},
-            {"organic_results": [{"title": "WordPress Dev", "link": "https://jobs.ashbyhq.com/acme/42?utm_source=google",
-                                  "snippet": "remote"}]},
+            free_account(),
+            {"organic_results": [
+                {"title": "WordPress Engineer", "link": "https://jobs.ashbyhq.com/acme/42?utm_source=google",
+                 "snippet": "Remote position"}
+            ]},
             {"organic_results": []},
         ]
         with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
-            a = SerpApiGoogleAdapter()
-            observations = a.normalize_records(a.fetch(None, spec()), spec(), now="2026-10-19T00:00:00Z")
+            adapter = SerpApiGoogleAdapter()
+            rows = adapter.fetch(None, spec())
+            observed = adapter.normalize_records(rows, spec(), now="2026-10-19T00:00:00Z")
         self.assertEqual(get.call_count, 3)
-        self.assertEqual(len(observations), 1)
-        job = observations[0]
-        self.assertEqual(job["canonical_url"], "https://jobs.ashbyhq.com/acme/42")
-        self.assertIsNone(job["published_at"])
-        self.assertIsNone(job["remote"])
-        self.assertEqual(job["source_metadata"]["ats_hint"]["provider"], "ashby")
-        self.assertTrue(job["source_metadata"]["discovery_only"])
+        self.assertEqual(len(observed), 1)
+        entry = observed[0]
+        self.assertEqual(entry["canonical_url"], "https://jobs.ashbyhq.com/acme/42")
+        self.assertIsNone(entry["published_at"])
+        self.assertIsNone(entry["remote"])
+        self.assertIsNone(entry["employer"])
+        self.assertTrue(entry["source_metadata"]["discovery_only"])
+        self.assertEqual(entry["source_metadata"]["ats_hint"]["provider"], "ashby")
 
     @patch("vacature_ingestion.adapters.serpapi_google._get_json")
-    def test_never_fetch_more_than_request_cap(self, get):
+    def test_round_robin_fairness_and_hard_request_cap(self, get):
+        urls = []
+        def source(url, *, timeout):
+            if "account.json" in url:
+                return free_account()
+            query = parse_qs(urlsplit(url).query)
+            urls.append((query["q"][0], int(query["start"][0])))
+            return {"organic_results": [{
+                "title": "Position", "link": "https://example.org/jobs/" + str(len(urls))
+            }]}
+        get.side_effect = source
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            rows = SerpApiGoogleAdapter().fetch(None, spec(
+                queries=["query alpha", "query beta"],
+                max_pages=10, max_requests_per_run=4
+            ))
+        self.assertEqual(len(rows), 4)
+        self.assertEqual(urls, [
+            ("query alpha", 0), ("query beta", 0),
+            ("query alpha", 10), ("query beta", 10),
+        ])
+
+    @patch("vacature_ingestion.adapters.serpapi_google._get_json")
+    def test_tracking_variations_and_duplicate_pages_are_skipped(self, get):
         get.side_effect = [
-            {"plan_name": "Free", "total_searches_left": 200},
-            {"organic_results": [{"title": "Job A", "link": "https://example.org/jobs/1"}]},
-            {"organic_results": [{"title": "Job B", "link": "https://example.org/jobs/2"}]},
+            free_account(),
+            {"organic_results": [{"title": "Job", "link": "https://example.org/jobs/1?utm_source=google"},
+                                 {"title": "Job", "link": "https://example.org/jobs/1"}]},
+            {"organic_results": [{"title": "Job", "link": "https://example.org/jobs/1?utm_campaign=repeat"}]},
         ]
         with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
-            result = SerpApiGoogleAdapter().fetch(None, spec(max_pages=10))
-        self.assertEqual(len(result), 2)
+            rows = SerpApiGoogleAdapter().fetch(None, spec(max_pages=10))
+        self.assertEqual(len(rows), 1)
         self.assertEqual(get.call_count, 3)
 
-    def test_discovery_incomplete_snapshot_cannot_close_jobs(self):
-        import tempfile
-        from pathlib import Path
-        from unittest.mock import MagicMock
-        with tempfile.TemporaryDirectory() as tmp:
-            runner = IngestionRunner(Path(tmp) / "state.sqlite")
+    @patch("vacature_ingestion.adapters.serpapi_google._get_json")
+    def test_time_range_day_does_not_imply_employer_post_date(self, get):
+        requests = []
+        def source(url, *, timeout):
+            requests.append(url)
+            return free_account() if "account.json" in url else {"organic_results": []}
+        get.side_effect = source
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            SerpApiGoogleAdapter().fetch(None, spec(time_range="day", max_pages=1))
+        self.assertEqual(parse_qs(urlsplit(requests[1]).query)["tbs"], ["qdr:d"])
+
+    def test_bad_options_are_rejected_before_spending(self):
+        for options in (
+            {"queries": [""]}, {"queries": []}, {"max_pages": 11},
+            {"max_requests_per_run": 0}, {"max_requests_per_run": True},
+            {"free_quota_reserve": -1}, {"time_range": "month"},
+        ):
+            with self.subTest(options=options), patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+                with patch("vacature_ingestion.adapters.serpapi_google._get_json") as get:
+                    with self.assertRaises(ValueError):
+                        SerpApiGoogleAdapter().fetch(None, spec(**options))
+                    get.assert_not_called()
+
+    def test_provider_http_error_does_not_print_secret(self):
+        secret = "top-secret-shall-not-leak"
+        url = "https://serpapi.com/account.json?api_key=" + secret
+        with patch("vacature_ingestion.adapters.serpapi_google.urlopen",
+                   side_effect=HTTPError(url, 403, "unauthorized", {}, None)):
+            with self.assertRaises(FetchError) as err:
+                _get_json(url, timeout=1)
+        self.assertNotIn(secret, str(err.exception))
+        self.assertEqual(err.exception.status, 403)
+
+    def test_missing_source_contract_is_rejected(self):
+        bad = SourceSpec("random-google-source", "discovery", "serpapi_google", "worldwide")
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            with self.assertRaises(ValueError):
+                SerpApiGoogleAdapter().fetch(None, bad)
+
+    def test_partial_google_run_does_not_close_old_jobs(self):
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "state.sqlite3")
             adapter = SerpApiGoogleAdapter()
-            rows = [{"title": "WordPress Engineer", "url": "https://jobs.ashbyhq.com/acme/123"}]
-            rows2 = [{"title": "WordPress Engineer", "url": "https://jobs.ashbyhq.com/acme/456"}]
-            with patch.object(adapter, "fetch", side_effect=[rows, rows2]), patch.dict(
+            first = [{"title": "WP Developer", "url": "https://jobs.ashbyhq.com/acme/1"}]
+            second = [{"title": "WP Developer", "url": "https://jobs.ashbyhq.com/acme/2"}]
+            with patch.object(adapter, "fetch", side_effect=[first, second]), patch.dict(
                 "vacature_ingestion.runner.ADAPTERS", {"serpapi_google": adapter}
             ):
-                first = runner.run_source(spec())
-                second = runner.run_source(spec())
-            self.assertTrue(first.success)
-            self.assertTrue(second.success)
-            self.assertEqual(second.closed, 0)
-            self.assertEqual(second.missing, 0)
+                initial = runner.run_source(spec())
+                changed = runner.run_source(spec())
+            self.assertTrue(initial.success)
+            self.assertTrue(changed.success)
+            self.assertEqual(changed.closed, 0)
+            self.assertEqual(changed.missing, 0)
+            self.assertEqual(len(runner.state.list_jobs()), 2)
+            runner.close()
+
+    def test_manual_ingest_cannot_override_google_partial_contract(self):
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "state.sqlite3")
+            first = [{"title": "WP Developer", "url": "https://example.org/job/1"}]
+            second = [{"title": "WP Developer", "url": "https://example.org/job/2"}]
+            runner.ingest_records(spec(), first, complete_snapshot=True)
+            changed = runner.ingest_records(spec(), second, complete_snapshot=True)
+            self.assertEqual((changed.missing, changed.closed), (0, 0))
             runner.close()
 
 
