@@ -64,7 +64,7 @@ access to the live Register; otherwise the scan must **not** proceed.
 
 ## 4. What discovery actually means
 
-- Up to ten Google organic-results pages per search term, subject to
+- Up to ten Google organic-results pages per search term (the four-query example allows up to 400 unique candidates), subject to
   the explicit overall request budget and real search availability.
 - Pages are visited **round-robin across distinct search terms** so
   the first term cannot starve the rest. Duplicate URLs and tracking

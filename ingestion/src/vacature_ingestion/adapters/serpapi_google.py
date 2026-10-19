@@ -6,6 +6,7 @@ NL eligibility or employer identity; the caller verifies the canonical job page.
 from __future__ import annotations
 
 import hashlib
+import ipaddress
 import os
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
@@ -86,8 +87,13 @@ def _safe_candidate_url(value: object) -> str | None:
         host = (parts.hostname or "").casefold()
         if parts.scheme != "https" or not host or parts.username or parts.password:
             return None
-        if host in {"localhost", "127.0.0.1", "0.0.0.0", "[::1]"} or host.endswith((".local", ".test")):
+        if host == "localhost" or host.endswith((".local", ".test")) or "." not in host and ":" not in host:
             return None
+        try:
+            if not ipaddress.ip_address(host).is_global:
+                return None
+        except ValueError:
+            pass  # A DNS hostname, not an IP literal.
         if parts.port not in (None, 443):
             return None
     except ValueError:
@@ -184,8 +190,8 @@ class SerpApiGoogleAdapter(Adapter):
                         added += 1
                         if len(results) >= spec.max_jobs:
                             return results
-                if not organic or not added:
-                    # Empty or repeating result pages are not evidence of a full snapshot.
+                if not organic:
+                    # A temporarily duplicate page is not proof that later pages are empty.
                     exhausted.add(query)
             if len(exhausted) == len(queries):
                 break

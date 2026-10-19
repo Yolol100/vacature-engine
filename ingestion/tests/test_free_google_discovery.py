@@ -65,6 +65,7 @@ class FreeDiscoveryTests(unittest.TestCase):
             "https://user:pwd@example.com/job", "https://localhost/job",
             "https://127.0.0.1/job", "https://example.com:8443/job",
             "https://example.test/job", "https://example.com:broken/job",
+            "https://10.0.0.1/job", "https://192.168.1.50/job", "https://[::1]/job",
         ):
             with self.subTest(url=url):
                 self.assertIsNone(_safe_candidate_url(url))
@@ -266,6 +267,40 @@ class FreeDiscoveryTests(unittest.TestCase):
             with self.assertRaises(FetchError) as error:
                 SerpApiGoogleAdapter().fetch(None, spec(max_pages=1, max_requests_per_run=1))
         self.assertEqual(error.exception.category, "malformed_result")
+
+
+    @patch("vacature_ingestion.adapters.serpapi_google._get_json")
+    def test_repeating_second_page_does_not_hide_third_page(self, get):
+        calls = []
+        def fake(url, *, timeout):
+            if "account.json" in url:
+                return free_account()
+            start = int(parse_qs(urlsplit(url).query)["start"][0])
+            calls.append(start)
+            return {"organic_results": [{
+                "title": "Position",
+                "link": "https://example.org/job/" + ("first" if start < 20 else "third"),
+            }]}
+        get.side_effect = fake
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            jobs = SerpApiGoogleAdapter().fetch(None, spec(
+                max_pages=3, max_requests_per_run=3
+            ))
+        self.assertEqual(calls, [0, 10, 20])
+        self.assertEqual(len(jobs), 2)
+
+    def test_google_ten_pages_configuration_can_hold_all_candidates(self):
+        import json
+        specs = json.loads((Path(__file__).resolve().parents[1] /
+                            "source-specs.google-optional.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(specs), 1)
+        cfg = specs[0]
+        self.assertEqual(cfg["source_id"], "google-jobs")
+        self.assertGreaterEqual(
+            cfg["max_jobs"], len(cfg["options"]["queries"]) *
+            cfg["options"]["max_pages"] * 10
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

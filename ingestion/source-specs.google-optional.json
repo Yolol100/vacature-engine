@@ -4,7 +4,7 @@
     "source_type": "discovery",
     "adapter": "serpapi_google",
     "account": "worldwide",
-    "max_jobs": 100,
+    "max_jobs": 400,
     "timeout_seconds": 15,
     "retries": 0,
     "options": {
