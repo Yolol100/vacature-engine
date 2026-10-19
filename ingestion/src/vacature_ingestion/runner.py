@@ -124,8 +124,11 @@ class IngestionRunner:
             raise ValueError(f"unknown adapter: {spec.adapter}")
         started_at = now or datetime.now(timezone.utc).isoformat()
         t0 = time.perf_counter()
-        # Validate and normalize before creating a persistent run record.
-        # Invalid user-supplied source specs must leave no orphaned run.
+        # Validate the Google source even for empty input. Per-record validation
+        # would otherwise be skipped and could erase ATS source memberships.
+        if spec.adapter == "serpapi_google":
+            adapter._validate_spec(spec)
+        # Invalid source specs must leave no unfinished or successful run.
         observations = adapter.normalize_records(records, spec, now=started_at)
         run_id = self.state.start_run(spec.instance_id, started_at)
         review_observations = self._review_queue(observations, closure_authority=adapter.complete_snapshot)
