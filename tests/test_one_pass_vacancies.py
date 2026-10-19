@@ -23,6 +23,7 @@ CONFIG = {
     "min_evidence_fit": "10", "allowed_listing_languages": "nl,en",
     "target_role_families": "wordpress_ecosystem,web_design_development,ai_workflow_automation",
     "direct_discovery_order": "ats,discovery_api,job_board,discovery",
+    "dedupe_previous_statuses": "seen,shown,submitted,applied,rejected,excluded",
 }
 def tables():
     return {
@@ -73,6 +74,40 @@ class OnePassTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["status"], "unverified_review_only")
         self.assertNotIn("application_status", rows[0])
+
+    def test_only_configured_history_statuses_are_blocking(self):
+        t = tables()
+        t["Vacatures"].append({
+            "vacancy_id": "unreviewed", "status": "discovered",
+            "canonical_url": "https://jobs.ashbyhq.com/acme/unreviewed",
+            "official_url": "", "employer": "Other", "title": "Web Developer",
+        })
+        rows, counts = screen_review_candidates([
+            observation("https://jobs.ashbyhq.com/acme/unreviewed",
+                        title="Web Developer"),
+        ], t, policy_from_config(CONFIG), today=date(2026, 10, 19))
+        self.assertEqual(counts["previously_registered"], 0)
+        self.assertEqual(len(rows), 1)
+
+    def test_application_history_without_vacancy_row_is_blocked(self):
+        t = tables()
+        t["Applications"].append({
+            "vacancy_id": "orphan", "status": "submitted",
+            "application_url": "https://jobs.ashbyhq.com/acme/orphan",
+        })
+        rows, counts = screen_review_candidates([
+            observation("https://jobs.ashbyhq.com/acme/orphan",
+                        title="Automation Engineer"),
+        ], t, policy_from_config(CONFIG), today=date(2026, 10, 19))
+        self.assertEqual(rows, [])
+        self.assertEqual(counts["previously_registered"], 1)
+
+    def test_missing_dedupe_config_fails_closed(self):
+        t = tables()
+        t["Config"] = [r for r in t["Config"] if r["key"] != "dedupe_previous_statuses"]
+        with self.assertRaises(RegisterPreflightError):
+            screen_review_candidates([], t, policy_from_config(CONFIG),
+                                     today=date(2026, 10, 19))
 
     def test_weak_history_match_is_not_recommended(self):
         rows, c = screen_review_candidates([
