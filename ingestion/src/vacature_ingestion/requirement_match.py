@@ -118,6 +118,22 @@ def _skill_tags(value: str) -> set[str]:
             if any(pattern.search(value) for pattern in patterns)}
 
 
+def has_positive_skill_claim(claim: Any) -> bool:
+    """Whether a CV claim can serve as *positive* skill evidence.
+
+    This same gate must be used by detailed skill matching AND broader
+    eligibility preflight: negated/portfolio-index statements prove no skill.
+    """
+    if not isinstance(claim, str) or not claim.strip():
+        return False
+    lower = claim.casefold()
+    if any(phrase in lower for phrase in (
+        "available for vacancy", "profile is https://", "portfolio index"
+    )):
+        return False
+    return _NEGATED_CLAIM.search(claim) is None
+
+
 def _verified_skills(evidence: list[dict[str, str]]) -> set[str]:
     # A portfolio index/GitHub profile URL, standing alone, is not skill proof.
     result: set[str] = set()
@@ -128,12 +144,7 @@ def _verified_skills(evidence: list[dict[str, str]]) -> set[str]:
                 or not row.get("evidence_id")):
             continue
         claim = row.get("claim", "")
-        if not isinstance(claim, str) or not claim.strip():
-            continue
-        if ("available for vacancy" in claim.casefold() or
-                "profile is https://" in claim.casefold() or
-                "portfolio index" in claim.casefold() or
-                _NEGATED_CLAIM.search(claim)):
+        if not has_positive_skill_claim(claim):
             continue
         result.update(_skill_tags(claim))
     return result

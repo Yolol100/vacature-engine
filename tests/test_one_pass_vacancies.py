@@ -225,6 +225,76 @@ class OnePassTests(unittest.TestCase):
         # Aggregator's EU hint still never verifies the employer.
         self.assertEqual(rows[0]["official_checks"]["official_role"], "unverified")
 
+    def test_live_board_country_exclusion_and_stale_discovery_advisory(self):
+        t = tables()
+        t["Bronnen"].append({
+            "source_id": "remotejobs-org", "status": "active",
+            "source_type": "discovery_api", "priority": "medium",
+        })
+        records = [
+            {
+                "source_id": "remotejobs-org", "source_type": "discovery_api",
+                "canonical_url": "https://remotejobs.org/remote-jobs/full-stack-wordpress-developer-outsourcedin",
+                "title": "Full-Stack WordPress Developer", "employer": "OutsourcedIn",
+                "location": "Philippines", "description": "WordPress development.",
+            },
+            {
+                "source_id": "remotejobs-org", "source_type": "discovery_api",
+                "canonical_url": "https://remotejobs.org/remote-jobs/wordpress-developer-elementor-divi-motum",
+                "title": "WordPress Developer (Elementor + Divi)", "employer": "Motum",
+                "location": "Remote",
+                "description": "WE ARE EXCLUSIVELY CONSIDERING APPLICATIONS "
+                               "FROM INDIVIDUALS CURRENTLY RESIDING IN LATAM.",
+            },
+            {
+                "source_id": "remote-ok", "source_type": "job_board",
+                "canonical_url": "https://remoteok.com/remote-jobs/remote-senior-backend-engineer-build-ai-agents-salesforge-1137114",
+                "title": "Senior Backend Engineer Build AI Agents", "employer": "Salesforge",
+                "location": "Remote Europe", "published_at": "2026-08-25",
+            },
+        ]
+        candidates, counts = screen_review_candidates(
+            records, t, policy_from_config(CONFIG), today=date(2026, 10, 20),
+        )
+        self.assertEqual(counts["source_location_restricted"], 2)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0]["employer"], "Salesforge")
+        self.assertEqual(candidates[0]["review_alerts"],
+                         ["discovery_date_older_than_policy"])
+        self.assertEqual(candidates[0]["official_checks"]["official_role"],
+                         "unverified")
+        self.assertEqual(candidates[0]["status"], "unverified_review_only")
+
+    def test_missing_remote_board_location_never_proves_nl_eligibility(self):
+        t = tables()
+        candidate = {
+            "source_id": "remote-ok", "source_type": "job_board",
+            "canonical_url": "https://remoteok.com/remote-jobs/wp-engineer-1234",
+            "title": "WordPress Engineer", "employer": "NewCo",
+            "location": "Remote", "published_at": None,
+        }
+        rows, counts = screen_review_candidates(
+            [candidate], t, policy_from_config(CONFIG),
+            today=date(2026, 10, 20),
+        )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["official_checks"]["netherlands"], "unknown")
+        self.assertEqual(rows[0]["review_alerts"], [])
+        self.assertEqual(counts["source_location_restricted"], 0)
+
+    def test_retired_or_unknown_board_source_never_enters_review_queue(self):
+        t = tables()
+        row = {
+            "source_id": "unapproved-board", "source_type": "job_board",
+            "canonical_url": "https://remotejobs.org/remote-jobs/wordpress-developer",
+            "title": "WordPress Developer", "employer": "NotApproved",
+        }
+        results, counts = screen_review_candidates(
+            [row], t, policy_from_config(CONFIG), today=date(2026, 10, 20),
+        )
+        self.assertEqual(results, [])
+        self.assertEqual(counts["unapproved_source"], 1)
+
     def test_official_ats_costa_rica_role_excluded(self):
         rows, counts = screen_review_candidates([
             dict(

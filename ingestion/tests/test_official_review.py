@@ -4,7 +4,8 @@ import unittest
 
 from vacature_engine.simple import policy_from_config
 from vacature_ingestion.official_review import (
-    assess_official_observation, geography_signal, rank_fully_verified,
+    assess_official_observation, discovery_region_conflict, geography_signal,
+    rank_fully_verified,
 )
 
 POLICY = policy_from_config({
@@ -63,6 +64,55 @@ class OfficialReviewTests(unittest.TestCase):
             with self.subTest(region=region):
                 self.assertEqual(geography_signal(region), "restricted")
 
+    def test_real_board_geo_limited_roles_are_held_from_nl_review(self):
+        for row in (
+            {"source_type": "discovery_api", "source_id": "remotejobs-org",
+             "location": "Philippines", "description": "Full-Stack WordPress Developer"},
+            {"source_type": "job_board", "source_id": "remote-ok",
+             "location": "Remote", "description":
+                "We are exclusively considering applications from individuals "
+                "currently residing in LATAM. Wordpress Developer."},
+            {"source_type": "discovery_api", "source_id": "remotejobs-org",
+             "location": "Colombia", "description": "WordPress Developer"},
+            {"source_type": "job_board", "source_id": "remote-ok",
+             "location": "Remote", "description":
+                "Applicants must be based in the Philippines."},
+        ):
+            with self.subTest(source=row):
+                self.assertIsNotNone(discovery_region_conflict(row))
+
+    def test_board_marketing_mentions_and_positive_territories_are_not_exclusions(self):
+        cases = [
+            {"source_type": "job_board", "location": "Remote",
+             "description": "Our office is in the Philippines. EU residents may apply."},
+            {"source_type": "discovery_api", "location": "European Union",
+             "description": "Candidates must be based in Philippines. "
+                            "Our source location says the EU."},
+            {"source_type": "job_board", "location": "Remote",
+             "description": "Our LATAM customers love the WordPress platform."},
+            {"source_type": "discovery_api", "location": "Worldwide",
+             "description": "We serve customers in Australia."},
+        ]
+        for row in cases:
+            with self.subTest(row=row):
+                self.assertIsNone(discovery_region_conflict(row))
+
+    def test_discovery_geo_never_proves_ats_employer_claim(self):
+        row = {"source_type": "ats", "location": "Philippines",
+               "description": "Only candidates in LATAM"}
+        self.assertIsNone(discovery_region_conflict(row))
+
+    def test_country_list_requires_every_restriction_to_be_outside_nl(self):
+        limited = {"source_type": "discovery_api",
+                   "source_metadata": {"location_restriction_names":
+                                       ["Philippines", "Colombia"]}}
+        mixed = {"source_type": "discovery_api",
+                 "source_metadata": {"location_restriction_names":
+                                     ["Philippines", "European Union"]}}
+        self.assertEqual(discovery_region_conflict(limited),
+                         "explicit_discovery_region_list")
+        self.assertIsNone(discovery_region_conflict(mixed))
+
     def test_last_published_is_not_original_publication_date(self):
         result, _ = assess_official_observation(
             official(location="Remote - EU", published_at="2026-10-19T10:00:00Z"),
@@ -70,6 +120,22 @@ class OfficialReviewTests(unittest.TestCase):
             evidence=EVIDENCE, policy=POLICY, today=TODAY,
         )
         self.assertEqual(result["original_publication"], "unknown")
+
+    def test_negative_cv_claim_cannot_support_broad_fit_indicator(self):
+        row = {
+            "evidence_id": "neg-wp",
+            "source_type": "canonical_cv",
+            "claim": "No experience with WordPress, WooCommerce or Gutenberg.",
+            "active": "TRUE",
+            "confidence": "high",
+        }
+        checks, _ = assess_official_observation(
+            official(location="Remote - European Union"),
+            candidate=CANDIDATE, active_ids={"greenhouse"},
+            evidence=[row], policy=POLICY, today=TODAY,
+        )
+        self.assertEqual(checks["evidence_claims_count"], 0)
+        self.assertEqual(checks["fit_evidence"], "unverified")
 
     def test_only_live_known_ats_is_official(self):
         checks, ranked = assess_official_observation(
