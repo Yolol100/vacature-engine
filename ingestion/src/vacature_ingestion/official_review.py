@@ -12,6 +12,7 @@ from typing import Any
 
 from vacature_engine.simple import VacancyPolicy, top_vacancies
 from .official_page import verified_source_account
+from .requirement_match import has_positive_skill_claim
 _SUPPORTED_EVIDENCE = {"canonical_cv", "github", "user_confirmed", "library_portfolio_master"}
 _CORE_TERMS: dict[str, tuple[str, ...]] = {
     "wordpress_ecosystem": ("wordpress", "woocommerce", "elementor", "gutenberg",
@@ -116,8 +117,10 @@ def _strong_evidence_count(rows: list[dict[str, str]], families: list[str]) -> i
             continue
         if row.get("confidence", "").casefold() not in {"high", "medium"}:
             continue
-        claim = row.get("claim", "").casefold()
-        if any(term in claim for term in keywords) and row.get("evidence_id"):
+        claim = row.get("claim", "")
+        if (has_positive_skill_claim(claim)
+                and any(term in claim.casefold() for term in keywords)
+                and row.get("evidence_id")):
             matched_ids.add(row["evidence_id"])
     return len(matched_ids)
 
