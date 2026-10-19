@@ -74,7 +74,9 @@ class WorkableAdapter(Adapter):
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         payload = client.get_json(self._endpoint(spec))
-        jobs = payload.get("jobs", []) if isinstance(payload, dict) else []
+        if not isinstance(payload, dict) or "jobs" not in payload:
+            raise ValueError("Workable response is missing the jobs collection")
+        jobs = payload["jobs"]
         if not isinstance(jobs, list):
             raise ValueError("Workable payload jobs must be a list")
         return [job for job in jobs if isinstance(job, dict)][: spec.max_jobs]

@@ -14,7 +14,9 @@ class GreenhouseAdapter(Adapter):
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         endpoint = spec.endpoint or f"https://boards-api.greenhouse.io/v1/boards/{quote(spec.account)}/jobs?content=true"
         payload = client.get_json(endpoint)
-        jobs = payload.get("jobs", []) if isinstance(payload, dict) else []
+        if not isinstance(payload, dict) or "jobs" not in payload:
+            raise ValueError("Greenhouse response is missing the jobs collection")
+        jobs = payload["jobs"]
         if not isinstance(jobs, list):
             raise ValueError("Greenhouse payload jobs must be a list")
         return jobs[: spec.max_jobs]

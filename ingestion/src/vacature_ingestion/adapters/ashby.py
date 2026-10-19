@@ -14,7 +14,9 @@ class AshbyAdapter(Adapter):
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         endpoint = spec.endpoint or f"https://api.ashbyhq.com/posting-api/job-board/{quote(spec.account)}?includeCompensation=true"
         payload = client.get_json(endpoint)
-        jobs = payload.get("jobs", []) if isinstance(payload, dict) else []
+        if not isinstance(payload, dict) or "jobs" not in payload:
+            raise ValueError("Ashby response is missing the jobs collection")
+        jobs = payload["jobs"]
         if not isinstance(jobs, list):
             raise ValueError("Ashby payload jobs must be a list")
         return jobs[: spec.max_jobs]
