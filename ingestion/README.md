@@ -1,6 +1,6 @@
 # Vacature Ingestion — bronadapters op verzoek
 
-Dit Python-onderdeel leest publieke werkgever-, ATS-, API-, RSS- en JobPosting-informatie als technisch hulpmiddel bij **expliciet gestart** vacaturezoeken. Het draait niet automatisch. Er zijn geen GitHub Actions of Cloudflare-schedulers gekoppeld.
+Dit Python-onderdeel leest publieke werkgever-, ATS-, API-, RSS- en JobPosting-informatie als technisch hulpmiddel bij **expliciet gestart** vacaturezoeken. Het draait niet automatisch. Er draaien geen automatische vacaturezoekrondes via GitHub Actions of Cloudflare; een pull-request-testworkflow mag uitsluitend offline regressietests uitvoeren.
 
 ## Bronwaarheid en werkwijze
 

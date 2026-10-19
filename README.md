@@ -1,6 +1,6 @@
 # Vacature Engine — zoeken op verzoek
 
-Dit project ondersteunt **handmatig gestart vacaturezoeken vanuit ChatGPT** met de skills `vacature-search` en `webactueel-workflow`. Er zijn geen GitHub Actions, cronruns, autonome Radar-scans, pushmeldingen of automatische sollicitaties.
+Dit project ondersteunt **handmatig gestart vacaturezoeken vanuit ChatGPT** met de skills `vacature-search` en `webactueel-workflow`. Er zijn geen GitHub Actions voor vacaturezoekrondes, cronruns, autonome Radar-scans, pushmeldingen of automatische sollicitaties. Een eventuele pull-request-testworkflow voert uitsluitend offline unit-tests uit.
 
 ## Bestaande bronnen en gegevens
 
