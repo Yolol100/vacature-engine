@@ -30,6 +30,7 @@ from vacature_ingestion.runner import IngestionRunner
 from vacature_ingestion.official_review import (
     assess_official_observation, geography_signal,
 )
+from vacature_ingestion.official_page import fetch_official_page_evidence
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -462,11 +463,41 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         observations, tables, policy, today=today or date.today(),
         limit=max(20, min(100, policy.max_output_roles * 12)),
     )
+    # A bounded additional first-party check never turns inferred match or
+    # salary into a score. Missing official facts stay pending for review.
+    active_ids = {r["source_id"] for r in tables["Bronnen"]
+                  if r.get("status", "").casefold() == "active"}
+    originals = {
+        r.get("canonical_url"): r for r in observations
+        if r.get("source_type") == "ats" and r.get("source_id") in active_ids
+    }
+    checked = 0
+    for candidate in candidates:
+        if checked >= 10:
+            break
+        if candidate["official_checks"]["official_role"] != "confirmed_current_public_ats":
+            continue
+        original = originals.get(candidate["official_role_candidate_url"])
+        if original is None:
+            continue
+        checked += 1
+        page = fetch_official_page_evidence(
+            original, active_ids=active_ids, today=today or date.today(),
+        )
+        candidate["official_page_status"] = page["status"]
+        candidate["official_page_language"] = page["page_language"]
+        candidate["application_language"] = page["application_language"]
+        structured = page["structured"]
+        if structured is not None:
+            candidate["official_structured_date"] = structured["date_posted"]
+            candidate["official_structured_remote"] = structured["remote_signal"]
+            candidate["official_applicant_locations"] = structured["applicant_locations"]
+        candidate["status"] = "unverified_review_only"
     return {
         "mode": mode, "read_only": True, "google": google_status,
         "google_observations": len(google_observations),
         "fallback_sources_attempted": attempts, "fallback_sources_successful": successes,
-        "raw_observations": len(observations), "review_count": len(candidates),
+        "raw_observations": len(observations), "review_count": len(candidates), "official_pages_checked": checked,
         "preflight_counts": counts, "review_candidates": candidates,
         "final_recommendations": [],
         "reason_no_final_recommendations": "Official role, NL remote, language and personal evidence must be verified before ranking.",
