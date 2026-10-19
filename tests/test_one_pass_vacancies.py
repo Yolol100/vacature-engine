@@ -213,7 +213,8 @@ class OnePassTests(unittest.TestCase):
                     title="AI Automation Manager", location="Remote - Costa Rica", remote=None,
                     source_metadata={"provider": "greenhouse", "provider_job_id": 8205142},
                 ),
-                source_id="greenhouse", employer="Acquia",
+                source_id="greenhouse", source_instance="greenhouse:acquia",
+                employer="Acquia",
             ),
         ], tables() | {
             "Bronnen": tables()["Bronnen"] + [
