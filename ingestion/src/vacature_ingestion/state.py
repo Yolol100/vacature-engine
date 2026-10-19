@@ -10,10 +10,18 @@ from typing import Any, Iterable
 
 from .normalize import strong_identity_keys
 
-def _discovery_only(row: dict[str, Any]) -> bool:
-    """Only explicitly tagged search observations are non-authoritative."""
+def _search_result_snippet(row: dict[str, Any]) -> bool:
+    """Only SerpApi's short Google snippets are non-authoritative state updates.
+
+    Other public feeds also use discovery_only=True, but are real feed
+    observations: their updates and source memberships must keep working.
+    """
     metadata = row.get("source_metadata")
-    return isinstance(metadata, dict) and metadata.get("discovery_only") is True
+    return (
+        isinstance(metadata, dict)
+        and metadata.get("provider") == "serpapi_google"
+        and metadata.get("discovery_only") is True
+    )
 
 
 
@@ -130,12 +138,22 @@ class StateStore:
         ).fetchall()
         return {row[0] for row in rows}
 
-    def observation_change_state(self, row: dict[str, Any]) -> str:
+    def observation_change_state(self, row: dict[str, Any], *,
+                                 closure_authority: bool = True) -> str:
         keys = strong_identity_keys(row)
         job_ids = self._find_job_ids(keys)
         if not job_ids:
             return "new"
-        if _discovery_only(row):
+        if (
+            not closure_authority
+            and any(self.db.execute(
+                "SELECT 1 FROM source_membership WHERE job_id=? AND source_instance!=? LIMIT 1",
+                (job_id, str(row.get("source_instance") or "")),
+            ).fetchone() for job_id in job_ids)
+        ):
+            # A bounded feed cannot supersede an employer-owned ATS record.
+            return "unchanged"
+        if _search_result_snippet(row):
             # Google snippets must not trigger new updates for an already known URL.
             return "unchanged"
         row_hash = str(row.get("content_hash") or "")
@@ -225,12 +243,20 @@ class StateStore:
 
     def upsert_observations(self, observations: list[dict[str, Any]], *, source_instance: str,
                             run_id: str, missing_close_threshold: int = 2,
-                            complete_snapshot: bool = True) -> UpsertCounts:
+                            complete_snapshot: bool = True,
+                            closure_authority: bool = True) -> UpsertCounts:
         counts = UpsertCounts()
         seen_jobs: set[str] = set()
         seen_strong_keys: set[str] = set()
         now = datetime.now(timezone.utc).isoformat()
         with self.db:
+            if not closure_authority:
+                # Remove memberships from older runs of bounded discovery
+                # feeds. A partial feed cannot veto an official ATS closure.
+                self.db.execute(
+                    "DELETE FROM source_membership WHERE source_instance=?",
+                    (source_instance,),
+                )
             for row in observations:
                 keys = strong_identity_keys(row)
                 if not keys:
@@ -260,8 +286,15 @@ class StateStore:
                     )
                     counts.new += 1
                     self._record_snapshot(job_id, row_hash, payload_json, first_seen, last_seen)
-                elif _discovery_only(row):
-                    # A search excerpt is NOT proof of publication, change or reopening.
+                elif _search_result_snippet(row) or (
+                    not closure_authority
+                    and self.db.execute(
+                        "SELECT 1 FROM source_membership WHERE job_id=? LIMIT 1",
+                        (job_id,),
+                    ).fetchone() is not None
+                ):
+                    # Neither a Google snippet nor a bounded public feed may
+                    # replace, update or reopen a known employer/ATS role.
                     # Preserve all existing authoritative fields and closed status.
                     counts.unchanged += 1
                     self.db.execute(
@@ -280,8 +313,8 @@ class StateStore:
                     self._record_snapshot(job_id, row_hash, payload_json, first_seen, last_seen)
                 for key in keys:
                     self.db.execute("INSERT OR REPLACE INTO identities(identity_key,job_id) VALUES (?,?)", (key, job_id))
-                if not _discovery_only(row):
-                    # Non-authoritative search hits cannot veto a provider's closure
+                if closure_authority and not _search_result_snippet(row):
+                    # Only full-coverage providers may influence closure
                     # by creating a perpetual zero-missing source membership.
                     self.db.execute(
                         "INSERT INTO source_membership(source_instance,job_id,missing_runs,last_seen_run,close_threshold) VALUES (?,?,0,?,?) "
@@ -290,7 +323,7 @@ class StateStore:
                     )
                 seen_jobs.add(job_id)
 
-            if complete_snapshot:
+            if complete_snapshot and closure_authority:
                 members = self.db.execute(
                     "SELECT source_instance,job_id,missing_runs,last_seen_run,close_threshold FROM source_membership WHERE source_instance=?",
                     (source_instance,),

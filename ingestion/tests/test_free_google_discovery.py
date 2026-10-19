@@ -66,6 +66,7 @@ class FreeDiscoveryTests(unittest.TestCase):
             "https://user:pwd@example.com/job", "https://localhost/job",
             "https://127.0.0.1/job", "https://example.com:8443/job",
             "https://example.test/job", "https://example.com:broken/job",
+            "https://foo.localhost/job", "https://sub.foo.localhost/job",
             "https://127.1/job", "https://0177.0.0.1/job", "https://0x7f000001/job",
             "https://10.0.0.1/job", "https://192.168.1.50/job", "https://[::1]/job",
         ):
@@ -374,6 +375,165 @@ class FreeDiscoveryTests(unittest.TestCase):
             finally:
                 runner.close()
 
+
+    def test_public_feed_discovery_metadata_updates_without_false_closure(self):
+        # PublicFeedsAdapter also sets discovery_only=True; unlike Google
+        # snippets, its changing content must create updates and memberships.
+        import json
+        feed = SourceSpec("remotejobs-org", "job_board", "publicfeeds",
+                          "remotejobs-org", listing_language="en")
+        first = {
+            "id": 42, "title": "WordPress Engineer",
+            "url": "https://remotejobs.org/jobs/wordpress-42",
+            "description": "First job description",
+            "company_name": "Acme",
+        }
+        second = dict(first, description="Updated official public feed text")
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "state.sqlite3")
+            try:
+                original = runner.ingest_records(feed, [first])
+                self.assertTrue(original.success)
+                self.assertEqual(original.new, 1)
+                payload = json.loads(runner.state.list_jobs()[0]["payload_json"])
+                self.assertTrue(payload["source_metadata"]["discovery_only"])
+                self.assertEqual(payload["source_metadata"]["provider"], "remotejobs-org")
+                count = runner.state.snapshot_count()
+                # A stale membership from a previous bounded-feed version
+                # must not hide legitimate feed updates during migration.
+                feed_job = runner.state.list_jobs()[0]
+                runner.state.db.execute(
+                    "INSERT INTO source_membership(source_instance,job_id,missing_runs,last_seen_run,close_threshold) VALUES (?,?,?,?,?)",
+                    (feed.instance_id, feed_job["job_id"], 0, "legacy-feed", 2),
+                )
+                runner.state.db.commit()
+                change = runner.ingest_records(feed, [second])
+                self.assertTrue(change.success)
+                self.assertEqual(change.updated, 1)
+                self.assertEqual(len(change.review_observations), 1)
+                self.assertEqual(runner.state.snapshot_count(), count + 1)
+                updated_payload = json.loads(runner.state.list_jobs()[0]["payload_json"])
+                self.assertIn("Updated official public feed text", updated_payload["description"])
+                skipped_once = runner.ingest_records(feed, [])
+                skipped_twice = runner.ingest_records(feed, [])
+                self.assertEqual((skipped_once.missing, skipped_once.closed), (0, 0))
+                self.assertEqual((skipped_twice.missing, skipped_twice.closed), (0, 0))
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "active")
+            finally:
+                runner.close()
+
+    def test_partial_public_adapters_never_close_jobs_from_omissions(self):
+        from vacature_ingestion.adapters import ADAPTERS
+        for adapter in ("publicfeeds", "himalayas", "jobicy", "jsonld",
+                        "remoteok", "remotive", "weworkremotely", "serpapi_google"):
+            with self.subTest(adapter=adapter):
+                source = SourceSpec("test-public", "job_board", adapter,
+                                    "some-source", max_jobs=500)
+                self.assertFalse(ADAPTERS[adapter].is_complete_snapshot(source, []))
+
+    def test_employer_ats_cap_does_not_count_as_full_snapshot(self):
+        from vacature_ingestion.adapters import ADAPTERS
+        role = {
+            "id": 7, "title": "WP Developer",
+            "absolute_url": "https://boards.greenhouse.io/acme/jobs/7",
+            "content": "Developer role",
+        }
+        full = SourceSpec("acme-greenhouse", "ats", "greenhouse", "acme", max_jobs=10)
+        capped = SourceSpec("acme-greenhouse", "ats", "greenhouse", "acme", max_jobs=1)
+        self.assertTrue(ADAPTERS["greenhouse"].is_complete_snapshot(full, [role]))
+        self.assertFalse(ADAPTERS["greenhouse"].is_complete_snapshot(capped, [role]))
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "test.sqlite")
+            try:
+                first = runner.ingest_records(capped, [role])
+                other = dict(role, id=8,
+                             absolute_url="https://boards.greenhouse.io/acme/jobs/8")
+                second = runner.ingest_records(capped, [other])
+                self.assertTrue(first.success and second.success)
+                self.assertEqual((second.missing, second.closed), (0, 0))
+                self.assertEqual(len(runner.state.list_jobs()), 2)
+                runner.ingest_records(full, [other])
+                definitive = runner.ingest_records(full, [other])
+                self.assertEqual(definitive.closed, 1)
+            finally:
+                runner.close()
+
+    def test_partial_feed_cannot_overwrite_or_reopen_official_role(self):
+        import json
+        official = SourceSpec("acme-greenhouse", "ats", "greenhouse",
+                              "acme", max_jobs=10)
+        feed = SourceSpec("remotejobs-org", "job_board", "publicfeeds",
+                          "remotejobs-org", max_jobs=10)
+        url = "https://remotejobs.org/jobs/42"
+        canonical = {
+            "id": 42, "title": "WordPress Engineer",
+            "absolute_url": url,
+            "content": "<p>Employer-confirmed responsibilities.</p>",
+        }
+        external = {
+            "id": 42, "title": "WordPress Engineer",
+            "url": url, "description": "Short feed copy",
+            "company_name": "Acme",
+        }
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "test.sqlite")
+            try:
+                self.assertEqual(runner.ingest_records(official, [canonical]).new, 1)
+                before = runner.state.list_jobs()[0]
+                original = json.loads(before["payload_json"])
+                count = runner.state.snapshot_count()
+
+                # Simulate a stale membership left by the previous version.
+                runner.state.db.execute(
+                    "INSERT INTO source_membership(source_instance,job_id,missing_runs,last_seen_run,close_threshold) VALUES (?,?,?,?,?)",
+                    (feed.instance_id, before["job_id"], 0, "legacy-run", 2),
+                )
+                runner.state.db.commit()
+
+                observation = runner.ingest_records(feed, [external])
+                self.assertEqual(observation.updated, 0)
+                self.assertEqual(observation.review_observations, [])
+                self.assertEqual(runner.state.snapshot_count(), count)
+                self.assertEqual(json.loads(runner.state.list_jobs()[0]["payload_json"]), original)
+                old_membership = runner.state.db.execute(
+                    "SELECT COUNT(*) FROM source_membership WHERE source_instance=?",
+                    (feed.instance_id,),
+                ).fetchone()[0]
+                self.assertEqual(old_membership, 0)
+
+                runner.ingest_records(official, [])
+                closed = runner.ingest_records(official, [])
+                self.assertEqual(closed.closed, 1)
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "closed")
+
+                # Even after closure, a stale third-party hit cannot revive it.
+                repeated = runner.ingest_records(feed, [external])
+                self.assertEqual(repeated.updated, 0)
+                self.assertEqual(repeated.review_observations, [])
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "closed")
+            finally:
+                runner.close()
+
+    def test_direct_ingest_requires_original_google_source_contract(self):
+        bad = SourceSpec("not-google-jobs", "discovery",
+                         "serpapi_google", "worldwide")
+        row = {
+            "title": "WordPress Developer",
+            "url": "https://jobs.ashbyhq.com/acme/42",
+            "snippet": "Unverified snippet",
+        }
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "state.sqlite")
+            try:
+                with self.assertRaises(ValueError):
+                    runner.ingest_records(bad, [row])
+                self.assertEqual(runner.state.list_jobs(), [])
+                self.assertEqual(
+                    runner.state.db.execute("SELECT COUNT(*) FROM source_runs").fetchone()[0],
+                    0,
+                )
+            finally:
+                runner.close()
 
     def test_actions_use_immutable_full_commit_ids(self):
         root = Path(__file__).resolve().parents[2]

@@ -87,7 +87,7 @@ def _safe_candidate_url(value: object) -> str | None:
         host = (parts.hostname or "").casefold()
         if parts.scheme != "https" or not host or parts.username or parts.password:
             return None
-        if host == "localhost" or host.endswith((".local", ".test")):
+        if host == "localhost" or host.endswith((".localhost", ".local", ".test")):
             return None
         # DNS names must end in an alphabetic/public TLD. This also rejects
         # abbreviated, octal and hexadecimal IPv4 loopback representations.
@@ -110,11 +110,15 @@ class SerpApiGoogleAdapter(Adapter):
     complete_snapshot = False
     name = "serpapi_google"
 
-    def fetch(self, client, spec: SourceSpec) -> list[dict]:
+    @staticmethod
+    def _validate_spec(spec: SourceSpec) -> None:
         if spec.source_id != "google-jobs" or spec.source_type != "discovery":
             raise ValueError("Use the active google-jobs discovery source; never create a second source")
         if spec.endpoint:
             raise ValueError("Custom provider endpoints are not accepted")
+
+    def fetch(self, client, spec: SourceSpec) -> list[dict]:
+        self._validate_spec(spec)
         key = os.environ.get("SERPAPI_API_KEY", "").strip()
         if not key:
             raise FetchError("not_configured", "Free Google discovery disabled: SERPAPI_API_KEY is absent")
@@ -203,6 +207,7 @@ class SerpApiGoogleAdapter(Adapter):
         return results
 
     def normalize_record(self, record: dict, spec: SourceSpec, now: str) -> dict | None:
+        self._validate_spec(spec)
         url = _safe_candidate_url(record.get("url"))
         title = clean_text(record.get("title"), max_chars=400)
         if not url or not url.startswith("https://") or not title:

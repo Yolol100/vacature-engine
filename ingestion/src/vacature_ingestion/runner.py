@@ -55,10 +55,10 @@ class IngestionRunner:
     def close(self) -> None:
         self.state.close()
 
-    def _review_queue(self, observations: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    def _review_queue(self, observations: list[dict[str, Any]], *, closure_authority: bool = True) -> list[dict[str, Any]]:
         queue: list[dict[str, Any]] = []
         for row in observations:
-            change = self.state.observation_change_state(row)
+            change = self.state.observation_change_state(row, closure_authority=closure_authority)
             if change in {"new", "updated"}:
                 item = dict(row)
                 item["ingestion_change"] = change
@@ -80,7 +80,7 @@ class IngestionRunner:
         try:
             records = adapter.fetch(client, spec)
             observations = adapter.normalize_records(records, spec, now=started_at)
-            review_observations = self._review_queue(observations)
+            review_observations = self._review_queue(observations, closure_authority=adapter.complete_snapshot)
             counts = self.state.upsert_observations(
                 observations,
                 source_instance=spec.instance_id,
@@ -88,7 +88,8 @@ class IngestionRunner:
                 missing_close_threshold=spec.missing_close_threshold,
                 # Search rankings / paginated discoveries are never full source snapshots.
                 # Absence from page N must not close an employer's vacancy.
-                complete_snapshot=adapter.complete_snapshot,
+                complete_snapshot=adapter.is_complete_snapshot(spec, records),
+                closure_authority=adapter.complete_snapshot,
             )
             self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
             return SourceRunResult(
@@ -122,13 +123,17 @@ class IngestionRunner:
         if adapter is None:
             raise ValueError(f"unknown adapter: {spec.adapter}")
         started_at = now or datetime.now(timezone.utc).isoformat()
-        run_id = self.state.start_run(spec.instance_id, started_at)
         t0 = time.perf_counter()
+        # Validate and normalize before creating a persistent run record.
+        # Invalid user-supplied source specs must leave no orphaned run.
         observations = adapter.normalize_records(records, spec, now=started_at)
-        review_observations = self._review_queue(observations)
+        run_id = self.state.start_run(spec.instance_id, started_at)
+        review_observations = self._review_queue(observations, closure_authority=adapter.complete_snapshot)
         counts = self.state.upsert_observations(
             observations, source_instance=spec.instance_id, run_id=run_id,
-            missing_close_threshold=spec.missing_close_threshold, complete_snapshot=complete_snapshot and adapter.complete_snapshot,
+            missing_close_threshold=spec.missing_close_threshold,
+            complete_snapshot=complete_snapshot and adapter.is_complete_snapshot(spec, records),
+            closure_authority=adapter.complete_snapshot,
         )
         self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
         return SourceRunResult(

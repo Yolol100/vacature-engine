@@ -37,6 +37,7 @@ def _rss_date(value: str | None) -> str | None:
 
 class JobicyAdapter(Adapter):
     name = "jobicy"
+    complete_snapshot = False  # Jobicy uses bounded API/RSS and optional fallback.
 
     def _fetch_api(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         base = spec.endpoint or "https://jobicy.com/api/v2/remote-jobs"

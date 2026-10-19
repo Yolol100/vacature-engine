@@ -17,6 +17,7 @@ def _restriction_name(value: Any) -> str | None:
 
 class HimalayasAdapter(Adapter):
     name = "himalayas"
+    complete_snapshot = False  # Himalayas is filtered/paginated and may stop at max_jobs.
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         query = clean_text(spec.options.get("query")) if isinstance(spec.options, dict) else None

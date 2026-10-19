@@ -18,6 +18,7 @@ _HOSTS = {
 
 class PublicFeedsAdapter(Adapter):
     name = "publicfeeds"
+    complete_snapshot = False  # PublicFeeds feeds are bounded subsets and searches.
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         if spec.source_id not in _HOSTS or spec.endpoint is not None:

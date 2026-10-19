@@ -82,6 +82,7 @@ def _fallback_page_text(html: str) -> str | None:
 
 class JsonLdAdapter(Adapter):
     name = "jsonld"
+    complete_snapshot = False  # JSON-LD page parsing does not prove a job closed.
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         urls = spec.options.get("urls") if isinstance(spec.options, dict) else None

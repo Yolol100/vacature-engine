@@ -9,6 +9,7 @@ from ..normalize import clean_text, html_to_text
 
 class RemotiveAdapter(Adapter):
     name = "remotive"
+    complete_snapshot = False  # Remotive feed is a bounded current-jobs view.
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         endpoint = spec.endpoint or "https://remotive.com/api/remote-jobs"
