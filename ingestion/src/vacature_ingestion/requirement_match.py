@@ -153,7 +153,7 @@ def _requirement_groups(description: str) -> tuple[list[set[str]], int]:
             if not tags:
                 uncertain += 1
                 continue
-            if len(tags) > 1 and _AMBIGUOUS.search(clause):
+            if tags and _AMBIGUOUS.search(clause):
                 uncertain += 1
                 # "WordPress or Drupal" is not proof that both are required.
                 continue
@@ -183,14 +183,15 @@ def compare_requirements(row: dict[str, Any], evidence: list[dict[str, str]]) ->
             or not isinstance(row.get("description"), str)):
         return result
     groups, unresolved = _requirement_groups(row["description"])
-    result["explicit_technical_requirements"] = len(groups)
+    required = set().union(*groups) if groups else set()
+    result["explicit_technical_requirements"] = len(required)
     result["ambiguous_or_unparsed_requirements"] = unresolved
     candidate_skills = _verified_skills(evidence)
-    matched = sum(bool(group.issubset(candidate_skills)) for group in groups)
+    matched = len(required & candidate_skills)
     result["requirements_with_candidate_evidence"] = matched
-    result["requirements_without_candidate_evidence"] = len(groups) - matched
-    if groups:
+    result["requirements_without_candidate_evidence"] = len(required) - matched
+    if required:
         result["status"] = ("mapped_skills_have_evidence"
-                            if matched == len(groups) and not unresolved
+                            if matched == len(required) and not unresolved
                             else "incomplete_requirement_evidence")
     return result
