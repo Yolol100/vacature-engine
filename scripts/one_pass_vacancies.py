@@ -28,7 +28,7 @@ from vacature_ingestion.registry_filter import (
 )
 from vacature_ingestion.runner import IngestionRunner
 from vacature_ingestion.official_review import (
-    assess_official_observation, geography_signal, rank_fully_verified,
+    assess_official_observation, geography_signal,
 )
 
 
