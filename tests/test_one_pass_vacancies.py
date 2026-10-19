@@ -192,7 +192,7 @@ class OnePassTests(unittest.TestCase):
                 "source_id": "himalayas", "source_type": "discovery_api",
                 "canonical_url": "https://himalayas.app/companies/acme/jobs/wp-2",
                 "url": "https://himalayas.app/companies/acme/jobs/wp-2",
-                "title": "WordPress developer", "employer": "ACME",
+                "title": "WordPress developer", "employer": "OtherCo",
                 "source_metadata": {"location_restriction_names": ["European Union"]},
             },
         ]
