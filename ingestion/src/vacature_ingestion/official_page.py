@@ -122,7 +122,9 @@ def _trusted_tenant_url(url: Any, *, provider: str, account: str) -> bool:
     if not is_role_specific_vacancy_url(candidate):
         try:
             suffix = urlsplit(url).path.rstrip("/")
-            if not suffix.endswith("/apply") or len([p for p in suffix.split("/") if p]) < 3:
+            segments = [p.casefold() for p in suffix.split("/") if p]
+            if (not suffix.endswith("/apply") or len(segments) < 3
+                    or segments[-2] in {"jobs", "job", "careers", "apply", "applications"}):
                 return False
             candidate = url[:url.rfind("/apply")]
         except ValueError:
