@@ -41,6 +41,10 @@ class _Markup(HTMLParser):
         self._buffer: list[str] = []
         self._visible: list[str] = []
         self._hidden_depth = 0
+        self.application_form_detected = False
+        self._form_depth = 0
+        self._form_email = False
+        self._form_submit = False
 
     def handle_starttag(self, tag, attrs):
         info = dict(attrs)
@@ -49,6 +53,18 @@ class _Markup(HTMLParser):
             if isinstance(language, str):
                 norm = language.strip().casefold().split("-")[0]
                 self.language = norm if norm in {"en", "nl", "de", "fr", "es", "pt"} else None
+        if tag == "form" and not self._hidden_depth:
+            self._form_depth += 1
+            self._form_email = False
+            self._form_submit = False
+        elif self._form_depth and not self._hidden_depth:
+            field_type = str(info.get("type") or "").casefold()
+            field_name = str(info.get("name") or "").casefold()
+            if tag == "input" and (field_type == "email" or field_name in {"email", "email_address"}):
+                self._form_email = True
+            if ((tag == "input" and field_type == "submit")
+                    or (tag == "button" and field_type in {"submit", ""})):
+                self._form_submit = True
         if tag in {"script", "style", "noscript", "template"}:
             self._hidden_depth += 1
         if tag == "script" and info.get("type", "").casefold() == "application/ld+json":
@@ -69,6 +85,9 @@ class _Markup(HTMLParser):
             if len(snippet) <= 100_000 and len(self._scripts) < 12:
                 self._scripts.append(snippet)
             self._buffer = []
+        if tag == "form" and self._form_depth:
+            self.application_form_detected |= self._form_email and self._form_submit
+            self._form_depth -= 1
         if tag in {"script", "style", "noscript", "template"}:
             self._hidden_depth = max(0, self._hidden_depth - 1)
 
@@ -211,6 +230,7 @@ def fetch_official_page_evidence(row: dict[str, Any], *,
                               "apply_http_status": None, "page_language": None,
                               "application_language": None,
                               "application_page_language": None,
+                              "application_form_detected": False,
                               "structured": None}
     if source is None:
         return report
@@ -245,4 +265,5 @@ def fetch_official_page_evidence(row: dict[str, Any], *,
         # employer instruction about which language candidates may apply in.
         # Preserve the observation separately; never treat it as permission.
         report["application_page_language"] = parser.language
+        report["application_form_detected"] = parser.application_form_detected
     return report
