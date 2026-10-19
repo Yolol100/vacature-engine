@@ -449,6 +449,62 @@ class FreeDiscoveryTests(unittest.TestCase):
             finally:
                 runner.close()
 
+    def test_partial_feed_cannot_overwrite_or_reopen_official_role(self):
+        import json
+        official = SourceSpec("acme-greenhouse", "ats", "greenhouse",
+                              "acme", max_jobs=10)
+        feed = SourceSpec("remotejobs-org", "job_board", "publicfeeds",
+                          "remotejobs-org", max_jobs=10)
+        url = "https://remotejobs.org/jobs/42"
+        canonical = {
+            "id": 42, "title": "WordPress Engineer",
+            "absolute_url": url,
+            "content": "<p>Employer-confirmed responsibilities.</p>",
+        }
+        external = {
+            "id": 42, "title": "WordPress Engineer",
+            "url": url, "description": "Short feed copy",
+            "company_name": "Acme",
+        }
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "test.sqlite")
+            try:
+                self.assertEqual(runner.ingest_records(official, [canonical]).new, 1)
+                before = runner.state.list_jobs()[0]
+                original = json.loads(before["payload_json"])
+                count = runner.state.snapshot_count()
+
+                # Simulate a stale membership left by the previous version.
+                runner.state.db.execute(
+                    "INSERT INTO source_membership(source_instance,job_id,missing_runs,last_seen_run,close_threshold) VALUES (?,?,?,?,?)",
+                    (feed.instance_id, before["job_id"], 0, "legacy-run", 2),
+                )
+                runner.state.db.commit()
+
+                observation = runner.ingest_records(feed, [external])
+                self.assertEqual(observation.updated, 0)
+                self.assertEqual(observation.review_observations, [])
+                self.assertEqual(runner.state.snapshot_count(), count)
+                self.assertEqual(json.loads(runner.state.list_jobs()[0]["payload_json"]), original)
+                old_membership = runner.state.db.execute(
+                    "SELECT COUNT(*) FROM source_membership WHERE source_instance=?",
+                    (feed.instance_id,),
+                ).fetchone()[0]
+                self.assertEqual(old_membership, 0)
+
+                runner.ingest_records(official, [])
+                closed = runner.ingest_records(official, [])
+                self.assertEqual(closed.closed, 1)
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "closed")
+
+                # Even after closure, a stale third-party hit cannot revive it.
+                repeated = runner.ingest_records(feed, [external])
+                self.assertEqual(repeated.updated, 0)
+                self.assertEqual(repeated.review_observations, [])
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "closed")
+            finally:
+                runner.close()
+
     def test_actions_use_immutable_full_commit_ids(self):
         root = Path(__file__).resolve().parents[2]
         paths = (
