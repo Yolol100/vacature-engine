@@ -198,11 +198,123 @@ def assess_official_observation(
     return status, None
 
 
+# Required independent specialist conclusions. Every state needs a concrete
+# source reference. These are attestations, not a substitute for checking the
+# actual employer page or the live Register before making a claim.
+_FINAL_GATES = (
+    "employer_identity_and_ats",
+    "authenticity",
+    "exact_official_open_role",
+    "fully_remote_from_netherlands",
+    "original_posting_date",
+    "listing_and_application_languages",
+    "required_languages_and_experience_years",
+    "mandatory_and_optional_requirements",
+    "responsibilities_and_workstyle",
+    "candidate_evidence_fit",
+    "application_route",
+    "new_unseen_unapplied_and_not_rejected",
+    "target_family_not_sales_or_management",
+)
+
+
+def _verified_ranking_input(
+    item: dict[str, Any],
+    active_evidence_ids: set[str],
+    prior_role_urls: set[str],
+) -> bool:
+    """Fail closed on absent evidence; never infer proof from job keywords."""
+    from urllib.parse import urlsplit
+    from vacature_engine.observations import is_role_specific_vacancy_url
+
+    role_url = item.get("canonical_url")
+    official_url = item.get("official_url")
+    if not isinstance(role_url, str) or role_url != official_url:
+        return False
+    try:
+        parsed = urlsplit(role_url)
+        if (parsed.scheme != "https" or not parsed.hostname
+                or parsed.username or parsed.password
+                or parsed.port not in (None, 443)
+                or not is_role_specific_vacancy_url(role_url)):
+            return False
+    except (ValueError, UnicodeError):
+        return False
+    if role_url in prior_role_urls:
+        return False
+    if (item.get("central_hard_mismatch") is not False
+            or not isinstance(item.get("title"), str)
+            or not item["title"].strip()
+            or not isinstance(item.get("employer"), str)
+            or not item["employer"].strip()):
+        return False
+
+    gates = item.get("verification")
+    if not isinstance(gates, dict):
+        return False
+    for gate in _FINAL_GATES:
+        proof = gates.get(gate)
+        if (not isinstance(proof, dict)
+                or proof.get("state") != "verified"
+                or not isinstance(proof.get("source_ref"), str)
+                or not proof["source_ref"].strip()):
+            return False
+    if gates["exact_official_open_role"]["source_ref"] != role_url:
+        return False
+    if gates["original_posting_date"].get("date") != item.get("posted_date"):
+        return False
+    try:
+        date.fromisoformat(item["posted_date"])
+    except (TypeError, ValueError):
+        return False
+
+    # The caller supplies this set only after reading ACTIVE, source-backed
+    # high/medium-confidence rows from the live CandidateEvidence sheet.
+    evidence_ids = item.get("candidate_evidence_ids")
+    if (not isinstance(evidence_ids, list) or not evidence_ids
+            or any(not isinstance(value, str) or value not in active_evidence_ids
+                   for value in evidence_ids)):
+        return False
+    anchors = item.get("anchor_provenance")
+    if not isinstance(anchors, dict):
+        return False
+    if any(not isinstance(anchors.get(part), list) or not anchors[part]
+           or any(not isinstance(ref, str) or not ref.strip() for ref in anchors[part])
+           for part in ("core_fit", "evidence_fit", "workstyle_fit")):
+        return False
+    if (role_url not in anchors["core_fit"]
+            or not set(evidence_ids).intersection(anchors["evidence_fit"])
+            or not set(evidence_ids).intersection(anchors["workstyle_fit"])):
+        return False
+    return True
+
+
 def rank_fully_verified(
     verified_inputs: list[dict[str, Any]],
     *,
     policy: VacancyPolicy,
     today: date,
+    active_evidence_ids: set[str] | None = None,
+    prior_role_urls: set[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Reuse the existing central ranking engine; never invent an AI score."""
-    return top_vacancies(verified_inputs, policy=policy, today=today)
+    """Score only independently verified, new roles with live evidence refs.
+
+    This final admission gate intentionally does not change top_vacancies or
+    its existing 30-case benchmark and weights. Semantic evidence and proof
+    states must be supplied by vacature-search after official and Register
+    checks. No proof or missing live history => no final score.
+    """
+    if not isinstance(active_evidence_ids, set) or not isinstance(prior_role_urls, set):
+        return []
+    eligible = []
+    for item in verified_inputs:
+        if not isinstance(item, dict):
+            continue
+        if _verified_ranking_input(item, active_evidence_ids, prior_role_urls):
+            # Keep private evidence IDs and verification envelopes out of the
+            # returned shortlist; only the deterministic engine output remains.
+            eligible.append({
+                key: value for key, value in item.items()
+                if key not in {"verification", "candidate_evidence_ids", "anchor_provenance"}
+            })
+    return top_vacancies(eligible, policy=policy, today=today)
