@@ -9,19 +9,9 @@ from __future__ import annotations
 import re
 from datetime import date
 from typing import Any
-from urllib.parse import urlsplit
 
-from vacature_engine.observations import is_role_specific_vacancy_url
 from vacature_engine.simple import VacancyPolicy, top_vacancies
-
-_ATS_HOSTS: dict[str, tuple[str, ...]] = {
-    "greenhouse": ("boards.greenhouse.io", "job-boards.greenhouse.io",
-                   "boards.eu.greenhouse.io", "job-boards.eu.greenhouse.io"),
-    "ashby": ("jobs.ashbyhq.com",),
-    "lever": ("jobs.lever.co", "jobs.eu.lever.co"),
-    "personio": (),  # Employer-specific Personio domains need separate exact checking.
-    "workable": ("apply.workable.com",),
-}
+from .official_page import verified_source_account
 _SUPPORTED_EVIDENCE = {"canonical_cv", "github", "user_confirmed", "library_portfolio_master"}
 _CORE_TERMS: dict[str, tuple[str, ...]] = {
     "wordpress_ecosystem": ("wordpress", "woocommerce", "elementor", "gutenberg",
@@ -55,22 +45,9 @@ def geography_signal(value: Any) -> str:
 
 
 def _source_is_current_official(row: dict[str, Any], active_ids: set[str]) -> bool:
-    if row.get("source_type") != "ats" or row.get("source_id") not in active_ids:
-        return False
-    meta = row.get("source_metadata")
-    provider = meta.get("provider") if isinstance(meta, dict) else None
-    if not isinstance(provider, str) or provider != row.get("source_id"):
-        return False
-    canonical = row.get("canonical_url")
-    if not isinstance(canonical, str) or not is_role_specific_vacancy_url(canonical):
-        return False
-    try:
-        host = (urlsplit(canonical).hostname or "").lower()
-        if provider == "personio":
-            return host.endswith((".jobs.personio.com", ".jobs.personio.de"))
-        return host in _ATS_HOSTS.get(provider, ())
-    except ValueError:
-        return False
+    # Reuse the exact provider + tenant + role URL identity gate used by
+    # first-party page fetches. A familiar ATS hostname alone is not proof.
+    return verified_source_account(row, active_ids=active_ids) is not None
 
 
 def _strong_evidence_count(rows: list[dict[str, str]], families: list[str]) -> int:
