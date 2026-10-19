@@ -114,8 +114,21 @@ def extract_ats_page_signals(html: str, *, title: str, employer: str, today: dat
 
 def _trusted_tenant_url(url: Any, *, provider: str, account: str) -> bool:
     """An arbitrary Google/board URL cannot become official by hostname alone."""
-    if not isinstance(url, str) or not is_role_specific_vacancy_url(url):
+    if not isinstance(url, str):
         return False
+    # A role-specific ATS application route may end in /apply. Confirm it is
+    # nested below a concrete job ID, not a generic tenant-wide form.
+    candidate = url
+    if not is_role_specific_vacancy_url(candidate):
+        try:
+            suffix = urlsplit(url).path.rstrip("/")
+            if not suffix.endswith("/apply") or len([p for p in suffix.split("/") if p]) < 3:
+                return False
+            candidate = url[:url.rfind("/apply")]
+        except ValueError:
+            return False
+        if not is_role_specific_vacancy_url(candidate):
+            return False
     try:
         parsed = urlsplit(url)
         if parsed.scheme != "https" or parsed.username or parsed.password or parsed.port not in (None, 443):
