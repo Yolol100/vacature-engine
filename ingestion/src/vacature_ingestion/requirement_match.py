@@ -77,7 +77,27 @@ _REQUIREMENT_CUE = re.compile(
 )
 _OPTIONAL = re.compile(
     r"\b(?:nice[\s-]*to[\s-]*have|optional|preferred|a plus|bonus|"
-    r"not required|no experience (?:required|needed)|niet vereist|pré)\b",
+    r"not required|not mandatory|do not (?:need|require)|"
+    r"no experience (?:required|needed)|niet vereist|niet nodig|"
+    r"geen vereiste|pré)\b",
+    re.I,
+)
+# A negative CV claim is never evidence for a positive job requirement.
+_NEGATED_CLAIM = re.compile(
+    r"\b(?:no experience (?:with|in)|no knowledge of|without experience"
+    r"|not familiar with|not proficient (?:in|with)|"
+    r"geen ervaring met|geen kennis van|niet bekend met)\b",
+    re.I,
+)
+# ATS adapters normalize description whitespace. Recover ONLY explicit,
+# colon-terminated headings; free prose such as 'our requirements are ...'
+# must not start a mandatory section.
+_INLINE_HEADING = re.compile(
+    r"(?<![A-Za-z0-9])(?P<label>Requirements?|Qualifications?|"
+    r"Must[ -]haves?|Required (?:skills|experience)|Vereisten|"
+    r"Functie[ -]?eisen|Eisen|Benefits|Perks|Responsibilities|"
+    r"Nice[ -]to[ -]have|Preferred|Bonus|Over ons|"
+    r"Taken|Verantwoordelijkheden)\s*:",
     re.I,
 )
 _AMBIGUOUS = re.compile(r"\b(?:or|and/or|ofwel)\b|/", re.I)
@@ -112,7 +132,8 @@ def _verified_skills(evidence: list[dict[str, str]]) -> set[str]:
             continue
         if ("available for vacancy" in claim.casefold() or
                 "profile is https://" in claim.casefold() or
-                "portfolio index" in claim.casefold()):
+                "portfolio index" in claim.casefold() or
+                _NEGATED_CLAIM.search(claim)):
             continue
         result.update(_skill_tags(claim))
     return result
@@ -128,7 +149,13 @@ def _requirement_groups(description: str) -> tuple[list[set[str]], int]:
     groups: list[set[str]] = []
     uncertain = 0
     in_required = False
-    for line in description[:60_000].splitlines()[:300]:
+    # Public ATS normalization often collapses "Requirements:" and
+    # "Benefits:" into a single line. Rebuild only explicit boundaries.
+    # Never infer missing section headings or scrape employer marketing.
+    sections = _INLINE_HEADING.sub(
+        lambda m: "\n" + m.group("label") + ":\n", description[:60_000]
+    )
+    for line in sections.splitlines()[:300]:
         line = " ".join(line.strip().split())
         if not line:
             continue
