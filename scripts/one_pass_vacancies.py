@@ -126,7 +126,15 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
     approved, _ = filter_source_specs(raw, active_ids)
     sources = {row["source_id"]: row for row in tables["Bronnen"] if row.get("status", "").lower() == "active"}
     order = [part.strip() for part in config.get("direct_discovery_order", "").split(",")]
+    configured_sources = [part.strip() for part in config.get("high_source_order", "").split(",") if part.strip()]
     priorities = {"high": 0, "medium": 1, "low": 2}
+    # The existing deploy source order is curated. Sorting by account name
+    # discards that ordering and lets irrelevant employers displace priority
+    # WordPress sources in a bounded free-only run.
+    instance_order = {
+        SourceSpec.from_dict(item).instance_id: i for i, item in enumerate(raw)
+        if isinstance(item, dict) and item.get("source_id") and item.get("account")
+    }
     unique: dict[str, dict[str, Any]] = {}
     for item in approved:
         if item.get("adapter") == "serpapi_google":
@@ -136,11 +144,16 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
         spec = SourceSpec.from_dict(item)
         unique.setdefault(spec.instance_id, item)
 
-    def rank(item: dict[str, Any]) -> tuple[int, int, str]:
+    def rank(item: dict[str, Any]) -> tuple[int, int, int, int, str]:
         row = sources.get(item["source_id"], {})
-        return (order.index(item["source_type"]) if item["source_type"] in order else 999,
-                priorities.get(row.get("priority", ""), 3),
-                item["source_id"] + ":" + item["account"])
+        return (
+            order.index(item["source_type"]) if item["source_type"] in order else 999,
+            priorities.get(row.get("priority", ""), 3),
+            configured_sources.index(item["source_id"])
+            if item["source_id"] in configured_sources else len(configured_sources),
+            instance_order.get(SourceSpec.from_dict(item).instance_id, len(raw)),
+            item["source_id"] + ":" + item["account"],
+        )
 
     ordered = sorted(unique.values(), key=rank)
     ats = [x for x in ordered if x["source_type"] in _ATS]
