@@ -17,3 +17,13 @@ De code bevat provideradapters, normalisatie, HTTP-beperkingen en optionele loka
 `src/vacature_ingestion/adapters/` bevat onder andere Greenhouse-, Lever-, Ashby-, Workable-, SmartRecruiters-, Personio- en publieke feedadapters. `cli.py` biedt handmatig te starten opties. Tests staan in `ingestion/tests/`.
 
 De hoofdengine in `src/vacature_engine/` is gescheiden van deze publieke acquisitiecode.
+
+## Optionele gratis Google-ontdekking
+
+De bestaande publieke ATS/feed-zoekroutes blijven de standaard. Voor een expliciet
+handmatig gestarte aanvullende Google-zoekronde is er nu een optionele
+`serpapi_google`-adapter met gratis-plan/quota-blokkade en veilige paginering
+(1–10 pagina's). Zonder API-sleutel blijft deze route uitgeschakeld.
+
+Zie [FREE-GOOGLE-DISCOVERY.md](docs/FREE-GOOGLE-DISCOVERY.md). Zoekresultaten zijn
+nooit geverifieerde vacatures; officiële werkgever/ATS-controle blijft vereist.

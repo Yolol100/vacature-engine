@@ -1,0 +1,22 @@
+[
+  {
+    "source_id": "google-jobs",
+    "source_type": "discovery",
+    "adapter": "serpapi_google",
+    "account": "worldwide",
+    "max_jobs": 100,
+    "timeout_seconds": 15,
+    "retries": 0,
+    "options": {
+      "queries": [
+        "site:jobs.ashbyhq.com WordPress remote",
+        "site:job-boards.greenhouse.io WooCommerce remote",
+        "site:jobs.lever.co web developer remote",
+        "AI workflow automation engineer remote Europe"
+      ],
+      "max_pages": 10,
+      "max_requests_per_run": 12,
+      "free_quota_reserve": 10
+    }
+  }
+]
