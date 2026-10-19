@@ -351,6 +351,13 @@ class OnePassTests(unittest.TestCase):
         self.assertNotIn("original_publication_date", missing)
         self.assertNotIn("fully_remote_from_first_party", missing)
         self.assertNotIn("netherlands_executable_from_employer", missing)
+        self.assertIn("verified_application_form_at_exact_route", missing)
+        page["application_form_detected"] = True
+        with_form = _missing_ranking_evidence(
+            candidate, page, policy_from_config(CONFIG),
+            date(2026, 10, 19),
+        )
+        self.assertNotIn("verified_application_form_at_exact_route", with_form)
         self.assertIn("employer_authorized_application_language", missing)
         self.assertIn("verified_core_duties_and_score_anchors", missing)
         self.assertIn("employer_required_work_languages", missing)
