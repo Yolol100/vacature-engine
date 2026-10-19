@@ -147,8 +147,8 @@ class StateStore:
         if (
             not closure_authority
             and any(self.db.execute(
-                "SELECT 1 FROM source_membership WHERE job_id=? LIMIT 1",
-                (job_id,),
+                "SELECT 1 FROM source_membership WHERE job_id=? AND source_instance!=? LIMIT 1",
+                (job_id, str(row.get("source_instance") or "")),
             ).fetchone() for job_id in job_ids)
         ):
             # A bounded feed cannot supersede an employer-owned ATS record.

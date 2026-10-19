@@ -399,9 +399,18 @@ class FreeDiscoveryTests(unittest.TestCase):
                 self.assertTrue(payload["source_metadata"]["discovery_only"])
                 self.assertEqual(payload["source_metadata"]["provider"], "remotejobs-org")
                 count = runner.state.snapshot_count()
+                # A stale membership from a previous bounded-feed version
+                # must not hide legitimate feed updates during migration.
+                feed_job = runner.state.list_jobs()[0]
+                runner.state.db.execute(
+                    "INSERT INTO source_membership(source_instance,job_id,missing_runs,last_seen_run,close_threshold) VALUES (?,?,?,?,?)",
+                    (feed.instance_id, feed_job["job_id"], 0, "legacy-feed", 2),
+                )
+                runner.state.db.commit()
                 change = runner.ingest_records(feed, [second])
                 self.assertTrue(change.success)
                 self.assertEqual(change.updated, 1)
+                self.assertEqual(len(change.review_observations), 1)
                 self.assertEqual(runner.state.snapshot_count(), count + 1)
                 updated_payload = json.loads(runner.state.list_jobs()[0]["payload_json"])
                 self.assertIn("Updated official public feed text", updated_payload["description"])
