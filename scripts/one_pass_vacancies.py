@@ -29,7 +29,7 @@ from vacature_ingestion.registry_filter import (
     _request_json, _service_account_token, active_source_rows_from_values,
     filter_source_specs,
 )
-from vacature_ingestion.runner import IngestionRunner
+from vacature_ingestion.runner import IngestionRunner, SourceRunResult
 from vacature_ingestion.official_review import (
     assess_official_observation, discovery_region_conflict, geography_signal, rank_fully_verified,
 )
@@ -66,6 +66,14 @@ _ROLE_TERMS = {
 
 class RegisterPreflightError(RuntimeError):
     """A missing or corrupt authoritative Register blocks the entire scan."""
+
+
+class DiscoveryUnavailableError(RuntimeError):
+    """Preserve safe source-attempt metadata while retaining a blocked run."""
+
+    def __init__(self, report: dict[str, Any]):
+        super().__init__("No permitted free discovery source succeeded")
+        self.report = report
 
 
 def parse_table(values: Any, required: set[str], name: str) -> list[dict[str, str]]:
@@ -219,6 +227,21 @@ def plan_free_source_batches(raw: list[dict[str, Any]],
     return batches
 
 
+def _source_attempt_audit(result: SourceRunResult) -> dict[str, Any]:
+    """Allowlisted health handoff; never copy provider errors or vacancy data."""
+    return {
+        "source_instance": result.source_instance,
+        "registry_source_ids": list(result.registry_source_ids or []),
+        "started_at": result.started_at,
+        "success": result.success,
+        "fetched": result.fetched,
+        "normalized": result.normalized,
+        "quarantine_count": result.quarantine_count,
+        "complete_snapshot": result.complete_snapshot,
+        "failure_category": result.failure_category,
+    }
+
+
 def run_free_discovery_batches(runner: IngestionRunner,
                                batches: list[list[SourceSpec]], *,
                                initial_observations: list[dict[str, Any]],
@@ -242,6 +265,7 @@ def run_free_discovery_batches(runner: IngestionRunner,
     observations = list(initial_observations)
     attempted: set[str] = set()
     attempted_order: list[str] = []
+    source_attempts: list[dict[str, Any]] = []
     successes = rounds = 0
     evaluation: dict[str, Any] | None = None
     stop_reason = "planned_sources_exhausted"
@@ -257,6 +281,7 @@ def run_free_discovery_batches(runner: IngestionRunner,
             attempted.add(source.instance_id)
             attempted_order.append(source.instance_id)
             result = runner.run_source(source)
+            source_attempts.append(_source_attempt_audit(result))
             if result.success:
                 successes += 1
                 observations.extend(result.observations or [])
@@ -276,6 +301,7 @@ def run_free_discovery_batches(runner: IngestionRunner,
         "fallback_batches_completed": rounds,
         "fallback_stop_reason": stop_reason,
         "attempted_source_instances": attempted_order,
+        "source_attempts": source_attempts,
     }
 
 
@@ -896,6 +922,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     pages = GOOGLE_MODES[mode]
     google_status = "not_registered"
     google_observations: list[dict[str, Any]] = []
+    google_attempts: list[dict[str, Any]] = []
     if len(google_approved) == 1 and google_approved[0].get("source_id") == "google-jobs":
         google_spec = SourceSpec.from_dict(google_approved[0])
         google_status = google_free_gate(google_spec, pages)
@@ -904,7 +931,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     if not pages:
         return {"mode": mode, "google": google_status,
                 "fallback_sources_available": sum(len(b) for b in batches),
-                "search_requests": 0, "read_only": True}
+                "search_requests": 0, "read_only": True, "source_attempts": []}
     page_cache: dict[str, dict[str, Any]] = {}
     def evaluate(items):
         return evaluate_observations(
@@ -920,6 +947,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
                                 pages * len(set(options.get("queries", []))), "free_quota_reserve": 10})
                 requested = replace(google_spec, options=options)
                 google_result = runner.run_source(requested)
+                google_attempts.append(_source_attempt_audit(google_result))
                 if google_result.success:
                     google_observations = google_result.observations or []
                     google_status = "searched"
@@ -931,14 +959,22 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             )
         finally:
             runner.close()
-    if not google_observations and not loop["fallback_sources_successful"]:
-        raise RuntimeError("No permitted free discovery source succeeded")
-    return {
+    audit_report = {
         "mode": mode, "read_only": True, "google": google_status,
         "google_observations": len(google_observations),
         **{k: loop[k] for k in ("fallback_sources_attempted", "fallback_sources_successful",
                                "fallback_batches_completed", "fallback_stop_reason")},
+        "source_attempts": google_attempts + loop["source_attempts"],
+    }
+    if (not any(attempt["success"] for attempt in google_attempts)
+            and not loop["fallback_sources_successful"]):
+        raise DiscoveryUnavailableError({
+            **audit_report, "status": "blocked",
+            "blocked_reason": "discovery_sources_unavailable",
+        })
+    return {
         **loop["evaluation"],
+        **audit_report,
     }
 
 
@@ -962,6 +998,11 @@ def main() -> int:
             assessments = json.loads(args.verified_assessments.read_text(encoding="utf-8"))
         report = run_once(tables, args.root, args.mode, max_free_sources=args.max_free_sources,
                           verified_assessments=assessments)
+    except DiscoveryUnavailableError as exc:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(json.dumps(exc.report, ensure_ascii=False, indent=2), encoding="utf-8")
+        print("BLOCKED: discovery sources unavailable or unsafe")
+        return 2
     except (RegisterPreflightError, ValueError) as exc:
         # No private data, credentials or Register row contents go into logs.
         print("BLOCKED:", type(exc).__name__)

@@ -16,6 +16,8 @@
   on the same tenant. Keep missing original publication dates unrankable.
 - Quarantine known unsafe Arbeitnow links per record, preserving safe results
   and incomplete-snapshot lifecycle guards without broadening the host policy.
+- Retain privacy-safe source-attempt timestamps and outcomes for caller-owned
+  health recording, including a blocked report when all sources fail.
 - Run real Python 3.12 regression checks under the existing required branch
   context alongside Python 3.11 and 3.13; retain branch protection and manual scans.
 

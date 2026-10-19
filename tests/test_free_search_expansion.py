@@ -1,12 +1,15 @@
 """Bounded free discovery: no live requests, score fabrication or Register writes."""
 from dataclasses import replace
+from io import StringIO
+import json
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from scripts.one_pass_vacancies import (
-    plan_free_source_batches, run_free_discovery_batches, select_free_specs,
+    main, plan_free_source_batches, run_free_discovery_batches, run_once,
+    select_free_specs,
 )
 from vacature_ingestion.models import SourceSpec
 from vacature_ingestion.runner import IngestionRunner, SourceRunResult
@@ -200,6 +203,133 @@ class FreeSearchExpansionTests(unittest.TestCase):
         )
         self.assertEqual(runner.calls, [])
         self.assertEqual(result["evaluation"]["review_candidates"], initial)
+        self.assertEqual(result["source_attempts"], [])
+
+    def test_source_attempts_preserve_success_failure_and_quarantine_without_private_data(self):
+        selected = [SourceSpec.from_dict(item) for item in specs(3)]
+        results = [
+            SourceRunResult(
+                source_instance=selected[0].instance_id, registry_source_ids=["ashby", "company-0"],
+                started_at="2026-10-19T08:01:00+00:00", success=True,
+                fetched=3, normalized=3, complete_snapshot=True,
+                observations=[{"canonical_url": "https://private.example/role", "claim": "private claim"}],
+            ),
+            SourceRunResult(
+                source_instance=selected[1].instance_id, registry_source_ids=["ashby", "company-1"],
+                started_at="2026-10-19T08:02:00+00:00", success=False,
+                fetched=0, normalized=0, failure_category="network_error",
+                failure_message="private error https://private.example/?api_key=secret",
+            ),
+            SourceRunResult(
+                source_instance=selected[2].instance_id, registry_source_ids=["ashby", "company-2"],
+                started_at="2026-10-19T08:03:00+00:00", success=True,
+                fetched=4, normalized=3, quarantine_count=1, complete_snapshot=False,
+            ),
+        ]
+        runner = Mock()
+        runner.run_source.side_effect = results
+        report = run_free_discovery_batches(
+            runner, [selected, [selected[0]]], initial_observations=[],
+            evaluate=pending, target_verified=5,
+        )
+        attempts = report["source_attempts"]
+        self.assertEqual(runner.run_source.call_count, 3)
+        self.assertEqual(attempts, [
+            {"source_instance": "ashby:employer-0", "registry_source_ids": ["ashby", "company-0"],
+             "started_at": "2026-10-19T08:01:00+00:00", "success": True, "fetched": 3,
+             "normalized": 3, "quarantine_count": 0, "complete_snapshot": True, "failure_category": None},
+            {"source_instance": "ashby:employer-1", "registry_source_ids": ["ashby", "company-1"],
+             "started_at": "2026-10-19T08:02:00+00:00", "success": False, "fetched": 0,
+             "normalized": 0, "quarantine_count": 0, "complete_snapshot": False,
+             "failure_category": "network_error"},
+            {"source_instance": "ashby:employer-2", "registry_source_ids": ["ashby", "company-2"],
+             "started_at": "2026-10-19T08:03:00+00:00", "success": True, "fetched": 4,
+             "normalized": 3, "quarantine_count": 1, "complete_snapshot": False, "failure_category": None},
+        ])
+        encoded = json.dumps(attempts)
+        for private in ("private", "secret", "https://", "failure_message", "observations", "claim"):
+            self.assertNotIn(private, encoded)
+
+    def test_run_once_audits_google_only_when_a_search_was_attempted(self):
+        from test_one_pass_vacancies import ROOT, tables
+
+        for gate, google_failed, free_failed in (
+            ("ready", False, False), ("ready", True, False), ("ready", False, True),
+            ("not_verified_free_or_insufficient_quota", False, False),
+        ):
+            with self.subTest(gate=gate, google_failed=google_failed, free_failed=free_failed):
+                live_tables = tables()
+                before = json.dumps(live_tables, sort_keys=True)
+                runner = Mock()
+
+                def run_source(source):
+                    failed = google_failed if source.adapter == "serpapi_google" else free_failed
+                    return SourceRunResult(
+                        source_instance=source.instance_id, registry_source_ids=[source.source_id],
+                        started_at="2026-10-19T08:00:00+00:00", success=not failed,
+                        fetched=0, normalized=0,
+                        failure_category="network_error" if failed else None,
+                        failure_message="private error https://private.example/secret" if failed else None,
+                    )
+
+                runner.run_source.side_effect = run_source
+                with patch("scripts.one_pass_vacancies.google_free_gate", return_value=gate), \
+                     patch("scripts.one_pass_vacancies.IngestionRunner", return_value=runner), \
+                     patch("scripts.one_pass_vacancies.evaluate_observations", return_value=pending([])), \
+                     patch("scripts.one_pass_vacancies._request_json") as external:
+                    report = run_once(live_tables, ROOT, "page-1", max_free_sources=1)
+                external.assert_not_called()
+                self.assertEqual(json.dumps(live_tables, sort_keys=True), before)
+                attempts = report["source_attempts"]
+                self.assertEqual(len(attempts), 2 if gate == "ready" else 1)
+                self.assertEqual([attempt["source_instance"] for attempt in attempts],
+                                 [call.args[0].instance_id for call in runner.run_source.call_args_list])
+                if gate == "ready":
+                    self.assertEqual(attempts[0]["registry_source_ids"], ["google-jobs"])
+                    self.assertEqual(attempts[0]["success"], not google_failed)
+                self.assertNotIn("private", json.dumps(attempts))
+                runner.close.assert_called_once()
+
+        with patch("scripts.one_pass_vacancies.google_free_gate", return_value="ready"), \
+             patch("scripts.one_pass_vacancies.IngestionRunner") as runner:
+            report = run_once(tables(), ROOT, "check")
+        runner.assert_not_called()
+        self.assertEqual(report["source_attempts"], [])
+
+    def test_total_failure_cli_keeps_safe_audit_file_and_blocked_exit(self):
+        from test_one_pass_vacancies import ROOT, tables
+
+        runner = Mock()
+        runner.run_source.side_effect = lambda source: SourceRunResult(
+            source_instance=source.instance_id, registry_source_ids=[source.source_id],
+            started_at="2026-10-19T08:00:00+00:00", success=False,
+            fetched=0, normalized=0, failure_category="network_error",
+            failure_message="private error https://private.example/?api_key=secret",
+        )
+        live_tables = tables()
+        before = json.dumps(live_tables, sort_keys=True)
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp) / "blocked.json"
+            with patch("sys.argv", ["one_pass_vacancies.py", "--root", str(ROOT),
+                                    "--mode", "page-1", "--out", str(out), "--max-free-sources", "2"]), \
+                 patch("sys.stdout", new_callable=StringIO) as stdout, \
+                 patch("scripts.one_pass_vacancies.load_register", return_value=live_tables), \
+                 patch("scripts.one_pass_vacancies.google_free_gate", return_value="not_configured"), \
+                 patch("scripts.one_pass_vacancies.IngestionRunner", return_value=runner), \
+                 patch("scripts.one_pass_vacancies.evaluate_observations", return_value=pending([])), \
+                 patch("scripts.one_pass_vacancies._request_json") as external:
+                code = main()
+            external.assert_not_called()
+            report = json.loads(out.read_text())
+        self.assertEqual(code, 2)
+        self.assertEqual(report["status"], "blocked")
+        self.assertEqual(len(report["source_attempts"]), 2)
+        self.assertTrue(all(not attempt["success"] for attempt in report["source_attempts"]))
+        self.assertNotIn("final_recommendations", report)
+        self.assertEqual(json.dumps(live_tables, sort_keys=True), before)
+        for private in ("private", "secret", "https://", "failure_message", "observations", "claim"):
+            self.assertNotIn(private, json.dumps(report["source_attempts"]) + stdout.getvalue())
+        runner.close.assert_called_once()
 
     def test_invalid_or_google_plan_fails_before_network(self):
         runner = FakeRunner()

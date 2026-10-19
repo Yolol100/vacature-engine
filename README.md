@@ -122,6 +122,12 @@ Known unsafe Arbeitnow links are quarantined per record. Safe results remain
 available, and an incomplete feed cannot mark existing vacancies missing or
 closed. Other adapter failures retain their existing fail-closed behavior.
 
+Reports include a bounded `source_attempts` audit trail with actual attempt
+times, result counts and safe failure categories. The owning workflow can use
+it for authorized Register health updates. Total source failure still exits
+with code 2 and writes a blocked report; private claims and raw error messages
+are excluded from this audit trail.
+
 `Feedback`, `ApplicationEvents`, `Applications`, `Vacatures` and linked
 `JobSnapshots` participate in history checks. Provider IDs include the ATS
 tenant, so an ID used by two employers cannot merge their vacancies.

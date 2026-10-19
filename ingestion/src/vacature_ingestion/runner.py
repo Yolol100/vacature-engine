@@ -42,6 +42,7 @@ class SourceRunResult:
     review_observations: list[dict[str, Any]] | None = None
     quarantine_count: int = 0
     complete_snapshot: bool = False
+    started_at: str | None = None
 
     def summary(self) -> dict[str, Any]:
         data = asdict(self)
@@ -104,6 +105,7 @@ class IngestionRunner:
                 duration_seconds=time.perf_counter() - t0, observations=observations,
                 review_observations=review_observations,
                 quarantine_count=batch.quarantine_count, complete_snapshot=complete_snapshot,
+                started_at=started_at,
             )
         except Exception as exc:
             category = exc.category if isinstance(exc, FetchError) else "parsing_or_adapter_failure"
@@ -114,6 +116,7 @@ class IngestionRunner:
                 registry_source_ids=_registry_source_ids(spec),
                 failure_category=category, failure_message=str(exc), duration_seconds=time.perf_counter() - t0,
                 observations=[], review_observations=[],
+                started_at=started_at,
             )
 
     def run_many(self, specs: Iterable[SourceSpec]) -> list[SourceRunResult]:
@@ -155,4 +158,5 @@ class IngestionRunner:
             duration_seconds=time.perf_counter() - t0, observations=observations,
             review_observations=review_observations,
             quarantine_count=batch.quarantine_count, complete_snapshot=complete_snapshot,
+            started_at=started_at,
         )
