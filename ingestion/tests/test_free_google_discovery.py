@@ -519,6 +519,10 @@ class FreeDiscoveryTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     runner.ingest_records(bad, [row])
                 self.assertEqual(runner.state.list_jobs(), [])
+                self.assertEqual(
+                    runner.state.db.execute("SELECT COUNT(*) FROM source_runs").fetchone()[0],
+                    0,
+                )
             finally:
                 runner.close()
 

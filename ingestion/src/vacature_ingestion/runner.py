@@ -123,9 +123,11 @@ class IngestionRunner:
         if adapter is None:
             raise ValueError(f"unknown adapter: {spec.adapter}")
         started_at = now or datetime.now(timezone.utc).isoformat()
-        run_id = self.state.start_run(spec.instance_id, started_at)
         t0 = time.perf_counter()
+        # Validate and normalize before creating a persistent run record.
+        # Invalid user-supplied source specs must leave no orphaned run.
         observations = adapter.normalize_records(records, spec, now=started_at)
+        run_id = self.state.start_run(spec.instance_id, started_at)
         review_observations = self._review_queue(observations, closure_authority=adapter.complete_snapshot)
         counts = self.state.upsert_observations(
             observations, source_instance=spec.instance_id, run_id=run_id,
