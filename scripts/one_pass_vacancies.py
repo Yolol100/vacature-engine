@@ -293,7 +293,7 @@ def screen_review_candidates(observations: list[dict[str, Any]],
     counted = {"previously_registered": 0, "possible_prior_match": 0,
                "explicit_mismatch": 0, "unsafe_link": 0, "off_target": 0,
                "official_region_rejected": 0, "source_location_restricted": 0,
-               "non_job_page": 0, "awaiting_verification": 0}
+               "non_job_page": 0, "source_expired": 0, "awaiting_verification": 0}
     active_ids = {r.get("source_id", "") for r in tables["Bronnen"]
                   if r.get("status", "").casefold() == "active"}
     output: list[dict[str, Any]] = []
@@ -313,6 +313,17 @@ def screen_review_candidates(observations: list[dict[str, Any]],
         if url in historical_urls:
             counted["previously_registered"] += 1
             continue
+        # A dated, explicitly expired listing is unsuitable regardless of
+        # discovery provider. Missing or malformed validThrough stays unknown.
+        valid_through = row.get("valid_through")
+        if isinstance(valid_through, str) and len(valid_through) >= 10:
+            try:
+                expired = date.fromisoformat(valid_through[:10]) < today
+            except ValueError:
+                expired = False
+            if expired:
+                counted["source_expired"] += 1
+                continue
         employer = str(row.get("employer") or "").strip()
         title = str(row.get("title") or "").strip()
         listing_language = str(row.get("listing_language") or "").strip().lower()
@@ -358,8 +369,10 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             row, candidate=preliminary, active_ids=active_ids,
             evidence=tables["CandidateEvidence"], policy=policy, today=today,
         )
-        if (verified_signals["netherlands"] == "restricted"
-                and verified_signals["official_role"] == "confirmed_current_public_ats"):
+        if (verified_signals["official_role"] == "confirmed_current_public_ats"
+                and (verified_signals["netherlands"] == "restricted"
+                     or verified_signals["remote"] == "not_remote"
+                     or verified_signals["original_publication"] == "too_old")):
             counted["official_region_rejected"] += 1
             continue
         if len(output) >= limit:
