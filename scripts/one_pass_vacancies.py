@@ -195,16 +195,17 @@ def _previous_index(tables: dict[str, list[dict[str, str]]]) -> tuple[set[str], 
                 urls.add(url)
     # Historical snapshots capture previous canonical URLs for the same role.
     for row in tables["JobSnapshots"]:
-        if row.get("vacancy_id") in prior_ids:
-            url = _safe_candidate_url(row.get("canonical_url"))
-            if url and is_role_specific_vacancy_url(url):
-                urls.add(url)
+        # The snapshot itself is a historical record even when its Vacatures
+        # row is temporarily missing: do not reintroduce the same role.
+        url = _safe_candidate_url(row.get("canonical_url"))
+        if url and is_role_specific_vacancy_url(url):
+            urls.add(url)
     for row in tables["Applications"]:
-        # Prepared or submitted existing applications are both known history.
-        if row.get("vacancy_id") in prior_ids:
-            url = _safe_candidate_url(row.get("application_url"))
-            if url and is_role_specific_vacancy_url(url):
-                urls.add(url)
+        # A submitted/drafted application can exist without a matching
+        # Vacatures row after manual edits or historical migrations.
+        url = _safe_candidate_url(row.get("application_url"))
+        if url and is_role_specific_vacancy_url(url):
+            urls.add(url)
     return urls, weak
 
 
@@ -251,10 +252,6 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             continue
         employer = str(row.get("employer") or "").strip()
         title = str(row.get("title") or "").strip()
-        if (employer.casefold(), title.casefold()) in weak and employer and title:
-            counted["possible_prior_match"] += 1
-            # A different URL may be the user's previously applied role.
-            continue
         listing_language = str(row.get("listing_language") or "").strip().lower()
         remote = row.get("remote")
         age = _observed_age(row, today)
@@ -264,6 +261,10 @@ def screen_review_candidates(observations: list[dict[str, Any]],
                 or (age is not None and (age < 0 or
                     (policy.max_posting_age_days > 0 and age > policy.max_posting_age_days)))):
             counted["explicit_mismatch"] += 1
+            continue
+        if (employer.casefold(), title.casefold()) in weak and employer and title:
+            counted["possible_prior_match"] += 1
+            # A different URL may be the user's previously applied role.
             continue
         if len(output) >= limit:
             break
