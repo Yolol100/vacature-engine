@@ -535,6 +535,41 @@ class FreeDiscoveryTests(unittest.TestCase):
             finally:
                 runner.close()
 
+    def test_empty_invalid_google_ingest_preserves_official_memberships(self):
+        # An empty batch skips per-record validation. It must never be able
+        # to impersonate an ATS source and clear its closure-tracking state.
+        employer = SourceSpec("greenhouse", "ats", "greenhouse", "acme")
+        invalid = SourceSpec("greenhouse", "discovery", "serpapi_google", "acme")
+        original = {
+            "id": 42, "title": "WordPress Engineer",
+            "absolute_url": "https://boards.greenhouse.io/acme/jobs/42",
+        }
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "state.sqlite")
+            try:
+                self.assertEqual(runner.ingest_records(employer, [original]).new, 1)
+                rows_before = runner.state.run_rows()
+                membership_before = [
+                    tuple(row) for row in runner.state.db.execute(
+                        "SELECT source_instance, job_id, missing_runs, close_threshold "
+                        "FROM source_membership ORDER BY source_instance, job_id"
+                    ).fetchall()
+                ]
+                self.assertEqual(len(membership_before), 1)
+                with self.assertRaises(ValueError):
+                    runner.ingest_records(invalid, [])
+                membership_after = [
+                    tuple(row) for row in runner.state.db.execute(
+                        "SELECT source_instance, job_id, missing_runs, close_threshold "
+                        "FROM source_membership ORDER BY source_instance, job_id"
+                    ).fetchall()
+                ]
+                self.assertEqual(membership_after, membership_before)
+                self.assertEqual(runner.state.run_rows(), rows_before)
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "active")
+            finally:
+                runner.close()
+
     def test_actions_use_immutable_full_commit_ids(self):
         root = Path(__file__).resolve().parents[2]
         paths = (
