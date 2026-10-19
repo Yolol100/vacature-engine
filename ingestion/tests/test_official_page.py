@@ -56,6 +56,39 @@ class OfficialPageTests(unittest.TestCase):
         self.assertEqual(result["application_page_language"],"en")
         self.assertEqual(fetch.call_count,2)
     @patch("vacature_ingestion.official_page._fetch_html")
+    def test_exact_application_form_requires_input_and_submit(self,fetch):
+        fetch.side_effect=[
+            (200,HTML),
+            (200,"<html lang='en'><body><form>"
+                 "<input name='email' type='email'>"
+                 "<button type='submit'>Apply</button>"
+                 "</form></body></html>"),
+        ]
+        result=fetch_official_page_evidence(row(),active_ids={"ashby"},today=TODAY)
+        self.assertTrue(result["application_form_detected"])
+        self.assertIsNone(result["application_language"])
+        self.assertEqual(result["application_page_language"],"en")
+
+    @patch("vacature_ingestion.official_page._fetch_html")
+    def test_200_ok_without_real_application_form_not_proof(self,fetch):
+        fetch.side_effect=[
+            (200,HTML),(200,"<html lang='en'><body>Applications coming soon</body></html>"),
+        ]
+        result=fetch_official_page_evidence(row(),active_ids={"ashby"},today=TODAY)
+        self.assertEqual(result["apply_http_status"],200)
+        self.assertFalse(result["application_form_detected"])
+
+    @patch("vacature_ingestion.official_page._fetch_html")
+    def test_hidden_template_form_not_application_proof(self,fetch):
+        fetch.side_effect=[
+            (200,HTML),(200,"<html lang='en'><template><form>"
+                        "<input type='email'><button type='submit'>Send</button>"
+                        "</form></template></html>"),
+        ]
+        result=fetch_official_page_evidence(row(),active_ids={"ashby"},today=TODAY)
+        self.assertFalse(result["application_form_detected"])
+
+    @patch("vacature_ingestion.official_page._fetch_html")
     def test_missing_separate_apply_page_remains_unknown(self,fetch):
         item={**row(),"apply_url":row()["canonical_url"]}
         fetch.return_value=(200,HTML)
