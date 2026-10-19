@@ -31,6 +31,7 @@ from vacature_ingestion.official_review import (
     assess_official_observation, geography_signal,
 )
 from vacature_ingestion.official_page import fetch_official_page_evidence
+from vacature_ingestion.requirement_match import compare_requirements
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -378,6 +379,20 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             continue
         if len(output) >= limit:
             break
+        # Only verified ATS-provider records can be compared with private,
+        # active CandidateEvidence. The report contains counts, not claims.
+        requirement_review = (
+            compare_requirements(row, tables["CandidateEvidence"])
+            if verified_signals["official_role"] == "confirmed_current_public_ats"
+            else {
+                "status": "requirements_unverified",
+                "explicit_technical_requirements": 0,
+                "requirements_with_candidate_evidence": 0,
+                "requirements_without_candidate_evidence": 0,
+                "ambiguous_or_unparsed_requirements": 0,
+                "final_score_authorized": False,
+            }
+        )
         # Private CandidateEvidence claims never leave this process.
         output.append({
             "title": title[:400], "employer": employer[:250] or None,
@@ -385,6 +400,7 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             "source_types": row.get("source_types") or [row.get("source_type")],
             "role_family_hints": hints,
             "official_checks": verified_signals,
+            "technical_requirement_review": requirement_review,
             "status": "unverified_review_only",
             "still_to_verify": [
                 "official_employer_and_exact_open_role", "original_publication_date",
