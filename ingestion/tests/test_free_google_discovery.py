@@ -237,5 +237,35 @@ class FreeDiscoveryTests(unittest.TestCase):
             runner.close()
 
 
+    def test_manual_workflow_cannot_run_on_schedule_or_pull_request(self):
+        workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/free-google-discovery.yml").read_text(encoding="utf-8")
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertNotIn("schedule:", workflow)
+        self.assertNotIn("pull_request:", workflow)
+        self.assertIn("permissions:\n  contents: read", workflow)
+        self.assertIn("filter-specs", workflow)
+
+    @patch("vacature_ingestion.adapters.serpapi_google._get_json")
+    def test_repeating_query_terms_do_not_spend_extra_requests(self, get):
+        get.side_effect = [
+            free_account(),
+            {"organic_results": [{"title": "Job", "link": "https://example.org/job/123"}]},
+        ]
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            rows = SerpApiGoogleAdapter().fetch(None, spec(
+                queries=["wordpress remote", "wordpress remote"],
+                max_pages=1, max_requests_per_run=2,
+            ))
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(get.call_count, 2)
+
+    @patch("vacature_ingestion.adapters.serpapi_google._get_json")
+    def test_malformed_search_results_fail_closed(self, get):
+        get.side_effect = [free_account(), {"organic_results": {"url": "bad"}}]
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            with self.assertRaises(FetchError) as error:
+                SerpApiGoogleAdapter().fetch(None, spec(max_pages=1, max_requests_per_run=1))
+        self.assertEqual(error.exception.category, "malformed_result")
+
 if __name__ == "__main__":
     unittest.main()
