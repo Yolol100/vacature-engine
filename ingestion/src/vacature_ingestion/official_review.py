@@ -31,7 +31,7 @@ _CORE_TERMS: dict[str, tuple[str, ...]] = {
     "ai_workflow_automation": ("workflow automation", "ai automation", "automation engineer",
                                "ai agents", "ai agent", "n8n", "orchestration"),
 }
-_NL_RE = re.compile(r"\b(?:netherlands|nederland|dutch|european union|europe|e\.u\.|eu|worldwide|globally|anywhere)\b", re.I)
+_NL_RE = re.compile(r"\b(?:netherlands|nederland|european union|europe|e\.u\.|eu|worldwide|globally|anywhere)\b", re.I)
 _BLOCKED_REGIONS = re.compile(
     r"\b(?:united states|usa|u\.s\.a\.|us only|canada|india|costa rica|latam|latin america|"
     r"brazil|mexico|philippines|south africa|australia|uk only|united kingdom)\b", re.I
