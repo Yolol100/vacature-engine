@@ -216,14 +216,41 @@ def _previous_index(tables: dict[str, list[dict[str, str]]]) -> tuple[set[str], 
     return urls, weak
 
 
+# Generic technical titles may need an ATS description to reveal the domain.
+# "Account Manager", "Security Engineer" or "Talent Community" must not match
+# simply because their employer's boilerplate mentions WordPress/n8n.
+_GENERIC_TECH_TITLE_TERMS = (
+    "software engineer", "software developer", "full stack", "full-stack",
+    "fullstack", "frontend", "front end", "front-end",
+    "web developer", "web designer", "cms developer", "plugin developer",
+    "integration engineer", "integration developer",
+    "automation engineer", "automation developer", "product engineer",
+)
+_ATS_DESCRIPTION_TERMS = {
+    "wordpress_ecosystem": ("wordpress", "woocommerce", "gutenberg", "elementor", "block editor"),
+    "web_design_development": ("web development", "web design", "frontend", "front-end",
+                               "front end", "web accessibility", "ux/ui", "ui/ux"),
+    "ai_workflow_automation": ("workflow automation", "ai automation", "ai agent",
+                               "agentic workflow", "workflow orchestration",
+                               "automation integration"),
+}
+
+
 def _role_hints(row: dict[str, Any], policy: VacancyPolicy) -> list[str]:
-    # A title mention or an ATS-owned description is a *review hint*, not
-    # proof of a core-duty match. Google snippets never establish candidate fit.
+    """Strict review hints only: not eligibility or candidate fit evidence."""
     title = str(row.get("title") or "").casefold()
-    if row.get("source_type") == "ats":
-        title += " " + str(row.get("description") or "").casefold()
-    return [name for name, tokens in _ROLE_TERMS.items()
-            if name in policy.target_role_families and any(term in title for term in tokens)]
+    matched = {name for name, tokens in _ROLE_TERMS.items()
+               if name in policy.target_role_families
+               and any(term in title for term in tokens)}
+    # Incidental employer boilerplate must never qualify unrelated job titles.
+    if row.get("source_type") == "ats" and any(
+        term in title for term in _GENERIC_TECH_TITLE_TERMS
+    ):
+        body = str(row.get("description") or "").casefold()
+        matched.update(name for name, tokens in _ATS_DESCRIPTION_TERMS.items()
+                       if name in policy.target_role_families
+                       and any(term in body for term in tokens))
+    return sorted(matched)
 
 
 def _review_sort_key(row: dict[str, Any], tables: dict[str, list[dict[str, str]]]
