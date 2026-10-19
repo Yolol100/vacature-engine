@@ -581,6 +581,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         candidate["official_page_status"] = page["status"]
         candidate["official_page_language"] = page["page_language"]
         candidate["application_language"] = page["application_language"]
+        candidate["application_page_language"] = page.get("application_page_language")
         structured = page["structured"]
         if structured is not None:
             candidate["official_structured_date"] = structured["date_posted"]
