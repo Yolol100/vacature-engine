@@ -61,7 +61,15 @@ jobs:
           budget = pages * 4
           if not _is_safe_free_account(account, budget, 0 if mode == "check" else 10):
               raise SystemExit("BLOCKED: active zero-cost Free Plan or available quota not verified.")
-          print("Verified: active free plan, zero monthly price, quota sufficient.")
+          print("Verified: active free plan, zero monthly price.")
+          free_left = min(account["plan_searches_left"], account["total_searches_left"])
+          hourly_left = account["account_rate_limit_per_hour"] - account["this_hour_searches"]
+          print("Free monthly searches remaining:", free_left, "| hourly capacity:", hourly_left)
+          if mode == "check":
+              ready = _is_safe_free_account(account, 4, 10)
+              print("Ready for page-1 with reserve:", "yes" if ready else "no")
+          else:
+              print("Approved search budget:", budget, "requests")
           print("Mode:", mode, "| max Google requests:", budget)
           PY
         # The mode is passed separately to prevent arbitrary shell interpolation.

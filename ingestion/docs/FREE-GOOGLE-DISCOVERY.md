@@ -79,8 +79,8 @@ access to the live Register; otherwise the scan must **not** proceed.
 - Every promising result still requires official role/employer evidence,
   a current application route, verified publication date, fully remote
   work possible from the Netherlands, Dutch/English language,
-  CandidateEvidence fit and deduplication with `Vacatures` and
-  `Applications` before it can be recommended.
+  CandidateEvidence fit and deduplication with `Vacatures`,
+  `Applications` and `Feedback` before it can be recommended.
 
 ## 5. Why not scrape Google with Playwright?
 
