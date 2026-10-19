@@ -301,6 +301,24 @@ class FreeDiscoveryTests(unittest.TestCase):
         self.assertEqual(results[0]["page"], 1)
 
     @patch("vacature_ingestion.adapters.serpapi_google._get_json")
+    def test_confirmed_empty_with_explicit_empty_organic_list(self, get):
+        get.side_effect = [
+            free_account(),
+            {
+                "error": "Google hasn't returned any results for this query.",
+                "search_metadata": {"status": "Success"},
+                "search_information": {"organic_results_state": "Fully empty"},
+                "organic_results": [],
+            },
+        ]
+        with patch.dict(os.environ, {"SERPAPI_API_KEY": "test"}):
+            result = SerpApiGoogleAdapter().fetch(None, spec(
+                max_pages=1, max_requests_per_run=1,
+            ))
+        self.assertEqual(result, [])
+        self.assertEqual(get.call_count, 2)
+
+    @patch("vacature_ingestion.adapters.serpapi_google._get_json")
     def test_empty_error_requires_success_and_fully_empty_evidence(self, get):
         message = "Google hasn't returned any results for this query."
         valid = {
