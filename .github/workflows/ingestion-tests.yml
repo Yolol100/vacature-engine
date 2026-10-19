@@ -1,6 +1,8 @@
 name: Full Python regression checks (no live searches)
 
 on:
+  push:
+    branches: [main]
   pull_request:
     paths:
       - "src/**"
