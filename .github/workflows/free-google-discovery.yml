@@ -124,7 +124,7 @@ jobs:
               raise SystemExit("BLOCKED: free account does not have 1 request + 10 reserve")
           print("Free quota preflight: verified for one request.")
           params = {
-              "engine": "google", "q": "site:jobs.ashbyhq.com WordPress remote",
+              "engine": "google", "q": "site:job-boards.greenhouse.io WooCommerce remote",
               "start": 0, "hl": "en", "num": "10", "tbs": "qdr:w",
               "api_key": key,
           }
