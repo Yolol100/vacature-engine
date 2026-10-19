@@ -207,12 +207,13 @@ class OnePassTests(unittest.TestCase):
 
     def test_official_ats_costa_rica_role_excluded(self):
         rows, counts = screen_review_candidates([
-            observation(
-                "https://job-boards.greenhouse.io/acquia/jobs/8205142",
-                title="AI Automation Manager",
+            dict(
+                observation(
+                    "https://job-boards.greenhouse.io/acquia/jobs/8205142",
+                    title="AI Automation Manager", location="Remote - Costa Rica", remote=None,
+                    source_metadata={"provider": "greenhouse", "provider_job_id": 8205142},
+                ),
                 source_id="greenhouse", employer="Acquia",
-                source_metadata={"provider": "greenhouse", "provider_job_id": 8205142},
-                location="Remote - Costa Rica", remote=None,
             ),
         ], tables() | {
             "Bronnen": tables()["Bronnen"] + [
