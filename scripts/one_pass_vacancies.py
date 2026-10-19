@@ -178,11 +178,18 @@ def google_free_gate(spec: SourceSpec, pages: int) -> str:
 
 
 def _previous_index(tables: dict[str, list[dict[str, str]]]) -> tuple[set[str], set[tuple[str, str]]]:
-    """Only strong job-specific URLs block cross-run; weak identities are hold hints."""
+    """Honor the live dedupe statuses; never silently promote unreviewed rows."""
+    config = {row.get("key"): row.get("value", "") for row in tables["Config"]}
+    statuses = {value.strip().casefold() for value in
+                config.get("dedupe_previous_statuses", "").split(",") if value.strip()}
+    if not statuses:
+        raise RegisterPreflightError("Live dedupe status policy is missing")
     prior_ids: set[str] = set()
     urls: set[str] = set()
     weak: set[tuple[str, str]] = set()
     for row in tables["Vacatures"]:
+        if row.get("status", "").casefold() not in statuses:
+            continue
         if row.get("vacancy_id"):
             prior_ids.add(row["vacancy_id"])
         title = row.get("title", "").strip().casefold()
@@ -195,14 +202,15 @@ def _previous_index(tables: dict[str, list[dict[str, str]]]) -> tuple[set[str], 
                 urls.add(url)
     # Historical snapshots capture previous canonical URLs for the same role.
     for row in tables["JobSnapshots"]:
-        # The snapshot itself is a historical record even when its Vacatures
-        # row is temporarily missing: do not reintroduce the same role.
+        # Only historical snapshots tied to a previously reviewed vacancy.
+        if row.get("vacancy_id") not in prior_ids:
+            continue
         url = _safe_candidate_url(row.get("canonical_url"))
         if url and is_role_specific_vacancy_url(url):
             urls.add(url)
     for row in tables["Applications"]:
-        # A submitted/drafted application can exist without a matching
-        # Vacatures row after manual edits or historical migrations.
+        # Submitted/drafted applications also count if their Vacatures row is
+        # missing, but only when a strong application link is present.
         url = _safe_candidate_url(row.get("application_url"))
         if url and is_role_specific_vacancy_url(url):
             urls.add(url)
