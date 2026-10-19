@@ -209,7 +209,9 @@ def fetch_official_page_evidence(row: dict[str, Any], *,
     source = verified_source_account(row, active_ids=active_ids)
     report: dict[str, Any] = {"status": "unverified", "job_http_status": None,
                               "apply_http_status": None, "page_language": None,
-                              "application_language": None, "structured": None}
+                              "application_language": None,
+                              "application_page_language": None,
+                              "structured": None}
     if source is None:
         return report
     provider, account = source
@@ -239,5 +241,8 @@ def fetch_official_page_evidence(row: dict[str, Any], *,
     if apply_status == 200 and apply_body:
         parser = _Markup()
         parser.feed(apply_body)
-        report["application_language"] = parser.language
+        # HTML <html lang> identifies the *interface locale*, not an
+        # employer instruction about which language candidates may apply in.
+        # Preserve the observation separately; never treat it as permission.
+        report["application_page_language"] = parser.language
     return report
