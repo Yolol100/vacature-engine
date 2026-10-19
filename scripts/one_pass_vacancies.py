@@ -10,7 +10,6 @@ import argparse
 import json
 import os
 import tempfile
-from collections import defaultdict
 from dataclasses import replace
 from datetime import date
 from pathlib import Path
