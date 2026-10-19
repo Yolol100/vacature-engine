@@ -52,7 +52,8 @@ class OfficialPageTests(unittest.TestCase):
     def test_application_language_from_separate_page(self,fetch):
         fetch.side_effect=[(200,HTML),(200,"<html lang='en'><body>Apply</body></html>")]
         result=fetch_official_page_evidence(row(),active_ids={"ashby"},today=TODAY)
-        self.assertEqual(result["application_language"],"en")
+        self.assertIsNone(result["application_language"])
+        self.assertEqual(result["application_page_language"],"en")
         self.assertEqual(fetch.call_count,2)
     @patch("vacature_ingestion.official_page._fetch_html")
     def test_missing_separate_apply_page_remains_unknown(self,fetch):
