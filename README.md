@@ -50,7 +50,11 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   research preflight. Reads live Config, Bronnen and application/feedback
   history; uses Google only after a zero-cost Free Plan check and continues
   through the existing Register-active public ATS/API/feed adapters if
-  Google is unavailable, paid, or out of free quota. Output is an
+  Google is unavailable, paid, or out of free quota. Sources follow the
+  live Register's discovery-class/high-source priorities and then the
+  curated tenant order in `source-specs.deploy.json`, rather than
+  alphabetical employer names. Retired sources remain disabled.
+  Output is an
   **unverified review queue**, not a ranked/verified shortlist. Exact official
   role status, Netherlands-remote permission, language and CandidateEvidence
   fit still require specialist verification before displaying a recommendation.
