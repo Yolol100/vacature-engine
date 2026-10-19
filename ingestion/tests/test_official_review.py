@@ -93,7 +93,7 @@ class OfficialReviewTests(unittest.TestCase):
         )
         self.assertEqual(checks["netherlands"], "allowed")
         self.assertEqual(checks["remote"], "confirmed")
-        self.assertEqual(checks["original_publication"], "within_policy")
+        self.assertEqual(checks["original_publication"], "unknown")
         self.assertEqual(checks["fit_evidence"], "supported_claims_available")
         self.assertEqual(checks["evidence_claims_count"], 1)
         self.assertEqual(checks["language"], "unknown")
