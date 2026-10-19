@@ -1,8 +1,6 @@
 name: Free Google vacancy discovery
 
 on:
-  push:
-    branches: [qa/google-free-ats-live-20261019]
   workflow_dispatch:
     inputs:
       mode:
@@ -39,7 +37,7 @@ jobs:
       - name: Check configured key and FREE account (no search credits used)
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
-          SEARCH_MODE: check
+          SEARCH_MODE: ${{ inputs.mode }}
         run: |
           python - <<'PY'
           import os
@@ -76,7 +74,7 @@ jobs:
           PY
         # The mode is passed separately to prevent arbitrary shell interpolation.
       - name: Verify the live source registry (no searches)
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'check' }}
+        if: ${{ inputs.mode != 'check' }}
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: |
@@ -89,10 +87,10 @@ jobs:
             --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 \
             --out "$RUNNER_TEMP/active-google-specs.json"
       - name: Run bounded, discovery-only search
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'check' }}
+        if: ${{ inputs.mode != 'check' }}
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
-          SEARCH_MODE: check
+          SEARCH_MODE: ${{ inputs.mode }}
         run: |
           python - <<'PY'
           import json
@@ -138,7 +136,7 @@ jobs:
           print("No application, source or Register changes were made.")
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'check' && success() }}
+        if: ${{ inputs.mode != 'check' && success() }}
         with:
           name: google-discovery-candidates-unverified
           path: ${{ runner.temp }}/google-discoveries.json
