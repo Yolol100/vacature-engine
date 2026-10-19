@@ -65,6 +65,7 @@ class FreeDiscoveryTests(unittest.TestCase):
             "https://user:pwd@example.com/job", "https://localhost/job",
             "https://127.0.0.1/job", "https://example.com:8443/job",
             "https://example.test/job", "https://example.com:broken/job",
+            "https://127.1/job", "https://0177.0.0.1/job", "https://0x7f000001/job",
             "https://10.0.0.1/job", "https://192.168.1.50/job", "https://[::1]/job",
         ):
             with self.subTest(url=url):
@@ -92,6 +93,10 @@ class FreeDiscoveryTests(unittest.TestCase):
             {"account_status": "Paused"},
             {"account_rate_limit_per_hour": 1, "this_hour_searches": 1},
             {"account_rate_limit_per_hour": "50"},
+            {"account_rate_limit_per_hour": None},
+            {"this_hour_searches": None},
+            {"account_rate_limit_per_hour": 0},
+            {"this_hour_searches": -1},
         )
         for change in invalid:
             with self.subTest(change=change):
@@ -105,6 +110,14 @@ class FreeDiscoveryTests(unittest.TestCase):
                 SerpApiGoogleAdapter().fetch(None, spec())
         self.assertEqual(err.exception.category, "free_quota_blocked")
         self.assertEqual(get.call_count, 1)  # Free account lookup only.
+
+    def test_zero_search_account_check_needs_no_monthly_reserve(self):
+        account = free_account(
+            plan_searches_left=0, total_searches_left=0,
+            this_hour_searches=50, account_rate_limit_per_hour=50,
+        )
+        self.assertTrue(_is_safe_free_account(account, 0, 0))
+        self.assertFalse(_is_safe_free_account(account, 1, 10))
 
     def test_valid_free_account_must_keep_reserve(self):
         self.assertTrue(_is_safe_free_account(free_account(total_searches_left=12, plan_searches_left=12), 2, 10))

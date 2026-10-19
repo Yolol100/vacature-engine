@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import ipaddress
 import os
+import re
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, urlopen
@@ -70,11 +71,10 @@ def _is_safe_free_account(account: dict, planned_requests: int, reserve: int) ->
         return False
     hourly_limit = account.get("account_rate_limit_per_hour")
     hourly_used = account.get("this_hour_searches")
-    if hourly_limit is not None and hourly_used is not None:
-        if type(hourly_limit) is not int or type(hourly_used) is not int:
-            return False
-        if hourly_limit - hourly_used < planned_requests:
-            return False
+    if type(hourly_limit) is not int or type(hourly_used) is not int:
+        return False
+    if hourly_limit <= 0 or hourly_used < 0 or hourly_limit - hourly_used < planned_requests:
+        return False
     return True
 
 
@@ -87,7 +87,12 @@ def _safe_candidate_url(value: object) -> str | None:
         host = (parts.hostname or "").casefold()
         if parts.scheme != "https" or not host or parts.username or parts.password:
             return None
-        if host == "localhost" or host.endswith((".local", ".test")) or "." not in host and ":" not in host:
+        if host == "localhost" or host.endswith((".local", ".test")):
+            return None
+        # DNS names must end in an alphabetic/public TLD. This also rejects
+        # abbreviated, octal and hexadecimal IPv4 loopback representations.
+        tld = host.rsplit(".", 1)[-1] if "." in host else ""
+        if not re.fullmatch(r"(?:[a-z]{2,63}|xn--[a-z0-9-]{2,59})", tld):
             return None
         try:
             if not ipaddress.ip_address(host).is_global:

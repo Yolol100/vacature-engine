@@ -7,6 +7,11 @@ on:
       - "tests/**"
       - "scripts/**"
       - "ingestion/**"
+      - "pyproject.toml"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "AGENTS.md"
+      - "docs/**"
       - ".github/workflows/ingestion-tests.yml"
       - ".github/workflows/free-google-discovery.yml"
   workflow_dispatch:

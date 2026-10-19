@@ -59,7 +59,7 @@ jobs:
           if pages is None:
               raise SystemExit("BLOCKED: invalid search mode")
           budget = pages * 4
-          if not _is_safe_free_account(account, budget, 10):
+          if not _is_safe_free_account(account, budget, 0 if mode == "check" else 10):
               raise SystemExit("BLOCKED: active zero-cost Free Plan or available quota not verified.")
           print("Verified: active free plan, zero monthly price, quota sufficient.")
           print("Mode:", mode, "| max Google requests:", budget)
