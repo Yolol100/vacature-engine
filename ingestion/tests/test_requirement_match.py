@@ -126,12 +126,11 @@ class RequirementMatchTests(unittest.TestCase):
             "id": "42", "title": "WordPress Developer",
             "jobUrl": "https://jobs.ashbyhq.com/acme/42",
             "descriptionPlain": (
-                "About us:\\nReact based product company.\\n"
-                "Requirements:\\nExperience with PHP and WordPress.\\n"
-                "Benefits:\\nFree TypeScript workshops."
+                "About us:\nReact based product company.\n"
+                "Requirements:\nExperience with PHP and WordPress.\n"
+                "Benefits:\nFree TypeScript workshops."
             ),
         }
-        record["descriptionPlain"] = record["descriptionPlain"].replace("\\\\n", chr(10))
         normalized = AshbyAdapter().normalize_record(
             record, spec, now="2026-10-19T12:00:00Z"
         )
