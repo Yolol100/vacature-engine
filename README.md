@@ -97,6 +97,16 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   evidence; it suppresses only definitive official 404/410, expired
   `validThrough`, and first-party original posting dates outside live
   policy. Missing information is not a rejection or a match score.
+  Every discovery observation must originate from an active Register source
+  before it can enter review. Existing third-party boards/feeds are
+  negative-only geographic filters: explicit Philippines/LATAM-only locations
+  and exclusive foreign residency statements are withheld from the NL
+  review queue, but never used as positive proof of NL eligibility or to
+  change a vacancy/application lifecycle state. A stale board publication
+  timestamp adds only a `discovery_date_older_than_policy` review alert:
+  the original employer posting date remains unknown. These limits prevent
+  expired or region-restricted board listings from being mistaken for newly
+  verified job recommendations, even when Google search quota is exhausted.
 
 Google discovery is optional. It requires a verified free SerpApi account
 and active `google-jobs` registration, uses no paid plan, and returns
