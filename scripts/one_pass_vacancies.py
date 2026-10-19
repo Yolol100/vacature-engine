@@ -27,6 +27,9 @@ from vacature_ingestion.registry_filter import (
     filter_source_specs,
 )
 from vacature_ingestion.runner import IngestionRunner
+from vacature_ingestion.official_review import (
+    assess_official_observation, geography_signal, rank_fully_verified,
+)
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -289,7 +292,10 @@ def screen_review_candidates(observations: list[dict[str, Any]],
     historical_urls, weak = _previous_index(tables)
     counted = {"previously_registered": 0, "possible_prior_match": 0,
                "explicit_mismatch": 0, "unsafe_link": 0, "off_target": 0,
-               "awaiting_verification": 0}
+               "official_region_rejected": 0, "source_location_restricted": 0,
+               "non_job_page": 0, "awaiting_verification": 0}
+    active_ids = {r.get("source_id", "") for r in tables["Bronnen"]
+                  if r.get("status", "").casefold() == "active"}
     output: list[dict[str, Any]] = []
     seen: set[str] = set()
     # Respect live source-class priorities. A Google/board title never gets to
@@ -319,6 +325,21 @@ def screen_review_candidates(observations: list[dict[str, Any]],
                     (policy.max_posting_age_days > 0 and age > policy.max_posting_age_days)))):
             counted["explicit_mismatch"] += 1
             continue
+        # Freelancers advertising their own availability are not employer roles.
+        # Keep the rule anchored to that narrow, demonstrable scenario.
+        if (urlsplit(url).hostname or "").casefold() == "community.n8n.io" and (
+            "/t/available-" in urlsplit(url).path.casefold()
+        ):
+            counted["non_job_page"] += 1
+            continue
+        # Third-party geography is a *negative screening signal* only. It can
+        # remove an obviously non-NL listing but never prove NL eligibility.
+        if row.get("source_id") == "himalayas":
+            meta = row.get("source_metadata") or {}
+            restrictions = meta.get("location_restriction_names", []) if isinstance(meta, dict) else []
+            if restrictions and all(geography_signal(value) == "restricted" for value in restrictions):
+                counted["source_location_restricted"] += 1
+                continue
         if (employer.casefold(), title.casefold()) in weak and employer and title:
             counted["possible_prior_match"] += 1
             # A different URL may be the user's previously applied role.
@@ -327,14 +348,29 @@ def screen_review_candidates(observations: list[dict[str, Any]],
         if not hints:
             counted["off_target"] += 1
             continue
+        # Source-backed verification checks use live official ATS observations,
+        # never an aggregator's snippet or a guessed application language.
+        preliminary = {
+            "title": title[:400], "employer": employer[:250] or None,
+            "role_family_hints": hints,
+        }
+        verified_signals, _rankable = assess_official_observation(
+            row, candidate=preliminary, active_ids=active_ids,
+            evidence=tables["CandidateEvidence"], policy=policy, today=today,
+        )
+        if (verified_signals["netherlands"] == "restricted"
+                and verified_signals["official_role"] == "confirmed_current_public_ats"):
+            counted["official_region_rejected"] += 1
+            continue
         if len(output) >= limit:
             break
-        # Do not export application states or CandidateEvidence in a public artifact.
+        # Private CandidateEvidence claims never leave this process.
         output.append({
             "title": title[:400], "employer": employer[:250] or None,
             "official_role_candidate_url": url,
             "source_types": row.get("source_types") or [row.get("source_type")],
             "role_family_hints": hints,
+            "official_checks": verified_signals,
             "status": "unverified_review_only",
             "still_to_verify": [
                 "official_employer_and_exact_open_role", "original_publication_date",
@@ -343,6 +379,14 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             ],
         })
         counted["awaiting_verification"] += 1
+    # Higher-confidence official ATS roles first within the review queue.
+    # This is review order, NOT final candidate-fit or salary ranking.
+    output.sort(key=lambda x: (
+        0 if x["official_checks"]["official_role"] == "confirmed_current_public_ats" else 1,
+        0 if x["official_checks"]["netherlands"] == "allowed" else 1,
+        0 if x["official_checks"]["remote"] == "confirmed" else 1,
+        x["official_role_candidate_url"],
+    ))
     return output, counted
 
 
