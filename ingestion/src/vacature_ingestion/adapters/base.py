@@ -15,7 +15,15 @@ def utc_now() -> str:
 
 class Adapter(ABC):
     name: str
-    complete_snapshot: bool = True  # A partial search must not close unseen jobs.
+    complete_snapshot: bool = True  # Only for provider-level, full-coverage feeds.
+
+    def is_complete_snapshot(self, spec: SourceSpec, records: list[dict[str, Any]]) -> bool:
+        """A bounded result set must never be treated as proof of absence.
+
+        Only an explicitly complete provider adapter returning fewer than
+        max_jobs entries can trigger missing/closed lifecycle transitions.
+        """
+        return self.complete_snapshot and len(records) < spec.max_jobs
 
     @abstractmethod
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:

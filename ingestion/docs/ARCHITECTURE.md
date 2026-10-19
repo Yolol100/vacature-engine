@@ -22,7 +22,7 @@ Provider account/board is prefixed into `source_job_id`. Employer/title/location
 
 ## Lifecycle
 
-A successful complete snapshot resets missing state for observed memberships. Failed/partial runs never increment missing state. A globally deduplicated job closes only when every known source membership has reached its configured missing threshold, which prevents one stale or failing source from closing a vacancy still visible elsewhere.
+A successful **verified complete** provider snapshot resets missing state for observed memberships. Failed, capped or partial runs never increment missing state. Employer ATS adapters can report full coverage only when the result count is below `max_jobs`. Public search results, moving APIs, bounded feeds, RSS and single-page JSON-LD extraction are **not** proof that missing jobs have closed. A globally deduplicated job closes only when every known authoritative source membership reaches its configured missing threshold. Always verify canonical employer evidence before treating a technical closure as real.
 
 There is no persistent background review queue. The caller directly checks observed vacancies against the live Register, validates the official job page and candidate-fit evidence, and decides what is new.
 

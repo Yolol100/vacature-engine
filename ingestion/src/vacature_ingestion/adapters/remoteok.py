@@ -9,6 +9,7 @@ from ..normalize import clean_text, html_to_text
 
 class RemoteOkAdapter(Adapter):
     name = "remoteok"
+    complete_snapshot = False  # Remote OK exposes a moving latest-jobs window.
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         endpoint = spec.endpoint or "https://remoteok.com/api"

@@ -46,6 +46,7 @@ def _published_at(value: str | None) -> str | None:
 
 class WeWorkRemotelyAdapter(Adapter):
     name = "weworkremotely"
+    complete_snapshot = False  # RSS category feeds are incomplete vacancy snapshots.
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         endpoint = spec.endpoint or "https://weworkremotely.com/categories/remote-programming-jobs.rss"

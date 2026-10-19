@@ -376,7 +376,7 @@ class FreeDiscoveryTests(unittest.TestCase):
                 runner.close()
 
 
-    def test_public_feed_discovery_metadata_keeps_full_lifecycle(self):
+    def test_public_feed_discovery_metadata_updates_without_false_closure(self):
         # PublicFeedsAdapter also sets discovery_only=True; unlike Google
         # snippets, its changing content must create updates and memberships.
         import json
@@ -405,10 +405,47 @@ class FreeDiscoveryTests(unittest.TestCase):
                 self.assertEqual(runner.state.snapshot_count(), count + 1)
                 updated_payload = json.loads(runner.state.list_jobs()[0]["payload_json"])
                 self.assertIn("Updated official public feed text", updated_payload["description"])
-                runner.ingest_records(feed, [])
-                closed = runner.ingest_records(feed, [])
-                self.assertEqual(closed.closed, 1)
-                self.assertEqual(runner.state.list_jobs()[0]["status"], "closed")
+                skipped_once = runner.ingest_records(feed, [])
+                skipped_twice = runner.ingest_records(feed, [])
+                self.assertEqual((skipped_once.missing, skipped_once.closed), (0, 0))
+                self.assertEqual((skipped_twice.missing, skipped_twice.closed), (0, 0))
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "active")
+            finally:
+                runner.close()
+
+    def test_partial_public_adapters_never_close_jobs_from_omissions(self):
+        from vacature_ingestion.adapters import ADAPTERS
+        for adapter in ("publicfeeds", "himalayas", "jobicy", "jsonld",
+                        "remoteok", "remotive", "weworkremotely", "serpapi_google"):
+            with self.subTest(adapter=adapter):
+                source = SourceSpec("test-public", "job_board", adapter,
+                                    "some-source", max_jobs=500)
+                self.assertFalse(ADAPTERS[adapter].is_complete_snapshot(source, []))
+
+    def test_employer_ats_cap_does_not_count_as_full_snapshot(self):
+        from vacature_ingestion.adapters import ADAPTERS
+        role = {
+            "id": 7, "title": "WP Developer",
+            "absolute_url": "https://boards.greenhouse.io/acme/jobs/7",
+            "content": "Developer role",
+        }
+        full = SourceSpec("acme-greenhouse", "ats", "greenhouse", "acme", max_jobs=10)
+        capped = SourceSpec("acme-greenhouse", "ats", "greenhouse", "acme", max_jobs=1)
+        self.assertTrue(ADAPTERS["greenhouse"].is_complete_snapshot(full, [role]))
+        self.assertFalse(ADAPTERS["greenhouse"].is_complete_snapshot(capped, [role]))
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "test.sqlite")
+            try:
+                first = runner.ingest_records(capped, [role])
+                other = dict(role, id=8,
+                             absolute_url="https://boards.greenhouse.io/acme/jobs/8")
+                second = runner.ingest_records(capped, [other])
+                self.assertTrue(first.success and second.success)
+                self.assertEqual((second.missing, second.closed), (0, 0))
+                self.assertEqual(len(runner.state.list_jobs()), 2)
+                runner.ingest_records(full, [other])
+                definitive = runner.ingest_records(full, [other])
+                self.assertEqual(definitive.closed, 1)
             finally:
                 runner.close()
 

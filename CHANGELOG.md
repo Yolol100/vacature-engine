@@ -6,7 +6,7 @@
 - Added a manual-only GitHub Actions workflow with a zero-search account check and bounded discovery modes. No scheduler, automated applications or Register writes.
 - Added broader adversarial tests for quota, key handling, paging, duplicate results, unsafe URLs and lifecycle state.
 - Prevented discovery-only Google snippets from overwriting or reopening official employer vacancies or vetoing official source closure; covered by failing-before-fix regression fixtures.
-- Corrected discovery classification: public ATS/job feeds keep normal change detection and closure while only short Google snippets are suppressed; added regression coverage.
+- Corrected discovery classification: public feed updates remain visible while only short Google snippets are suppressed; partial feed omissions cannot close jobs. Added regression coverage for partial feeds and capped ATS results.
 - Restored `Feedback` as an authoritative source to prevent re-showing declined roles; blocked all `.localhost` subdomains.
 - Pinned GitHub Actions dependencies to verified upstream commit SHAs to prevent mutable-tag execution.
 - Brought the ingestion adapter release manifest and both Python regression suites back into sync.
