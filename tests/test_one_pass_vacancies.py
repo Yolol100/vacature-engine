@@ -155,6 +155,30 @@ class OnePassTests(unittest.TestCase):
         self.assertEqual(counts["off_target"], 75)
         self.assertEqual(rows[0]["source_types"], ["ats"])
 
+    def test_unrelated_ats_titles_do_not_pass_on_company_boilerplate(self):
+        noise = [
+            observation("https://jobs.ashbyhq.com/acme/account", title="Account Manager",
+                        description="We build AI automation and n8n workflows."),
+            observation("https://jobs.ashbyhq.com/acme/security", title="Security Engineer",
+                        description="Our team builds AI agent tools."),
+            observation("https://jobs.ashbyhq.com/acme/talent", title="Talent Community",
+                        description="Join our WordPress and WooCommerce company."),
+        ]
+        rows, counts = screen_review_candidates(
+            noise, tables(), policy_from_config(CONFIG), today=date(2026, 10, 19),
+        )
+        self.assertEqual(rows, [])
+        self.assertEqual(counts["off_target"], 3)
+
+    def test_generic_engineering_title_can_be_flagged_from_official_ats_body(self):
+        rows, _ = screen_review_candidates([
+            observation("https://jobs.ashbyhq.com/acme/swe", title="Software Engineer",
+                        description="Build WordPress and WooCommerce plugins.")
+        ], tables(), policy_from_config(CONFIG), today=date(2026, 10, 19))
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["role_family_hints"], ["wordpress_ecosystem"])
+        self.assertEqual(rows[0]["status"], "unverified_review_only")
+
     def test_google_snippet_is_not_fit_proof(self):
         rows, counts = screen_review_candidates([
             {
