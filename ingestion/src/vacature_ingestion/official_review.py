@@ -22,6 +22,12 @@ _CORE_TERMS: dict[str, tuple[str, ...]] = {
                                "ai agents", "ai agent", "n8n", "orchestration"),
 }
 _NL_RE = re.compile(r"\b(?:netherlands|nederland|european union|europe|e\.u\.|eu|worldwide|globally|anywhere)\b", re.I)
+_EXCLUDED_NL = re.compile(
+    r"\b(?:excluding|excluded|except|not available in|not hiring (?:in|from)|"
+    r"no applicants from|cannot work from|outside)\s+(?:the\s+)?"
+    r"(?:netherlands|nederland|european union|europe|e\.u\.|eu)\b",
+    re.I,
+)
 _BLOCKED_REGIONS = re.compile(
     r"\b(?:united states|usa|u\.s\.a\.|us only|canada|india|costa rica|latam|latin america|"
     r"brazil|mexico|philippines|south africa|australia|uk only|united kingdom)\b", re.I
@@ -37,6 +43,10 @@ def geography_signal(value: Any) -> str:
     location = value.strip().casefold()
     if not location:
         return "unknown"
+    # "Worldwide except Netherlands" cannot be marked Netherlands-safe just
+    # because the positive word "worldwide" is present.
+    if _EXCLUDED_NL.search(location):
+        return "restricted"
     if _NL_RE.search(location):
         return "allowed"
     if _BLOCKED_REGIONS.search(location):
@@ -115,11 +125,14 @@ def assess_official_observation(
         except ValueError:
             age = None
         if age is not None:
-            status["original_publication"] = (
-                "too_old" if age < 0 or (
-                    policy.max_posting_age_days and age > policy.max_posting_age_days
-                ) else "within_policy"
-            )
+            # ATS published_at may be the LAST publish/republish date (Ashby
+            # documents this explicitly), not the ORIGINAL date required by
+            # live policy. Only use it to rule out definitely old jobs.
+            if age < 0:
+                status["original_publication"] = "future_publication_invalid"
+            elif policy.max_posting_age_days and age > policy.max_posting_age_days:
+                status["original_publication"] = "too_old"
+            # A recent republish is not evidence of a recent original date.
     lang = row.get("listing_language")
     if isinstance(lang, str) and lang.casefold() in {"en", "nl"}:
         status["language"] = "listed_language_supported_application_unverified"
