@@ -260,13 +260,12 @@ class OnePassTests(unittest.TestCase):
         row = observation(
             "https://jobs.ashbyhq.com/acme/clear-wp",
             title="WooCommerce Developer",
-            description="Requirements:\\nExperience with WordPress and WooCommerce.",
+            description="Requirements:" + chr(10) + "Experience with WordPress and WooCommerce.",
             source_instance="ashby:acme",
             source_metadata={"provider": "ashby"},
             location="Remote - European Union",
             remote=True,
         )
-        row["description"] = row["description"].replace("\\\\n", "\\n")
         rows, _counts = screen_review_candidates(
             [row], t, policy_from_config(CONFIG), today=date(2026, 10, 19),
         )
