@@ -1,6 +1,8 @@
 name: Free Google vacancy discovery
 
 on:
+  push:
+    branches: [qa/free-google-test-20261019]
   workflow_dispatch:
     inputs:
       mode:
@@ -37,7 +39,7 @@ jobs:
       - name: Check configured key and FREE account (no search credits used)
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
-          SEARCH_MODE: ${{ inputs.mode }}
+          SEARCH_MODE: check
         run: |
           python - <<'PY'
           import os
@@ -73,8 +75,26 @@ jobs:
           print("Mode:", mode, "| max Google requests:", budget)
           PY
         # The mode is passed separately to prevent arbitrary shell interpolation.
+      - name: Verify Google Sheets access without searching
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$GOOGLE_SERVICE_ACCOUNT_JSON" ]; then
+            echo "BLOCKED: GOOGLE_SERVICE_ACCOUNT_JSON is not configured."
+            exit 2
+          fi
+          python -m vacature_ingestion filter-specs --specs ingestion/source-specs.google-optional.json --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 --out "$RUNNER_TEMP/google-preflight-specs.json"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          specs = json.loads((Path(os.environ["RUNNER_TEMP"]) / "google-preflight-specs.json").read_text())
+          if len(specs) != 1 or specs[0].get("source_id") != "google-jobs":
+              raise SystemExit("BLOCKED: Google source is not active in the Register")
+          print("Verified: read-only Register access and active Google source.")
+          PY
       - name: Verify the live source registry (no searches)
-        if: ${{ inputs.mode != 'check' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'check' }}
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: |
@@ -87,7 +107,7 @@ jobs:
             --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 \
             --out "$RUNNER_TEMP/active-google-specs.json"
       - name: Run bounded, discovery-only search
-        if: ${{ inputs.mode != 'check' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'check' }}
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
           SEARCH_MODE: ${{ inputs.mode }}
@@ -136,7 +156,7 @@ jobs:
           print("No application, source or Register changes were made.")
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: ${{ inputs.mode != 'check' && success() }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'check' && success() }}
         with:
           name: google-discovery-candidates-unverified
           path: ${{ runner.temp }}/google-discoveries.json
