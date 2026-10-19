@@ -302,5 +302,64 @@ class FreeDiscoveryTests(unittest.TestCase):
         )
 
 
+    def test_google_discovery_must_not_overwrite_or_resurrect_official_job(self):
+        import json
+        employer = SourceSpec("greenhouse", "ats", "greenhouse", "acme", employer="Acme")
+        detail = {
+            "id": 42, "title": "Senior WordPress Engineer",
+            "absolute_url": "https://careers.example.org/jobs/42",
+            "content": "<p>Verified employer description with full responsibilities.</p>",
+            "location": {"name": "Europe"},
+        }
+        snippet = {
+            "title": "Senior WordPress Engineer",
+            "url": "https://careers.example.org/jobs/42",
+            "snippet": "A short Google excerpt that is not official evidence.",
+        }
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "test.sqlite")
+            try:
+                official = runner.ingest_records(employer, [detail])
+                self.assertTrue(official.success)
+                original = runner.state.list_jobs()[0]
+                original_payload = json.loads(original["payload_json"])
+                original_snapshots = runner.state.snapshot_count()
+                google = runner.ingest_records(spec(), [snippet], complete_snapshot=True)
+                self.assertTrue(google.success)
+                self.assertEqual(google.updated, 0)
+                self.assertEqual(google.review_observations, [])
+                observed = runner.state.list_jobs()[0]
+                self.assertEqual(json.loads(observed["payload_json"]), original_payload)
+                self.assertEqual(runner.state.snapshot_count(), original_snapshots)
+
+                # Only the authoritative employer can close the vacancy.
+                runner.ingest_records(employer, [])
+                closed = runner.ingest_records(employer, [])
+                self.assertEqual(closed.closed, 1)
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "closed")
+                runner.ingest_records(spec(), [snippet], complete_snapshot=True)
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "closed")
+            finally:
+                runner.close()
+
+    def test_google_snippet_changes_are_not_job_content_updates(self):
+        search = spec()
+        first = {"title": "WordPress Developer", "url": "https://example.org/roles/1",
+                 "snippet": "SEO excerpt A"}
+        changed = dict(first, snippet="SEO excerpt B")
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "test.sqlite")
+            try:
+                a = runner.ingest_records(search, [first])
+                self.assertEqual(a.new, 1)
+                n = runner.state.snapshot_count()
+                b = runner.ingest_records(search, [changed])
+                self.assertEqual((b.new, b.updated, b.unchanged), (0, 0, 1))
+                self.assertEqual(b.review_observations, [])
+                self.assertEqual(runner.state.snapshot_count(), n)
+            finally:
+                runner.close()
+
+
 if __name__ == "__main__":
     unittest.main()
