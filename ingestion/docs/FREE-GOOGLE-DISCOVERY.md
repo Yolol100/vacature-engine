@@ -76,6 +76,11 @@ access to the live Register; otherwise the scan must **not** proceed.
   without automatically activating the employer or proving legitimacy.
 - Search result omissions, errors or incomplete pagination never
   mark an employer's vacancy as closed.
+- SerpApi can report a successful Google search with `Fully empty` organic
+  results and an `error` field. The adapter treats **only this documented
+  combination** as zero discovery hits and continues other queries.
+  Unknown provider errors still stop the run. A zero-result search never
+  proves an employer vacancy is closed.
 - Every promising result still requires official role/employer evidence,
   a current application route, verified publication date, fully remote
   work possible from the Netherlands, Dutch/English language,

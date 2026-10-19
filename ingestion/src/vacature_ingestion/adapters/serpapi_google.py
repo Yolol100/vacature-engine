@@ -78,6 +78,25 @@ def _is_safe_free_account(account: dict, planned_requests: int, reserve: int) ->
     return True
 
 
+def _confirmed_empty_google_result(payload: dict) -> bool:
+    """SerpApi explicitly labels a successful zero-result search as an error.
+
+    Accept only its documented zero-result shape. Unknown provider errors
+    must still stop the run; a missing result is never closure evidence.
+    """
+    metadata = payload.get("search_metadata")
+    info = payload.get("search_information")
+    organic = payload.get("organic_results")
+    return (
+        payload.get("error") == "Google hasn't returned any results for this query."
+        and isinstance(metadata, dict)
+        and str(metadata.get("status", "")).casefold() == "success"
+        and isinstance(info, dict)
+        and str(info.get("organic_results_state", "")).strip().casefold() == "fully empty"
+        and (organic is None or organic == [])
+    )
+
+
 def _safe_candidate_url(value: object) -> str | None:
     """Reject credentials, local hosts and malformed URL ports before normalization."""
     if not isinstance(value, str):
@@ -177,6 +196,11 @@ class SerpApiGoogleAdapter(Adapter):
                 payload = _get_json(_SEARCH_URL + "?" + urlencode(params), timeout=timeout)
                 requests += 1
                 if "error" in payload:
+                    if _confirmed_empty_google_result(payload):
+                        # The official empty response is not a search failure.
+                        # Do not infer a vacancy closure from this empty page.
+                        exhausted.add(query)
+                        continue
                     raise FetchError("provider_error", "Search provider returned an error; stopping")
                 organic = payload.get("organic_results")
                 if not isinstance(organic, list):
