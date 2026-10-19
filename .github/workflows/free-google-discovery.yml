@@ -39,7 +39,7 @@ jobs:
       - name: Check configured key and FREE account (no search credits used)
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
-          SEARCH_MODE: page-1
+          SEARCH_MODE: check
         run: |
           python - <<'PY'
           import os
@@ -106,8 +106,50 @@ jobs:
             --specs ingestion/source-specs.google-optional.json \
             --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 \
             --out "$RUNNER_TEMP/active-google-specs.json"
+      - name: Diagnose one free Google search request
+        env:
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os
+          from urllib.parse import urlencode
+          from vacature_ingestion.adapters.serpapi_google import (
+              _ACCOUNT_URL, _SEARCH_URL, _get_json, _is_safe_free_account,
+          )
+          key = os.environ.get("SERPAPI_API_KEY", "").strip()
+          if not key:
+              raise SystemExit("BLOCKED: no API key")
+          account = _get_json(_ACCOUNT_URL + "?" + urlencode({"api_key": key}), timeout=15)
+          if not _is_safe_free_account(account, planned_requests=1, reserve=10):
+              raise SystemExit("BLOCKED: free account does not have 1 request + 10 reserve")
+          print("Free quota preflight: verified for one request.")
+          params = {
+              "engine": "google", "q": "site:jobs.ashbyhq.com WordPress remote",
+              "start": 0, "hl": "en", "num": "10", "tbs": "qdr:w",
+              "api_key": key,
+          }
+          payload = _get_json(_SEARCH_URL + "?" + urlencode(params), timeout=15)
+          if "error" in payload:
+              error = str(payload["error"]).lower()
+              categories = {
+                  "account_or_key": ("key", "authentication", "unauthorized", "invalid"),
+                  "plan_or_billing": ("plan", "billing", "credit", "payment"),
+                  "quota_or_rate_limit": ("limit", "quota", "exhaust", "too many"),
+                  "google_or_provider": ("google", "blocked", "captcha", "timeout", "failed"),
+                  "request_parameters": ("parameter", "unsupported", "query", "engine"),
+              }
+              matches = [name for name, terms in categories.items() if any(term in error for term in terms)]
+              print("Provider response: error, categories:", ",".join(matches) or "unclassified")
+              print("Provider error size:", len(error))
+              raise SystemExit("BLOCKED: search provider rejected request")
+          organic = payload.get("organic_results")
+          print("Provider response: no API error; organic list valid:", isinstance(organic, list))
+          if not isinstance(organic, list):
+              raise SystemExit("BLOCKED: search provider omitted organic_results")
+          print("Discovered, unverified results:", len(organic))
+          PY
       - name: Run bounded, discovery-only search
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ false }}
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
           SEARCH_MODE: page-1
@@ -156,7 +198,7 @@ jobs:
           print("No application, source or Register changes were made.")
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: ${{ github.event_name == 'push' && success() }}
+        if: ${{ false }}
         with:
           name: google-discovery-candidates-unverified
           path: ${{ runner.temp }}/google-discoveries.json
