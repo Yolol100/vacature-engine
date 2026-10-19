@@ -49,7 +49,13 @@ class SmartRecruitersAdapter(Adapter):
             payload = client.get_json(f"{base}?{params}")
             if not isinstance(payload, dict):
                 raise ValueError("SmartRecruiters payload must be an object")
-            rows = payload.get("content") or payload.get("postings") or []
+            # An explicit empty collection is valid; an absent one is not.
+            if "content" in payload:
+                rows = payload["content"]
+            elif "postings" in payload:
+                rows = payload["postings"]
+            else:
+                raise ValueError("SmartRecruiters response missing postings collection")
             if not isinstance(rows, list):
                 raise ValueError("SmartRecruiters postings must be a list")
             page = [row for row in rows if isinstance(row, dict)]

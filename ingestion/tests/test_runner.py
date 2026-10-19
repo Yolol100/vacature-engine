@@ -50,4 +50,28 @@ class RunnerTests(unittest.TestCase):
         c=FakeClient([p1,p2]); r=self.runner.run_source(spec,client=c)
         self.assertEqual((r.fetched,c.calls),(2,2)); self.assertIn("cursor=opaque",c.urls[1]); self.assertNotIn("offset=",c.urls[0]+c.urls[1])
 
+
+    def test_missing_job_collection_is_not_a_successful_empty_source(self):
+        for provider in ("ashby", "greenhouse", "smartrecruiters", "workable"):
+            with self.subTest(provider=provider):
+                spec = SourceSpec(provider, "ats", provider, "acme")
+                response = {"error": "Unexpected provider schema"}
+                result = self.runner.run_source(spec, client=FakeClient([response]))
+                self.assertFalse(result.success)
+                self.assertEqual(result.failure_category, "parsing_or_adapter_failure")
+                self.assertEqual((result.missing, result.closed), (0, 0))
+
+    def test_malformed_greenhouse_response_cannot_close_known_role(self):
+        spec = SourceSpec("greenhouse", "ats", "greenhouse", "acme")
+        original = {"id": 42, "title": "WordPress Engineer",
+                    "absolute_url": "https://boards.greenhouse.io/acme/jobs/42"}
+        first = self.runner.run_source(spec, client=FakeClient([{"jobs": [original]}]))
+        self.assertTrue(first.success)
+        self.assertEqual(first.new, 1)
+        for _ in range(2):
+            failed = self.runner.run_source(spec, client=FakeClient([{}]))
+            self.assertFalse(failed.success)
+            self.assertEqual((failed.missing, failed.closed), (0, 0))
+        self.assertEqual(self.runner.state.list_jobs()[0]["status"], "active")
+
 if __name__ == "__main__": unittest.main()

@@ -1,6 +1,7 @@
 # Changelog
 
 ## Ingestion 0.12.0 - 2026-10-19
+- Reject malformed employer API success responses that omit the required jobs/postings list; preserve existing vacancies and run evidence instead of treating the response as an empty full snapshot.
 - Hardened optional free Google discovery: strict active Free Plan and quota checks, round-robin pagination, canonical URL deduplication and safe handling of invalid links.
 - Moved snapshot completeness to the adapter contract; partial Google discovery cannot close vacancies, even through direct ingestion calls.
 - Added a manual-only GitHub Actions workflow with a zero-search account check and bounded discovery modes. No scheduler, automated applications or Register writes.
