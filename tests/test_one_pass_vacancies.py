@@ -11,6 +11,7 @@ from vacature_engine.simple import policy_from_config
 from vacature_ingestion.models import SourceSpec
 from vacature_ingestion.runner import SourceRunResult
 from scripts.one_pass_vacancies import (
+    _official_page_exclusion, _missing_ranking_evidence,
     RegisterPreflightError, google_free_gate, live_policy, parse_table,
     run_once, screen_review_candidates, select_free_specs,
 )
@@ -297,6 +298,69 @@ class OnePassTests(unittest.TestCase):
         self.assertEqual(
             rows[0]["technical_requirement_review"]["status"], "requirements_unverified"
         )
+
+    def test_first_party_expired_date_and_old_original_are_excluded(self):
+        p = policy_from_config(CONFIG)
+        today = date(2026, 10, 19)
+        page = {"status": "matching_first_party_jobposting",
+                "structured": {"expired_by_valid_through": True,
+                               "date_posted": "2026-10-18", "date_posted_valid": True}}
+        self.assertEqual(
+            _official_page_exclusion(page, p, today), "official_job_expired")
+        page["structured"]["expired_by_valid_through"] = False
+        page["structured"]["date_posted"] = "2026-09-29"
+        self.assertEqual(
+            _official_page_exclusion(page, p, today), "official_original_post_too_old")
+        page["structured"]["date_posted"] = "2026-10-18"
+        self.assertIsNone(_official_page_exclusion(page, p, today))
+
+    def test_only_exact_closed_official_job_is_hard_excluded(self):
+        p = policy_from_config(CONFIG)
+        today = date(2026, 10, 19)
+        self.assertEqual(
+            _official_page_exclusion({"status": "closed_at_exact_ats_route"},
+                                      p, today), "official_job_route_closed")
+        self.assertIsNone(_official_page_exclusion(
+            {"status": "unverified", "job_http_status": 0},
+            p, today))
+
+    def test_live_readiness_does_not_promote_html_lang_or_skill_tokens(self):
+        candidate = {
+            "official_checks": {
+                "official_role": "confirmed_current_public_ats",
+                "remote": "confirmed", "netherlands": "allowed",
+            },
+            "technical_requirement_review": {
+                "status": "mapped_skills_have_evidence",
+                "explicit_technical_requirements": 2,
+            },
+        }
+        page = {
+            "status": "matching_first_party_jobposting",
+            "page_language": "en", "application_page_language": "en",
+            "application_language": None, "apply_http_status": 200,
+            "structured": {
+                "date_posted_valid": True, "date_posted": "2026-10-18",
+                "remote_signal": True, "applicant_locations": ["Netherlands"],
+            },
+        }
+        missing = _missing_ranking_evidence(
+            candidate, page, policy_from_config(CONFIG),
+            date(2026, 10, 19),
+        )
+        self.assertNotIn("original_publication_date", missing)
+        self.assertNotIn("fully_remote_from_first_party", missing)
+        self.assertNotIn("netherlands_executable_from_employer", missing)
+        self.assertIn("verified_application_form_at_exact_route", missing)
+        page["application_form_detected"] = True
+        with_form = _missing_ranking_evidence(
+            candidate, page, policy_from_config(CONFIG),
+            date(2026, 10, 19),
+        )
+        self.assertNotIn("verified_application_form_at_exact_route", with_form)
+        self.assertIn("employer_authorized_application_language", missing)
+        self.assertIn("verified_core_duties_and_score_anchors", missing)
+        self.assertIn("employer_required_work_languages", missing)
 
     def test_missing_key_and_quota_fallback(self):
         s = SourceSpec("google-jobs", "discovery", "serpapi_google", "worldwide",
