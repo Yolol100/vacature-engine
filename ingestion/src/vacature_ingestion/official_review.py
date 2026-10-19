@@ -30,7 +30,22 @@ _EXCLUDED_NL = re.compile(
 )
 _BLOCKED_REGIONS = re.compile(
     r"\b(?:united states|usa|u\.s\.a\.|us only|canada|india|costa rica|latam|latin america|"
-    r"brazil|mexico|philippines|south africa|australia|uk only|united kingdom)\b", re.I
+    r"brazil|mexico|colombia|argentina|chile|peru|philippines|"
+    r"south africa|australia|uk only|united kingdom)\b", re.I
+)
+# Narrow negative signals only: board/aggregator copy is never proof that
+# a candidate CAN work from the Netherlands. Explicitly excluded foreign
+# residency is enough to remove a listing from the provisional NL shortlist.
+# Never infer exclusion from "our office is in X" or a company's customers.
+_EXCLUSIVE_RESIDENCE = re.compile(
+    r"\b(?:exclusively\s+considering|only\s+considering|only\s+accepting|"
+    r"exclusively\s+accepting|we\s+only\s+hire|"
+    r"applicants?\s+must\s+(?:currently\s+)?(?:be\s+)?(?:based|located|residing)|"
+    r"must\s+(?:currently\s+)?(?:be\s+)?(?:based|located|residing))"
+    r".{0,150}?\b(?:latam|latin\s+america|philippines|colombia|"
+    r"india|costa\s+rica|brazil|mexico|argentina|chile|peru|"
+    r"united\s+states|canada|australia)\b",
+    re.I | re.S,
 )
 _ONSITE = re.compile(r"\b(?:on.?site|in.?office|office only|hybrid)\b", re.I)
 _REMOTE = re.compile(r"\b(?:remote|work from home|distributed)\b", re.I)
@@ -52,6 +67,36 @@ def geography_signal(value: Any) -> str:
     if _BLOCKED_REGIONS.search(location):
         return "restricted"
     return "unknown"
+
+
+def discovery_region_conflict(row: dict[str, Any]) -> str | None:
+    """Negative discovery evidence only; never a verified geographic pass.
+
+    A third-party mistake must not change lifecycle state or establish fraud;
+    the observation is merely withheld from the candidate review shortlist.
+    """
+    if row.get("source_type") == "ats":
+        return None
+    metadata = row.get("source_metadata")
+    restrictions = (
+        metadata.get("location_restriction_names")
+        if isinstance(metadata, dict) else None
+    )
+    if isinstance(restrictions, list) and restrictions and all(
+        geography_signal(value) == "restricted" for value in restrictions
+    ):
+        return "explicit_discovery_region_list"
+    location = row.get("location")
+    if geography_signal(location) == "restricted":
+        return "restricted_discovery_location"
+    description = row.get("description")
+    if isinstance(description, str) and _EXCLUSIVE_RESIDENCE.search(description[:10_000]):
+        # A contradictory broad location label is a reason for human review,
+        # not proof that the employer excludes the Netherlands.
+        if geography_signal(location) == "allowed":
+            return None
+        return "explicit_discovery_residency_requirement"
+    return None
 
 
 def _source_is_current_official(row: dict[str, Any], active_ids: set[str]) -> bool:
