@@ -36,8 +36,7 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
 ## Maintained components
 
 - `src/vacature_engine/`: deterministic canonicalization, gates,
-  ranking and optional CV metadata. **No** CV or cover-letter prose is
-  generated here, and no experience is inferred.
+  ranking and optional CV metadata. The `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience.
 - `ingestion/`: bounded, read-only public ATS/feed adapters and a
   supplementary Google discovery adapter. Static `source-specs.*` files are
   **examples**, not authority to activate a source.
