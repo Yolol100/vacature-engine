@@ -217,10 +217,28 @@ def _previous_index(tables: dict[str, list[dict[str, str]]]) -> tuple[set[str], 
 
 
 def _role_hints(row: dict[str, Any], policy: VacancyPolicy) -> list[str]:
-    # Title words are only review hints, NEVER proof of full role eligibility.
+    # A title mention or an ATS-owned description is a *review hint*, not
+    # proof of a core-duty match. Google snippets never establish candidate fit.
     title = str(row.get("title") or "").casefold()
+    if row.get("source_type") == "ats":
+        title += " " + str(row.get("description") or "").casefold()
     return [name for name, tokens in _ROLE_TERMS.items()
             if name in policy.target_role_families and any(term in title for term in tokens)]
+
+
+def _review_sort_key(row: dict[str, Any], tables: dict[str, list[dict[str, str]]]
+                     ) -> tuple[int, int, str]:
+    config = {r.get("key"): r.get("value", "") for r in tables["Config"]}
+    order = [value.strip() for value in
+             config.get("direct_discovery_order", "").split(",")]
+    source_kind = ("google" if row.get("source_id") == "google-jobs"
+                   else row.get("source_type"))
+    priority = next((r.get("priority", "").casefold() for r in tables["Bronnen"]
+                     if r.get("source_id") == row.get("source_id")
+                     and r.get("status", "").casefold() == "active"), "")
+    return (order.index(source_kind) if source_kind in order else 999,
+            {"high": 0, "medium": 1, "low": 2}.get(priority, 3),
+            str(row.get("canonical_url") or row.get("url") or ""))
 
 
 def _observed_age(row: dict[str, Any], today: date) -> int | None:
@@ -243,10 +261,15 @@ def screen_review_candidates(observations: list[dict[str, Any]],
     """Suppress prior roles; hard-exclude only explicit mismatches; keep all unknowns unverified."""
     historical_urls, weak = _previous_index(tables)
     counted = {"previously_registered": 0, "possible_prior_match": 0,
-               "explicit_mismatch": 0, "unsafe_link": 0, "awaiting_verification": 0}
+               "explicit_mismatch": 0, "unsafe_link": 0, "off_target": 0,
+               "awaiting_verification": 0}
     output: list[dict[str, Any]] = []
     seen: set[str] = set()
-    for row in canonicalize_observations(observations):
+    # Respect live source-class priorities. A Google/board title never gets to
+    # crowd out official ATS evidence merely because its request finished first.
+    ordered = sorted(canonicalize_observations(observations),
+                     key=lambda row: _review_sort_key(row, tables))
+    for row in ordered:
         url = _safe_candidate_url(row.get("canonical_url") or row.get("url"))
         if not url or not is_role_specific_vacancy_url(url):
             counted["unsafe_link"] += 1
@@ -273,6 +296,10 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             counted["possible_prior_match"] += 1
             # A different URL may be the user's previously applied role.
             continue
+        hints = _role_hints(row, policy)
+        if not hints:
+            counted["off_target"] += 1
+            continue
         if len(output) >= limit:
             break
         # Do not export application states or CandidateEvidence in a public artifact.
@@ -280,7 +307,7 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             "title": title[:400], "employer": employer[:250] or None,
             "official_role_candidate_url": url,
             "source_types": row.get("source_types") or [row.get("source_type")],
-            "role_family_hints": _role_hints(row, policy),
+            "role_family_hints": hints,
             "status": "unverified_review_only",
             "still_to_verify": [
                 "official_employer_and_exact_open_role", "original_publication_date",
