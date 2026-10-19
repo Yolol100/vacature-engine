@@ -205,5 +205,95 @@ class OfficialReviewTests(unittest.TestCase):
         self.assertEqual(rank_fully_verified([], policy=POLICY, today=TODAY), [])
 
 
+    def test_complete_evidence_can_reach_existing_deterministic_ranking(self):
+        from vacature_ingestion.official_review import _FINAL_GATES
+
+        url = "https://job-boards.greenhouse.io/example/jobs/987654"
+        proof = {name: {"state": "verified", "source_ref": "official:review"}
+                 for name in _FINAL_GATES}
+        proof["exact_official_open_role"]["source_ref"] = url
+        proof["original_posting_date"].update({"source_ref": url, "date": "2026-10-19"})
+        item = {
+            "title": "WordPress Developer", "employer": "Example",
+            "canonical_url": url, "official_url": url,
+            "posted_date": "2026-10-19", "fully_remote": True,
+            "geography_compatible": True, "wordpress_related": True,
+            "central_hard_mismatch": False, "listing_language": "en",
+            "application_language": "en", "required_languages": [],
+            "salary_monthly_eur": None, "core_fit": 50,
+            "evidence_fit": 25, "workstyle_fit": 15,
+            "verification": proof,
+            "candidate_evidence_ids": ["active-verified-1"],
+            "anchor_provenance": {
+                "core_fit": [url], "evidence_fit": ["active-verified-1"],
+                "workstyle_fit": ["active-verified-1"],
+            },
+        }
+        ranked = rank_fully_verified(
+            [item], policy=POLICY, today=TODAY,
+            active_evidence_ids={"active-verified-1"}, prior_role_urls=set(),
+        )
+        self.assertEqual(1, len(ranked))
+        self.assertEqual(100, ranked[0]["score"])
+        self.assertNotIn("candidate_evidence_ids", ranked[0])
+        self.assertNotIn("verification", ranked[0])
+        self.assertNotIn("anchor_provenance", ranked[0])
+
+        # Every hard gate matters; unknown is NEVER a pass or a score.
+        for key in _FINAL_GATES:
+            with self.subTest(missing_gate=key):
+                changed = {**item, "verification": {k: dict(v) for k, v in proof.items()}}
+                changed["verification"][key]["state"] = "unknown"
+                self.assertEqual([], rank_fully_verified(
+                    [changed], policy=POLICY, today=TODAY,
+                    active_evidence_ids={"active-verified-1"}, prior_role_urls=set(),
+                ))
+
+        self.assertEqual([], rank_fully_verified(
+            [item], policy=POLICY, today=TODAY,
+            active_evidence_ids={"active-verified-1"}, prior_role_urls={url},
+        ))
+        self.assertEqual([], rank_fully_verified(
+            [item], policy=POLICY, today=TODAY,
+            active_evidence_ids=set(), prior_role_urls=set(),
+        ))
+        self.assertEqual([], rank_fully_verified([item], policy=POLICY, today=TODAY))
+
+    def test_rank_rejects_unverified_date_and_provenance(self):
+        from vacature_ingestion.official_review import _FINAL_GATES
+
+        url = "https://job-boards.greenhouse.io/example/jobs/987654"
+        gates = {key: {"state": "verified", "source_ref": url} for key in _FINAL_GATES}
+        gates["original_posting_date"]["date"] = "2026-10-19"
+        valid = {
+            "title": "WordPress Developer", "employer": "Example",
+            "canonical_url": url, "official_url": url,
+            "posted_date": "2026-10-19", "fully_remote": True,
+            "geography_compatible": True, "wordpress_related": True,
+            "central_hard_mismatch": False, "listing_language": "en",
+            "application_language": "en", "required_languages": [],
+            "core_fit": 50, "evidence_fit": 25, "workstyle_fit": 15,
+            "verification": gates, "candidate_evidence_ids": ["cv-1"],
+            "anchor_provenance": {
+                "core_fit": [url], "evidence_fit": ["cv-1"],
+                "workstyle_fit": ["cv-1"],
+            },
+        }
+        for changes in (
+            {"posted_date": None},
+            {"posted_date": "2026-10-10"},
+            {"official_url": "https://evil.test/jobs/1"},
+            {"candidate_evidence_ids": ["unverified"]},
+            {"anchor_provenance": {"core_fit": [url], "evidence_fit": ["cv-1"], "workstyle_fit": []}},
+            {"central_hard_mismatch": True},
+        ):
+            with self.subTest(changes=changes):
+                candidate = {**valid, **changes}
+                self.assertEqual([], rank_fully_verified(
+                    [candidate], policy=POLICY, today=TODAY,
+                    active_evidence_ids={"cv-1"}, prior_role_urls=set(),
+                ))
+
+
 if __name__ == "__main__":
     unittest.main()
