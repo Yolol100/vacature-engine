@@ -121,6 +121,22 @@ class OfficialReviewTests(unittest.TestCase):
         )
         self.assertEqual(result["original_publication"], "unknown")
 
+    def test_negative_cv_claim_cannot_support_broad_fit_indicator(self):
+        row = {
+            "evidence_id": "neg-wp",
+            "source_type": "canonical_cv",
+            "claim": "No experience with WordPress, WooCommerce or Gutenberg.",
+            "active": "TRUE",
+            "confidence": "high",
+        }
+        checks, _ = assess_official_observation(
+            official(location="Remote - European Union"),
+            candidate=CANDIDATE, active_ids={"greenhouse"},
+            evidence=[row], policy=POLICY, today=TODAY,
+        )
+        self.assertEqual(checks["evidence_claims_count"], 0)
+        self.assertEqual(checks["fit_evidence"], "unverified")
+
     def test_only_live_known_ats_is_official(self):
         checks, ranked = assess_official_observation(
             official(), candidate=CANDIDATE, active_ids={"greenhouse"},
