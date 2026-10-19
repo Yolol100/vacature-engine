@@ -1,6 +1,8 @@
 name: One-pass vacancy discovery and review (free sources)
 
 on:
+  push:
+    branches: [qa/google-free-ats-live-20261019]
   workflow_dispatch:
     inputs:
       mode:
@@ -29,6 +31,7 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+          ref: 41c7407b7b3f5ef93c327e1929c7228a196fd548
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.11"
@@ -38,11 +41,11 @@ jobs:
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          SEARCH_MODE: ${{ inputs.mode }}
+          SEARCH_MODE: page-1
         run: |
           python scripts/one_pass_vacancies.py --mode "$SEARCH_MODE" --out "$RUNNER_TEMP/vacancy-review.json"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: ${{ inputs.mode != 'check' && success() }}
+        if: ${{ github.event_name == 'push' && success() }}
         with:
           name: vacancy-review-unverified-no-personal-data
           path: ${{ runner.temp }}/vacancy-review.json
