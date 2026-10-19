@@ -46,6 +46,15 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
 - `.github/workflows/ingestion-tests.yml`: offline tests only.
 - `.github/workflows/free-google-discovery.yml`: optional **manually
   initiated**, quota-controlled discovery. No cron or recurring job.
+- `.github/workflows/one-pass-vacancy-review.yml`: optional **manual** one-pass
+  research preflight. Reads live Config, Bronnen and application/feedback
+  history; uses Google only after a zero-cost Free Plan check and continues
+  through the existing Register-active public ATS/API/feed adapters if
+  Google is unavailable, paid, or out of free quota. Output is an
+  **unverified review queue**, not a ranked/verified shortlist. Exact official
+  role status, Netherlands-remote permission, language and CandidateEvidence
+  fit still require specialist verification before displaying a recommendation.
+  It does not write to the Register or send applications.
 
 Google discovery is optional. It requires a verified free SerpApi account
 and active `google-jobs` registration, uses no paid plan, and returns
