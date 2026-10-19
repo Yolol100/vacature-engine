@@ -68,7 +68,7 @@ class OnePassTests(unittest.TestCase):
     def test_known_applied_and_rejected_role_suppressed(self):
         rows, c = screen_review_candidates([
             observation("https://jobs.ashbyhq.com/acme/old"),
-            observation("https://jobs.ashbyhq.com/acme/new", title="Automation Engineer"),
+            observation("https://jobs.ashbyhq.com/acme/new", title="AI Automation Engineer"),
         ], tables(), policy_from_config(CONFIG), today=date(2026, 10, 19))
         self.assertEqual(c["previously_registered"], 1)
         self.assertEqual(len(rows), 1)
@@ -128,6 +128,46 @@ class OnePassTests(unittest.TestCase):
         self.assertEqual(c["explicit_mismatch"], 2)
         self.assertEqual(len(rows), 1)
         self.assertIn("official_employer_and_exact_open_role", rows[0]["still_to_verify"])
+
+    def test_off_target_search_pages_cannot_crowd_out_ats(self):
+        search_rows = [
+            {
+                "source_id": "google-jobs",
+                "source_type": "discovery",
+                "canonical_url": "https://example.org/jobs/list-" + str(i),
+                "url": "https://example.org/jobs/list-" + str(i),
+                "title": "Thousands of unrelated Engineering Jobs",
+                "employer": None,
+            }
+            for i in range(75)
+        ]
+        official = observation(
+            "https://jobs.ashbyhq.com/acme/genuine",
+            title="WooCommerce Developer",
+            description="Build WordPress features",
+        )
+        rows, counts = screen_review_candidates(
+            search_rows + [official], tables(), policy_from_config(CONFIG),
+            today=date(2026, 10, 19), limit=5,
+        )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["title"], "WooCommerce Developer")
+        self.assertEqual(counts["off_target"], 75)
+        self.assertEqual(rows[0]["source_types"], ["ats"])
+
+    def test_google_snippet_is_not_fit_proof(self):
+        rows, counts = screen_review_candidates([
+            {
+                "source_id": "google-jobs", "source_type": "discovery",
+                "canonical_url": "https://example.org/job/strong-identity",
+                "url": "https://example.org/job/strong-identity",
+                "title": "Unrelated Role",
+                "description": "WordPress n8n AI automation",
+                "employer": None,
+            }
+        ], tables(), policy_from_config(CONFIG), today=date(2026, 10, 19))
+        self.assertEqual(rows, [])
+        self.assertEqual(counts["off_target"], 1)
 
     def test_missing_key_and_quota_fallback(self):
         s = SourceSpec("google-jobs", "discovery", "serpapi_google", "worldwide",
