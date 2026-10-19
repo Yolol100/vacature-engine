@@ -1,6 +1,8 @@
 name: One-pass vacancy discovery and review (free sources)
 
 on:
+  push:
+    branches: [qa/one-pass-live-preflight-20261019]
   workflow_dispatch:
     inputs:
       mode:
@@ -38,11 +40,11 @@ jobs:
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-          SEARCH_MODE: ${{ inputs.mode }}
+          SEARCH_MODE: check
         run: |
           python scripts/one_pass_vacancies.py --mode "$SEARCH_MODE" --out "$RUNNER_TEMP/vacancy-review.json"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: ${{ inputs.mode != 'check' && success() }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode != 'check' && success() }}
         with:
           name: vacancy-review-unverified-no-personal-data
           path: ${{ runner.temp }}/vacancy-review.json
