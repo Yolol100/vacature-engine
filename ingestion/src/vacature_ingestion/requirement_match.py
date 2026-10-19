@@ -8,6 +8,7 @@ CandidateEvidence is read in memory; no private claim or evidence ID is exported
 from __future__ import annotations
 
 import re
+from datetime import datetime
 from typing import Any
 
 # These are literal, unambiguous technical competencies, not invented CV claims.
@@ -134,20 +135,43 @@ def has_positive_skill_claim(claim: Any) -> bool:
     return _NEGATED_CLAIM.search(claim) is None
 
 
-def _verified_skills(evidence: list[dict[str, str]]) -> set[str]:
-    # A portfolio index/GitHub profile URL, standing alone, is not skill proof.
-    result: set[str] = set()
+def _verified_claims(evidence: list[dict[str, str]], *,
+                     require_provenance: bool = False) -> list[str]:
+    """Resolve positive claims without exporting private evidence or its IDs.
+
+    The older aggregate matcher keeps its existing contract. New dimensions
+    additionally require the live Register's source and verification fields.
+    Presence of these fields is traceability, not independent source validation;
+    the owning specialist must still verify the referenced source.
+    """
+    claims: list[str] = []
     for row in evidence:
-        if (row.get("active", "").casefold() != "true"
+        if (not isinstance(row, dict)
+                or str(row.get("active", "")).casefold() != "true"
+                or not isinstance(row.get("source_type"), str)
                 or row.get("source_type") not in _ALLOWED_SOURCES
-                or row.get("confidence", "").casefold() not in {"high", "medium"}
-                or not row.get("evidence_id")):
+                or str(row.get("confidence", "")).casefold() not in {"high", "medium"}
+                or not isinstance(row.get("evidence_id"), str)
+                or not row["evidence_id"].strip()):
             continue
         claim = row.get("claim", "")
         if not has_positive_skill_claim(claim):
             continue
-        result.update(_skill_tags(claim))
-    return result
+        if require_provenance:
+            if any(not isinstance(row.get(key), str) or not row[key].strip()
+                   for key in ("source_ref", "source_locator", "verified_at")):
+                continue
+            try:
+                datetime.fromisoformat(row["verified_at"].strip().replace("Z", "+00:00"))
+            except ValueError:
+                continue
+        claims.append(claim)
+    return claims
+
+
+def _verified_skills(evidence: list[dict[str, str]]) -> set[str]:
+    # A portfolio index/GitHub profile URL, standing alone, is not skill proof.
+    return set().union(*(_skill_tags(claim) for claim in _verified_claims(evidence)))
 
 
 def _requirement_groups(description: str) -> tuple[list[set[str]], int]:
@@ -232,4 +256,229 @@ def compare_requirements(row: dict[str, Any], evidence: list[dict[str, str]]) ->
         result["status"] = ("mapped_skills_have_evidence"
                             if matched == len(required) and not unresolved
                             else "incomplete_requirement_evidence")
+    return result
+
+
+# Detailed dimensions remain literal review evidence. They do not certify that
+# an entire natural-language requirement is met, or authorize a score.
+_DIMENSION_HEADING = re.compile(
+    r"(?<![A-Za-z0-9])(?P<label>Preferred (?:skills|qualifications)|"
+    r"What you(?:'ll| will) do|Work style|How we work|Werkwijze)\s*:", re.I,
+)
+_OPTIONAL_SECTION = re.compile(
+    r"^(?:nice[ -]to[ -]haves?|preferred(?: (?:skills|qualifications))?|bonus)\s*:?$", re.I,
+)
+_DUTY_SECTION = re.compile(
+    r"^(?:responsibilities|your (?:role|tasks)|what you(?:'ll| will) do|"
+    r"taken|verantwoordelijkheden)\s*:?$", re.I,
+)
+_STYLE_SECTION = re.compile(r"^(?:work style|how we work|werkwijze)\s*:?$", re.I)
+_NON_REQUIREMENT = re.compile(
+    r"\b(?:not required|not mandatory|do not (?:need|require)|"
+    r"no experience (?:required|needed)|niet vereist|niet nodig|geen vereiste)\b", re.I,
+)
+_NOT_POSITIVE_DIMENSION = re.compile(
+    r"\b(?:not|never|cannot|can't|unable to|without|niet|geen|"
+    r"learning|interested in|plan to|would like to)\b|\bno\s+|"
+    r"\b(?:0|zero)\s+(?:\w+\s+){0,3}(?:years?|experience|ervaring|projects?)\b", re.I,
+)
+_YEAR_FACT = re.compile(
+    r"\b(?P<years>\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?|jaar)\s+"
+    r"(?:(?:of\s+)?(?:professional\s+)?experience\s+(?:with|in|using)\s+|"
+    r"ervaring\s+(?:met|in)\s+|(?:building|developing|using)\s+|"
+    r"(?:of\s+)?(?=[^.;\n]{1,100}\s+experience\b))(?P<scope>[^.;\n]{1,180})",
+    re.I,
+)
+_LANGUAGE_TERMS = {
+    "en": r"english|engels", "nl": r"dutch|nederlands",
+    "de": r"german|duits", "fr": r"french|frans", "es": r"spanish|spaans",
+}
+_LANGUAGE_TAGS = {key: re.compile(r"\b(?:" + words + r")\b", re.I)
+                  for key, words in _LANGUAGE_TERMS.items()}
+_LEVELS = {
+    "native": r"native|moedertaal", "fluent": r"fluent(?:ly)?|fluency|vloeiend",
+    "professional": r"business level|professional (?:proficiency|level)",
+    **{level: level for level in ("a1", "a2", "b1", "b2", "c1", "c2")},
+}
+_LANGUAGE_ABILITY = re.compile(
+    r"\b(?:speak|speaks|speaking|spoken|communicate|communication|"
+    r"beheers|beheerst|spreek|spreekt|languages?|talen)\b", re.I,
+)
+_ACTIONS = {
+    "develop": r"\b(?:build|built|building|develop|developed|developing|bouw|gebouwd|ontwikkel|ontwikkeld)\b",
+    "maintain": r"\b(?:maintain|maintained|maintaining|onderhouden|onderhoud)\b",
+    "test": r"\b(?:test|tested|testing|testen|getest)\b",
+    "design": r"\b(?:design|designed|designing|ontwerp|ontworpen)\b",
+    "automate": r"\b(?:automate|automated|automating|automatiseer|geautomatiseerd)\b",
+}
+_ACTION_PATTERNS = {key: re.compile(value, re.I) for key, value in _ACTIONS.items()}
+_WORK_STYLES = {
+    "asynchronous_collaboration": r"\b(?:asynchronous (?:communication|collaboration|work)|async[ -]first)\b",
+    "independent_work": r"\b(?:work(?:ing)? independently|independent work|zelfstandig werk(?:en)?)\b",
+    "cross_functional_collaboration": r"\b(?:cross[ -]functional collaboration|collaborat(?:e|ed|ing) with (?:design|product|engineering) teams?)\b",
+}
+_STYLE_PATTERNS = {key: re.compile(value, re.I) for key, value in _WORK_STYLES.items()}
+_PROJECT = re.compile(r"\b(?:projects?|portfolio|plugins?|websites?|webshops?|stores?|themes?)\b", re.I)
+_COMPLETED_PROJECT = re.compile(r"\b(?:built|developed|designed|shipped|delivered|launched|gebouwd|ontwikkeld|opgeleverd)\b", re.I)
+_PROJECT_REQUIREMENT = re.compile(r"\b(?:portfolio|projects?|shipped|delivered|proven|demonstrat(?:ed|e|able))\b", re.I)
+
+
+def has_positive_requirement_claim(claim: Any) -> bool:
+    """Conservative positive-claim gate shared with final specialist receipts.
+
+    Negative, zero-experience or aspirational claims cannot support a positive
+    requirement. Ambiguous mixed claims remain unknown, never inability proof.
+    """
+    return has_positive_skill_claim(claim) and not bool(_NOT_POSITIVE_DIMENSION.search(claim))
+
+
+def _scoped_years(clause: str) -> list[tuple[float, set[str]]]:
+    """Do not sum years or transfer general experience to another skill."""
+    if len(_NUMERIC_EXPERIENCE.findall(clause)) != 1 or _AMBIGUOUS.search(clause):
+        return []
+    match = _YEAR_FACT.search(clause)
+    if match is None:
+        return []
+    scope = _skill_tags(match.group("scope"))
+    # A later 'and ...' fact can describe different experience. Only one
+    # named technology is mechanically comparable; mixed scope stays unknown.
+    return [(float(match.group("years")), scope)] if len(scope) == 1 else []
+
+
+def _language_specs(clause: str, *, candidate: bool = False) -> list[tuple[str, str]]:
+    languages = [key for key, pattern in _LANGUAGE_TAGS.items() if pattern.search(clause)]
+    if len(languages) > 1:
+        pieces = re.split(r",|\band\b|\ben\b", clause, flags=re.I)
+        parsed = [item for piece in pieces for item in _language_specs(piece, candidate=candidate)] if len(pieces) > 1 else []
+        if len(parsed) == len(languages) and all(level != "unspecified" for _, level in parsed):
+            return parsed
+        return [] if candidate else [(language, "unparsed") for language in languages]
+    if not languages:
+        return []
+    levels = [key for key, value in _LEVELS.items()
+              if re.search(r"\b(?:" + value + r")\b", clause, re.I)]
+    if len(levels) > 1:
+        return [] if candidate else [(languages[0], "unparsed")]
+    if candidate and not levels and not _LANGUAGE_ABILITY.search(clause):
+        return []
+    return [(languages[0], levels[0] if levels else "unspecified")]
+
+
+def _language_level_matches(required: str, candidate: str) -> bool:
+    cefr = ("a1", "a2", "b1", "b2", "c1", "c2")
+    if required == "unparsed":
+        return False
+    if required == "unspecified" or required == candidate:
+        return True
+    # A fluency adjective is not an invented CEFR certificate/equivalence.
+    return required in cefr and candidate in cefr and cefr.index(candidate) >= cefr.index(required)
+
+
+def compare_requirement_dimensions(row: dict[str, Any],
+                                   evidence: list[dict[str, str]]) -> dict[str, Any]:
+    """Map explicit public requirements to traceable, literal candidate claims.
+
+    Unknown prose and absent evidence remain unknown. Even a present literal
+    match needs specialist interpretation of scope and level. No private claim,
+    evidence ID, source locator, candidate duration or language level is emitted.
+    """
+    dimensions: dict[str, list[dict[str, Any]]] = {key: [] for key in (
+        "mandatory_skills", "optional_skills", "experience_years", "languages",
+        "responsibilities", "work_style", "projects",
+    )}
+    result: dict[str, Any] = {
+        "status": "requirements_unverified", "dimensions": dimensions,
+        "ambiguous_or_unparsed_requirements": 0,
+        "semantic_review_required": True, "final_score_authorized": False,
+    }
+    metadata = row.get("source_metadata")
+    description = row.get("description")
+    if (row.get("source_type") != "ats" or not isinstance(metadata, dict)
+            or metadata.get("provider") != row.get("source_id")
+            or not isinstance(description, str)):
+        return result
+    claims = [claim for claim in _verified_claims(evidence, require_provenance=True)
+              if has_positive_requirement_claim(claim)]
+    candidate_clauses = [part for claim in claims
+                         for part in re.split(r"(?<=[.!?;])\s+|\n", claim[:60_000])]
+    candidate_skills = set().union(*(_skill_tags(claim) for claim in claims))
+    candidate_years = [fact for clause in candidate_clauses for fact in _scoped_years(clause)]
+    candidate_languages = [fact for clause in candidate_clauses
+                           for fact in _language_specs(clause, candidate=True)]
+    # Protect longer headings first: 'Preferred qualifications:' must not be
+    # split again at 'Qualifications:' and turned into a mandatory section.
+    text = _DIMENSION_HEADING.sub(lambda match: "\n" + match.group("label") + "\n", description[:60_000])
+    text = _INLINE_HEADING.sub(lambda match: "\n" + match.group("label") + ":\n", text)
+    unresolved = int(len(description) > 60_000 or len(text.splitlines()) > 300)
+    section = "other"
+
+    def add(dimension: str, item: dict[str, Any], present: bool) -> None:
+        entry = {**item, "candidate_evidence": "present" if present else "unknown"}
+        if entry not in dimensions[dimension]:
+            dimensions[dimension].append(entry)
+
+    for line in text.splitlines()[:300]:
+        line = " ".join(line.strip().split()).lstrip("-*• ")
+        heading = next((name for name, pattern in (
+            ("required", _REQUIRED_SECTION), ("optional", _OPTIONAL_SECTION),
+            ("responsibilities", _DUTY_SECTION), ("style", _STYLE_SECTION),
+            ("other", _OTHER_SECTION),
+        ) if pattern.fullmatch(line)), None)
+        if heading:
+            section = heading
+            continue
+        for clause in re.split(r"(?<=[.!?;])\s+", line):
+            if not clause or _NON_REQUIREMENT.search(clause):
+                continue
+            kind = "optional" if section == "optional" or _OPTIONAL.search(clause) else "mandatory"
+            requirement = section in {"required", "optional"} or bool(_REQUIREMENT_CUE.search(clause))
+            if not requirement and section not in {"responsibilities", "style"}:
+                continue
+            if len(clause) > 900 or _AMBIGUOUS.search(clause):
+                unresolved += 1
+                continue
+            tags = _skill_tags(clause)
+            parsed = False
+            if requirement:
+                for skill in sorted(tags):
+                    add(kind + "_skills", {"skill": skill}, skill in candidate_skills)
+                    parsed = True
+                if _NUMERIC_EXPERIENCE.search(clause):
+                    years = _scoped_years(clause)
+                    if not years:
+                        unresolved += 1
+                    for minimum, scope in years:
+                        add("experience_years", {"minimum_years": minimum, "skills": sorted(scope), "kind": kind},
+                            any(value >= minimum and scope <= skills for value, skills in candidate_years))
+                        parsed = True
+                for language, level in _language_specs(clause):
+                    add("languages", {"language": language, "required_level": level, "kind": kind},
+                        any(language == known and _language_level_matches(level, value)
+                            for known, value in candidate_languages))
+                    parsed = True
+                    unresolved += int(level == "unparsed")
+                if _PROJECT_REQUIREMENT.search(clause) and _PROJECT.search(clause):
+                    add("projects", {"skills": sorted(tags), "kind": kind},
+                        bool(tags) and not bool(re.search(r"\b\d+\b", clause)) and any(
+                            tags <= _skill_tags(claim) and _COMPLETED_PROJECT.search(claim)
+                            and _PROJECT.search(claim) for claim in candidate_clauses))
+                    parsed = True
+            if section == "responsibilities":
+                for action, pattern in _ACTION_PATTERNS.items():
+                    if pattern.search(clause):
+                        add("responsibilities", {"action": action, "skills": sorted(tags)},
+                            bool(tags) and any(len(_skill_tags(claim)) == 1
+                                               and tags <= _skill_tags(claim) and pattern.search(claim)
+                                               for claim in candidate_clauses))
+                        parsed = True
+            for style, pattern in _STYLE_PATTERNS.items():
+                if pattern.search(clause):
+                    add("work_style", {"style": style, "kind": kind},
+                        any(pattern.search(claim) for claim in candidate_clauses))
+                    parsed = True
+            if not parsed:
+                unresolved += 1
+    result["ambiguous_or_unparsed_requirements"] = unresolved
+    if any(dimensions.values()) or unresolved:
+        result["status"] = "requirement_dimensions_review_only"
     return result

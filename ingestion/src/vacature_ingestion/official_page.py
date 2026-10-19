@@ -7,6 +7,8 @@ submission, browser execution, tokens or candidate data are sent.
 from __future__ import annotations
 
 import json
+import hashlib
+import re
 from datetime import date
 from html.parser import HTMLParser
 from urllib.error import HTTPError, URLError
@@ -41,13 +43,27 @@ class _Markup(HTMLParser):
         self._buffer: list[str] = []
         self._visible: list[str] = []
         self._hidden_depth = 0
+        self._disabled_fieldset_depth = 0
+        self._visibility_stack: list[tuple[str, bool, bool]] = []
         self.application_form_detected = False
+        self.application_form_with_candidate_fields = False
         self._form_depth = 0
         self._form_email = False
         self._form_submit = False
+        self._form_candidate = False
 
     def handle_starttag(self, tag, attrs):
         info = dict(attrs)
+        style = re.sub(r"\s+", "", str(info.get("style") or "").casefold())
+        hidden = (tag in {"script", "style", "noscript", "template"}
+                  or "hidden" in info or str(info.get("aria-hidden") or "").casefold() == "true"
+                  or "display:none" in style or "visibility:hidden" in style)
+        disabled_fieldset = tag == "fieldset" and "disabled" in info
+        void = tag in {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
+        if not void:
+            self._visibility_stack.append((tag, hidden, disabled_fieldset))
+            self._hidden_depth += int(hidden)
+            self._disabled_fieldset_depth += int(disabled_fieldset)
         if tag == "html" and self.language is None:
             language = info.get("lang")
             if isinstance(language, str):
@@ -57,16 +73,20 @@ class _Markup(HTMLParser):
             self._form_depth += 1
             self._form_email = False
             self._form_submit = False
-        elif self._form_depth and not self._hidden_depth:
+            self._form_candidate = False
+        elif (self._form_depth and not self._hidden_depth and not hidden
+              and not self._disabled_fieldset_depth and "disabled" not in info):
             field_type = str(info.get("type") or "").casefold()
             field_name = str(info.get("name") or "").casefold()
-            if tag == "input" and (field_type == "email" or field_name in {"email", "email_address"}):
+            if tag == "input" and field_type != "hidden" and (field_type == "file" or field_name in {
+                "first_name", "firstname", "last_name", "lastname", "full_name", "fullname", "resume", "cv",
+            }):
+                self._form_candidate = True
+            if tag == "input" and field_type != "hidden" and (field_type == "email" or field_name in {"email", "email_address"}):
                 self._form_email = True
             if ((tag == "input" and field_type == "submit")
                     or (tag == "button" and field_type in {"submit", ""})):
                 self._form_submit = True
-        if tag in {"script", "style", "noscript", "template"}:
-            self._hidden_depth += 1
         if tag == "script" and info.get("type", "").casefold() == "application/ld+json":
             self._json_active = True
             self._buffer = []
@@ -87,9 +107,18 @@ class _Markup(HTMLParser):
             self._buffer = []
         if tag == "form" and self._form_depth:
             self.application_form_detected |= self._form_email and self._form_submit
+            self.application_form_with_candidate_fields |= (
+                self._form_email and self._form_submit and self._form_candidate
+            )
             self._form_depth -= 1
-        if tag in {"script", "style", "noscript", "template"}:
-            self._hidden_depth = max(0, self._hidden_depth - 1)
+        for index in range(len(self._visibility_stack) - 1, -1, -1):
+            if self._visibility_stack[index][0] == tag:
+                self._hidden_depth -= sum(hidden for _, hidden, _ in self._visibility_stack[index:])
+                self._disabled_fieldset_depth -= sum(
+                    disabled for _, _, disabled in self._visibility_stack[index:]
+                )
+                del self._visibility_stack[index:]
+                break
 
 
 def _jobposting_nodes(value: Any):
@@ -243,6 +272,12 @@ def fetch_official_page_evidence(row: dict[str, Any], *,
         return report
     if job_status != 200 or not body:
         return report
+    markup = _Markup()
+    markup.feed(body)
+    # Kept in memory for exact specialist quote checks; never dumped into the
+    # public review report or sent to a search provider.
+    report["visible_text"] = " ".join(" ".join(markup._visible).split())
+    report["job_html_sha256"] = hashlib.sha256(body.encode("utf-8")).hexdigest()
     parsed = extract_ats_page_signals(body, title=str(row.get("title") or ""),
                                       employer=str(row.get("employer") or ""), today=today)
     report["page_language"] = parsed["page_language"]
@@ -253,8 +288,20 @@ def fetch_official_page_evidence(row: dict[str, Any], *,
     if not _trusted_tenant_url(apply, provider=provider, account=account):
         report["status"] = "application_route_unverified"
         return report
+    # Same tenant is insufficient: the form must belong to this exact job.
+    job_path = urlsplit(url).path.rstrip("/")
+    apply_path = urlsplit(apply).path.rstrip("/")
+    if apply_path not in {job_path, job_path + "/apply", job_path + "/application"}:
+        report["status"] = "application_route_unverified"
+        return report
     if apply == url:
-        # A job description page is not itself proof of an application form.
+        # Several ATS providers embed the form on the role page. Require
+        # candidate fields too, so a newsletter signup does not become proof.
+        if markup.application_form_with_candidate_fields:
+            report["apply_http_status"] = job_status
+            report["application_form_detected"] = True
+            report["application_page_language"] = markup.language
+            report["application_visible_text"] = report["visible_text"]
         return report
     apply_status, apply_body = _fetch_html(apply)
     report["apply_http_status"] = apply_status
@@ -265,5 +312,9 @@ def fetch_official_page_evidence(row: dict[str, Any], *,
         # employer instruction about which language candidates may apply in.
         # Preserve the observation separately; never treat it as permission.
         report["application_page_language"] = parser.language
-        report["application_form_detected"] = parser.application_form_detected
+        # An exact /apply route can also contain a footer signup. Apply the
+        # same candidate-field gate as on an embedded application form.
+        report["application_form_detected"] = parser.application_form_with_candidate_fields
+        report["application_visible_text"] = " ".join(" ".join(parser._visible).split())
+        report["application_html_sha256"] = hashlib.sha256(apply_body.encode("utf-8")).hexdigest()
     return report

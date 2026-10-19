@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Iterable
 
@@ -11,6 +12,12 @@ from ..normalize import clean_text, normalize_canonical_url, weak_fingerprint
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+@dataclass
+class NormalizedBatch:
+    observations: list[dict[str, Any]]
+    quarantine_count: int = 0
 
 
 class Adapter(ABC):
@@ -33,15 +40,29 @@ class Adapter(ABC):
     def normalize_record(self, record: dict[str, Any], spec: SourceSpec, now: str) -> dict[str, Any] | None:
         raise NotImplementedError
 
+    def can_quarantine_record_error(self, spec: SourceSpec, error: ValueError) -> bool:
+        """Only an adapter's explicitly recognized record error may be isolated."""
+        return False
+
     def normalize_records(self, records: Iterable[dict[str, Any]], spec: SourceSpec, now: str | None = None) -> list[dict[str, Any]]:
+        return self.normalize_batch(records, spec, now).observations
+
+    def normalize_batch(self, records: Iterable[dict[str, Any]], spec: SourceSpec, now: str | None = None) -> NormalizedBatch:
         timestamp = now or utc_now()
         out: list[dict[str, Any]] = []
+        quarantined = 0
         for index, record in enumerate(records):
             if index >= spec.max_jobs:
                 break
             if not isinstance(record, dict):
                 continue
-            row = self.normalize_record(record, spec, timestamp)
+            try:
+                row = self.normalize_record(record, spec, timestamp)
+            except ValueError as error:
+                if not self.can_quarantine_record_error(spec, error):
+                    raise
+                quarantined += 1
+                continue
             if not row:
                 continue
             row["canonical_url"] = normalize_canonical_url(row.get("canonical_url") or row.get("url"))
@@ -54,7 +75,7 @@ class Adapter(ABC):
             row["duplicate_candidate_fingerprint"] = weak_fingerprint(row)
             row["content_hash"] = content_hash(row)
             out.append(row)
-        return out
+        return NormalizedBatch(out, quarantine_count=quarantined)
 
 
 def source_job_id(spec: SourceSpec, provider_job_id: Any) -> str | None:

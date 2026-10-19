@@ -54,8 +54,9 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   live Register's discovery-class/high-source priorities and then the
   curated tenant order in `source-specs.deploy.json`, rather than
   alphabetical employer names. Retired sources remain disabled.
-  Output is an
-  **unverified review queue**, not a ranked/verified shortlist. Exact official
+  The default output is an **unverified review queue**. An explicitly supplied,
+  current specialist evidence handoff can now produce final recommendations
+  through the existing ranking engine. Exact official
   role status, Netherlands-remote permission, language and CandidateEvidence
   fit still require specialist verification before displaying a recommendation.
   It does not write to the Register or send applications.
@@ -107,6 +108,47 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   the original employer posting date remains unknown. These limits prevent
   expired or region-restricted board listings from being mistaken for newly
   verified job recommendations, even when Google search quota is exhausted.
+
+## Verified ranking and bounded expansion
+
+A requested run can inspect up to **20 existing active sources in batches of
+8 → 8 → 4**. It evaluates cumulative results after each batch and stops when
+the live verified-output target is met. Unverified candidates do not stop
+expansion. Each source instance is processed once per run, with the adapter's
+existing bounded pagination and retries. Official role checks are cached;
+the official-page budget remains ten roles.
+
+Known unsafe Arbeitnow links are quarantined per record. Safe results remain
+available, and an incomplete feed cannot mark existing vacancies missing or
+closed. Other adapter failures retain their existing fail-closed behavior.
+
+`Feedback`, `ApplicationEvents`, `Applications`, `Vacatures` and linked
+`JobSnapshots` participate in history checks. Provider IDs include the ATS
+tenant, so an ID used by two employers cannot merge their vacancies.
+Nonproduction records are excluded before canonicalization.
+
+The expanded requirement review covers mandatory and optional skills,
+experience years, languages, projects, responsibilities and work style.
+It is an aid to specialist review, never an inferred match score.
+
+Use `--verified-assessments /private/assessments.json` only after
+`vacature-search` has completed the documented
+[verified ranking handoff](docs/VERIFIED-RANKING-HANDOFF.md).
+The handoff is tied to the current policy, CandidateEvidence, exact role and
+visible official page. Changed inputs, unavailable evidence, unknown mandatory
+requirements, missing original dates or unsupported anchors return to review.
+Only complete verified inputs reach `top_vacancies`; existing score anchors,
+thresholds, weights and ordering are unchanged. Public output contains the
+score components and proof digests, not private CandidateEvidence claims/IDs.
+
+The manual GitHub workflow remains discovery/review-only because it has no
+private specialist handoff. A caller using the Python API can retain the
+observations and page cache, review them and call `evaluate_observations` again
+within the same current evidence session. Never commit these private inputs or
+upload them as public workflow artifacts. A local run may use Python 3.13 when
+an HTTP proxy requires HTTP/1.1 CONNECT; Python 3.11 and 3.13 remain regression
+targets. CI also runs the actual Python 3.12 suite under the existing protected
+branch's required check name; repository protection is unchanged.
 
 Google discovery is optional. It requires a verified free SerpApi account
 and active `google-jobs` registration, uses no paid plan, and returns

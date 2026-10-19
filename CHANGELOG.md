@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased — verified ranking and bounded source expansion
+
+- Connect explicit, source-checked specialist assessments to the existing
+  deterministic final ranker; retain unknown requirements separately.
+- Cover mandatory/optional skills, scoped experience years, language levels,
+  projects, responsibilities and work style without inferring candidate claims.
+- Bind assessments to current policy, CandidateEvidence and visible official
+  evidence, with exact requirement references and unchanged score anchors.
+- Expand the requested free scan in bounded batches, cache official page checks,
+  preserve curated source priority, and skip duplicate or rejected source specs.
+- Reconcile feedback/application events and tenant-scoped ATS identities; exclude
+  nonproduction observations before canonicalization.
+- Recognize genuine embedded ATS application forms and reject another job's form
+  on the same tenant. Keep missing original publication dates unrankable.
+- Quarantine known unsafe Arbeitnow links per record, preserving safe results
+  and incomplete-snapshot lifecycle guards without broadening the host policy.
+- Run real Python 3.12 regression checks under the existing required branch
+  context alongside Python 3.11 and 3.13; retain branch protection and manual scans.
+
+
 ## Ingestion 0.12.0 - 2026-10-19
 - Reject malformed employer API success responses that omit the required jobs/postings list; preserve existing vacancies and run evidence instead of treating the response as an empty full snapshot.
 - Hardened optional free Google discovery: strict active Free Plan and quota checks, round-robin pagination, canonical URL deduplication and safe handling of invalid links.

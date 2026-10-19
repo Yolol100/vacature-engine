@@ -20,6 +20,15 @@ class PublicFeedsAdapter(Adapter):
     name = "publicfeeds"
     complete_snapshot = False  # PublicFeeds feeds are bounded subsets and searches.
 
+    def can_quarantine_record_error(self, spec: SourceSpec, error: ValueError) -> bool:
+        # Preserve the existing Actions bridge's narrow quarantine policy.
+        # The rejected URL is never admitted or included in diagnostics.
+        return spec.source_id == "arbeitnow-api" and str(error) in {
+            "Unexpected public feed job URL: untrusted_host",
+            "Unexpected public feed job URL: uk_apex",
+            "Unexpected public feed job URL: malformed",
+        }
+
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         if spec.source_id not in _HOSTS or spec.endpoint is not None:
             raise ValueError("Unsupported public feed source contract")

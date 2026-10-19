@@ -40,6 +40,8 @@ class SourceRunResult:
     duration_seconds: float = 0.0
     observations: list[dict[str, Any]] | None = None
     review_observations: list[dict[str, Any]] | None = None
+    quarantine_count: int = 0
+    complete_snapshot: bool = False
 
     def summary(self) -> dict[str, Any]:
         data = asdict(self)
@@ -79,7 +81,9 @@ class IngestionRunner:
         t0 = time.perf_counter()
         try:
             records = adapter.fetch(client, spec)
-            observations = adapter.normalize_records(records, spec, now=started_at)
+            batch = adapter.normalize_batch(records, spec, now=started_at)
+            observations = batch.observations
+            complete_snapshot = not batch.quarantine_count and adapter.is_complete_snapshot(spec, records)
             review_observations = self._review_queue(observations, closure_authority=adapter.complete_snapshot)
             counts = self.state.upsert_observations(
                 observations,
@@ -88,7 +92,7 @@ class IngestionRunner:
                 missing_close_threshold=spec.missing_close_threshold,
                 # Search rankings / paginated discoveries are never full source snapshots.
                 # Absence from page N must not close an employer's vacancy.
-                complete_snapshot=adapter.is_complete_snapshot(spec, records),
+                complete_snapshot=complete_snapshot,
                 closure_authority=adapter.complete_snapshot,
             )
             self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
@@ -99,6 +103,7 @@ class IngestionRunner:
                 duplicate_observations=counts.duplicate_observations, missing=counts.missing, closed=counts.closed,
                 duration_seconds=time.perf_counter() - t0, observations=observations,
                 review_observations=review_observations,
+                quarantine_count=batch.quarantine_count, complete_snapshot=complete_snapshot,
             )
         except Exception as exc:
             category = exc.category if isinstance(exc, FetchError) else "parsing_or_adapter_failure"
@@ -129,13 +134,16 @@ class IngestionRunner:
         if spec.adapter == "serpapi_google":
             adapter._validate_spec(spec)
         # Invalid source specs must leave no unfinished or successful run.
-        observations = adapter.normalize_records(records, spec, now=started_at)
+        batch = adapter.normalize_batch(records, spec, now=started_at)
+        observations = batch.observations
+        complete_snapshot = (complete_snapshot and not batch.quarantine_count
+                             and adapter.is_complete_snapshot(spec, records))
         run_id = self.state.start_run(spec.instance_id, started_at)
         review_observations = self._review_queue(observations, closure_authority=adapter.complete_snapshot)
         counts = self.state.upsert_observations(
             observations, source_instance=spec.instance_id, run_id=run_id,
             missing_close_threshold=spec.missing_close_threshold,
-            complete_snapshot=complete_snapshot and adapter.is_complete_snapshot(spec, records),
+            complete_snapshot=complete_snapshot,
             closure_authority=adapter.complete_snapshot,
         )
         self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
@@ -146,4 +154,5 @@ class IngestionRunner:
             duplicate_observations=counts.duplicate_observations, missing=counts.missing, closed=counts.closed,
             duration_seconds=time.perf_counter() - t0, observations=observations,
             review_observations=review_observations,
+            quarantine_count=batch.quarantine_count, complete_snapshot=complete_snapshot,
         )

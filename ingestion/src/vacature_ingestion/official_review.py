@@ -70,13 +70,15 @@ def geography_signal(value: Any) -> str:
     return "unknown"
 
 
-def discovery_region_conflict(row: dict[str, Any]) -> str | None:
+def discovery_region_conflict(row: dict[str, Any], *, include_ats: bool = False) -> str | None:
     """Negative discovery evidence only; never a verified geographic pass.
 
     A third-party mistake must not change lifecycle state or establish fraud;
     the observation is merely withheld from the candidate review shortlist.
+    Callers may apply this same negative-only check to ATS observations whose
+    custom employer URL has not passed the independent official-role gate.
     """
-    if row.get("source_type") == "ats":
+    if row.get("source_type") == "ats" and not include_ats:
         return None
     metadata = row.get("source_metadata")
     restrictions = (

@@ -12,10 +12,11 @@ import os
 import re
 import tempfile
 from dataclasses import replace
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
-from typing import Any
-from urllib.parse import quote, urlencode, urlsplit
+from typing import Any, Callable
+from urllib.parse import quote, unquote, urlencode, urlsplit
 
 from vacature_engine.observations import canonicalize_observations, is_role_specific_vacancy_url
 from vacature_engine.simple import VacancyPolicy, policy_from_config
@@ -23,16 +24,20 @@ from vacature_ingestion.adapters.serpapi_google import (
     _ACCOUNT_URL, _get_json, _is_safe_free_account, _safe_candidate_url,
 )
 from vacature_ingestion.models import SourceSpec
+from vacature_ingestion.ats_resolver import resolve_ats_url
 from vacature_ingestion.registry_filter import (
     _request_json, _service_account_token, active_source_rows_from_values,
     filter_source_specs,
 )
 from vacature_ingestion.runner import IngestionRunner
 from vacature_ingestion.official_review import (
-    assess_official_observation, discovery_region_conflict, geography_signal,
+    assess_official_observation, discovery_region_conflict, geography_signal, rank_fully_verified,
 )
-from vacature_ingestion.official_page import fetch_official_page_evidence
-from vacature_ingestion.requirement_match import compare_requirements
+from vacature_ingestion.official_page import fetch_official_page_evidence, verified_source_account
+from vacature_ingestion.requirement_match import compare_requirements, compare_requirement_dimensions
+from vacature_ingestion.final_review import (
+    assessment_context, automated_ranking_blockers, validate_assessment,
+)
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -117,8 +122,16 @@ def live_policy(tables: dict[str, list[dict[str, str]]]) -> tuple[dict[str, str]
 
 
 def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str, str]]],
-                      config: dict[str, str], limit: int = 8) -> list[SourceSpec]:
-    """Keep active Register-approved existing adapters, including genuine feeds."""
+                      config: dict[str, str], limit: int = 8, *,
+                      excluded_instance_ids: set[str] | None = None) -> list[SourceSpec]:
+    """Select the next active Register-approved public ATS/feed instances.
+
+    An instance already attempted in this run must not consume another slot,
+    including when its previous request failed. The caller owns the total cap.
+    """
+    if type(limit) is not int or not 1 <= limit <= 20:
+        raise ValueError("Free source limit must be between 1 and 20")
+    excluded = excluded_instance_ids or set()
     active = active_source_rows_from_values([
         ["source_id", "status"],
         *[[row["source_id"], row["status"]] for row in tables["Bronnen"]],
@@ -132,10 +145,13 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
     # The existing deploy source order is curated. Sorting by account name
     # discards that ordering and lets irrelevant employers displace priority
     # WordPress sources in a bounded free-only run.
-    instance_order = {
-        SourceSpec.from_dict(item).instance_id: i for i, item in enumerate(raw)
-        if isinstance(item, dict) and item.get("source_id") and item.get("account")
-    }
+    instance_order: dict[str, int] = {}
+    for i, item in enumerate(raw):
+        if isinstance(item, dict) and item.get("source_id") and item.get("account"):
+            # Identity alone is sufficient: a malformed retired spec must not
+            # be parsed after Register gating already excluded it. Duplicate
+            # config entries also cannot move the first curated occurrence.
+            instance_order.setdefault(f"{item['source_id']}:{item['account']}", i)
     unique: dict[str, dict[str, Any]] = {}
     for item in approved:
         if item.get("adapter") == "serpapi_google":
@@ -143,6 +159,8 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
         if item.get("source_type") not in _ATS | _FREE_DISCOVERY:
             continue
         spec = SourceSpec.from_dict(item)
+        if spec.instance_id in excluded:
+            continue
         unique.setdefault(spec.instance_id, item)
 
     def rank(item: dict[str, Any]) -> tuple[int, int, int, int, str]:
@@ -174,6 +192,93 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
     ]
 
 
+def plan_free_source_batches(raw: list[dict[str, Any]],
+                             tables: dict[str, list[dict[str, str]]],
+                             config: dict[str, str], *, max_sources: int,
+                             batch_size: int = 8) -> list[list[SourceSpec]]:
+    """Bound the whole run while making later approved employers reachable.
+
+    Reuse the existing live source order and ATS/feed diversity in each batch;
+    never synthesize new source tenants, queries, adapters or source policy.
+    """
+    if type(max_sources) is not int or not 1 <= max_sources <= 20:
+        raise ValueError("Free source limit must be between 1 and 20")
+    if type(batch_size) is not int or not 1 <= batch_size <= 8:
+        raise ValueError("Free source batch size must be between 1 and 8")
+    batches: list[list[SourceSpec]] = []
+    selected: set[str] = set()
+    while len(selected) < max_sources:
+        batch = select_free_specs(
+            raw, tables, config, limit=min(batch_size, max_sources - len(selected)),
+            excluded_instance_ids=selected,
+        )
+        if not batch:
+            break
+        batches.append(batch)
+        selected.update(spec.instance_id for spec in batch)
+    return batches
+
+
+def run_free_discovery_batches(runner: IngestionRunner,
+                               batches: list[list[SourceSpec]], *,
+                               initial_observations: list[dict[str, Any]],
+                               evaluate: Callable[[list[dict[str, Any]]], dict[str, Any]],
+                               target_verified: int) -> dict[str, Any]:
+    """Run only the planned free batches until verified output is sufficient.
+
+    Evaluation uses the existing caller-owned verification and ranking engine.
+    Review candidates never satisfy the stop condition. Source failures consume
+    a slot and do not trigger a second request or any lifecycle mutation here.
+    """
+    if type(target_verified) is not int or target_verified < 1:
+        raise ValueError("Verified output target must be a positive integer")
+    planned = {spec.instance_id for batch in batches for spec in batch}
+    if len(planned) > 20 or any(len(batch) > 8 for batch in batches):
+        raise ValueError("Free source plan exceeds the bounded run budget")
+    if any(spec.adapter == "serpapi_google" or spec.source_type not in _ATS | _FREE_DISCOVERY
+           for batch in batches for spec in batch):
+        raise ValueError("Free source plan contains a non-public discovery route")
+
+    observations = list(initial_observations)
+    attempted: set[str] = set()
+    attempted_order: list[str] = []
+    successes = rounds = 0
+    evaluation: dict[str, Any] | None = None
+    stop_reason = "planned_sources_exhausted"
+    for batch in batches:
+        remaining = [spec for spec in batch if spec.instance_id not in attempted]
+        if not remaining:
+            continue
+        rounds += 1
+        for source in remaining:
+            # Also dedupe repeated instances within a malformed batch.
+            if source.instance_id in attempted:
+                continue
+            attempted.add(source.instance_id)
+            attempted_order.append(source.instance_id)
+            result = runner.run_source(source)
+            if result.success:
+                successes += 1
+                observations.extend(result.observations or [])
+        # The caller canonicalizes/deduplicates cumulative observations while
+        # retaining evidence from multiple sources for the same vacancy.
+        evaluation = evaluate(list(observations))
+        if len(evaluation.get("final_recommendations", [])) >= target_verified:
+            stop_reason = "verified_target_reached"
+            break
+    if evaluation is None:
+        evaluation = evaluate(list(observations))
+    return {
+        "observations": observations,
+        "evaluation": evaluation,
+        "fallback_sources_attempted": len(attempted),
+        "fallback_sources_successful": successes,
+        "fallback_batches_completed": rounds,
+        "fallback_stop_reason": stop_reason,
+        "attempted_source_instances": attempted_order,
+    }
+
+
 def google_free_gate(spec: SourceSpec, pages: int) -> str:
     """Only the official free account endpoint is queried; it costs zero searches."""
     key = os.environ.get("SERPAPI_API_KEY", "").strip()
@@ -195,44 +300,178 @@ def google_free_gate(spec: SourceSpec, pages: int) -> str:
     return "ready"
 
 
+def _nonproduction_prefixes(config: dict[str, str]) -> tuple[str, ...]:
+    if config.get("nonproduction_records_excluded_from_search_and_metrics", "").casefold() != "true":
+        return ()
+    return tuple(part.strip().casefold() for part in
+                 config.get("nonproduction_vacancy_id_prefixes", "").split(",")
+                 if part.strip())
+
+
+def _is_nonproduction(row: dict[str, Any], prefixes: tuple[str, ...]) -> bool:
+    return str(row.get("vacancy_id") or "").strip().casefold().startswith(prefixes)
+
+
+def _history_url_keys(value: Any) -> set[str]:
+    """Recognize exact ATS role aliases without treating a tenant as a job.
+
+    Provider + tenant + job ID survives host migrations and application-route
+    suffixes. This is identity evidence only, never current-role verification.
+    """
+    url = _safe_candidate_url(value)
+    if not url:
+        return set()
+    keys: set[str] = set()
+    resolved = resolve_ats_url(url)
+    if resolved is not None and resolved["provider"] in {
+        "ashby", "lever", "greenhouse", "workable", "personio", "smartrecruiters",
+    }:
+        provider, account = resolved["provider"], resolved["account"]
+        parts = [unquote(part) for part in urlsplit(url).path.split("/") if part]
+        if parts and parts[-1].casefold() in {"apply", "application"}:
+            parts = parts[:-1]
+        job_id = None
+        if provider in {"ashby", "lever"} and len(parts) == 2:
+            job_id = parts[1]
+        elif provider == "greenhouse" and len(parts) == 3 and parts[1] == "jobs":
+            job_id = parts[2]
+        elif provider == "workable" and len(parts) == 3 and parts[1] == "j":
+            job_id = parts[2]
+        elif provider == "personio" and len(parts) == 2 and parts[0] == "job":
+            job_id = parts[1]
+        elif provider == "smartrecruiters" and len(parts) == 2:
+            possible = parts[1].split("-", 1)[0]
+            job_id = possible if possible.isdigit() else None
+        if (not isinstance(job_id, str)
+                or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,199}", job_id)
+                or job_id.casefold() in {"jobs", "careers", "apply", "application", "search"}):
+            # Unknown ATS route shapes may still be exact previously recorded
+            # URLs (e.g. Greenhouse embed/job_app). Retain that exact identity
+            # without inventing a provider job ID or accepting a tenant root.
+            depth = len([part for part in urlsplit(url).path.split("/") if part])
+            if is_role_specific_vacancy_url(url) and (depth >= 2 or provider == "personio"):
+                return {"url:" + url}
+            return set()
+        keys.add(f"source:{provider}:{account.casefold()}:{job_id.casefold()}")
+        keys.add("url:" + url)
+    elif is_role_specific_vacancy_url(url):
+        keys.add("url:" + url)
+    return keys
+
+
+def _scoped_source_key(row: dict[str, Any]) -> str | None:
+    """Never equate job 123 at one ATS tenant with job 123 at another."""
+    provider = str(row.get("source_id") or "").strip().casefold()
+    job_id = str(row.get("source_job_id") or "").strip().casefold()
+    if not provider or not job_id:
+        return None
+    instance = str(row.get("source_instance") or "").strip().casefold()
+    account = ""
+    if instance:
+        owner, separator, account = instance.partition(":")
+        if not separator or owner != provider or not account:
+            return None
+    if ":" in job_id:
+        declared_account, _, job_id = job_id.partition(":")
+        if account and declared_account != account:
+            return None
+        account = declared_account
+    resolved = resolve_ats_url(str(row.get("canonical_url") or row.get("url") or ""))
+    if resolved is not None and resolved["provider"] == provider:
+        url_account = resolved["account"].casefold()
+        if account and account != url_account:
+            return None
+        account = url_account
+    if not account or not job_id:
+        return None
+    return f"source:{provider}:{account}:{job_id}"
+
+
+def _scoped_observation_identity(row: dict[str, Any]) -> dict[str, Any]:
+    """Prepare only the clustering identity; never mutate the source row."""
+    item = dict(row)
+    source_key = _scoped_source_key(item)
+    if source_key is None:
+        item.pop("source_job_id", None)
+    else:
+        prefix = "source:" + str(item["source_id"]).strip().casefold() + ":"
+        item["source_job_id"] = source_key[len(prefix):]
+    return item
+
+
+def _history_identity_keys(row: dict[str, Any]) -> set[str]:
+    keys: set[str] = set()
+    for column in ("canonical_url", "official_url", "application_url", "apply_url", "url"):
+        keys.update(_history_url_keys(row.get(column)))
+    # Canonicalization preserves all URLs from the source cluster.
+    if isinstance(row.get("source_urls"), list):
+        for url in row["source_urls"]:
+            keys.update(_history_url_keys(url))
+    source_key = _scoped_source_key(row)
+    if source_key:
+        keys.add(source_key)
+    vacancy_id = str(row.get("vacancy_id") or "").strip()
+    if vacancy_id:
+        keys.add("vacancy:" + vacancy_id)
+    return keys
+
+
 def _previous_index(tables: dict[str, list[dict[str, str]]]) -> tuple[set[str], set[tuple[str, str]]]:
-    """Honor the live dedupe statuses; never silently promote unreviewed rows."""
+    """Join recorded history before indexing strong role identities.
+
+    Feedback/events remain authoritative even when the Vacatures status lags.
+    Unreviewed snapshots alone do not turn a discovered vacancy into history.
+    """
     config = {row.get("key"): row.get("value", "") for row in tables["Config"]}
     statuses = {value.strip().casefold() for value in
                 config.get("dedupe_previous_statuses", "").split(",") if value.strip()}
     if not statuses:
         raise RegisterPreflightError("Live dedupe status policy is missing")
+    prefixes = _nonproduction_prefixes(config)
+    event_types = {value.strip().casefold() for value in
+                   config.get("application_event_types", "").split(",") if value.strip()}
+    aliases = dict(value.strip().casefold().split("=", 1) for value in
+                   config.get("application_legacy_status_aliases", "").split(",")
+                   if "=" in value)
+
+    def recorded_status(value: str) -> bool:
+        normalized = value.strip().casefold()
+        return normalized in statuses or aliases.get(normalized) in statuses
+
+    def production(name: str) -> list[dict[str, str]]:
+        return [row for row in tables.get(name, []) if not _is_nonproduction(row, prefixes)]
+
     prior_ids: set[str] = set()
-    urls: set[str] = set()
+    keys: set[str] = set()
     weak: set[tuple[str, str]] = set()
-    for row in tables["Vacatures"]:
-        if row.get("status", "").casefold() not in statuses:
-            continue
-        if row.get("vacancy_id"):
-            prior_ids.add(row["vacancy_id"])
+    history_rows = [row for row in production("Vacatures")
+                    if recorded_status(row.get("status", ""))]
+    # A prepared/drafted application was already reviewed; preserve the
+    # existing suppression even if its Vacatures anchor is missing or stale.
+    history_rows.extend(production("Applications"))
+    for row in production("Feedback"):
+        if (recorded_status(row.get("state", ""))
+                or any(row.get(flag, "").strip().casefold() == "true"
+                       and recorded_status(flag) for flag in ("applied", "interview", "offer"))):
+            history_rows.append(row)
+    for row in production("ApplicationEvents"):
+        if (recorded_status(row.get("status_after", ""))
+                or recorded_status(row.get("event_type", ""))
+                or row.get("event_type", "").strip().casefold() in event_types):
+            history_rows.append(row)
+    prior_ids.update(row["vacancy_id"].strip() for row in history_rows
+                     if row.get("vacancy_id", "").strip())
+    history_rows.extend(row for row in production("Vacatures")
+                        if row.get("vacancy_id", "").strip() in prior_ids)
+    history_rows.extend(row for row in production("JobSnapshots")
+                        if row.get("vacancy_id", "").strip() in prior_ids)
+    for row in history_rows:
+        keys.update(_history_identity_keys(row))
         title = row.get("title", "").strip().casefold()
         employer = row.get("employer", "").strip().casefold()
         if title and employer:
             weak.add((employer, title))
-        for column in ("canonical_url", "official_url"):
-            url = _safe_candidate_url(row.get(column))
-            if url and is_role_specific_vacancy_url(url):
-                urls.add(url)
-    # Historical snapshots capture previous canonical URLs for the same role.
-    for row in tables["JobSnapshots"]:
-        # Only historical snapshots tied to a previously reviewed vacancy.
-        if row.get("vacancy_id") not in prior_ids:
-            continue
-        url = _safe_candidate_url(row.get("canonical_url"))
-        if url and is_role_specific_vacancy_url(url):
-            urls.add(url)
-    for row in tables["Applications"]:
-        # Submitted/drafted applications also count if their Vacatures row is
-        # missing, but only when a strong application link is present.
-        url = _safe_candidate_url(row.get("application_url"))
-        if url and is_role_specific_vacancy_url(url):
-            urls.add(url)
-    return urls, weak
+    return keys, weak
 
 
 # A product name (e.g. "WordPress VIP") is not proof of a technical job.
@@ -317,33 +556,54 @@ def screen_review_candidates(observations: list[dict[str, Any]],
                              policy: VacancyPolicy, *, today: date,
                              limit: int = 60) -> tuple[list[dict[str, Any]], dict[str, int]]:
     """Suppress prior roles; hard-exclude only explicit mismatches; keep all unknowns unverified."""
-    historical_urls, weak = _previous_index(tables)
+    historical_keys, weak = _previous_index(tables)
     counted = {"unapproved_source": 0, "previously_registered": 0, "possible_prior_match": 0,
                "explicit_mismatch": 0, "unsafe_link": 0, "off_target": 0,
                "official_region_rejected": 0, "source_location_restricted": 0,
-               "non_job_page": 0, "source_expired": 0, "awaiting_verification": 0}
+               "non_job_page": 0, "source_expired": 0, "awaiting_verification": 0,
+               "nonproduction": 0}
     active_ids = {r.get("source_id", "") for r in tables["Bronnen"]
                   if r.get("status", "").casefold() == "active"}
+    config = {row.get("key"): row.get("value", "") for row in tables["Config"]}
+    prefixes = _nonproduction_prefixes(config)
+    approved: list[dict[str, Any]] = []
+    identities_by_url: dict[str, set[str]] = {}
+    for row in observations:
+        if not isinstance(row, dict):
+            continue
+        # Gate before clustering: retired or test rows cannot contaminate an
+        # active observation that happens to share its URL or provider ID.
+        if _is_nonproduction(row, prefixes):
+            counted["nonproduction"] += 1
+            continue
+        if row.get("source_id") not in active_ids:
+            counted["unapproved_source"] += 1
+            continue
+        item = _scoped_observation_identity(row)
+        keys = _history_identity_keys(item)
+        for key in keys:
+            if key.startswith("url:"):
+                identities_by_url.setdefault(key, set()).update(keys)
+        approved.append(item)
     output: list[dict[str, Any]] = []
     seen: set[str] = set()
     # Respect live source-class priorities. A Google/board title never gets to
     # crowd out official ATS evidence merely because its request finished first.
-    ordered = sorted(canonicalize_observations(observations),
+    ordered = sorted(canonicalize_observations(approved),
                      key=lambda row: _review_sort_key(row, tables))
     for row in ordered:
-        # Prevent an injected or retired board observation from reaching even
-        # the provisional review queue; only live Register sources can enter.
-        if row.get("source_id") not in active_ids:
-            counted["unapproved_source"] += 1
-            continue
         url = _safe_candidate_url(row.get("canonical_url") or row.get("url"))
         if not url or not is_role_specific_vacancy_url(url):
             counted["unsafe_link"] += 1
             continue
-        if url in seen:
+        keys = _history_identity_keys(row)
+        for key in tuple(keys):
+            if key.startswith("url:"):
+                keys.update(identities_by_url.get(key, set()))
+        if keys & seen:
             continue
-        seen.add(url)
-        if url in historical_urls:
+        seen.update(keys)
+        if keys & historical_keys:
             counted["previously_registered"] += 1
             continue
         # A dated, explicitly expired listing is unsuitable regardless of
@@ -380,7 +640,12 @@ def screen_review_candidates(observations: list[dict[str, Any]],
         # location or exclusive foreign residency condition may withhold them
         # from the shortlist, but can NEVER verify NL eligibility or close a
         # vacancy. The exact same rule applies to each existing free source.
-        if discovery_region_conflict(row) is not None:
+        # A provider may return a custom employer URL (e.g. Greenhouse
+        # Pantheon). Unknown official ownership does not erase an explicit
+        # US-only location, and a positive location hint still proves nothing.
+        if discovery_region_conflict(
+            row, include_ats=verified_source_account(row, active_ids=active_ids) is None,
+        ) is not None:
             counted["source_location_restricted"] += 1
             continue
         if (employer.casefold(), title.casefold()) in weak and employer and title:
@@ -423,6 +688,11 @@ def screen_review_candidates(observations: list[dict[str, Any]],
                 "final_score_authorized": False,
             }
         )
+        requirement_dimensions = (
+            compare_requirement_dimensions(row, tables["CandidateEvidence"])
+            if verified_signals["official_role"] == "confirmed_current_public_ats"
+            else {"status": "requirements_unverified", "final_score_authorized": False}
+        )
         # Third-party timestamps are discovery hints, NOT employer original
         # publication proof. Old source dates warn without auto-closing a role.
         review_alerts: list[str] = []
@@ -445,6 +715,7 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             "role_family_hints": hints,
             "official_checks": verified_signals,
             "technical_requirement_review": requirement_review,
+            "requirement_dimensions": requirement_dimensions,
             "review_alerts": review_alerts,
             "status": "unverified_review_only",
             "still_to_verify": [
@@ -491,66 +762,137 @@ def _official_page_exclusion(page: dict[str, Any], policy: VacancyPolicy,
 def _missing_ranking_evidence(candidate: dict[str, Any],
                               page: dict[str, Any], policy: VacancyPolicy,
                               today: date) -> list[str]:
-    """Truthful, machine-readable missing gates; never invent score anchors."""
-    missing: list[str] = []
-    checks = candidate["official_checks"]
-    if checks.get("official_role") != "confirmed_current_public_ats":
-        missing.append("official_employer_and_exact_role")
-    if page.get("status") != "matching_first_party_jobposting":
-        missing.append("matching_visible_first_party_job_page")
-    info = page.get("structured")
-    if not isinstance(info, dict) or info.get("date_posted_valid") is not True:
-        missing.append("original_publication_date")
-    elif isinstance(info.get("date_posted"), str):
-        try:
-            age = (today - date.fromisoformat(info["date_posted"])).days
-        except ValueError:
-            age = None
-        if age is None or age < 0:
-            missing.append("valid_original_publication_date")
-    if checks.get("remote") != "confirmed" or not (
-        isinstance(info, dict) and info.get("remote_signal") is True
-    ):
-        missing.append("fully_remote_from_first_party")
-    if checks.get("netherlands") != "allowed" or not (
-        isinstance(info, dict) and
-        geography_signal(", ".join(info.get("applicant_locations") or [])) == "allowed"
-    ):
-        missing.append("netherlands_executable_from_employer")
-    if page.get("apply_http_status") != 200 or page.get("application_form_detected") is not True:
-        missing.append("verified_application_form_at_exact_route")
-    if policy.allowed_listing_languages is not None:
-        if page.get("page_language") not in policy.allowed_listing_languages:
-            missing.append("verified_listing_language")
-        # The HTML lang of the application form is an interface locale, not
-        # employer authorization to apply in that language.
-        if page.get("application_language") not in policy.allowed_listing_languages:
-            missing.append("employer_authorized_application_language")
-        missing.append("employer_required_work_languages")
-    coverage = candidate.get("technical_requirement_review") or {}
-    if (coverage.get("status") != "mapped_skills_have_evidence"
-            or coverage.get("explicit_technical_requirements", 0) < 1):
-        missing.append("complete_candidate_requirement_evidence")
-    # Semantic core/workstyle fit and score anchors are not guaranteed by
-    # keyword overlap; only verified specialist evidence can establish them.
-    missing.append("verified_core_duties_and_score_anchors")
-    return missing
+    """Compatibility wrapper for the single mandatory ranking gate contract."""
+    return automated_ranking_blockers(candidate, page, policy, today)
+
+
+def evaluate_observations(observations: list[dict[str, Any]],
+                          tables: dict[str, list[dict[str, str]]],
+                          config: dict[str, str], policy: VacancyPolicy, *, today: date,
+                          assessments: dict[str, dict[str, Any]],
+                          page_cache: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Reuse screening, fetch each official page at most once, then rank proof."""
+    candidates, counts = screen_review_candidates(
+        observations, tables, policy, today=today,
+        limit=max(20, min(100, policy.max_output_roles * 12)),
+    )
+    active_ids = {r["source_id"] for r in tables["Bronnen"]
+                  if r.get("status", "").casefold() == "active"}
+    # Use the same canonical identity as screening. Tracking parameters or
+    # trailing slashes must not disconnect a genuine role from its evidence.
+    prefixes = _nonproduction_prefixes(config)
+    scoped_originals = [
+        {**_scoped_observation_identity(row), "_source_job_id_before_clustering": row.get("source_job_id")}
+        for row in observations if isinstance(row, dict)
+        and not _is_nonproduction(row, prefixes)
+        and verified_source_account(row, active_ids=active_ids) is not None
+    ]
+    originals: dict[str, dict[str, Any]] = {}
+    for original in canonicalize_observations(scoped_originals):
+        # Scope IDs for clustering, then retain the selected source's actual
+        # field value in its evidence digest. This preserves private handoff
+        # compatibility with a legacy observation using an unprefixed job ID.
+        original["source_job_id"] = original.pop("_source_job_id_before_clustering")
+        originals[original["canonical_url"]] = original
+    exclusions = {"official_job_route_closed": 0, "official_job_expired": 0,
+                  "official_original_post_too_old": 0,
+                  "verified_mandatory_requirement_mismatch": 0,
+                  "verified_below_live_thresholds": 0}
+    pending: list[dict[str, Any]] = []
+    verified: list[dict[str, Any]] = []
+    for candidate in candidates:
+        url = candidate["official_role_candidate_url"]
+        original = originals.get(url)
+        if (original is None or candidate["official_checks"]["official_role"]
+                != "confirmed_current_public_ats"):
+            pending.append(candidate)
+            continue
+        if url not in page_cache:
+            if len(page_cache) >= 10:
+                candidate["still_to_verify"].append("official_page_check_budget_reached")
+                pending.append(candidate)
+                continue
+            page_cache[url] = fetch_official_page_evidence(
+                original, active_ids=active_ids, today=today,
+            )
+        page = page_cache[url]
+        candidate["official_page_status"] = page["status"]
+        candidate["official_page_language"] = page["page_language"]
+        candidate["application_language"] = page["application_language"]
+        candidate["application_page_language"] = page.get("application_page_language")
+        candidate["application_form_detected"] = page.get("application_form_detected") is True
+        structured = page.get("structured")
+        if structured is not None:
+            candidate["official_structured_date"] = structured.get("date_posted")
+            candidate["official_structured_remote"] = structured.get("remote_signal")
+            candidate["official_applicant_locations"] = structured.get("applicant_locations")
+        reason = _official_page_exclusion(page, policy, today)
+        if reason is not None:
+            exclusions[reason] += 1
+            continue
+        missing = _missing_ranking_evidence(candidate, page, policy, today)
+        candidate["assessment_context"] = assessment_context(
+            original, page, config, tables["CandidateEvidence"],
+        )
+        decision = validate_assessment(
+            original, candidate, page, assessments.get(url), config=config,
+            evidence=tables["CandidateEvidence"], policy=policy, today=today,
+            missing=missing, active_ids=active_ids,
+        )
+        if decision["status"] == "verified":
+            verified.append(decision["engine_input"])
+        elif decision["status"] == "ineligible":
+            exclusions["verified_mandatory_requirement_mismatch"] += 1
+        else:
+            candidate["still_to_verify"] = decision["missing"]
+            pending.append(candidate)
+    # Existing anchors, weights, threshold boundaries and sorting stay intact.
+    final = rank_fully_verified(verified, policy=policy, today=today)
+    exclusions["verified_below_live_thresholds"] = sum(
+        not rank_fully_verified([item], policy=policy, today=today) for item in verified
+    )
+    for item in final:
+        item["score_breakdown"] = {
+            key: item[key] for key in ("core_fit", "evidence_fit", "workstyle_fit")
+        }
+        item["score_breakdown"]["recency"] = item["score"] - sum(item["score_breakdown"].values())
+    return {
+        "raw_observations": len(observations), "review_count": len(pending),
+        "official_pages_checked": len(page_cache), "preflight_counts": counts,
+        "official_exclusion_counts": exclusions, "review_candidates": pending,
+        "final_recommendations": final,
+        "reason_no_final_recommendations": (
+            None if final else "No new vacancy has complete current employer and candidate evidence above the live thresholds."
+        ),
+    }
 
 
 def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
-             *, today: date | None = None, max_free_sources: int = 8) -> dict[str, Any]:
+             *, today: date | None = None, max_free_sources: int = 20,
+             verified_assessments: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     if mode not in GOOGLE_MODES:
         raise ValueError("Unsupported safe search mode")
+    today = today or datetime.now(ZoneInfo("Europe/Amsterdam")).date()
     config, policy = live_policy(tables)
     active_ids = {row["source_id"] for row in active_source_rows_from_values([
         ["source_id", "status"],
         *[[row["source_id"], row["status"]] for row in tables["Bronnen"]],
     ])}
+    # This argument comes only from the owning workflow's explicit private
+    # file; never copy an assessment from a feed, web page or observation.
+    review_inputs = verified_assessments if verified_assessments is not None else []
+    if not isinstance(review_inputs, list) or len(review_inputs) > 100:
+        raise ValueError("Invalid specialist assessment collection")
+    assessments: dict[str, dict[str, Any]] = {}
+    for review in review_inputs:
+        if (not isinstance(review, dict) or not isinstance(review.get("canonical_url"), str)
+                or review["canonical_url"] in assessments):
+            raise ValueError("Invalid or duplicate specialist assessment")
+        assessments[review["canonical_url"]] = review
     google_list = json.loads((root / "ingestion/source-specs.google-optional.json").read_text(encoding="utf-8"))
     deploy_list = json.loads((root / "ingestion/source-specs.deploy.json").read_text(encoding="utf-8"))
     google_approved, _ = filter_source_specs(google_list, active_ids)
-    free_sources = select_free_specs(deploy_list, tables, config, limit=max_free_sources)
-
+    batches = plan_free_source_batches(deploy_list, tables, config, max_sources=max_free_sources)
     pages = GOOGLE_MODES[mode]
     google_status = "not_registered"
     google_observations: list[dict[str, Any]] = []
@@ -560,12 +902,15 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     else:
         google_spec = None
     if not pages:
-        return {"mode": mode, "google": google_status, "fallback_sources_available": len(free_sources),
+        return {"mode": mode, "google": google_status,
+                "fallback_sources_available": sum(len(b) for b in batches),
                 "search_requests": 0, "read_only": True}
-
-    observations: list[dict[str, Any]] = []
-    attempts = successes = 0
-    # Temporary run state is never the authoritative historical/application store.
+    page_cache: dict[str, dict[str, Any]] = {}
+    def evaluate(items):
+        return evaluate_observations(
+            items, tables, config, policy, today=today,
+            assessments=assessments, page_cache=page_cache,
+        )
     with tempfile.TemporaryDirectory() as temp:
         runner = IngestionRunner(Path(temp) / "observations.sqlite3")
         try:
@@ -577,81 +922,23 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
                 google_result = runner.run_source(requested)
                 if google_result.success:
                     google_observations = google_result.observations or []
-                    observations.extend(google_observations)
                     google_status = "searched"
                 else:
                     google_status = "provider_unavailable_or_quota_blocked"
-            # Always keep the original free source route, whether Google works or not.
-            for source in free_sources:
-                attempts += 1
-                result = runner.run_source(source)
-                if result.success:
-                    successes += 1
-                    observations.extend(result.observations or [])
+            loop = run_free_discovery_batches(
+                runner, batches, initial_observations=google_observations,
+                evaluate=evaluate, target_verified=policy.max_output_roles,
+            )
         finally:
             runner.close()
-    if not google_observations and not successes:
+    if not google_observations and not loop["fallback_sources_successful"]:
         raise RuntimeError("No permitted free discovery source succeeded")
-    candidates, counts = screen_review_candidates(
-        observations, tables, policy, today=today or date.today(),
-        limit=max(20, min(100, policy.max_output_roles * 12)),
-    )
-    # A bounded additional first-party check never turns inferred match or
-    # salary into a score. Missing official facts stay pending for review.
-    active_ids = {r["source_id"] for r in tables["Bronnen"]
-                  if r.get("status", "").casefold() == "active"}
-    originals = {
-        r.get("canonical_url"): r for r in observations
-        if r.get("source_type") == "ats" and r.get("source_id") in active_ids
-    }
-    checked = 0
-    excluded_after_official_page = {
-        "official_job_route_closed": 0,
-        "official_job_expired": 0,
-        "official_original_post_too_old": 0,
-    }
-    retained: list[dict[str, Any]] = []
-    for candidate in candidates:
-        if checked >= 10 or candidate["official_checks"]["official_role"] != "confirmed_current_public_ats":
-            retained.append(candidate)
-            continue
-        original = originals.get(candidate["official_role_candidate_url"])
-        if original is None:
-            retained.append(candidate)
-            continue
-        checked += 1
-        page = fetch_official_page_evidence(
-            original, active_ids=active_ids, today=today or date.today(),
-        )
-        candidate["official_page_status"] = page["status"]
-        candidate["official_page_language"] = page["page_language"]
-        candidate["application_language"] = page["application_language"]
-        candidate["application_page_language"] = page.get("application_page_language")
-        candidate["application_form_detected"] = page.get("application_form_detected", False) is True
-        structured = page["structured"]
-        if structured is not None:
-            candidate["official_structured_date"] = structured["date_posted"]
-            candidate["official_structured_remote"] = structured["remote_signal"]
-            candidate["official_applicant_locations"] = structured["applicant_locations"]
-        reason = _official_page_exclusion(page, policy, today or date.today())
-        if reason is not None:
-            excluded_after_official_page[reason] += 1
-            continue
-        candidate["still_to_verify"] = _missing_ranking_evidence(
-            candidate, page, policy, today or date.today()
-        )
-        candidate["status"] = "unverified_review_only"
-        retained.append(candidate)
-    candidates = retained
     return {
         "mode": mode, "read_only": True, "google": google_status,
         "google_observations": len(google_observations),
-        "fallback_sources_attempted": attempts, "fallback_sources_successful": successes,
-        "raw_observations": len(observations), "review_count": len(candidates), "official_pages_checked": checked,
-        "preflight_counts": counts, "official_exclusion_counts": excluded_after_official_page,
-        "review_candidates": candidates,
-        "final_recommendations": [],
-        "reason_no_final_recommendations": "Official role, NL remote, language and personal evidence must be verified before ranking.",
+        **{k: loop[k] for k in ("fallback_sources_attempted", "fallback_sources_successful",
+                               "fallback_batches_completed", "fallback_stop_reason")},
+        **loop["evaluation"],
     }
 
 
@@ -660,13 +947,21 @@ def main() -> int:
     parser.add_argument("--mode", choices=sorted(GOOGLE_MODES), default="check")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--max-free-sources", type=int, default=8)
+    parser.add_argument("--max-free-sources", type=int, default=20)
+    parser.add_argument("--verified-assessments", type=Path,
+                        help="Private vacature-search evidence handoff; never feed-provided JSON")
     args = parser.parse_args()
     if args.max_free_sources not in range(1, 21):
         parser.error("--max-free-sources must be between 1 and 20")
     try:
         tables = load_register()
-        report = run_once(tables, args.root, args.mode, max_free_sources=args.max_free_sources)
+        assessments = None
+        if args.verified_assessments is not None:
+            if args.verified_assessments.stat().st_size > 2_000_000:
+                raise ValueError("Specialist assessment file exceeds size limit")
+            assessments = json.loads(args.verified_assessments.read_text(encoding="utf-8"))
+        report = run_once(tables, args.root, args.mode, max_free_sources=args.max_free_sources,
+                          verified_assessments=assessments)
     except (RegisterPreflightError, ValueError) as exc:
         # No private data, credentials or Register row contents go into logs.
         print("BLOCKED:", type(exc).__name__)

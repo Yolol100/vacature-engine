@@ -121,11 +121,7 @@ def read_discovery(provider: str, client=None, *, manifest_path=None) -> list[di
         except ValueError as error:
             # Only Arbeitnow's known third-party URL contract may be isolated.
             # Never accept that URL, never print it, and never claim a full pass.
-            if (provider == "arbeitnow-api" and str(error) in {
-                "Unexpected public feed job URL: untrusted_host",
-                "Unexpected public feed job URL: uk_apex",
-                "Unexpected public feed job URL: malformed",
-            }):
+            if adapter.can_quarantine_record_error(spec, error):
                 quarantined += 1
                 continue
             raise
