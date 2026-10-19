@@ -1,6 +1,6 @@
 # Vacature Ingestion — bronadapters op verzoek
 
-Dit Python-onderdeel leest publieke werkgever-, ATS-, API-, RSS- en JobPosting-informatie als technisch hulpmiddel bij **expliciet gestart** vacaturezoeken. Het draait niet automatisch. Er zijn geen GitHub Actions of Cloudflare-schedulers gekoppeld.
+Dit Python-onderdeel leest publieke werkgever-, ATS-, API-, RSS- en JobPosting-informatie als technisch hulpmiddel bij **expliciet gestart** vacaturezoeken. Het draait niet automatisch. Er draaien geen automatische vacaturezoekrondes via GitHub Actions of Cloudflare; een pull-request-testworkflow mag uitsluitend offline regressietests uitvoeren.
 
 ## Bronwaarheid en werkwijze
 
@@ -17,3 +17,13 @@ De code bevat provideradapters, normalisatie, HTTP-beperkingen en optionele loka
 `src/vacature_ingestion/adapters/` bevat onder andere Greenhouse-, Lever-, Ashby-, Workable-, SmartRecruiters-, Personio- en publieke feedadapters. `cli.py` biedt handmatig te starten opties. Tests staan in `ingestion/tests/`.
 
 De hoofdengine in `src/vacature_engine/` is gescheiden van deze publieke acquisitiecode.
+
+## Optionele gratis Google-ontdekking
+
+De bestaande publieke ATS/feed-zoekroutes blijven de standaard. Voor een expliciet
+handmatig gestarte aanvullende Google-zoekronde is er nu een optionele
+`serpapi_google`-adapter met gratis-plan/quota-blokkade en veilige paginering
+(1–10 pagina's). Zonder API-sleutel blijft deze route uitgeschakeld.
+
+Zie [FREE-GOOGLE-DISCOVERY.md](docs/FREE-GOOGLE-DISCOVERY.md). Zoekresultaten zijn
+nooit geverifieerde vacatures; officiële werkgever/ATS-controle blijft vereist.

@@ -86,7 +86,9 @@ class IngestionRunner:
                 source_instance=spec.instance_id,
                 run_id=run_id,
                 missing_close_threshold=spec.missing_close_threshold,
-                complete_snapshot=True,
+                # Search rankings / paginated discoveries are never full source snapshots.
+                # Absence from page N must not close an employer's vacancy.
+                complete_snapshot=spec.adapter != "serpapi_google",
             )
             self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
             return SourceRunResult(

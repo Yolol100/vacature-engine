@@ -1,4 +1,5 @@
 from .ashby import AshbyAdapter
+from .serpapi_google import SerpApiGoogleAdapter
 from .greenhouse import GreenhouseAdapter
 from .himalayas import HimalayasAdapter
 from .jobicy import JobicyAdapter
@@ -14,6 +15,7 @@ from .workable import WorkableAdapter
 
 ADAPTERS = {
     "ashby": AshbyAdapter(),
+    "serpapi_google": SerpApiGoogleAdapter(),
     "greenhouse": GreenhouseAdapter(),
     "himalayas": HimalayasAdapter(),
     "jobicy": JobicyAdapter(),
