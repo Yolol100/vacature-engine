@@ -77,6 +77,18 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   The tenant-bound official-page checker also requires the exact job title
   to appear in visible page content alongside matching first-party JobPosting
   markup. A matching JSON-LD script alone is not sufficient.
+  ATS job descriptions can be flattened by upstream normalization. The
+  requirement comparison therefore recovers only explicitly marked sections
+  such as `Requirements:` and `Benefits:`; it never treats benefits or
+  negative CandidateEvidence claims as required-skill proof.
+  ATS `published_at` can mean the **last** publication, not the original
+  posting date; recently republished roles remain unverified until an
+  original employer date is confirmed. An application page's `<html lang>`
+  reports interface language only, not which language applications may use.
+  The review output lists missing official, remote/NL, language and skill-fit
+  evidence; it suppresses only definitive official 404/410, expired
+  `validThrough`, and first-party original posting dates outside live
+  policy. Missing information is not a rejection or a match score.
 
 Google discovery is optional. It requires a verified free SerpApi account
 and active `google-jobs` registration, uses no paid plan, and returns
