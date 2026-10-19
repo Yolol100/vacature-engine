@@ -1,106 +1,115 @@
 # Changelog
 
-## 5.8.0 - 2026-10-02
-- Voegt `web_design_development` toe als derde configureerbare target role family voor webdesign, website-UX/UI, frontend, accessibility, performance, technical SEO en breder webdevelopment wanneer de webcomponent materieel is.
-- Behoudt `wordpress_ecosystem` en `ai_workflow_automation`; generieke productdesign-, software- en AI/ML-rollen zonder materiële web- of workflowcomponent blijven buiten scope.
-- Ondersteunt `web_design_related=true` als caller-signaal naast expliciete `role_families`.
-- Fully remote, Nederland-compatibiliteit, taalpoort, salaris-/dataintegriteit, scoreankers en minimumfit blijven ongewijzigd.
-- Regressietests toegevoegd voor webdesign/webdevelopment-acceptatie en generieke productdesign-afwijzing.
+## Ingestion 0.12.0 - 2026-10-19
+- Hardened optional free Google discovery: strict active Free Plan and quota checks, round-robin pagination, canonical URL deduplication and safe handling of invalid links.
+- Moved snapshot completeness to the adapter contract; partial Google discovery cannot close vacancies, even through direct ingestion calls.
+- Added a manual-only GitHub Actions workflow with a zero-search account check and bounded discovery modes. No scheduler, automated applications or Register writes.
+- Added broader adversarial tests for quota, key handling, paging, duplicate results, unsafe URLs and lifecycle state.
+- Prevented discovery-only Google snippets from overwriting or reopening official employer vacancies or vetoing official source closure; covered by failing-before-fix regression fixtures.
+- Pinned GitHub Actions dependencies to verified upstream commit SHAs to prevent mutable-tag execution.
+- Brought the ingestion adapter release manifest and both Python regression suites back into sync.
 
-## 5.7.0 - 2026-09-29
-- Voegt live configureerbare doelrolfamilies toe via `target_role_families`.
-- Activeert naast `wordpress_ecosystem` ook `ai_workflow_automation` voor AI-workflow-, automation-, integration-, agentic- en GenAI-operationsrollen.
-- Generieke AI/ML/data-sciencefuncties zonder materiële workflow-/automationcomponent blijven buiten scope.
-- Zonder `target_role_families` blijft de engine backward-compatible WordPress-only.
-- Fully remote, uitvoerbaarheid vanuit Nederland, taalpoort, salaris-/dataintegriteit, scoreankers en minimumfit blijven ongewijzigd.
-- Regressietests toegevoegd voor AI-workflowacceptatie, generieke-AI-afwijzing, expliciete rol-families, backward compatibility en onbekende rol-families.
+## Engine 5.8.0 - 2026-10-02
+- Added `web_design_development` as the third configurable target role family for web design, website UX/UI, frontend, accessibility, performance, technical SEO and broader web development when the web component is material.
+- Kept `wordpress_ecosystem` and `ai_workflow_automation`. General product design, unrelated software engineering and AI/ML positions without material web or workflow requirements remain out of scope.
+- Added `web_design_related=true` as a caller signal alongside explicit `role_families`.
+- Kept fully remote, compatibility with work from the Netherlands, language and salary/data integrity checks, score anchors and minimum-fit thresholds unchanged.
+- Added regressions for qualifying web development/design roles and rejection of unrelated product design.
 
-## Unreleased - 2026-09-25
-- Documenteert het caller-owned tweetalige sollicitatiepakket: NL+EN CV/motivatie uit één bewijskaart, officiële sollicitatietaal primair.
-- Named projecten/cases/repos blijven uit het CV; maximaal drie geverifieerde work-sample links mogen alleen in de motivatie wanneer relevant of gevraagd.
-- Canonieke portfolio-index is `https://andrewbaeten.nl/category/cases`; case-slugs/repos mogen nooit worden gegokt.
-- Standaard sign-off gebruikt alleen `Andrew`: NL `Vriendelijke groet,`, EN `Kind regards,`.
-- Geen wijziging aan eligibility, ranking, source priority, candidate inference of auto-submitgrenzen.
+## Engine 5.7.0 - 2026-09-29
+- Added runtime-configurable role families through `target_role_families`.
+- Expanded `wordpress_ecosystem` with `ai_workflow_automation` for AI workflows, automation, integrations, agents and GenAI operations.
+- Excluded generic AI/ML and data-science roles without material automation or workflow requirements.
+- Preserved backward-compatible WordPress-only behaviour when no `target_role_families` setting is supplied.
+- Kept remote, Netherlands workability, language and salary integrity, score anchors and minimum-fit constraints unchanged.
+- Added regressions for AI-workflow acceptance, unrelated AI rejection, explicit families and unknown families.
 
-## 5.6.1 - 2026-09-15
-- Documenteert de caller-owned Form Application Pack-boundary voor geverifieerde werkgever-/ATS-formulieren.
-- Vacature Search mag de exacte vacaturenaam, zichtbare formulier-vragen met bewijsgebonden conceptantwoorden en een vacature-specifieke CV voorbereiden.
-- Salaris, work authorization, juridische/sensitieve/current-state velden blijven menselijke bevestiging vereisen; assessments en expliciet AI-verboden antwoorden blijven handmatig.
-- De engine zelf blijft formulierloos en policy-free: geen browsing, antwoordproza, accounts, CAPTCHA-omzeiling of auto-submit.
+## Historical Unreleased - 2026-09-25
+- Documented the caller-owned bilingual application pack: Dutch and English CV/cover-letter content from one evidence set, with the official application language taking precedence.
+- Excluded named projects, cases and repositories from CV bodies. At most three verified work-sample links are allowed in a cover letter when relevant or requested.
+- Identified the canonical portfolio index as `https://andrewbaeten.nl/category/cases`. Never guess case slugs or repositories.
+- Standard sign-off uses `Andrew` only: Dutch `Vriendelijke groet,`; English `Kind regards,`.
+- No changes to eligibility, ranking, source priority, candidate inference or automatic submission boundaries.
 
-## 5.6.0 - 2026-09-07
-- Voegt CV Artifact Contract v1.0 toe voor deterministische vacaturegebonden DOCX-bestandsnamen, bron-CV/vacature-snapshot SHA-256-provenance en stabiele artifact identity.
-- De helper blijft policy-free: geen CV-proza, kandidaatclaiminferentie, documentgeneratie, discovery of auto-apply.
-- Nieuwe regressietests bewaken stabiele filenames, vacancy-isolatie, URL/hash-validatie en fail-closed manifestreadback.
-- Bestaande remote-first v12 gates, scoreankers, salarisbeleid, opportunity en ranking blijven ongewijzigd.
+## Engine 5.6.1 - 2026-09-15
+- Documented the caller-owned Form Application Pack boundary for verified employer/ATS forms.
+- Allowed Vacature Search to prepare the exact vacancy title, visible form questions with evidence-bound draft answers, and a vacancy-specific CV.
+- Salary expectations, work authorization, legal/sensitive/current-state fields still require human confirmation; assessments and explicitly AI-prohibited responses remain manual.
+- The engine remains form-free and policy-free: no browsing, answer prose, accounts, CAPTCHA circumvention or automatic applications.
 
-## 5.4.1 - 2026-09-06
-- Herstelt de live salarisregel uit Vacature Register: een geverifieerd bedrag onder `min_monthly_salary_eur` blijft een `salary_below_preference`-waarschuwing en is geen harde afwijzing.
-- Ook een geverifieerde salarisrange die volledig onder de voorkeur ligt blijft advisory; onbekend salaris blijft warning/fallback.
-- Corrupte, niet-eindige, conflicterende of omgekeerde salarisdata blijft fail-closed als `salary_invalid`.
-- De rankingbenchmark bevat minimaal 30 vooraf gelabelde cases en bewaakt de advisory salarisgrens naast de bestaande score-ankers en harde gates.
+## Engine 5.6.0 - 2026-09-07
+- Added CV Artifact Contract v1.0 for deterministic DOCX filenames tied to exact vacancies, SHA-256 provenance for source CV and vacancy snapshots, and stable artifact identities.
+- The helper remains policy-free: no CV prose, experience inference, document generation, discovery or auto-apply.
+- Added regressions for stable names, vacancy isolation, URL/hash validation and fail-closed artifact manifest readback.
+- Left existing remote-first v12 gates, score anchors, salary rules, opportunity scoring and rankings unchanged.
 
-## 5.4.0 - 2026-09-04
-- Observation contract verhoogd naar v1.1: alleen canonieke URL en `source_id + source_job_id` zijn nog automatische identiteitssleutels.
-- `employer + title + location` blijft beschikbaar als duplicate-candidate fingerprint, maar mag verschillende sterke identiteiten niet meer automatisch samenvoegen.
-- Canonicalisatie exposeert nu `published_at_candidates`, `published_at_conflict`, bronsoorten en duplicate-candidate metadata voor semantische verificatie door de Skill.
-- Corrupte URL-poorten falen gesloten in plaats van een run te laten crashen.
-- Nieuwe dependency-vrije `jobposting_signals()` normaliseert conservatieve Schema.org `JobPosting`-evidence zoals `datePosted`, `validThrough`, TELECOMMUTE, applicant locations, employment type, direct apply en ruwe salarisvelden.
-- Structured data neemt nooit open-status-, remote-, geografie-, salarisnormalisatie- of fitbeleid over van de Skill/Config.
-- Nieuwe regressietests dekken false-mergepreventie, URL-corruptie, publicatiedatumconflicten en structured-data-grenzen.
+## Engine 5.4.1 - 2026-09-06
+- Restored the live salary preference rule from the Vacature Register: verified salaries below `min_monthly_salary_eur` produce a `salary_below_preference` warning rather than automatic exclusion.
+- A verified range fully below preference remains advisory; unknown salaries remain a warning/fallback.
+- Invalid, non-finite, conflicting or reversed salary inputs still fail closed with `salary_invalid`.
+- The ranking benchmark includes at least 30 labelled cases and preserves advisory salary behaviour alongside score anchors and hard gates.
 
-## 5.3.0 - 2026-08-30
-- Runtime-taalpoort toegevoegd via `allowed_listing_languages`; de huidige `vacature-search`-flow geeft `nl,en` door vanuit live Config.
-- Wanneer de taalpoort actief is, moeten vacaturetekst en sollicitatieflow in een toegestane taal zijn en mogen verplichte functie-/werktalen geen derde taal bevatten.
-- Ontbrekende taalbewijzen falen gesloten zodra de taalpoort actief is; bestaande directe callers zonder taalconfig blijven backward compatible.
-- Regressietests toegevoegd voor Nederlands/Engels, anderstalige listings/flows en verplichte derde talen.
+## Engine 5.4.0 - 2026-09-04
+- Upgraded the observation contract to v1.1: canonical URL and `source_id + source_job_id` are the only automatic strong identity keys.
+- Employer/title/location remains a weak duplicate-candidate fingerprint and must not automatically merge distinct strong identities.
+- Canonicalization now exposes `published_at_candidates`, `published_at_conflict`, source types and duplicate-candidate metadata for semantic verification by the Skill.
+- Malformed URL ports fail closed rather than crashing runs.
+- Added dependency-free `jobposting_signals()` for conservative Schema.org `JobPosting` evidence: dates, TELECOMMUTE, permitted applicant locations, employment type, direct apply and raw salary fields.
+- Structured data never overrides Skill/Config authority for open status, remote geography, salary normalization or candidate fit.
+- Added regressions for false merges, corrupt URLs, publication-date conflicts and structured-data boundaries.
 
-## 5.2.0 - 2026-08-28
-- Discoverycontract verduidelijkt voor wereldwijd remote werk: de Skill zoekt wereldwijd; de engine accepteert alleen vacatures die voor de kandidaat geografisch, juridisch, payroll- en timezone-technisch uitvoerbaar zijn.
-- De kalenderjaarpoort is verwijderd. Alleen de echte leeftijd ten opzichte van `max_posting_age_days` bepaalt nu of een publicatiedatum te oud is.
-- Salarisranges worden ondersteund via `salary_min_monthly_eur` en `salary_max_monthly_eur`; alleen een geverifieerde range die volledig onder de minimumgrens ligt wordt afgewezen.
-- Exact salaris en range tegelijk, omgekeerde ranges en corrupte/niet-eindige bedragen falen gesloten als `salary_invalid`.
-- Regressietests toegevoegd voor jaarovergang, wereldwijd remote compatibiliteit en salarisranges. De bestaande score-ankers en minimumscore blijven ongewijzigd.
+## Engine 5.3.0 - 2026-08-30
+- Added runtime language gating via `allowed_listing_languages`. The current `vacature-search` workflow supplies `nl,en` from live Config.
+- When active, vacancy text and the application flow must be in a permitted language, and no additional mandatory working language may be required.
+- Missing language evidence fails closed when the language gate is active; existing callers without language configuration remain backward-compatible.
+- Added Dutch/English, third-language listing and application-flow regression cases.
 
-## 5.1.0 - 2026-08-26
-- Ongeldige salarisdata faalt nu gesloten: alleen expliciet `null` geldt nog als onbekend salaris; strings, booleans en niet-eindige getallen worden `salary_invalid`.
-- Publicatiedatums accepteren alleen een ISO-datum of ISO-datetime en blokkeren suffix-smuggling.
-- Actuele v5/v8 golden-, property/metamorphic-, adversarial- en gecontroleerde mutation-tests toegevoegd.
-- Reproduceerbare source-release-evidence toegevoegd met SPDX 2.3 SBOM, package-verification-code, SHA-256 checksums en lokale provenance receipt.
-- GitHub CodeQL, Dependabot, een deterministische dependency-policygate, CODEOWNERS, PR-template en SECURITY.md toegevoegd. Dependency Review zelf is niet bruikbaar zolang GitHub Dependency Graph op repositoryniveau uitstaat.
-- Release Evidence workflow gebruikt GitHub artifact attestations met volledige commit-SHA-pinning van Actions.
-- De build-backend is gepind op `setuptools==84.0.0` voor reproduceerbaardere build-inputs.
+## Engine 5.2.0 - 2026-08-28
+- Clarified worldwide remote discovery: the Skill searches globally, while the engine admits only roles practically and legally workable from the Netherlands, including payroll and time-zone constraints.
+- Removed the calendar-year gate. Verified posting age is compared directly with `max_posting_age_days`.
+- Added salary ranges through `salary_min_monthly_eur` and `salary_max_monthly_eur`; the historical rule at this release rejected only a verified range entirely below preference.
+- Simultaneous exact salary and range values, reversed ranges, and invalid/non-finite amounts fail closed with `salary_invalid`.
+- Added regressions for year boundaries, worldwide compatibility and salary ranges. Score anchors and minimum scores were unchanged.
 
-## 5.0.0 - 2026-08-26
-- Veranderlijke gate- en outputdrempels zijn uit Python-constanten verwijderd en moeten expliciet uit `Config` worden doorgegeven.
-- Nieuwe `VacancyPolicy` en `policy_from_config()` valideren de zes vereiste runtimewaarden en falen gesloten bij ontbrekende of ongeldige Config.
-- De CLI accepteert nu expliciet `today`, `policy` en `vacancies`; de eerdere kapotte impliciete aanroep zonder `today` is verwijderd.
-- Regressietests bewijzen dat wijzigingen in salarisgrens, leeftijdsgrens, outputlimiet en minimumscore direct het enginegedrag veranderen.
-- De publieke package-export bevat geen dubbele runtime-drempelconstanten meer.
+## Engine 5.1.0 - 2026-08-26
+- Invalid salary data now fails closed: only explicit `null` is unknown; strings, booleans and non-finite numbers are `salary_invalid`.
+- Publication dates accept only ISO dates or datetimes, blocking appended-suffix smuggling.
+- Added contemporary golden, property/metamorphic, adversarial and controlled mutation tests.
+- Added reproducible source release evidence with SPDX 2.3 SBOM, package verification, SHA-256 and provenance receipts.
+- Added CodeQL, Dependabot, deterministic dependency-policy checks, CODEOWNERS, PR template and SECURITY.md. Dependency Review was not available while the repository Dependency Graph was disabled. These items describe that historical release, not current active workflows.
+- The historical Release Evidence workflow used artifact attestations with fully pinned action commit SHAs.
+- Pinned the build backend to `setuptools==84.0.0` for reproducible build inputs.
 
-## 4.0.5 - 2026-08-26
-- Kalenderjaarcontrole gebruikt nu dynamisch `today.year` in plaats van een vast 2026-jaar.
-- `NaN` en `+/-inf` tellen niet meer als bekend salaris.
-- Ongeldige losse records worden overgeslagen zonder de rest van de batch te blokkeren.
-- Regressiedekking toegevoegd voor jaarwisseling, niet-eindige salarissen, kapotte records en de nieuwste-eerst tie-break.
-- Exact gelijke kandidaten krijgen een stabiele technische tie-break op canonieke URL/titel zodat de top-10 niet van invoervolgorde afhangt.
+## Engine 5.0.0 - 2026-08-26
+- Removed mutable gate and output thresholds from Python constants. Callers must supply them through live Config.
+- Added `VacancyPolicy` and `policy_from_config()` with validation of six required runtime values and fail-closed handling of absent or invalid Config.
+- The CLI now accepts explicit `today`, `policy` and `vacancies`, replacing a broken implicit call without `today`.
+- Added regressions proving that salary, posting age, output limit and score thresholds affect engine results.
+- Removed duplicate runtime-threshold constants from public package exports.
 
-## 4.0.4 - 2026-08-26
-- De engine gebruikt geen impliciete hostdatum meer; `today` moet expliciet uit de canonieke Config-timezone komen.
-- CI gebruikt actuele gepinde GitHub Actions en test Python 3.11, 3.12, 3.13 en 3.14.
+## Engine 4.0.5 - 2026-08-26
+- Used a dynamic `today.year` instead of a hardcoded 2026 for the calendar-year gate at that time.
+- Non-finite salaries no longer counted as known.
+- Invalid individual records were skipped without blocking whole batches.
+- Added coverage for year changes, non-finite salaries, malformed records and newest-first tie-breaking.
+- Equal candidates receive a stable canonical URL/title tie-break independent of input order.
 
-## 4.0.3 - 2026-08-26
-- Alleen sterke matches worden nog uitgevoerd: score >=75, eisenmatch >=40 en bewijs >=10.
-- Nieuwe regressietests blokkeren zwakke bekende-salarismatches en bewaken de 75-puntgrens.
+## Engine 4.0.4 - 2026-08-26
+- Required an explicitly supplied `today` from the canonical Config timezone rather than an implicit host date.
+- Historical CI tested Python 3.11–3.14 with pinned GitHub Actions. This is historical release information.
 
-## 4.0.2 - 2026-08-26
-- Repo en Skill gebruiken nu exact dezelfde vaste score-ankers, actualiteitspunten en tie-breaks.
-- README compacter gemaakt zonder functionaliteit toe te voegen.
+## Engine 4.0.3 - 2026-08-26
+- Restricted output to strong matches: score at least 75, core fit at least 40 and evidence fit at least 10.
+- Added regressions blocking weak known-salary matches and guarding the 75-point boundary.
 
-## 4.0.1 - 2026-08-25
-- Onbekend salaris alleen als fallback bij minimaal 75/100.
-- Boundary- en rankingtests uitgebreid.
+## Engine 4.0.2 - 2026-08-26
+- Synchronized score anchors, recency points and tie-breaks between the repository and the Skill.
+- Simplified the README without functional changes.
 
-## 4.0.0 - 2026-08-25
-- Repo teruggebracht naar één eenvoudige filter/rank-helper.
-- Alleen vaste filters, eenvoudige score en top-10; scraping, application- en auditlogica verwijderd.
+## Engine 4.0.1 - 2026-08-25
+- Allowed unknown salary only as a fallback with a score of at least 75/100.
+- Extended boundary and ranking tests.
+
+## Engine 4.0.0 - 2026-08-25
+- Reduced the repository to one simple filter/rank helper.
+- Kept only hard filters, simple scoring and top-ten selection; removed scraping, application logic and auditing from the then-current engine.

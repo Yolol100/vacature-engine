@@ -1,36 +1,50 @@
 # Opportunity contract v1.0
 
-`assess_opportunity()` geeft een **advisory** 0-100 score voor het moment waarop een al inhoudelijk beoordeelde vacature wordt gezien. De score staat volledig los van eligibility, kandidaatfit, salarisbeleid, de vaste matchscore en de bestaande ranking/tie-breaks.
+`assess_opportunity()` returns an **advisory** score from 0 to 100 for
+an already-reviewed vacancy. It is independent of eligibility,
+candidate fit, salary preferences, the primary match score and
+existing ranking/tie-break rules.
 
-## Invoer
+## Inputs
 
-Alle invoer moet uit expliciet bewijs komen:
+Every input requires explicit supporting evidence:
 
-- `age_hours`: geverifieerde publicatieleeftijd wanneer beschikbaar; anders mag de caller observation/first-seen-leeftijd gebruiken, maar die provenance moet buiten de engine als observation freshness worden gelabeld en mag niet als publicatiedatum worden gepresenteerd.
-- `route_type`: `employer`, `ats`, `job_board` of `other`, bepaald na canonieke verificatie.
-- `applicant_count`: alleen een expliciet zichtbaar applicant-signaal; onbekend blijft `None`.
-- `deadline_hours`: alleen uit een expliciete geldige deadline; onbekend blijft `None`.
-- `canonical_verified`: alleen `True` nadat de werkgever-/ATS-identiteit en actuele vacaturepagina zijn geverifieerd.
+- `age_hours`: verified employer-posting age, when available. An
+  observed/first-seen age may be used by the caller only if provenance
+  clearly labels it as **observation freshness**, never as the
+  original employer publication date.
+- `route_type`: `employer`, `ats`, `job_board` or `other`,
+  assigned after canonical-route verification.
+- `applicant_count`: only an explicit visible applicant signal;
+  unknown remains `None`.
+- `deadline_hours`: only an explicitly valid deadline;
+  unknown remains `None`.
+- `canonical_verified`: `True` only after the employer/ATS
+  identity and live role page have been verified.
 
-## Punten
+## Points
 
-- freshness: maximaal 35;
-- directe routekwaliteit: maximaal 25;
-- expliciet concurrentiesignaal: maximaal 20;
-- expliciete deadline: maximaal 10;
-- canonieke verificatie: maximaal 10.
+- Freshness: up to 35
+- Direct route quality: up to 25
+- Explicit competition signals: up to 20
+- Explicit deadline: up to 10
+- Canonical verification: up to 10
 
-Onbekende freshness, applicant count en deadline krijgen conservatieve neutrale punten plus een expliciete warning. De engine verzint geen ontbrekende signalen.
+Missing freshness, applicant count and deadline receive conservative
+neutral points with explicit warnings. The engine never invents inputs.
 
-## Grenzen
+## Boundaries
 
-De opportunity score:
+The opportunity score:
 
-- kan nooit een harde gate passeren of omzeilen;
-- verandert nooit `core_fit`, `evidence_fit`, `workstyle_fit` of de matchscore;
-- verandert de bestaande vacature-ranking niet;
-- is geen voorspelling van aannemingskans;
-- mag niet worden gebruikt om automatisch te solliciteren;
-- is uitsluitend een tweede, uitlegbare prioriteitslaag voor reeds geschikte vacatures.
+- Can never override an eligibility hard gate.
+- Never modifies `core_fit`, `evidence_fit`, `workstyle_fit`
+  or the primary match score.
+- Does not affect existing vacancy ranking.
+- Is not a prediction of hiring probability.
+- Must not authorize automated applications.
+- Is a secondary explanatory priority signal for already eligible jobs.
 
-Wijzigingen aan deze score vereisen eigen contract-/evalcases. Wijzigingen aan de bestaande matchscore blijven daarnaast onder de afzonderlijke rankingbenchmark vallen.
+Changes require dedicated contract and evaluation cases; any change
+to the primary match score remains governed by the separate ranking
+benchmark.

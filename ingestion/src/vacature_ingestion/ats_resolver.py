@@ -25,7 +25,7 @@ _SUBDOMAIN_HOSTS = {
     ".teamtailor.com": "teamtailor",
     ".bamboohr.com": "bamboohr",
 }
-_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._%-]{0,119}$")
+_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$")
 
 
 def resolve_ats_url(url: str) -> dict[str, str] | None:

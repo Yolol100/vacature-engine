@@ -88,7 +88,7 @@ class IngestionRunner:
                 missing_close_threshold=spec.missing_close_threshold,
                 # Search rankings / paginated discoveries are never full source snapshots.
                 # Absence from page N must not close an employer's vacancy.
-                complete_snapshot=spec.adapter != "serpapi_google",
+                complete_snapshot=adapter.complete_snapshot,
             )
             self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
             return SourceRunResult(
@@ -128,7 +128,7 @@ class IngestionRunner:
         review_observations = self._review_queue(observations)
         counts = self.state.upsert_observations(
             observations, source_instance=spec.instance_id, run_id=run_id,
-            missing_close_threshold=spec.missing_close_threshold, complete_snapshot=complete_snapshot,
+            missing_close_threshold=spec.missing_close_threshold, complete_snapshot=complete_snapshot and adapter.complete_snapshot,
         )
         self.state.finish_run(run_id, success=True, fetched=len(records), normalized=len(observations), counts=counts)
         return SourceRunResult(

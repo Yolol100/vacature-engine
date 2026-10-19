@@ -10,6 +10,12 @@ from typing import Any, Iterable
 
 from .normalize import strong_identity_keys
 
+def _discovery_only(row: dict[str, Any]) -> bool:
+    """Only explicitly tagged search observations are non-authoritative."""
+    metadata = row.get("source_metadata")
+    return isinstance(metadata, dict) and metadata.get("discovery_only") is True
+
+
 
 @dataclass
 class UpsertCounts:
@@ -129,6 +135,9 @@ class StateStore:
         job_ids = self._find_job_ids(keys)
         if not job_ids:
             return "new"
+        if _discovery_only(row):
+            # Google snippets must not trigger new updates for an already known URL.
+            return "unchanged"
         row_hash = str(row.get("content_hash") or "")
         placeholders = ",".join("?" for _ in job_ids)
         rows = self.db.execute(
@@ -250,6 +259,15 @@ class StateStore:
                         (job_id, canonical_url, row_hash, payload_json, "active", first_seen, last_seen),
                     )
                     counts.new += 1
+                    self._record_snapshot(job_id, row_hash, payload_json, first_seen, last_seen)
+                elif _discovery_only(row):
+                    # A search excerpt is NOT proof of publication, change or reopening.
+                    # Preserve all existing authoritative fields and closed status.
+                    counts.unchanged += 1
+                    self.db.execute(
+                        "UPDATE jobs SET last_seen_at=? WHERE job_id=?",
+                        (max(str(existing["last_seen_at"]), last_seen), job_id),
+                    )
                 else:
                     if existing["content_hash"] != row_hash:
                         counts.updated += 1
@@ -259,14 +277,17 @@ class StateStore:
                         "UPDATE jobs SET canonical_url=?,content_hash=?,payload_json=?,status='active',last_seen_at=?,closed_at=NULL WHERE job_id=?",
                         (canonical_url, row_hash, payload_json, last_seen, job_id),
                     )
-                self._record_snapshot(job_id, row_hash, payload_json, first_seen, last_seen)
+                    self._record_snapshot(job_id, row_hash, payload_json, first_seen, last_seen)
                 for key in keys:
                     self.db.execute("INSERT OR REPLACE INTO identities(identity_key,job_id) VALUES (?,?)", (key, job_id))
-                self.db.execute(
-                    "INSERT INTO source_membership(source_instance,job_id,missing_runs,last_seen_run,close_threshold) VALUES (?,?,0,?,?) "
-                    "ON CONFLICT(source_instance,job_id) DO UPDATE SET missing_runs=0,last_seen_run=excluded.last_seen_run,close_threshold=excluded.close_threshold",
-                    (source_instance, job_id, run_id, max(2, int(missing_close_threshold))),
-                )
+                if not _discovery_only(row):
+                    # Non-authoritative search hits cannot veto a provider's closure
+                    # by creating a perpetual zero-missing source membership.
+                    self.db.execute(
+                        "INSERT INTO source_membership(source_instance,job_id,missing_runs,last_seen_run,close_threshold) VALUES (?,?,0,?,?) "
+                        "ON CONFLICT(source_instance,job_id) DO UPDATE SET missing_runs=0,last_seen_run=excluded.last_seen_run,close_threshold=excluded.close_threshold",
+                        (source_instance, job_id, run_id, max(2, int(missing_close_threshold))),
+                    )
                 seen_jobs.add(job_id)
 
             if complete_snapshot:

@@ -1,32 +1,62 @@
-# Vacature Engine — zoeken op verzoek
+# Vacature Engine — On-Demand Vacancy Search
 
-Dit project ondersteunt **handmatig gestart vacaturezoeken vanuit ChatGPT** met de skills `vacature-search` en `webactueel-workflow`. Er zijn geen GitHub Actions voor vacaturezoekrondes, cronruns, autonome Radar-scans, pushmeldingen of automatische sollicitaties. Een eventuele pull-request-testworkflow voert uitsluitend offline unit-tests uit.
+This repository supports **explicitly requested job searches** through the
+`vacature-search` and `webactueel-workflow` skills. It does **not**
+automatically submit applications, send messages, or change application states.
 
-## Bestaande bronnen en gegevens
+## Authoritative sources
 
-- **Vacature Register**: https://docs.google.com/spreadsheets/d/1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0/edit
-  - `Config`: actuele zoekregels
-  - `Bronnen`: enige bronregister; doorzoek alleen `active`
-  - `Vacatures`, `Feedback`, `Applications`, `ApplicationEvents`, `CandidateEvidence`, `JobSnapshots`: deduplicatie, uitkomsten en bewezen fit
-- **Vacature Radar – Nieuwe Vacatures**: https://docs.google.com/spreadsheets/d/1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ/edit
-  - Alleen bestaand tabblad `Nieuwe vacatures` als optioneel resultatenoverzicht. Geen tweede masterregister.
+- [Vacature Register](https://docs.google.com/spreadsheets/d/1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0/edit)
+  - `Config`: live selection rules and thresholds
+  - `Bronnen`: the sole source registry; only `active` entries may be queried
+  - `Vacatures`, `Applications`, `ApplicationEvents`, `CandidateEvidence`
+    and `JobSnapshots`: identity, application history and verified experience
+- [Vacature Radar – Nieuwe Vacatures](https://docs.google.com/spreadsheets/d/1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ/edit)
+  - Existing `Nieuwe vacatures` sheet is an optional view, **not** a second
+    authoritative registry.
 
-## Werkwijze bij een expliciete ChatGPT-opdracht
+## Workflow for a user-requested search
 
-1. Lees `Config`, de actieve `Bronnen` en de bestaande vacatures en sollicitaties in het Register.
-2. Zoek nieuwe WordPress/WooCommerce/Elementor/Gutenberg-, webdesign/frontend- en AI-workflowautomatiseringsvacatures. Begin bij officiële werkgever-/ATS-pagina's; gebruik goedgekeurde publieke API/RSS, webzoekopdrachten en jobboards aanvullend als ontdekking.
-3. Controleer op de actuele officiële detailpagina dat de vacature **open**, **echt recent geplaatst** (standaard maximaal 7 dagen), **volledig remote vanuit Nederland uitvoerbaar** en **in het Nederlands of Engels** is. Een first-seen-, scrape- of update-datum is geen bewezen publicatiedatum.
-4. Vergelijk op canonieke vacature-URL en ATS/provider-job-ID met `Vacatures`, `Applications`, `ApplicationEvents` en de bestaande Radar-rijen. Toon geen eerder getoonde, afgewezen, behandelde of ingediende rol opnieuw als nieuw.
-5. Beoordeel match met alleen bewezen kandidaatervaring uit `CandidateEvidence`. Toon uitsluitend officieel geverifieerde passende vacatures met werkgever, functie, publicatiedatum, directe URL en matchreden. Schrijf uitsluitend volgens live Register-beleid en voorkom dubbele rijen.
+1. Read the live policy, active sources and prior vacancies/applications.
+2. Search official employer/ATS pages first. Use permitted public feeds,
+   WordPress sources and fresh web discovery as supplementary inputs.
+3. Verify on the *official role page* that the opening is current, actually
+   published within the configured window (normally seven days), fully remote
+   and workable from the Netherlands. Search-index, first-seen and update
+   timestamps are **not** employer publication dates.
+4. Deduplicate on canonical role URLs and stable provider job IDs against
+   current and prior application evidence. Never recommend a previously
+   submitted or rejected role as new.
+5. Require verified employer legitimacy, permitted Dutch/English language
+   and candidate fit supported by `CandidateEvidence`. Present only verified
+   matches, with their exact role URL, publication date and rationale.
 
-**Voorbeeldopdracht:** 'Zoek nieuwe passende vacatures van de afgelopen zeven dagen.'
+Example: “Find new suitable remote jobs posted within the last seven days.”
 
-## Code die blijft
+## Maintained components
 
-- `src/vacature_engine/`: deterministische normalisatie, harde filters, scoring, prioritering en optionele CV-metadata.
+- `src/vacature_engine/`: deterministic canonicalization, gates,
+  ranking and optional CV metadata. The `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience.
+- `ingestion/`: bounded, read-only public ATS/feed adapters and a
+  supplementary Google discovery adapter. Static `source-specs.*` files are
+  **examples**, not authority to activate a source.
+- `tests/` and `ingestion/tests/`: deterministic regression suites.
+- `.github/workflows/ingestion-tests.yml`: offline tests only.
+- `.github/workflows/free-google-discovery.yml`: optional **manually
+  initiated**, quota-controlled discovery. No cron or recurring job.
 
-**Eigenaarsgrens:** The `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience. De `vacature-search`-skill verzorgt inhoudelijke beoordelingen en gebruikt alleen gecontroleerd kandidaatbewijs.
-- `ingestion/`: publieke ATS/API/feed-adapters voor expliciete, gecontroleerde scans; de bestanden `source-specs.*` zijn technische voorbeelden, **niet** de bronwaarheid. Het live Register bepaalt actieve bronnen.
-- `tests/` en `ingestion/tests/`: onderhouds- en regressietests die lokaal kunnen worden uitgevoerd.
+Google discovery is optional. It requires a verified free SerpApi account
+and active `google-jobs` registration, uses no paid plan, and returns
+**unverified discovery candidates only**. See
+[the English setup guide](ingestion/docs/FREE-GOOGLE-DISCOVERY.md).
 
-Geen GitHub-gestuurde scheduler, automatische statusbestanden of nieuwe Google Drive-bestanden. CV's, conceptmails of sollicitatievoorbereiding uitsluitend op aparte gebruikersopdracht; nooit automatisch verzenden of solliciteren.
+## Ownership and safety
+
+`webactueel-workflow` coordinates multi-step work. `vacature-search`
+owns semantic verification, suitability and application drafts. The live
+Vacature Register owns mutable search and application policies. The engine
+must not become a scheduler, policy owner or second application database.
+
+No automatic submissions, mailbox changes, source activation, or application
+status changes. Follow the source registry and the security contract in
+[AGENTS.md](AGENTS.md).
