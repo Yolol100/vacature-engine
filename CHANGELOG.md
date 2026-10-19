@@ -5,6 +5,8 @@
 - Moved snapshot completeness to the adapter contract; partial Google discovery cannot close vacancies, even through direct ingestion calls.
 - Added a manual-only GitHub Actions workflow with a zero-search account check and bounded discovery modes. No scheduler, automated applications or Register writes.
 - Added broader adversarial tests for quota, key handling, paging, duplicate results, unsafe URLs and lifecycle state.
+- Prevented discovery-only Google snippets from overwriting or reopening official employer vacancies or vetoing official source closure; covered by failing-before-fix regression fixtures.
+- Pinned GitHub Actions dependencies to verified upstream commit SHAs to prevent mutable-tag execution.
 - Brought the ingestion adapter release manifest and both Python regression suites back into sync.
 
 ## Engine 5.8.0 - 2026-10-02

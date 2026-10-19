@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -372,6 +373,22 @@ class FreeDiscoveryTests(unittest.TestCase):
                 self.assertEqual(runner.state.snapshot_count(), n)
             finally:
                 runner.close()
+
+
+    def test_actions_use_immutable_full_commit_ids(self):
+        root = Path(__file__).resolve().parents[2]
+        paths = (
+            root / ".github/workflows/ingestion-tests.yml",
+            root / ".github/workflows/free-google-discovery.yml",
+        )
+        for path in paths:
+            for line in path.read_text(encoding="utf-8").splitlines():
+                if "uses:" not in line:
+                    continue
+                action = line.split("uses:", 1)[1].split("#", 1)[0].strip()
+                with self.subTest(workflow=path.name, action=action):
+                    self.assertRegex(action, r"^actions/[a-z-]+@[0-9a-f]{40}$")
+
 
 
 if __name__ == "__main__":
