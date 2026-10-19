@@ -14,7 +14,7 @@ from dataclasses import replace
 from datetime import date
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, urlencode, urlsplit
 
 from vacature_engine.observations import canonicalize_observations, is_role_specific_vacancy_url
 from vacature_engine.simple import VacancyPolicy, policy_from_config
