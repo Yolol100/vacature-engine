@@ -18,8 +18,7 @@ def _search_result_snippet(row: dict[str, Any]) -> bool:
     """
     metadata = row.get("source_metadata")
     return (
-        row.get("source_id") == "google-jobs"
-        and isinstance(metadata, dict)
+        isinstance(metadata, dict)
         and metadata.get("provider") == "serpapi_google"
         and metadata.get("discovery_only") is True
     )

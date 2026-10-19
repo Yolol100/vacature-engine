@@ -505,6 +505,23 @@ class FreeDiscoveryTests(unittest.TestCase):
             finally:
                 runner.close()
 
+    def test_direct_ingest_requires_original_google_source_contract(self):
+        bad = SourceSpec("not-google-jobs", "discovery",
+                         "serpapi_google", "worldwide")
+        row = {
+            "title": "WordPress Developer",
+            "url": "https://jobs.ashbyhq.com/acme/42",
+            "snippet": "Unverified snippet",
+        }
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "state.sqlite")
+            try:
+                with self.assertRaises(ValueError):
+                    runner.ingest_records(bad, [row])
+                self.assertEqual(runner.state.list_jobs(), [])
+            finally:
+                runner.close()
+
     def test_actions_use_immutable_full_commit_ids(self):
         root = Path(__file__).resolve().parents[2]
         paths = (
