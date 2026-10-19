@@ -420,6 +420,78 @@ def screen_review_candidates(observations: list[dict[str, Any]],
     return output, counted
 
 
+def _official_page_exclusion(page: dict[str, Any], policy: VacancyPolicy,
+                             today: date) -> str | None:
+    """Only definitive first-party closure/expiry/old-original proof can drop a role."""
+    if page.get("status") == "closed_at_exact_ats_route":
+        return "official_job_route_closed"
+    if page.get("status") != "matching_first_party_jobposting":
+        return None
+    info = page.get("structured")
+    if not isinstance(info, dict):
+        return None
+    if info.get("expired_by_valid_through") is True:
+        return "official_job_expired"
+    posted = info.get("date_posted")
+    if isinstance(posted, str) and info.get("date_posted_valid") is True:
+        try:
+            age = (today - date.fromisoformat(posted)).days
+        except ValueError:
+            return None
+        if age >= 0 and policy.max_posting_age_days > 0 and age > policy.max_posting_age_days:
+            return "official_original_post_too_old"
+    return None
+
+
+def _missing_ranking_evidence(candidate: dict[str, Any],
+                              page: dict[str, Any], policy: VacancyPolicy,
+                              today: date) -> list[str]:
+    """Truthful, machine-readable missing gates; never invent score anchors."""
+    missing: list[str] = []
+    checks = candidate["official_checks"]
+    if checks.get("official_role") != "confirmed_current_public_ats":
+        missing.append("official_employer_and_exact_role")
+    if page.get("status") != "matching_first_party_jobposting":
+        missing.append("matching_visible_first_party_job_page")
+    info = page.get("structured")
+    if not isinstance(info, dict) or info.get("date_posted_valid") is not True:
+        missing.append("original_publication_date")
+    elif isinstance(info.get("date_posted"), str):
+        try:
+            age = (today - date.fromisoformat(info["date_posted"])).days
+        except ValueError:
+            age = None
+        if age is None or age < 0:
+            missing.append("valid_original_publication_date")
+    if checks.get("remote") != "confirmed" or not (
+        isinstance(info, dict) and info.get("remote_signal") is True
+    ):
+        missing.append("fully_remote_from_first_party")
+    if checks.get("netherlands") != "allowed" or not (
+        isinstance(info, dict) and
+        geography_signal(", ".join(info.get("applicant_locations") or [])) == "allowed"
+    ):
+        missing.append("netherlands_executable_from_employer")
+    if page.get("apply_http_status") != 200:
+        missing.append("usable_exact_application_route")
+    if policy.allowed_listing_languages is not None:
+        if page.get("page_language") not in policy.allowed_listing_languages:
+            missing.append("verified_listing_language")
+        # The HTML lang of the application form is an interface locale, not
+        # employer authorization to apply in that language.
+        if page.get("application_language") not in policy.allowed_listing_languages:
+            missing.append("employer_authorized_application_language")
+        missing.append("employer_required_work_languages")
+    coverage = candidate.get("technical_requirement_review") or {}
+    if (coverage.get("status") != "mapped_skills_have_evidence"
+            or coverage.get("explicit_technical_requirements", 0) < 1):
+        missing.append("complete_candidate_requirement_evidence")
+    # Semantic core/workstyle fit and score anchors are not guaranteed by
+    # keyword overlap; only verified specialist evidence can establish them.
+    missing.append("verified_core_duties_and_score_anchors")
+    return missing
+
+
 def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
              *, today: date | None = None, max_free_sources: int = 8) -> dict[str, Any]:
     if mode not in GOOGLE_MODES:
@@ -488,13 +560,19 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         if r.get("source_type") == "ats" and r.get("source_id") in active_ids
     }
     checked = 0
+    excluded_after_official_page = {
+        "official_job_route_closed": 0,
+        "official_job_expired": 0,
+        "official_original_post_too_old": 0,
+    }
+    retained: list[dict[str, Any]] = []
     for candidate in candidates:
-        if checked >= 10:
-            break
-        if candidate["official_checks"]["official_role"] != "confirmed_current_public_ats":
+        if checked >= 10 or candidate["official_checks"]["official_role"] != "confirmed_current_public_ats":
+            retained.append(candidate)
             continue
         original = originals.get(candidate["official_role_candidate_url"])
         if original is None:
+            retained.append(candidate)
             continue
         checked += 1
         page = fetch_official_page_evidence(
@@ -508,13 +586,23 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             candidate["official_structured_date"] = structured["date_posted"]
             candidate["official_structured_remote"] = structured["remote_signal"]
             candidate["official_applicant_locations"] = structured["applicant_locations"]
+        reason = _official_page_exclusion(page, policy, today or date.today())
+        if reason is not None:
+            excluded_after_official_page[reason] += 1
+            continue
+        candidate["still_to_verify"] = _missing_ranking_evidence(
+            candidate, page, policy, today or date.today()
+        )
         candidate["status"] = "unverified_review_only"
+        retained.append(candidate)
+    candidates = retained
     return {
         "mode": mode, "read_only": True, "google": google_status,
         "google_observations": len(google_observations),
         "fallback_sources_attempted": attempts, "fallback_sources_successful": successes,
         "raw_observations": len(observations), "review_count": len(candidates), "official_pages_checked": checked,
-        "preflight_counts": counts, "review_candidates": candidates,
+        "preflight_counts": counts, "official_exclusion_counts": excluded_after_official_page,
+        "review_candidates": candidates,
         "final_recommendations": [],
         "reason_no_final_recommendations": "Official role, NL remote, language and personal evidence must be verified before ranking.",
     }
