@@ -55,6 +55,16 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   role status, Netherlands-remote permission, language and CandidateEvidence
   fit still require specialist verification before displaying a recommendation.
   It does not write to the Register or send applications.
+  The official-check stage now recognizes only current, Register-approved ATS
+  observations as official evidence; it flags country restrictions, remote
+  status, declared language and active CandidateEvidence support. Direct
+  source restrictions and expired listings can remove obviously unsuitable
+  records before review. Search results and job boards **cannot verify
+  themselves**. Missing employer proof, Netherlands hiring eligibility,
+  application language or semantic fit remains `unverified_review_only`.
+  The canonical `vacature_engine.simple.top_vacancies` function is the only
+  final ranking authority after all hard gates and fit anchors are grounded;
+  missing evidence must never be converted into invented scores.
 
 Google discovery is optional. It requires a verified free SerpApi account
 and active `google-jobs` registration, uses no paid plan, and returns

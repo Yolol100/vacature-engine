@@ -179,6 +179,62 @@ class OnePassTests(unittest.TestCase):
         self.assertEqual(rows[0]["role_family_hints"], ["wordpress_ecosystem"])
         self.assertEqual(rows[0]["status"], "unverified_review_only")
 
+    def test_source_restricted_himalayas_roles_are_not_eligible_for_nl(self):
+        records = [
+            {
+                "source_id": "himalayas", "source_type": "discovery_api",
+                "canonical_url": "https://himalayas.app/companies/velaio/jobs/wp-1",
+                "url": "https://himalayas.app/companies/velaio/jobs/wp-1",
+                "title": "WordPress senior developer", "employer": "VELAIO",
+                "source_metadata": {"location_restriction_names": ["United States"]},
+            },
+            {
+                "source_id": "himalayas", "source_type": "discovery_api",
+                "canonical_url": "https://himalayas.app/companies/acme/jobs/wp-2",
+                "url": "https://himalayas.app/companies/acme/jobs/wp-2",
+                "title": "WordPress developer", "employer": "OtherCo",
+                "source_metadata": {"location_restriction_names": ["European Union"]},
+            },
+        ]
+        rows, counts = screen_review_candidates(
+            records, tables(), policy_from_config(CONFIG), today=date(2026, 10, 19),
+        )
+        self.assertEqual(counts["source_location_restricted"], 1)
+        self.assertEqual(len(rows), 1)
+        self.assertIn("wp-2", rows[0]["official_role_candidate_url"])
+        # Aggregator's EU hint still never verifies the employer.
+        self.assertEqual(rows[0]["official_checks"]["official_role"], "unverified")
+
+    def test_official_ats_costa_rica_role_excluded(self):
+        rows, counts = screen_review_candidates([
+            dict(
+                observation(
+                    "https://job-boards.greenhouse.io/acquia/jobs/8205142",
+                    title="AI Automation Manager", location="Remote - Costa Rica", remote=None,
+                    source_metadata={"provider": "greenhouse", "provider_job_id": 8205142},
+                ),
+                source_id="greenhouse", employer="Acquia",
+            ),
+        ], tables() | {
+            "Bronnen": tables()["Bronnen"] + [
+                {"source_id": "greenhouse", "status": "active", "source_type": "ats", "priority": "high"}
+            ],
+        }, policy_from_config(CONFIG), today=date(2026, 10, 19))
+        self.assertEqual(rows, [])
+        self.assertEqual(counts["official_region_rejected"], 1)
+
+    def test_freelancer_available_post_is_not_a_vacancy(self):
+        rows, counts = screen_review_candidates([
+            {
+                "source_id": "google-jobs", "source_type": "discovery",
+                "canonical_url": "https://community.n8n.io/t/available-n8n-ai-engineer/322775",
+                "url": "https://community.n8n.io/t/available-n8n-ai-engineer/322775",
+                "title": "Available n8n engineer", "employer": None,
+            },
+        ], tables(), policy_from_config(CONFIG), today=date(2026, 10, 19))
+        self.assertEqual(rows, [])
+        self.assertEqual(counts["non_job_page"], 1)
+
     def test_google_snippet_is_not_fit_proof(self):
         rows, counts = screen_review_candidates([
             {
