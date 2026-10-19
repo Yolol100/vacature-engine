@@ -1,8 +1,6 @@
 name: Free Google vacancy discovery
 
 on:
-  push:
-    branches: [qa/free-google-test-20261019]
   workflow_dispatch:
     inputs:
       mode:
@@ -31,7 +29,6 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-          ref: a7fbde221e6da082e76ad6ba18ca0c01b716d817
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.11"
@@ -40,7 +37,7 @@ jobs:
       - name: Check configured key and FREE account (no search credits used)
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
-          SEARCH_MODE: page-1
+          SEARCH_MODE: ${{ inputs.mode }}
         run: |
           python - <<'PY'
           import os
@@ -77,7 +74,7 @@ jobs:
           PY
         # The mode is passed separately to prevent arbitrary shell interpolation.
       - name: Verify the live source registry (no searches)
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ inputs.mode != 'check' }}
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
         run: |
@@ -90,10 +87,10 @@ jobs:
             --spreadsheet-id 1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0 \
             --out "$RUNNER_TEMP/active-google-specs.json"
       - name: Run bounded, discovery-only search
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ inputs.mode != 'check' }}
         env:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
-          SEARCH_MODE: page-1
+          SEARCH_MODE: ${{ inputs.mode }}
         run: |
           python - <<'PY'
           import json
@@ -139,7 +136,7 @@ jobs:
           print("No application, source or Register changes were made.")
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: ${{ github.event_name == 'push' && success() }}
+        if: ${{ inputs.mode != 'check' && success() }}
         with:
           name: google-discovery-candidates-unverified
           path: ${{ runner.temp }}/google-discoveries.json
