@@ -318,7 +318,7 @@ def screen_review_candidates(observations: list[dict[str, Any]],
                              limit: int = 60) -> tuple[list[dict[str, Any]], dict[str, int]]:
     """Suppress prior roles; hard-exclude only explicit mismatches; keep all unknowns unverified."""
     historical_urls, weak = _previous_index(tables)
-    counted = {"previously_registered": 0, "possible_prior_match": 0,
+    counted = {"unapproved_source": 0, "previously_registered": 0, "possible_prior_match": 0,
                "explicit_mismatch": 0, "unsafe_link": 0, "off_target": 0,
                "official_region_rejected": 0, "source_location_restricted": 0,
                "non_job_page": 0, "source_expired": 0, "awaiting_verification": 0}
@@ -331,6 +331,11 @@ def screen_review_candidates(observations: list[dict[str, Any]],
     ordered = sorted(canonicalize_observations(observations),
                      key=lambda row: _review_sort_key(row, tables))
     for row in ordered:
+        # Prevent an injected or retired board observation from reaching even
+        # the provisional review queue; only live Register sources can enter.
+        if row.get("source_id") not in active_ids:
+            counted["unapproved_source"] += 1
+            continue
         url = _safe_candidate_url(row.get("canonical_url") or row.get("url"))
         if not url or not is_role_specific_vacancy_url(url):
             counted["unsafe_link"] += 1
