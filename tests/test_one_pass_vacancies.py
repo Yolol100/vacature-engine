@@ -373,6 +373,53 @@ class OnePassTests(unittest.TestCase):
         ):
             self.assertEqual(google_free_gate(s, 1), "not_verified_free_or_insufficient_quota")
 
+    def test_free_source_order_follows_live_priority_and_curated_tenants(self):
+        t = tables()
+        t["Bronnen"] = [
+            {"source_id": name, "status": "active", "source_type": kind,
+             "priority": "high" if kind == "job_board" else "medium"}
+            for name, kind in [
+                ("greenhouse", "ats"), ("ashby", "ats"),
+                ("remote-ok", "job_board"), ("we-work-remotely", "job_board"),
+            ]
+        ]
+        config = {**CONFIG,
+                  "direct_discovery_order": "ats,job_board",
+                  "high_source_order": "we-work-remotely,remote-ok"}
+        raw = [
+            {"source_id": "greenhouse", "source_type": "ats",
+             "adapter": "greenhouse", "account": "wordpress-first"},
+            {"source_id": "ashby", "source_type": "ats",
+             "adapter": "ashby", "account": "alphabetically-first"},
+            {"source_id": "remote-ok", "source_type": "job_board",
+             "adapter": "remoteok", "account": "global"},
+            {"source_id": "we-work-remotely", "source_type": "job_board",
+             "adapter": "weworkremotely", "account": "programming"},
+        ]
+        selected = select_free_specs(raw, t, config, limit=4)
+        self.assertEqual(
+            [s.instance_id for s in selected],
+            ["greenhouse:wordpress-first", "ashby:alphabetically-first",
+             "we-work-remotely:programming", "remote-ok:global"],
+        )
+
+    def test_free_source_order_cannot_override_register_status(self):
+        t = tables()
+        t["Bronnen"] = [
+            {"source_id": "ashby", "status": "retired", "source_type": "ats",
+             "priority": "high"},
+            {"source_id": "greenhouse", "status": "active", "source_type": "ats",
+             "priority": "medium"},
+        ]
+        raw = [
+            {"source_id": "ashby", "source_type": "ats",
+             "adapter": "ashby", "account": "retired"},
+            {"source_id": "greenhouse", "source_type": "ats",
+             "adapter": "greenhouse", "account": "active"},
+        ]
+        selected = select_free_specs(raw, t, CONFIG, limit=2)
+        self.assertEqual([s.instance_id for s in selected], ["greenhouse:active"])
+
     def test_existing_ats_and_feeds_preserved(self):
         specs = json.loads((ROOT / "ingestion/source-specs.deploy.json").read_text())
         selected = select_free_specs(specs, tables(), CONFIG, limit=6)
