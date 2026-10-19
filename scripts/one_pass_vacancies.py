@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import tempfile
 from dataclasses import replace
 from datetime import date
@@ -234,6 +235,16 @@ def _previous_index(tables: dict[str, list[dict[str, str]]]) -> tuple[set[str], 
     return urls, weak
 
 
+# A product name (e.g. "WordPress VIP") is not proof of a technical job.
+# Exclude clear sales, recruiting and nontechnical management titles only.
+_NON_TECH_BUSINESS_TITLE = re.compile(
+    r"\b(?:account executive|sales development|business development|"
+    r"director of professional services|customer success manager|"
+    r"marketing manager|talent acquisition|recruiter|"
+    r"finance manager)\b", re.I,
+)
+
+
 # Generic technical titles may need an ATS description to reveal the domain.
 # "Account Manager", "Security Engineer" or "Talent Community" must not match
 # simply because their employer's boilerplate mentions WordPress/n8n.
@@ -257,6 +268,8 @@ _ATS_DESCRIPTION_TERMS = {
 def _role_hints(row: dict[str, Any], policy: VacancyPolicy) -> list[str]:
     """Strict review hints only: not eligibility or candidate fit evidence."""
     title = str(row.get("title") or "").casefold()
+    if _NON_TECH_BUSINESS_TITLE.search(title):
+        return []
     matched = {name for name, tokens in _ROLE_TERMS.items()
                if name in policy.target_role_families
                and any(term in title for term in tokens)}
