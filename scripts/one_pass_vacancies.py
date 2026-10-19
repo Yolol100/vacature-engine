@@ -472,8 +472,8 @@ def _missing_ranking_evidence(candidate: dict[str, Any],
         geography_signal(", ".join(info.get("applicant_locations") or [])) == "allowed"
     ):
         missing.append("netherlands_executable_from_employer")
-    if page.get("apply_http_status") != 200:
-        missing.append("usable_exact_application_route")
+    if page.get("apply_http_status") != 200 or page.get("application_form_detected") is not True:
+        missing.append("verified_application_form_at_exact_route")
     if policy.allowed_listing_languages is not None:
         if page.get("page_language") not in policy.allowed_listing_languages:
             missing.append("verified_listing_language")
@@ -582,6 +582,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         candidate["official_page_language"] = page["page_language"]
         candidate["application_language"] = page["application_language"]
         candidate["application_page_language"] = page.get("application_page_language")
+        candidate["application_form_detected"] = page.get("application_form_detected", False) is True
         structured = page["structured"]
         if structured is not None:
             candidate["official_structured_date"] = structured["date_posted"]
