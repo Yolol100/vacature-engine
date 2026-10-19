@@ -53,6 +53,24 @@ class OfficialReviewTests(unittest.TestCase):
         self.assertEqual(geography_signal("Worldwide"), "allowed")
         self.assertEqual(geography_signal("Remote - Spain"), "unknown")
 
+    def test_europe_and_netherlands_exclusions_override_global_terms(self):
+        for region in (
+            "Worldwide excluding Netherlands",
+            "Remote in Europe except Nederland",
+            "EU, not hiring from the Netherlands",
+            "Globally, no applicants from European Union",
+        ):
+            with self.subTest(region=region):
+                self.assertEqual(geography_signal(region), "restricted")
+
+    def test_last_published_is_not_original_publication_date(self):
+        result, _ = assess_official_observation(
+            official(location="Remote - EU", published_at="2026-10-19T10:00:00Z"),
+            candidate=CANDIDATE, active_ids={"greenhouse"},
+            evidence=EVIDENCE, policy=POLICY, today=TODAY,
+        )
+        self.assertEqual(result["original_publication"], "unknown")
+
     def test_only_live_known_ats_is_official(self):
         checks, ranked = assess_official_observation(
             official(), candidate=CANDIDATE, active_ids={"greenhouse"},
