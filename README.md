@@ -85,6 +85,10 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   posting date; recently republished roles remain unverified until an
   original employer date is confirmed. An application page's `<html lang>`
   reports interface language only, not which language applications may use.
+  A 200 OK response from the exact ATS application route is not enough to
+  confirm a usable form: the read-only checker also looks for a visible form
+  with email and submit controls. Client-side or inaccessible forms stay
+  unknown rather than being marked suitable.
   The review output lists missing official, remote/NL, language and skill-fit
   evidence; it suppresses only definitive official 404/410, expired
   `validThrough`, and first-party original posting dates outside live
