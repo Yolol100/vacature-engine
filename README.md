@@ -9,15 +9,17 @@ automatically submit applications, send messages, or change application states.
 - [Vacature Register](https://docs.google.com/spreadsheets/d/1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0/edit)
   - `Config`: live selection rules and thresholds
   - `Bronnen`: the sole source registry; only `active` entries may be queried
-  - `Vacatures`, `Applications`, `ApplicationEvents`, `CandidateEvidence`
-    and `JobSnapshots`: identity, application history and verified experience
+  - `Vacatures`, `Applications`, `ApplicationEvents`, `Feedback`,
+    `CandidateEvidence` and `JobSnapshots`: identity, prior applications,
+    recorded rejections and verified experience
 - [Vacature Radar – Nieuwe Vacatures](https://docs.google.com/spreadsheets/d/1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ/edit)
   - Existing `Nieuwe vacatures` sheet is an optional view, **not** a second
     authoritative registry.
 
 ## Workflow for a user-requested search
 
-1. Read the live policy, active sources and prior vacancies/applications.
+1. Read the live policy, active sources, prior vacancies/applications and
+   `Feedback` before ranking or reintroducing any role.
 2. Search official employer/ATS pages first. Use permitted public feeds,
    WordPress sources and fresh web discovery as supplementary inputs.
 3. Verify on the *official role page* that the opening is current, actually
@@ -25,7 +27,7 @@ automatically submit applications, send messages, or change application states.
    and workable from the Netherlands. Search-index, first-seen and update
    timestamps are **not** employer publication dates.
 4. Deduplicate on canonical role URLs and stable provider job IDs against
-   current and prior application evidence. Never recommend a previously
+   current and prior application/`Feedback` evidence. Never recommend a previously
    submitted or rejected role as new.
 5. Require verified employer legitimacy, permitted Dutch/English language
    and candidate fit supported by `CandidateEvidence`. Present only verified

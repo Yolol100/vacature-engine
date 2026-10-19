@@ -66,6 +66,7 @@ class FreeDiscoveryTests(unittest.TestCase):
             "https://user:pwd@example.com/job", "https://localhost/job",
             "https://127.0.0.1/job", "https://example.com:8443/job",
             "https://example.test/job", "https://example.com:broken/job",
+            "https://foo.localhost/job", "https://sub.foo.localhost/job",
             "https://127.1/job", "https://0177.0.0.1/job", "https://0x7f000001/job",
             "https://10.0.0.1/job", "https://192.168.1.50/job", "https://[::1]/job",
         ):
@@ -374,6 +375,42 @@ class FreeDiscoveryTests(unittest.TestCase):
             finally:
                 runner.close()
 
+
+    def test_public_feed_discovery_metadata_keeps_full_lifecycle(self):
+        # PublicFeedsAdapter also sets discovery_only=True; unlike Google
+        # snippets, its changing content must create updates and memberships.
+        import json
+        feed = SourceSpec("remotejobs-org", "job_board", "publicfeeds",
+                          "remotejobs-org", listing_language="en")
+        first = {
+            "id": 42, "title": "WordPress Engineer",
+            "url": "https://remotejobs.org/jobs/wordpress-42",
+            "description": "First job description",
+            "company_name": "Acme",
+        }
+        second = dict(first, description="Updated official public feed text")
+        with tempfile.TemporaryDirectory() as td:
+            runner = IngestionRunner(Path(td) / "state.sqlite3")
+            try:
+                original = runner.ingest_records(feed, [first])
+                self.assertTrue(original.success)
+                self.assertEqual(original.new, 1)
+                payload = json.loads(runner.state.list_jobs()[0]["payload_json"])
+                self.assertTrue(payload["source_metadata"]["discovery_only"])
+                self.assertEqual(payload["source_metadata"]["provider"], "remotejobs-org")
+                count = runner.state.snapshot_count()
+                change = runner.ingest_records(feed, [second])
+                self.assertTrue(change.success)
+                self.assertEqual(change.updated, 1)
+                self.assertEqual(runner.state.snapshot_count(), count + 1)
+                updated_payload = json.loads(runner.state.list_jobs()[0]["payload_json"])
+                self.assertIn("Updated official public feed text", updated_payload["description"])
+                runner.ingest_records(feed, [])
+                closed = runner.ingest_records(feed, [])
+                self.assertEqual(closed.closed, 1)
+                self.assertEqual(runner.state.list_jobs()[0]["status"], "closed")
+            finally:
+                runner.close()
 
     def test_actions_use_immutable_full_commit_ids(self):
         root = Path(__file__).resolve().parents[2]

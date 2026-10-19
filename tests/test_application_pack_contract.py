@@ -30,6 +30,11 @@ class ApplicationPackContractTests(unittest.TestCase):
         self.assertIn("vacature-engine` does not generate CV or motivation prose", readme)
         self.assertIn("does not infer candidate experience", readme)
 
+    def test_feedback_remains_an_authoritative_preflight_input(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("`Feedback`", readme)
+        self.assertIn("prior vacancies/applications and\n   `Feedback`", readme)
+
 
 if __name__ == "__main__":
     unittest.main()

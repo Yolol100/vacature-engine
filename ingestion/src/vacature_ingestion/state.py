@@ -10,10 +10,19 @@ from typing import Any, Iterable
 
 from .normalize import strong_identity_keys
 
-def _discovery_only(row: dict[str, Any]) -> bool:
-    """Only explicitly tagged search observations are non-authoritative."""
+def _search_result_snippet(row: dict[str, Any]) -> bool:
+    """Only SerpApi's short Google snippets are non-authoritative state updates.
+
+    Other public feeds also use discovery_only=True, but are real feed
+    observations: their updates and source memberships must keep working.
+    """
     metadata = row.get("source_metadata")
-    return isinstance(metadata, dict) and metadata.get("discovery_only") is True
+    return (
+        row.get("source_id") == "google-jobs"
+        and isinstance(metadata, dict)
+        and metadata.get("provider") == "serpapi_google"
+        and metadata.get("discovery_only") is True
+    )
 
 
 
@@ -135,7 +144,7 @@ class StateStore:
         job_ids = self._find_job_ids(keys)
         if not job_ids:
             return "new"
-        if _discovery_only(row):
+        if _search_result_snippet(row):
             # Google snippets must not trigger new updates for an already known URL.
             return "unchanged"
         row_hash = str(row.get("content_hash") or "")
@@ -260,7 +269,7 @@ class StateStore:
                     )
                     counts.new += 1
                     self._record_snapshot(job_id, row_hash, payload_json, first_seen, last_seen)
-                elif _discovery_only(row):
+                elif _search_result_snippet(row):
                     # A search excerpt is NOT proof of publication, change or reopening.
                     # Preserve all existing authoritative fields and closed status.
                     counts.unchanged += 1
@@ -280,7 +289,7 @@ class StateStore:
                     self._record_snapshot(job_id, row_hash, payload_json, first_seen, last_seen)
                 for key in keys:
                     self.db.execute("INSERT OR REPLACE INTO identities(identity_key,job_id) VALUES (?,?)", (key, job_id))
-                if not _discovery_only(row):
+                if not _search_result_snippet(row):
                     # Non-authoritative search hits cannot veto a provider's closure
                     # by creating a perpetual zero-missing source membership.
                     self.db.execute(

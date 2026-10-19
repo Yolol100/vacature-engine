@@ -87,7 +87,7 @@ def _safe_candidate_url(value: object) -> str | None:
         host = (parts.hostname or "").casefold()
         if parts.scheme != "https" or not host or parts.username or parts.password:
             return None
-        if host == "localhost" or host.endswith((".local", ".test")):
+        if host == "localhost" or host.endswith((".localhost", ".local", ".test")):
             return None
         # DNS names must end in an alphabetic/public TLD. This also rejects
         # abbreviated, octal and hexadecimal IPv4 loopback representations.
