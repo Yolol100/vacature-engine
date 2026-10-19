@@ -24,6 +24,8 @@ Dit project ondersteunt **handmatig gestart vacaturezoeken vanuit ChatGPT** met 
 ## Code die blijft
 
 - `src/vacature_engine/`: deterministische normalisatie, harde filters, scoring, prioritering en optionele CV-metadata.
+
+**Eigenaarsgrens:** The `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience. De `vacature-search`-skill verzorgt inhoudelijke beoordelingen en gebruikt alleen gecontroleerd kandidaatbewijs.
 - `ingestion/`: publieke ATS/API/feed-adapters voor expliciete, gecontroleerde scans; de bestanden `source-specs.*` zijn technische voorbeelden, **niet** de bronwaarheid. Het live Register bepaalt actieve bronnen.
 - `tests/` en `ingestion/tests/`: onderhouds- en regressietests die lokaal kunnen worden uitgevoerd.
 
