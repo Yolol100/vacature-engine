@@ -156,6 +156,25 @@ class OnePassTests(unittest.TestCase):
         self.assertEqual(counts["off_target"], 75)
         self.assertEqual(rows[0]["source_types"], ["ats"])
 
+    def test_wordpress_brand_sales_jobs_are_not_web_developer_roles(self):
+        items = [
+            observation("https://job-boards.greenhouse.io/automatticcareers/jobs/5867610",
+                        title="Account Executive, WordPress VIP",
+                        source_type="ats"),
+            observation("https://job-boards.greenhouse.io/automatticcareers/jobs/8000156",
+                        title="Director of Professional Services, WordPress VIP",
+                        source_type="ats"),
+            observation("https://jobs.ashbyhq.com/acme/real-dev",
+                        title="WordPress VIP Plugin Developer",
+                        source_type="ats"),
+        ]
+        rows, counts = screen_review_candidates(
+            items, tables(), policy_from_config(CONFIG), today=date(2026, 10, 19),
+        )
+        self.assertEqual(counts["off_target"], 2)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["title"], "WordPress VIP Plugin Developer")
+
     def test_unrelated_ats_titles_do_not_pass_on_company_boilerplate(self):
         noise = [
             observation("https://jobs.ashbyhq.com/acme/account", title="Account Manager",
