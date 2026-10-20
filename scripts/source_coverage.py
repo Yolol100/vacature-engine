@@ -91,9 +91,25 @@ def build_source_coverage(
             or type(pages) is not int or pages not in {0, 1, 3, 10}):
         raise ValueError("Invalid bounded coverage plan")
     ids: set[str] = set()
-    adapters = {str(spec.get("source_id") or "").strip() for spec in deploy_specs
-                if isinstance(spec, dict) and spec.get("adapter")
-                and spec.get("adapter") != "serpapi_google"}
+    active_ids = {
+        str(row.get("source_id") or "").strip()
+        for row in register_rows
+        if str(row.get("status") or "").strip().casefold() == "active"
+    }
+    adapters: set[str] = set()
+    for spec in deploy_specs:
+        if not isinstance(spec, dict) or not spec.get("adapter") or (
+                spec.get("adapter") == "serpapi_google"):
+            continue
+        ident = str(spec.get("source_id") or "").strip()
+        required = {ident}
+        extra = (spec.get("options") or {}).get("registry_source_id")
+        if isinstance(extra, str) and extra.strip():
+            required.add(extra.strip())
+        elif isinstance(extra, list):
+            required.update(str(x).strip() for x in extra if str(x).strip())
+        if ident and required.issubset(active_ids):
+            adapters.add(ident)
     entries = []
     public = []
     priorities = {"high": 0, "medium": 1, "low": 2}
