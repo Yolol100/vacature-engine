@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from datetime import date
+from datetime import date, datetime
 import math
 from typing import Any
 
@@ -21,11 +21,16 @@ def _iso_date(value: Any) -> tuple[str | None, bool | None]:
     if not isinstance(value, str):
         return None, False
     raw = value.strip()
-    if len(raw) < 10 or (len(raw) > 10 and raw[10] not in {"T", " "}):
+    if len(raw) < 10:
         return None, False
     try:
-        parsed = date.fromisoformat(raw[:10])
-    except ValueError:
+        if len(raw) == 10:
+            parsed = date.fromisoformat(raw)
+        elif raw[10] in {"T", " "}:
+            parsed = datetime.fromisoformat(raw).date()
+        else:
+            return None, False
+    except (ValueError, OverflowError):
         return None, False
     return parsed.isoformat(), True
 
