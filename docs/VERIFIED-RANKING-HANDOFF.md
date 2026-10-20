@@ -109,6 +109,25 @@ malformed input sets `date_posted_valid=true`.
 See `tests/test_verified_ranking_flow.py` for an executable **synthetic**
 contract fixture. Its score of 85 is test evidence, never a real recommendation.
 
+## Archived, verifiable Library CV evidence
+
+A specific archived application CV may document a **narrow historical technical
+claim** even if it is not the current canonical CV. Use source_type
+`library_cv` only with the exact accessible ChatGPT Library file ID
+(`source_ref=file_<32 lowercase hex digits>`), a descriptive
+`source_locator` identifying the relevant section, and a genuine, current
+`verified_at` check after inspecting the full claim. Do not repurpose
+`canonical_cv` for a superseded application CV or mark a missing file verified.
+
+The owning specialist must independently check that the archived document
+actually supports the **entire** claim. Historic experience totals and old
+skills do not override later user-confirmed corrections or the live active
+CandidateEvidence. Missing source access, partial support, or a conflicting
+updated CV is `unknown` and stays out of scoring. The engine checks an opaque
+file ID and locator, not file existence or semantic truth; exact Library
+access/readback remains the specialist's responsibility. An archived
+`library_cv` is not automatically a resume to submit with an application.
+
 ## Current verification limits
 
 Automated positive verification currently uses supported, exact ATS routes.
