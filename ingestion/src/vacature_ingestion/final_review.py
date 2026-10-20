@@ -67,7 +67,8 @@ def _public_url(value: Any) -> bool:
     return _safe_candidate_url(value) is not None
 
 
-def _verified_evidence(rows: list[dict[str, str]], today: date) -> dict[str, dict[str, str]]:
+def _verified_evidence(rows: list[dict[str, str]], today: date,
+                       config: dict[str, str]) -> dict[str, dict[str, str]]:
     index: dict[str, dict[str, str]] = {}
     duplicate_ids: set[str] = set()
     seen_ids: set[str] = set()
@@ -99,6 +100,10 @@ def _verified_evidence(rows: list[dict[str, str]], today: date) -> dict[str, dic
                 or not identity or verified > today
                 or not _text(row.get("source_ref")) or not _text(row.get("source_locator"))
                 or not valid_library_cv_source(row)
+                # A canonical CV claim must match the live configured ID;
+                # a stale 404 pointer never establishes provenance.
+                or (row.get("source_type") == "canonical_cv"
+                    and row.get("source_ref") != config.get("canonical_cv_file_id"))
                 or not has_positive_requirement_claim(row.get("claim"))):
             continue
         index[identity] = row
@@ -240,7 +245,7 @@ def validate_assessment(
     if not isinstance(requirements, list) or not 1 <= len(requirements) <= 100:
         pending.append("complete_requirement_matrix")
         return result
-    evidence_index = _verified_evidence(evidence, today)
+    evidence_index = _verified_evidence(evidence, today, config)
     requirement_index: dict[str, dict[str, Any]] = {}
     languages_reviewed: set[str] = set()
     negative: list[str] = []

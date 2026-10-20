@@ -128,6 +128,18 @@ file ID and locator, not file existence or semantic truth; exact Library
 access/readback remains the specialist's responsibility. An archived
 `library_cv` is not automatically a resume to submit with an application.
 
+### Canonical CV pointer consistency
+
+For any `source_type=canonical_cv` candidate proof, its `source_ref` must
+exactly equal the live Config `canonical_cv_file_id`. Missing or stale
+pointers cannot support a verified requirement, even with matching
+specialist assessment digests. Such roles return to review without a score.
+
+This deterministic check compares the two live IDs only. It does not
+verify a Drive file exists or supports a particular claim. The owning
+specialist still must independently inspect the source and the claim.
+Repository tests use synthetic file IDs and contain no private CV text.
+
 ## Current verification limits
 
 Automated positive verification currently uses supported, exact ATS routes.
