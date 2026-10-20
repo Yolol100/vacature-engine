@@ -188,6 +188,45 @@ class SourceCoverageTests(unittest.TestCase):
         self.assertNotEqual(indexed["greenhouse"]["coverage_route"], "public_adapter")
         self.assertEqual(indexed["company-example"]["execution"], "excluded")
 
+    def test_live_discovery_class_order_beats_unrelated_board_priority(self):
+        rows, cfg, deploy, seeds = fixture(public_count=0)
+        rows.extend([
+            {"source_id": "board-priority", "status": "active",
+             "source_type": "job_board", "priority": "high",
+             "base_url": "https://jobs.example.org"},
+            {"source_id": "direct-employer", "status": "active",
+             "source_type": "employer_direct", "priority": "medium",
+             "base_url": "https://careers.example.org"},
+        ])
+        cfg["direct_discovery_order"] = "employer_direct,ats,job_board"
+        report = build_source_coverage(
+            rows, deploy, cfg, seeds, round_index=0,
+            max_google_queries=8, pages=1)
+        first = next(q for q in report["query_plan"]
+                     if q["lane"] == "registered_source_domain")
+        self.assertEqual(first["source_id"], "direct-employer")
+
+    def test_default_eight_queries_give_xray_a_real_four_slot_window(self):
+        plan = planned(public_count=14)
+        from collections import Counter
+        lanes = Counter(q["lane"] for q in plan["query_plan"])
+        self.assertEqual(plan["google_query_count"], 8)
+        self.assertEqual(lanes["registered_source_domain"], 3)
+        self.assertEqual(lanes["configured_xray_domain"], 4)
+        self.assertEqual(lanes["registered_google_seed"], 1)
+        self.assertEqual(plan["google_request_budget"], 8)
+        self.assertEqual(len({q["query"] for q in plan["query_plan"]}), 8)
+
+    def test_no_xray_domains_uses_remaining_free_budget_for_sources(self):
+        rows, cfg, deploy, seeds = fixture(public_count=14)
+        cfg["google_xray_domains"] = ""
+        plan = build_source_coverage(rows, deploy, cfg, seeds,
+                                     round_index=2, max_google_queries=8, pages=1)
+        self.assertEqual(plan["google_query_count"], 8)
+        self.assertTrue(all(q["lane"] in {
+            "registered_source_domain", "registered_google_seed",
+        } for q in plan["query_plan"]))
+
     def test_duplicate_source_ids_fail_closed(self):
         rows, cfg, deployed, seeds = fixture()
         rows.append(dict(rows[0]))
