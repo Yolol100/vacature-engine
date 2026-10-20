@@ -143,6 +143,40 @@ class VerifiedRankingFlowTests(unittest.TestCase):
         assessment.update(assessment_context(row, page, config, t["CandidateEvidence"]))
         self.assertEqual(evaluate(t, row, page, assessment)["final_recommendations"], [])
 
+    def test_canonical_cv_must_match_live_config_even_with_rebound_digests(self):
+        t, row, page, assessment = fixture()
+        live = t["CandidateEvidence"][0]
+        live["source_type"] = "canonical_cv"
+        live["source_ref"] = "synthetic-drive-cv-current"
+        t["Config"].append({"key": "canonical_cv_file_id",
+                            "value": live["source_ref"], "type": "string"})
+        for req in assessment["requirements"]:
+            for ref in req["candidate_evidence"]:
+                if ref["evidence_id"] == live["evidence_id"]:
+                    ref["source_ref"] = live["source_ref"]
+
+        def rebind_context():
+            config = {r["key"]: r["value"] for r in t["Config"]}
+            assessment.update(assessment_context(
+                row, page, config, t["CandidateEvidence"]))
+
+        rebind_context()
+        self.assertEqual(evaluate(t, row, page, assessment)[
+            "final_recommendations"][0]["score"], 85)
+
+        # Even a re-signed assessment cannot validate an obsolete CV ID.
+        t["Config"][-1]["value"] = "synthetic-drive-cv-stale"
+        rebind_context()
+        stale = evaluate(t, row, page, assessment)
+        self.assertEqual(stale["final_recommendations"], [])
+        self.assertIn("verified_candidate_requirement_evidence",
+                      stale["review_candidates"][0]["still_to_verify"])
+
+        t["Config"].pop()
+        rebind_context()
+        self.assertEqual(evaluate(t, row, page, assessment)[
+            "final_recommendations"], [])
+
     def test_no_assessment_never_scores_even_when_technical_tokens_match(self):
         t, row, page, _ = fixture()
         result = evaluate(t, row, page, None)
