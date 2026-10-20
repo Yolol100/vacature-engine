@@ -14,7 +14,7 @@ from vacature_ingestion.models import SourceSpec
 from vacature_ingestion.runner import SourceRunResult
 from scripts.one_pass_vacancies import (
     _official_page_exclusion, _missing_ranking_evidence,
-    RegisterPreflightError, google_free_gate, live_policy, parse_table,
+    RegisterPreflightError, google_free_gate, live_policy, load_register, parse_table,
     plan_free_source_batches, run_once, screen_review_candidates, select_free_specs,
 )
 
@@ -57,6 +57,45 @@ def observation(url, title="WordPress Developer", source_type="ats", **kwargs):
             "employer": "Acme", **kwargs}
 
 class OnePassTests(unittest.TestCase):
+    def test_public_discovery_never_fetches_candidate_evidence_tab(self):
+        seen = []
+
+        def fake_request(url, token):
+            seen.append(url)
+            if "CandidateEvidence" in url:
+                self.fail("Private CandidateEvidence was requested from Sheets")
+            from scripts.one_pass_vacancies import SHEETS
+            name = next((tab for tab in SHEETS if tab in url), None)
+            self.assertIsNotNone(name)
+            header = sorted(SHEETS[name])
+            return {"values": [header, [("active" if h == "status"
+                                          else "test" if h == "source_id"
+                                          else "TRUE" if h == "value"
+                                          else "key" if h == "key"
+                                          else "") for h in header]]}
+
+        with patch.dict(os.environ, {"GOOGLE_SERVICE_ACCOUNT_JSON": '{"fake":"secret"}'}), \
+             patch("scripts.one_pass_vacancies._service_account_token", return_value="synthetic"), \
+             patch("scripts.one_pass_vacancies._request_json", side_effect=fake_request):
+            result = load_register(include_candidate_evidence=False)
+        self.assertEqual(result["CandidateEvidence"], [])
+        self.assertFalse(any("CandidateEvidence" in url for url in seen))
+        self.assertEqual(len(seen), 7)
+
+    def test_public_run_rejects_private_receipts_or_injected_cv_claims(self):
+        t = tables()
+        with self.assertRaises(ValueError):
+            run_once(t, ROOT, "check", private_candidate_evidence_available=False)
+        t["CandidateEvidence"] = []
+        with self.assertRaises(ValueError):
+            run_once(t, ROOT, "check", verified_assessments=[{
+                "canonical_url": "https://jobs.example.org/role",
+            }], private_candidate_evidence_available=False)
+        report = run_once(t, ROOT, "check",
+                          private_candidate_evidence_available=False)
+        self.assertFalse(report["specialist_handoff"]["private_candidate_evidence_loaded"])
+        self.assertEqual(report["source_health"]["proposals"], [])
+
     def test_missing_table_and_columns_fail_closed(self):
         with self.assertRaises(RegisterPreflightError):
             parse_table([], {"vacancy_id"}, "Vacatures")
