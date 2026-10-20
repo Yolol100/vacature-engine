@@ -81,8 +81,8 @@ def source_health_handoff(register_rows: list[dict[str, str]],
             continue
         # An allowlisted provider attempt can represent multiple explicit
         # employer IDs, but never any other Google-site discovery source.
-        for sid in set(ids):
-            if (not isinstance(sid, str) or sid not in registered
+        for sid in {item for item in ids if isinstance(item, str)}:
+            if (sid not in registered
                     or route.get(sid) not in {"public_adapter", "free_google_optional"}
                     or registered[sid].get("status") != "active"):
                 continue
