@@ -38,7 +38,11 @@ from vacature_ingestion.requirement_match import compare_requirements, compare_r
 from vacature_ingestion.final_review import (
     assessment_context, automated_ranking_blockers, validate_assessment,
 )
-from scripts.source_coverage import build_source_coverage, complete_source_coverage
+# Called both as a package by tests and directly as an Actions CLI script.
+if __package__:
+    from .source_coverage import build_source_coverage, complete_source_coverage
+else:
+    from source_coverage import build_source_coverage, complete_source_coverage
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
