@@ -7,6 +7,7 @@ import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from .models import SourceSpec
 from .registry_filter import filter_source_specs, read_active_source_ids, read_active_source_rows
@@ -19,8 +20,22 @@ def _write_json(path: str | Path, value: object) -> None:
     Path(path).write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
 
 
+def _registry_gated_specs(raw: list[dict[str, Any]], spreadsheet_id: str) -> list[SourceSpec]:
+    """No adapter fetch without per-instance active-source Register approval."""
+    if not raw:
+        raise SystemExit("No source specs supplied; no source was queried")
+    active_ids = read_active_source_ids(spreadsheet_id)
+    approved, blocked = filter_source_specs(raw, active_ids)
+    if blocked or len(approved) != len(raw):
+        raise SystemExit("Vacature Register denied a source spec; no source was queried")
+    return [SourceSpec.from_dict(item) for item in approved]
+
+
 def cmd_ingest(args: argparse.Namespace) -> int:
-    spec = SourceSpec.from_dict(json.loads(Path(args.spec).read_text(encoding="utf-8")))
+    raw = json.loads(Path(args.spec).read_text(encoding="utf-8"))
+    if not isinstance(raw, dict):
+        raise SystemExit("--spec must contain a JSON object")
+    spec = _registry_gated_specs([raw], args.spreadsheet_id)[0]
     runner = IngestionRunner(args.state)
     try:
         result = runner.run_source(spec)
@@ -34,9 +49,9 @@ def cmd_ingest(args: argparse.Namespace) -> int:
 
 def cmd_ingest_many(args: argparse.Namespace) -> int:
     raw = json.loads(Path(args.specs).read_text(encoding="utf-8"))
-    if not isinstance(raw, list):
-        raise SystemExit("--specs must contain a JSON array")
-    specs = [SourceSpec.from_dict(item) for item in raw if isinstance(item, dict)]
+    if not isinstance(raw, list) or not raw or not all(isinstance(item, dict) for item in raw):
+        raise SystemExit("--specs must contain a nonempty JSON array of objects")
+    specs = _registry_gated_specs(raw, args.spreadsheet_id)
     runner = IngestionRunner(args.state)
     started_at = datetime.now(timezone.utc).isoformat()
     try:
@@ -142,11 +157,13 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
     ingest = sub.add_parser("ingest")
     ingest.add_argument("--spec", required=True)
+    ingest.add_argument("--spreadsheet-id", required=True)
     ingest.add_argument("--state", required=True)
     ingest.add_argument("--out")
     ingest.set_defaults(func=cmd_ingest)
     ingest_many = sub.add_parser("ingest-many")
     ingest_many.add_argument("--specs", required=True)
+    ingest_many.add_argument("--spreadsheet-id", required=True)
     ingest_many.add_argument("--state", required=True)
     ingest_many.add_argument("--out")
     ingest_many.add_argument("--allow-partial", action="store_true")

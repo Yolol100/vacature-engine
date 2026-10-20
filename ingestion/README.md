@@ -14,6 +14,10 @@ RSS and JobPosting data **only when explicitly requested**.
 4. The `vacature-search` skill verifies the actual role on the employer's
    official page and compares strong vacancy IDs with the Register.
 5. Never write to the Register, send messages or apply automatically.
+6. Technical `ingest` and `ingest-many` commands require `--spreadsheet-id`
+   and read-only access to live `Bronnen`. Every requested provider and
+   employer-bound source must be active. Partial approval, missing credentials
+   and duplicate source IDs stop before HTTP fetches or SQLite state changes.
 
 The local SQLite store is temporary technical state for explicit runs;
 it is **not** an authoritative application or vacancy database.
