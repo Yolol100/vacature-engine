@@ -93,6 +93,15 @@ class SourceHealthHandoffTests(unittest.TestCase):
         self.assertEqual(result["stale_source_skipped"], 1)
         self.assertEqual(result["proposals"], [])
 
+    def test_older_success_does_not_reset_a_newer_failure(self):
+        rows, plan = fixtures()
+        rows[0]["last_failure_at"] = "2026-10-20T13:15:00Z"
+        rows[0]["consecutive_failures"] = "3"
+        result = source_health_handoff(
+            rows, plan, [attempt(["ats"], True)], asof=NOW)
+        self.assertEqual(result["stale_source_skipped"], 1)
+        self.assertEqual(result["proposals"], [])
+
     def test_future_or_unstamped_events_cannot_invent_health(self):
         result = self.make([attempt(["ats"], True, timestamp=None),
                             attempt(["ats"], True, timestamp="2026-10-21T13:00:00Z"),
