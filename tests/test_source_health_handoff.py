@@ -50,6 +50,28 @@ class SourceHealthHandoffTests(unittest.TestCase):
         self.assertTrue(result["read_only"])
         self.assertFalse(result["auto_write"])
 
+    def test_missing_success_and_missing_any_health_are_distinct(self):
+        rows, coverage = fixtures()
+        rows[0]["last_failure_at"] = "2026-10-19T12:00:00Z"
+        rows[0]["failure_category"] = "timeout/transient network"
+        rows[0]["consecutive_failures"] = "1"
+        result = source_health_handoff(rows, coverage, [], asof=NOW)
+        # Four active sources have never succeeded; only three are wholly
+        # unobserved. Existing failure must not be called a success.
+        self.assertEqual(4, result["registry_active_sources_without_success"])
+        self.assertEqual(3, result["registry_active_sources_without_health_time"])
+        self.assertEqual(1, result["registry_active_sources_with_failure_only"])
+        self.assertEqual([], result["proposals"])
+
+    def test_existing_real_success_is_not_counted_missing(self):
+        rows, coverage = fixtures()
+        rows[0]["last_success_at"] = "2026-10-19T12:00:00Z"
+        result = source_health_handoff(rows, coverage, [], asof=NOW)
+        self.assertEqual(3, result["registry_active_sources_without_success"])
+        self.assertEqual(3, result["registry_active_sources_without_health_time"])
+        self.assertEqual(0, result["registry_active_sources_with_failure_only"])
+        self.assertEqual([], result["proposals"])
+
     def test_exact_provider_and_employer_attempt_success(self):
         result = self.make([attempt(["ats", "company-a"], True, normalized=7)])
         self.assertEqual(result["proposed_source_count"], 2)
