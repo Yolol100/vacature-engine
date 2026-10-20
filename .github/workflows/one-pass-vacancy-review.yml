@@ -53,7 +53,7 @@ jobs:
           GOOGLE_QUERIES_PER_RUN: ${{ inputs.google_queries_per_run }}
           DISCOVERY_ROUND: ${{ inputs.discovery_round }}
         run: |
-          python scripts/one_pass_vacancies.py --mode "$SEARCH_MODE" \
+          python scripts/one_pass_vacancies.py --public-discovery-only --mode "$SEARCH_MODE" \
             --google-queries-per-run "$GOOGLE_QUERIES_PER_RUN" \
             --discovery-round "$DISCOVERY_ROUND" \
             --out "$RUNNER_TEMP/vacancy-review.json"
