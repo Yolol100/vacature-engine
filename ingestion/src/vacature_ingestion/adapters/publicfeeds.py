@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -13,6 +14,7 @@ _HOSTS = {
     "arbeitnow-api": ("www.arbeitnow.com", "https://www.arbeitnow.com/api/job-board-api"),
     "remote-landers-api": ("remotelanders.com", "https://remotelanders.com/api/jobs"),
     "remotejobs-org": ("remotejobs.org", "https://remotejobs.org/api/v1/jobs"),
+    "working-nomads": ("www.workingnomads.com", "https://www.workingnomads.com/api/exposed_jobs/"),
 }
 
 
@@ -37,6 +39,12 @@ class PublicFeedsAdapter(Adapter):
             if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
                 raise ValueError("Invalid Arbeitnow response")
             rows = [x for x in payload["data"] if isinstance(x, dict) and x.get("remote") is True]
+        elif spec.source_id == "working-nomads":
+            payload = client.get_json(_HOSTS[spec.source_id][1])
+            if (not isinstance(payload, list) or not payload
+                    or not all(isinstance(row, dict) for row in payload)):
+                raise ValueError("Invalid Working Nomads response")
+            rows = payload
         elif spec.source_id == "remote-landers-api":
             rows = []
             # One small request per relevant discipline. No full catalog sweep.
@@ -67,6 +75,61 @@ class PublicFeedsAdapter(Adapter):
 
     def normalize_record(self, record: dict[str, Any], spec: SourceSpec, now: str) -> dict[str, Any] | None:
         source = spec.source_id
+        if source == "working-nomads":
+            title = clean_text(record.get("title"))
+            url = clean_text(record.get("url"))
+            if not title or not url:
+                return None
+            try:
+                parts = urlsplit(url)
+                valid = (
+                    parts.scheme == "https"
+                    and parts.hostname == "www.workingnomads.com"
+                    and parts.port is None
+                    and parts.username is None
+                    and parts.password is None
+                    and not parts.query
+                    and not parts.fragment
+                    and re.fullmatch(r"/job/go/[0-9]+/?", parts.path) is not None
+                )
+            except ValueError:
+                valid = False
+            if not valid:
+                raise ValueError("Unexpected Working Nomads job URL")
+            return {
+                "source_id": source,
+                "source_type": spec.source_type,
+                "source_job_id": source_job_id(spec, parts.path.strip("/").split("/")[-1]),
+                "source_instance": spec.instance_id,
+                "source_url": _HOSTS[source][1],
+                "canonical_url": url,
+                "url": url,
+                "employer": clean_text(record.get("company_name")),
+                "title": title,
+                "location": clean_text(record.get("location")),
+                "description": html_to_text(record.get("description")),
+                # The board's pub_date is NOT independently evidenced
+                # as the employer's original publication date.
+                "published_at": None,
+                "updated_at": None,
+                "valid_through": None,
+                "employment_type": None,
+                "salary": None,
+                "listing_language": spec.listing_language,
+                "apply_url": None,
+                "remote": None,
+                "workplace_type": None,
+                "source_metadata": {
+                    "provider": "working-nomads",
+                    "provider_pub_date": clean_text(record.get("pub_date")),
+                    "category_name": clean_text(record.get("category_name")),
+                    "tags": clean_text(record.get("tags")),
+                    "attribution_required": True,
+                    "canonical_verification_required": True,
+                    "original_posting_date_unverified": True,
+                    "discovery_only": True,
+                },
+            }
         if source not in _HOSTS:
             raise ValueError("Unsupported public feed source contract")
         base_host, api_url = _HOSTS[source]

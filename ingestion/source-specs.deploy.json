@@ -263,5 +263,19 @@
     "options": {
       "canonical_verification_required": true
     }
+  },
+  {
+    "source_id": "working-nomads",
+    "source_type": "job_board",
+    "adapter": "publicfeeds",
+    "account": "global",
+    "listing_language": "en",
+    "max_jobs": 60,
+    "options": {
+      "attribution_required": true,
+      "canonical_verification_required": true,
+      "discovery_only": true,
+      "provider_date_not_original": true
+    }
   }
 ]
