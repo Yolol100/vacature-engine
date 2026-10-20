@@ -204,7 +204,8 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
 def plan_free_source_batches(raw: list[dict[str, Any]],
                              tables: dict[str, list[dict[str, str]]],
                              config: dict[str, str], *, max_sources: int,
-                             batch_size: int = 8) -> list[list[SourceSpec]]:
+                             batch_size: int = 8,
+                             round_index: int = 0) -> list[list[SourceSpec]]:
     """Bound the whole run while making later approved employers reachable.
 
     Reuse the existing live source order and ATS/feed diversity in each batch;
@@ -214,18 +215,29 @@ def plan_free_source_batches(raw: list[dict[str, Any]],
         raise ValueError("Free source limit must be between 1 and 20")
     if type(batch_size) is not int or not 1 <= batch_size <= 8:
         raise ValueError("Free source batch size must be between 1 and 8")
-    batches: list[list[SourceSpec]] = []
+    if type(round_index) is not int or round_index < 0:
+        raise ValueError("Invalid source rotation round")
+    # Enumerate approved deploy specs only. Rotating the bounded window across
+    # successive explicit rounds prevents tenants past slot 20 from starving.
+    # It does NOT make inactive or unconfigured Register sources executable.
+    pool: list[SourceSpec] = []
     selected: set[str] = set()
-    while len(selected) < max_sources:
+    while len(selected) < len(raw):
         batch = select_free_specs(
-            raw, tables, config, limit=min(batch_size, max_sources - len(selected)),
+            raw, tables, config, limit=batch_size,
             excluded_instance_ids=selected,
         )
         if not batch:
             break
-        batches.append(batch)
+        pool.extend(batch)
         selected.update(spec.instance_id for spec in batch)
-    return batches
+    if not pool:
+        return []
+    offset = (round_index * max_sources) % len(pool)
+    window = [pool[(offset + i) % len(pool)]
+              for i in range(min(max_sources, len(pool)))]
+    return [window[i:i + batch_size]
+            for i in range(0, len(window), batch_size)]
 
 
 def _source_attempt_audit(result: SourceRunResult) -> dict[str, Any]:
@@ -921,15 +933,19 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     google_list = json.loads((root / "ingestion/source-specs.google-optional.json").read_text(encoding="utf-8"))
     deploy_list = json.loads((root / "ingestion/source-specs.deploy.json").read_text(encoding="utf-8"))
     google_approved, _ = filter_source_specs(google_list, active_ids)
-    batches = plan_free_source_batches(deploy_list, tables, config, max_sources=max_free_sources)
+    round_index = today.toordinal() if discovery_round is None else discovery_round
+    batches = plan_free_source_batches(
+        deploy_list, tables, config, max_sources=max_free_sources,
+        round_index=round_index,
+    )
     pages = GOOGLE_MODES[mode]
     seed_queries = (google_approved[0].get("options") or {}).get("queries", []) if (
         len(google_approved) == 1 and google_approved[0].get("source_id") == "google-jobs"
     ) else []
     coverage_plan = build_source_coverage(
         tables["Bronnen"], deploy_list, config, seed_queries,
-        round_index=today.toordinal() if discovery_round is None else discovery_round,
-        max_google_queries=google_queries_per_run, pages=pages,
+        round_index=round_index, max_google_queries=google_queries_per_run,
+        pages=pages,
     )
     google_status = "not_registered"
     google_observations: list[dict[str, Any]] = []
@@ -1058,9 +1074,16 @@ def main() -> int:
         return 2
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({key: value for key, value in report.items()
-                      if key not in {"review_candidates", "preflight_counts"}},
-                     ensure_ascii=False, sort_keys=True))
+    # Keep the full public source ledger in the artifact, not the runner logs.
+    safe_log = {key: value for key, value in report.items()
+                if key not in {"review_candidates", "preflight_counts",
+                               "coverage", "source_attempts"}}
+    coverage = report.get("coverage") or {}
+    safe_log["coverage_summary"] = coverage.get("summary", {})
+    safe_log["coverage_execution_counts"] = coverage.get("execution_counts", {})
+    safe_log["google_planned_query_count"] = coverage.get("google_query_count", 0)
+    safe_log["discovery_round"] = coverage.get("round_index")
+    print(json.dumps(safe_log, ensure_ascii=False, sort_keys=True))
     return 0
 
 
