@@ -33,6 +33,21 @@ it is **not** an authoritative application or vacancy database.
 The deterministic scoring and eligibility engine lives separately in the
 repository root package `src/vacature_engine/`.
 
+## Bounded Working Nomads source
+
+The active `working-nomads` registry ID can use the existing `publicfeeds`
+adapter against its fixed public `/api/exposed_jobs/` endpoint. The feed is
+an observed, bounded subset, **not** a complete employer or job catalog.
+Only board-hosted job/go URLs are accepted. The provider's `pub_date`
+remains metadata, not an independently verified employer posting date.
+`remote` and `apply_url` remain unknown until the specialist validates
+the exact official vacancy. GitHub never schedules this adapter.
+
+Remote Jobs/Remote.com is scheduled to close on 30 November 2026. A bounded
+on-demand inspection of `jobs.remote.com` may use the existing `jsonld`
+adapter with approved current detail URLs, but does not justify a permanent
+provider-specific scraper or source closure before official confirmation.
+
 ## Optional free Google discovery
 
 The `serpapi_google` adapter retrieves organic Google results through a

@@ -38,6 +38,15 @@ class SourceSpecTests(unittest.TestCase):
         self.assertEqual(1, len(human_made))
         self.assertEqual("workable", human_made[0].get("adapter"))
 
+    def test_working_nomads_is_bounded_discovery_only(self):
+        specs = _load("source-specs.deploy.json")
+        board = [spec for spec in specs if spec.get("source_id") == "working-nomads"]
+        self.assertEqual(1, len(board))
+        self.assertEqual("publicfeeds", board[0].get("adapter"))
+        self.assertLessEqual(board[0].get("max_jobs"), 60)
+        self.assertIsNone(board[0].get("endpoint"))
+        self.assertTrue(board[0].get("options", {}).get("discovery_only"))
+
     def test_google_requires_explicit_registered_source(self):
         google = _load("source-specs.google-optional.json")
         self.assertEqual(1, len(google))
