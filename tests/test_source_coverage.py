@@ -153,6 +153,41 @@ class SourceCoverageTests(unittest.TestCase):
         self.assertTrue(all("succeeded" not in x["execution"]
                             for x in check["sources"]))
 
+    def test_employer_tenant_is_direct_only_when_both_register_ids_active(self):
+        rows, cfg, _, seeds = fixture(public_count=0)
+        rows.extend([
+            {"source_id": "greenhouse", "status": "active",
+             "source_type": "ats", "base_url": "https://boards.greenhouse.io"},
+            {"source_id": "company-example", "status": "active",
+             "source_type": "employer_direct",
+             "base_url": "https://example.org/careers"},
+        ])
+        spec = [{"source_id": "greenhouse", "adapter": "greenhouse",
+                 "options": {"registry_source_id": "company-example"}}]
+        good = build_source_coverage(
+            rows, spec, cfg, seeds,
+            round_index=0, max_google_queries=8, pages=1)
+        entries = {r["source_id"]: r for r in good["sources"]}
+        self.assertEqual(entries["greenhouse"]["coverage_route"], "public_adapter")
+        self.assertEqual(entries["company-example"]["coverage_route"], "public_adapter")
+        completed = complete_source_coverage(
+            good, google_status="not_configured", mode="page-1",
+            source_attempts=[{
+                "source_instance": "greenhouse:example",
+                "registry_source_ids": ["greenhouse", "company-example"],
+                "success": True,
+            }])
+        statuses = {r["source_id"]: r["execution"] for r in completed["sources"]}
+        self.assertEqual(statuses["greenhouse"], "direct_attempt_succeeded")
+        self.assertEqual(statuses["company-example"], "direct_attempt_succeeded")
+        rows[-1]["status"] = "retired"
+        disabled = build_source_coverage(
+            rows, spec, cfg, seeds,
+            round_index=0, max_google_queries=8, pages=1)
+        indexed = {r["source_id"]: r for r in disabled["sources"]}
+        self.assertNotEqual(indexed["greenhouse"]["coverage_route"], "public_adapter")
+        self.assertEqual(indexed["company-example"]["execution"], "excluded")
+
     def test_duplicate_source_ids_fail_closed(self):
         rows, cfg, deployed, seeds = fixture()
         rows.append(dict(rows[0]))
