@@ -19,6 +19,12 @@ Voor een echt, geregistreerd provider- of ATS-verzoek met geldige UTC-tijd:
   last_failure_at, failure_category en consecutive_failures;
 - aantallen echte pogingen en neutraal overgeslagen gevallen.
 
+Het veld failure_category gebruikt uitsluitend de acht letterlijk toegestane
+waarden van de live ONE_OF_LIST-validatie in Bronnen!I; interne API-foutcodes
+worden alleen conservatief omgezet. consecutive_failures is een numeriek
+geheel getal voor Bronnen!J, nooit een tekstwaarde. Ongeldige bestaande
+categorieën worden genegeerd in plaats van naar GitHub-artifacts gekopieerd.
+
 Er zijn geen wijzigingen aan bronstatussen, prioriteiten, next_retry_at,
 onvolledige inventarisatietellingen, vacatures, sollicitaties of kandidaatclaims.
 Gemengde provideruitkomsten, foutieve/toekomstige timestamps, bronpogingen die
