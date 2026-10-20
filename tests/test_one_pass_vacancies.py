@@ -550,7 +550,9 @@ class OnePassTests(unittest.TestCase):
     def test_rotating_deploy_instances_reaches_sources_after_twenty(self):
         specs = json.loads((ROOT / "ingestion/source-specs.deploy.json").read_text())
         t = tables()
-        unique = {x["source_id"] for x in specs}
+        from vacature_ingestion.registry_filter import required_registry_ids
+        # ATS tenants are separately gated by employer-specific Register IDs.
+        unique = set().union(*(required_registry_ids(spec) for spec in specs))
         t["Bronnen"] = [
             {"source_id": sid, "status": "active", "source_type": "ats",
              "priority": "medium"} for sid in sorted(unique)
