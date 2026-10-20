@@ -66,11 +66,21 @@ jobs:
             python scripts/render_source_coverage.py \
               --input "$RUNNER_TEMP/vacancy-review.json" \
               --output "$RUNNER_TEMP/source-coverage.html"
-          elif [ "$DISCOVERY_OUTCOME" = "success" ]; then
-            echo "::error::Vacancy discovery succeeded but its audit JSON is missing or empty"
-            exit 1
           else
-            echo "No report produced: review preflight failure in job logs"
+            # Sanitize a fixed GitHub step outcome; never include env, logs,
+            # provider errors, user input, credentials or source metadata.
+            case "$DISCOVERY_OUTCOME" in
+              success|failure|cancelled|skipped) ;;
+              *) DISCOVERY_OUTCOME=unknown ;;
+            esac
+            if [ "$DISCOVERY_OUTCOME" = "success" ]; then
+              printf '{"schema":"vacancy-preflight-status.v1","status":"error","reason":"success_without_report","discovery_outcome":"success","full_search_report":false}\n' > "$RUNNER_TEMP/preflight-status.json"
+              echo "::error::Vacancy discovery succeeded but its audit JSON is missing or empty"
+              exit 1
+            else
+              printf '{"schema":"vacancy-preflight-status.v1","status":"blocked","reason":"no_json_report","discovery_outcome":"%s","full_search_report":false}\n' "$DISCOVERY_OUTCOME" > "$RUNNER_TEMP/preflight-status.json"
+              echo "No report produced: review preflight failure in job logs"
+            fi
           fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: ${{ always() }}
@@ -79,5 +89,6 @@ jobs:
           path: |
             ${{ runner.temp }}/vacancy-review.json
             ${{ runner.temp }}/source-coverage.html
-          retention-days: 1
+            ${{ runner.temp }}/preflight-status.json
+          retention-days: 7
           if-no-files-found: warn
