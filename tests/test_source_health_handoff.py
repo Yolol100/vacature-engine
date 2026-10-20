@@ -56,7 +56,7 @@ class SourceHealthHandoffTests(unittest.TestCase):
         by_id = {x["source_id"]: x for x in result["proposals"]}
         self.assertEqual(by_id["company-a"]["expected"]["last_success_at"], "")
         self.assertEqual(by_id["company-a"]["proposed"]["last_success_at"], STAMP)
-        self.assertEqual(by_id["company-a"]["proposed"]["consecutive_failures"], "0")
+        self.assertEqual(by_id["company-a"]["proposed"]["consecutive_failures"], 0)
         self.assertNotIn("last_result_count", by_id["company-a"]["proposed"])
         self.assertNotIn("status", by_id["company-a"]["proposed"])
 
@@ -64,8 +64,8 @@ class SourceHealthHandoffTests(unittest.TestCase):
         result = self.make([attempt(["company-a"], False, category="rate_limited")])
         update = result["proposals"][0]["proposed"]
         self.assertEqual(update["last_failure_at"], STAMP)
-        self.assertEqual(update["consecutive_failures"], "3")
-        self.assertEqual(update["failure_category"], "rate_limited")
+        self.assertEqual(update["consecutive_failures"], 3)
+        self.assertEqual(update["failure_category"], "robots/access restriction")
         self.assertNotIn("next_retry_at", update)
 
     def test_google_site_discovery_is_not_direct_source_health(self):
@@ -125,8 +125,32 @@ class SourceHealthHandoffTests(unittest.TestCase):
         encoded = json.dumps(result)
         self.assertNotIn("PRIVATE TOKEN", encoded)
         self.assertNotIn("TOKEN_SECRET_IN_PROVIDER_ERROR", encoded)
-        self.assertEqual(result["proposals"][0]["proposed"]["consecutive_failures"], "3")
-        self.assertNotIn("failure_category", result["proposals"][0]["proposed"])
+        self.assertEqual(result["proposals"][0]["proposed"]["consecutive_failures"], 3)
+        self.assertEqual(result["proposals"][0]["proposed"]["failure_category"],
+                         "other technical failure")
+
+    def test_proposal_types_match_live_sheets_validation(self):
+        accepted = {"", "blocked/login-required", "CAPTCHA",
+                    "robots/access restriction", "paywall",
+                    "timeout/transient network", "malformed result",
+                    "parsing/structure change", "other technical failure"}
+        for category in ("rate_limited", "timeout_or_network", "malformed_result",
+                         "parsing_or_adapter_failure", "other_technical_failure",
+                         "unknown_external_text"):
+            with self.subTest(category=category):
+                handoff = self.make([attempt(["ats"], False, category=category)])
+                proposal = handoff["proposals"][0]
+                self.assertIn(proposal["proposed"]["failure_category"], accepted)
+                self.assertIsInstance(proposal["proposed"]["consecutive_failures"], int)
+                self.assertIsInstance(proposal["expected"]["consecutive_failures"], int)
+
+    def test_unknown_previous_category_cannot_escape_in_public_artifact(self):
+        rows, plan = fixtures()
+        rows[0]["failure_category"] = "PRIVATE TOKEN in old failure category"
+        handoff = source_health_handoff(rows, plan, [attempt(["ats"], True)],
+                                       asof=NOW)
+        self.assertEqual(handoff["proposals"], [])
+        self.assertNotIn("PRIVATE TOKEN", json.dumps(handoff))
 
     def test_duplicate_registry_ids_fail_closed(self):
         rows, coverage = fixtures()
