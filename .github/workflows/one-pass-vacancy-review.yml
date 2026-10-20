@@ -13,6 +13,16 @@ on:
           - page-1
           - page-3
           - page-10
+      google_queries_per_run:
+        description: "Maximum distinct rotating Google queries in this run (1-20, free quota required)"
+        type: string
+        required: true
+        default: "8"
+      discovery_round:
+        description: "Rotation round: auto uses Amsterdam date, or choose 0,1,2... for later source windows"
+        type: string
+        required: true
+        default: "auto"
 
 permissions:
   contents: read
@@ -39,12 +49,17 @@ jobs:
           SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           SEARCH_MODE: ${{ inputs.mode }}
+          GOOGLE_QUERIES_PER_RUN: ${{ inputs.google_queries_per_run }}
+          DISCOVERY_ROUND: ${{ inputs.discovery_round }}
         run: |
-          python scripts/one_pass_vacancies.py --mode "$SEARCH_MODE" --out "$RUNNER_TEMP/vacancy-review.json"
+          python scripts/one_pass_vacancies.py --mode "$SEARCH_MODE" \
+            --google-queries-per-run "$GOOGLE_QUERIES_PER_RUN" \
+            --discovery-round "$DISCOVERY_ROUND" \
+            --out "$RUNNER_TEMP/vacancy-review.json"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        if: ${{ inputs.mode != 'check' && success() }}
+        if: ${{ success() }}
         with:
-          name: vacancy-review-unverified-no-personal-data
+          name: register-coverage-and-vacancy-review-readonly
           path: ${{ runner.temp }}/vacancy-review.json
           retention-days: 1
           if-no-files-found: error
