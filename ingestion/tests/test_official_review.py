@@ -121,6 +121,36 @@ class OfficialReviewTests(unittest.TestCase):
         )
         self.assertEqual(result["original_publication"], "unknown")
 
+    def test_archived_library_cv_is_counted_only_with_valid_provenance(self):
+        evidence = {
+            "evidence_id": "library-wp",
+            "source_type": "library_cv",
+            "source_ref": "file_" + "0" * 32,
+            "source_locator": "Experience > WordPress Plugin Development",
+            "claim": "Developed WordPress plugins for clients",
+            "active": "TRUE",
+            "confidence": "high",
+        }
+
+        def indicator(item):
+            signal, rankable = assess_official_observation(
+                official(location="Remote - European Union"),
+                candidate=CANDIDATE, active_ids={"greenhouse"},
+                evidence=[item], policy=POLICY, today=TODAY)
+            self.assertIsNone(rankable)
+            return signal["evidence_claims_count"]
+
+        self.assertEqual(indicator(evidence), 1)
+        for changes in (
+            {"source_ref": "file_invalid"},
+            {"source_ref": "https://example.test/cv"},
+            {"source_locator": ""},
+            {"claim": "No experience with WordPress plugins"},
+            {"active": "FALSE"},
+        ):
+            with self.subTest(changes=changes):
+                self.assertEqual(indicator({**evidence, **changes}), 0)
+
     def test_negative_cv_claim_cannot_support_broad_fit_indicator(self):
         row = {
             "evidence_id": "neg-wp",
