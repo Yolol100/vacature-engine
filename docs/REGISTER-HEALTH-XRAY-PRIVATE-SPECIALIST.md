@@ -23,3 +23,21 @@ with vacancy-domain decisions from `vacature-search`.
 
 Source review is requested through ChatGPT. No automated application, source
 activation, or background vacancy search is permitted.
+
+## Verschil tussen twee brongezondheidsmetingen (fase 26)
+
+- `registry_active_sources_without_success`: aantal actieve bronnen zonder
+  ooit geregistreerde `last_success_at`. Dit is de juiste telling voor de
+  open auditlijst, niet automatisch een tekortkoming van de bron zelf.
+- `registry_active_sources_with_failure_only`: deelverzameling daarvan met
+  een geregistreerde `last_failure_at`. Een oude mislukking is geen bewijs
+  van actuele irrelevantie, en een succesvolle website-opening zet geen teller.
+- `registry_active_sources_without_health_time`: deelverzameling zonder
+  zowel succes- als fouttijdstempel (oude, behouden indicator).
+
+Voor de nulmeting op 2026-10-20 waren dit respectievelijk **53, 3, 50**.
+Publieke endpoint-inspectie en een ATS-jobboardlinktelling zijn **bronbewijs**,
+niet automatisch een gevalideerde `source_attempts` van de adapter.
+De read-only `source_health_handoff` blijft `auto_write=false`, en kan
+geen timestamps bijwerken zonder een geldige, aan de bron gebonden
+provider-attempt. Historische bronnotities blijven behouden.

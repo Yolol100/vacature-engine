@@ -157,15 +157,24 @@ def source_health_handoff(register_rows: list[dict[str, str]],
             "expected": expected,
             "proposed": updates,
         })
-    unknown = sum(
-        row.get("status") == "active" and not row.get("last_success_at")
-        and not row.get("last_failure_at") for row in registered.values()
+    active = [row for row in registered.values()
+              if row.get("status") == "active"]
+    # Missing successful provider evidence is NOT the same as having no
+    # health timestamp: a failure-only source is still missing a success.
+    # Neither figure infers failures or successes from public page reads.
+    without_success = sum(not row.get("last_success_at") for row in active)
+    failure_only = sum(
+        not row.get("last_success_at") and bool(row.get("last_failure_at"))
+        for row in active
     )
+    unknown = without_success - failure_only
     return {
         "schema": "source-health-proposals.v1",
         "read_only": True,
         "auto_write": False,
         "registry_active_sources_without_health_time": unknown,
+        "registry_active_sources_without_success": without_success,
+        "registry_active_sources_with_failure_only": failure_only,
         "source_attempts_received": len(source_attempts),
         "proposed_source_count": len(proposals),
         "mixed_source_skipped": mixed,
