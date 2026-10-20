@@ -1024,6 +1024,14 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             )
         finally:
             runner.close()
+    if not private_candidate_evidence_available:
+        # A public CI job may display unverified role links, but must never
+        # export private-evidence digests or claim a final candidate fit.
+        if loop["evaluation"].get("final_recommendations"):
+            raise ValueError("Public discovery cannot publish candidate scores")
+        for item in loop["evaluation"].get("review_candidates", []):
+            if isinstance(item, dict):
+                item.pop("assessment_context", None)
     audit_report = {
         "mode": mode, "read_only": True, "google": google_status,
         "google_observations": len(google_observations),
