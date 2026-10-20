@@ -56,10 +56,17 @@ jobs:
             --google-queries-per-run "$GOOGLE_QUERIES_PER_RUN" \
             --discovery-round "$DISCOVERY_ROUND" \
             --out "$RUNNER_TEMP/vacancy-review.json"
+      - name: Render offline source coverage dashboard
+        run: |
+          python scripts/render_source_coverage.py \
+            --input "$RUNNER_TEMP/vacancy-review.json" \
+            --output "$RUNNER_TEMP/source-coverage.html"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: ${{ success() }}
         with:
           name: register-coverage-and-vacancy-review-readonly
-          path: ${{ runner.temp }}/vacancy-review.json
+          path: |
+            ${{ runner.temp }}/vacancy-review.json
+            ${{ runner.temp }}/source-coverage.html
           retention-days: 1
           if-no-files-found: error
