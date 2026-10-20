@@ -7,7 +7,7 @@ authorized update; the free discovery workflow itself has read-only credentials.
 """
 from __future__ import annotations
 
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -168,6 +168,24 @@ def source_health_handoff(register_rows: list[dict[str, str]],
         for row in active
     )
     unknown = without_success - failure_only
+    # A source with no adapter is not a failed adapter. Preserve the
+    # existing aggregate, and show precisely which execution routes remain
+    # unmeasured. Unknown/missing coverage must never imply a runnable job.
+    allowed_routes = {
+        "public_adapter", "free_google_optional",
+        "google_site_discovery_only", "missing_safe_public_site",
+        "non_vacancy_evidence",
+    }
+    unmeasured_route_counts: Counter[str] = Counter()
+    for row in active:
+        if row.get("last_success_at"):
+            continue
+        source_route = route.get(row["source_id"])
+        unmeasured_route_counts[
+            source_route if source_route in allowed_routes else "unclassified"
+        ] += 1
+    runnable = sum(unmeasured_route_counts.get(key, 0)
+                   for key in ("public_adapter", "free_google_optional"))
     return {
         "schema": "source-health-proposals.v1",
         "read_only": True,
@@ -175,6 +193,9 @@ def source_health_handoff(register_rows: list[dict[str, str]],
         "registry_active_sources_without_health_time": unknown,
         "registry_active_sources_without_success": without_success,
         "registry_active_sources_with_failure_only": failure_only,
+        "registry_active_sources_without_success_provider_routable": runnable,
+        "registry_active_sources_without_success_by_route": dict(
+            sorted(unmeasured_route_counts.items())),
         "source_attempts_received": len(source_attempts),
         "proposed_source_count": len(proposals),
         "mixed_source_skipped": mixed,

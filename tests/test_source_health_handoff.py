@@ -72,6 +72,30 @@ class SourceHealthHandoffTests(unittest.TestCase):
         self.assertEqual(0, result["registry_active_sources_with_failure_only"])
         self.assertEqual([], result["proposals"])
 
+    def test_missing_success_is_reported_by_actual_execution_route(self):
+        rows, coverage = fixtures()
+        # ATS/employer and Google provider have runnable adapters.
+        # An indexed Google-site-only source has no direct runner.
+        out = source_health_handoff(rows, coverage, [], asof=NOW)
+        self.assertEqual(4, out["registry_active_sources_without_success"])
+        self.assertEqual(3, out["registry_active_sources_without_success_provider_routable"])
+        self.assertEqual({
+            "public_adapter": 2,
+            "free_google_optional": 1,
+            "google_site_discovery_only": 1,
+        }, out["registry_active_sources_without_success_by_route"])
+        self.assertEqual([], out["proposals"])
+        self.assertFalse(out["auto_write"])
+
+    def test_unmapped_active_source_not_claimed_runnable(self):
+        rows, coverage = fixtures()
+        coverage["sources"] = [r for r in coverage["sources"]
+                               if r["source_id"] != "source-google-only"]
+        out = source_health_handoff(rows, coverage, [], asof=NOW)
+        self.assertEqual(4, out["registry_active_sources_without_success"])
+        self.assertEqual(3, out["registry_active_sources_without_success_provider_routable"])
+        self.assertEqual(1, out["registry_active_sources_without_success_by_route"]["unclassified"])
+
     def test_exact_provider_and_employer_attempt_success(self):
         result = self.make([attempt(["ats", "company-a"], True, normalized=7)])
         self.assertEqual(result["proposed_source_count"], 2)

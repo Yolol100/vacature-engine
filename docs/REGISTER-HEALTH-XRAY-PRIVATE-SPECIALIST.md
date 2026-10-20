@@ -41,3 +41,28 @@ niet automatisch een gevalideerde `source_attempts` van de adapter.
 De read-only `source_health_handoff` blijft `auto_write=false`, en kan
 geen timestamps bijwerken zonder een geldige, aan de bron gebonden
 provider-attempt. Historische bronnotities blijven behouden.
+
+## Routegebonden gezondheidsindicatoren (fase 29)
+
+Een bron zonder een `last_success_at` is niet vanzelf een defecte technische
+adapter. De on-demand engine heeft alleen voor geregistreerde, goedgekeurde
+provider-/werkgeverparen een directe technische route. Andere actieve
+discoverybronnen lopen via openbare zoek-/X-ray-controle, niet via de adapter.
+
+- `registry_active_sources_without_success_provider_routable` telt alleen
+  bronnen in `public_adapter` of `free_google_optional` met nog ontbrekend
+  bewijs. Verifieer vóór uitvoering altijd live `Bronnen.status`.
+- `registry_active_sources_without_success_by_route` laat de onderverdeling
+  van alle actief-onbemeten bronnen zien. Routes zonder bewezen dekking blijven
+  `unclassified`, nooit automatisch `public_adapter`.
+- De historische bruto `registry_active_sources_without_success` blijft
+  bestaan voor backwards-compatibele rapportage. `auto_write=false` en
+  de bestaande restricties voor health-tijdstempels blijven gehandhaafd.
+
+Op 2026-10-20, na geslaagde fases 27–28: **50 actieve bronnen zonder
+geregistreerd technisch succes, nul daarvan met een geconfigureerde directe
+adapter**. Een begrensde openbare pagina-audit gaf 31 publieke antwoorden,
+7 HTTP-fouten (waarvan vijf HTTP 403) en 12 netwerk-/TLS-fouten. Dat zijn
+**paginaobservaties**, geen adapter-ingesties of mislukte provider-runs;
+wijzig daardoor geen succes-/fouttellers en retire geen bron zonder het
+voorgeschreven historische en actuele bewijs.
