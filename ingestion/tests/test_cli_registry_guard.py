@@ -71,6 +71,11 @@ class RegistryCliGuardTests(unittest.TestCase):
                 registry.assert_not_called()
                 runner.assert_not_called()
 
+    def test_duplicate_instance_is_not_fetched_twice(self):
+        with patch("vacature_ingestion.cli.read_active_source_ids", return_value={"greenhouse"}):
+            with self.assertRaisesRegex(SystemExit, "Duplicate source instance"):
+                _registry_gated_specs([GOOD, GOOD], "register")
+
     def test_authorized_specs_retain_employer_binding(self):
         spec = {**GOOD, "options": {"registry_source_id": "company-approved"}}
         with patch("vacature_ingestion.cli.read_active_source_ids",

@@ -22,14 +22,14 @@ def _clean(value: Any) -> str:
 
 
 def _adapter_registry_ids(specs: list[dict[str, Any]], active_ids: set[str]) -> set[str]:
-    automated: set[str] = set()
+    supported: set[str] = set()
     for spec in specs:
         if not isinstance(spec, dict):
             continue
         required = required_registry_ids(spec)
         if required and required.issubset(active_ids):
-            automated.update(required)
-    return automated
+            supported.update(required)
+    return supported
 
 
 def build_source_coverage(

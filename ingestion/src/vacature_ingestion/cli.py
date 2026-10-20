@@ -28,7 +28,11 @@ def _registry_gated_specs(raw: list[dict[str, Any]], spreadsheet_id: str) -> lis
     approved, blocked = filter_source_specs(raw, active_ids)
     if blocked or len(approved) != len(raw):
         raise SystemExit("Vacature Register denied a source spec; no source was queried")
-    return [SourceSpec.from_dict(item) for item in approved]
+    specs = [SourceSpec.from_dict(item) for item in approved]
+    instances = [spec.instance_id for spec in specs]
+    if len(set(instances)) != len(instances):
+        raise SystemExit("Duplicate source instance; no source was queried")
+    return specs
 
 
 def cmd_ingest(args: argparse.Namespace) -> int:
