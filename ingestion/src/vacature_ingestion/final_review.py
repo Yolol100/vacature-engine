@@ -140,6 +140,44 @@ def _has_substantial_required_travel(page: dict[str, Any]) -> bool:
     return False
 
 
+# Conservative contradiction gate. Employer-visible, exact-role text that
+# explicitly limits candidate residence to a non-NL region outranks a generic
+# Remote flag or stale positive JobPosting location metadata. Foreign offices,
+# clients, benefits and audience mentions are NOT residence requirements.
+_FOREIGN_RESIDENCY_REGION = (
+    r"(?:north\s+america|united\s+states|u\.s\.a?\.?|usa|canada|"
+    r"australia|india|brazil|mexico|philippines|south\s+africa)"
+)
+_EXCLUSIVE_FOREIGN_RESIDENCY = re.compile(
+    r"\b(?:only|exclusively)\s+"
+    r"(?:consider(?:ing)?|accept(?:ing)?|hir(?:e|ing)|recruit(?:ing)?)\s+"
+    r"(?:[\w'-]+\s+){0,4}?"
+    r"(?:candidates?|applicants?|people|employees?)\s+"
+    r"(?:[\w'-]+\s+){0,4}?"
+    r"(?:based|located|residing|living)\s+"
+    r"(?:in\s+)?(?:the\s+)?"
+    + _FOREIGN_RESIDENCY_REGION + r"\b",
+    re.IGNORECASE,
+)
+_REQUIRED_FOREIGN_RESIDENCY = re.compile(
+    r"\b(?:applicants?|candidates?|employees?)\s+must\s+"
+    r"(?:currently\s+)?(?:be\s+)?"
+    r"(?:based|located|residing|living)\s+"
+    r"(?:in\s+)?(?:the\s+)?"
+    + _FOREIGN_RESIDENCY_REGION + r"\b",
+    re.IGNORECASE,
+)
+
+
+def _has_exclusive_non_nl_residency(page: dict[str, Any]) -> bool:
+    visible = page.get("visible_text")
+    return isinstance(visible, str) and any(
+        pattern.search(visible[:25_000]) is not None
+        for pattern in (_EXCLUSIVE_FOREIGN_RESIDENCY,
+                        _REQUIRED_FOREIGN_RESIDENCY)
+    )
+
+
 def automated_ranking_blockers(candidate: dict[str, Any], page: dict[str, Any],
                               policy: VacancyPolicy, today: date) -> list[str]:
     """Non-overridable machine checks plus the specialist-owned proof gates."""
@@ -169,6 +207,9 @@ def automated_ranking_blockers(candidate: dict[str, Any], page: dict[str, Any],
     if (page.get("status") == "matching_first_party_jobposting"
             and _has_substantial_required_travel(page)):
         missing.append("substantial_required_travel")
+    if (page.get("status") == "matching_first_party_jobposting"
+            and _has_exclusive_non_nl_residency(page)):
+        missing.append("exclusive_non_nl_residence_on_official_page")
     locations = info.get("applicant_locations")
     if (checks.get("netherlands") != "allowed" or not isinstance(locations, list)
             or not all(isinstance(x, str) for x in locations)
