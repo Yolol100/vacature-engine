@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 import math
 import re
 from typing import Any
@@ -175,11 +175,14 @@ def _coerce_policy(policy: VacancyPolicy | Mapping[str, Any]) -> VacancyPolicy:
 def _posted_date(value: Any) -> date | None:
     if not isinstance(value, str) or len(value) < 10:
         return None
-    if len(value) > 10 and value[10] not in {"T", " "}:
-        return None
+    raw = value.strip()
     try:
-        return date.fromisoformat(value[:10])
-    except ValueError:
+        if len(raw) == 10:
+            return date.fromisoformat(raw)
+        if raw[10] not in {"T", " "}:
+            return None
+        return datetime.fromisoformat(raw).date()
+    except (ValueError, OverflowError):
         return None
 
 
