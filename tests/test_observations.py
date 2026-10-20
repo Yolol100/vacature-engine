@@ -112,3 +112,14 @@ def test_published_conflict_is_exposed():
 
 def test_non_mapping_items_are_ignored():
     assert canonicalize_observations([None, "x", 3]) == []
+
+
+# unittest discover does not collect free functions unless we register them.
+import unittest
+
+
+def load_tests(loader, tests, pattern):
+    for name, function in sorted(globals().items()):
+        if name.startswith("test_") and callable(function) and getattr(function, "__module__", None) == __name__:
+            tests.addTest(unittest.FunctionTestCase(function, description=name))
+    return tests
