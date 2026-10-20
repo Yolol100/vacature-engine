@@ -148,6 +148,25 @@ class VerifiedRankingFlowTests(unittest.TestCase):
             1, len(evaluate(t, row, page, assessment)["final_recommendations"])
         )
 
+    def test_travel_reimbursement_percentages_are_not_required_site_travel(self):
+        # Negative-only remote gate must not confuse a travel-expense discount
+        # with time required at customer offices.
+        for clause in (
+            "Travel expenses are reimbursed at 40% of the ticket cost.",
+            "Travel reimbursement includes a 30% discount on rail passes.",
+            "Travel to optional team offsites has a 50% travel-cost subsidy.",
+        ):
+            with self.subTest(clause=clause):
+                t, row, page, assessment = fixture()
+                page["visible_text"] += " " + clause
+                config = {r["key"]: r["value"] for r in t["Config"]}
+                assessment.update(assessment_context(
+                    row, page, config, t["CandidateEvidence"]
+                ))
+                result = evaluate(t, row, page, assessment)
+                self.assertEqual(1, len(result["final_recommendations"]))
+                self.assertEqual(result["final_recommendations"][0]["score"], 85)
+
     def test_complete_verified_role_uses_existing_engine_and_optional_unknown_is_allowed(self):
         t, row, page, assessment = fixture()
         result = evaluate(t, row, page, assessment)
