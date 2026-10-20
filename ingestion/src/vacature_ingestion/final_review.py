@@ -127,8 +127,13 @@ def _has_substantial_required_travel(page: dict[str, Any]) -> bool:
     if not isinstance(visible, str):
         return False
     for match in _SUBSTANTIAL_TRAVEL.finditer(visible[:25_000]):
-        # An uncertain upper bound alone cannot establish mandatory travel.
-        if "up to" in match.group(0).casefold():
+        clause = match.group(0).casefold()
+        # Upper limits and discounts/reimbursements are NOT mandatory
+        # work-travel percentages. A false positive would hide remote roles.
+        if "up to" in clause or re.search(
+            r"\b(?:optional|costs?|expenses?|reimburs\w*|discounts?|"
+            r"subsid\w*|allowances?|benefits?)\b", clause,
+        ):
             continue
         if int(match.group("minimum")) >= 20:
             return True
