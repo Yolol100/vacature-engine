@@ -222,6 +222,60 @@ class VerifiedRankingFlowTests(unittest.TestCase):
         self.assertNotIn("fixture:0", json.dumps(result))
         self.assertNotIn(t["CandidateEvidence"][0]["claim"], json.dumps(result))
 
+    def test_acceptance_four_negative_gates_share_the_verified_engine_pipeline(self):
+        """Offline regression: all four cases traverse evaluate_observations.
+
+        The baseline and employer page are synthetic. This test does not
+        claim a fresh live employer vacancy or use real candidate records.
+        """
+        t, row, page, review = fixture()
+        positive_control = evaluate(t, row, page, review)
+        self.assertEqual(85, positive_control["final_recommendations"][0]["score"])
+
+        t, row, page, review = fixture()
+        t["Applications"] = [{
+            "vacancy_id": "historical-application", "status": "submitted",
+            "application_url": URL,
+        }]
+        duplicate = evaluate(t, row, page, review)
+        self.assertEqual([], duplicate["final_recommendations"])
+        self.assertEqual(1, duplicate["preflight_counts"]["previously_registered"])
+
+        t, row, page, review = fixture()
+        page["visible_text"] += (
+            " Applicants must be based in the United States or Canada."
+        )
+        config = {x["key"]: x["value"] for x in t["Config"]}
+        review.update(assessment_context(row, page, config, t["CandidateEvidence"]))
+        geographic = evaluate(t, row, page, review)
+        self.assertEqual([], geographic["final_recommendations"])
+        self.assertIn(
+            "exclusive_non_nl_residence_on_official_page",
+            geographic["review_candidates"][0]["still_to_verify"],
+        )
+
+        t, row, page, review = fixture()
+        page["structured"]["date_posted"] = None
+        page["structured"]["date_posted_valid"] = None
+        config = {x["key"]: x["value"] for x in t["Config"]}
+        review.update(assessment_context(row, page, config, t["CandidateEvidence"]))
+        undated = evaluate(t, row, page, review)
+        self.assertEqual([], undated["final_recommendations"])
+        self.assertIn(
+            "original_publication_date",
+            undated["review_candidates"][0]["still_to_verify"],
+        )
+
+        t, row, page, review = fixture()
+        review["requirements"][0]["outcome"] = "unknown"
+        review["requirements"][0]["candidate_evidence"] = []
+        insufficient = evaluate(t, row, page, review)
+        self.assertEqual([], insufficient["final_recommendations"])
+        self.assertIn(
+            "mandatory_requirement_unknown",
+            insufficient["review_candidates"][0]["still_to_verify"],
+        )
+
     def test_verified_library_cv_requires_exact_file_id_not_a_fake_link(self):
         t, row, page, assessment = fixture()
         live = t["CandidateEvidence"][0]
