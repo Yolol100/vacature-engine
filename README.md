@@ -163,6 +163,8 @@ and active `google-jobs` registration, uses no paid plan, and returns
 
 ## Ownership and safety
 
+CV and portfolio presentation remain caller-owned. See the [career-presentation evidence handoff](docs/CAREER-PRESENTATION-HANDOFF.md); the engine does not generate claims, assess portfolio design or change vacancy scores from this guidance.
+
 `webactueel-workflow` coordinates multi-step work. `vacature-search`
 owns semantic verification, suitability and application drafts. The live
 Vacature Register owns mutable search and application policies. The engine

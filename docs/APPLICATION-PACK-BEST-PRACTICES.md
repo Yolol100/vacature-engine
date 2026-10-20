@@ -4,6 +4,8 @@ Last reviewed: 2026-09-25.
 
 This document records external evidence used to validate the caller-owned form/email application-pack defaults. It does not move application policy into `vacature-engine`.
 
+For evidence-backed CV/portfolio presentation, see [Career presentation handoff](CAREER-PRESENTATION-HANDOFF.md). The existing application-pack rules, employer instructions and current verified-evidence policy remain unchanged.
+
 ## Sources reviewed
 
 - Harvard FAS Mignone Center for Career Success, 2026 cover-letter guidance: https://careerservices.fas.harvard.edu/blog/2026/08/10/how-to-write-a-cover-letter-that-actually-gets-you-hired-in-2026/
