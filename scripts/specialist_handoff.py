@@ -6,6 +6,7 @@ continues to own the verified final-score gate on a trusted LOCAL runtime.
 """
 from __future__ import annotations
 
+import ipaddress
 import re
 from typing import Any
 from urllib.parse import urlsplit, urlunsplit
@@ -29,6 +30,12 @@ def _public_role_link(value: Any) -> str | None:
         host = parts.hostname.casefold()
         if (not host or "." not in host or host.endswith(
                 (".local", ".internal", ".test", ".invalid", ".localhost"))):
+            return None
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            pass
+        else:
             return None
         # No marketing, tracking or signed query tokens in public handoff.
         return urlunsplit(("https", parts.netloc.lower(), parts.path, "", ""))
