@@ -35,3 +35,13 @@ The runner starts as one bounded process with provider pagination and SQLite sta
 ## Source roster
 
 The runner consumes known provider board/account specifications after live Register activation filtering. Discovery of new board slugs remains upstream in `vacature-search` and registered sources; this runner does not become a second discovery-policy owner.
+
+## Technical CLI source gate
+
+`python -m vacature_ingestion ingest` and `ingest-many` are optional
+technical adapters, never an alternative user-facing vacancy-search route.
+Both require `--spreadsheet-id` and working read-only Google Register access.
+All requested source IDs and employer bindings must be active in `Bronnen`;
+if any one is blocked, no source request or SQLite mutation may begin.
+Missing credentials and ambiguous registry IDs fail closed. No search
+scheduling or automatic application is possible through these commands.

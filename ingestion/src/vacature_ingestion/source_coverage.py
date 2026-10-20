@@ -21,15 +21,15 @@ def _clean(value: Any) -> str:
     return str(value or "").strip()
 
 
-def _automated_registry_ids(specs: list[dict[str, Any]], active_ids: set[str]) -> set[str]:
-    automated: set[str] = set()
+def _adapter_registry_ids(specs: list[dict[str, Any]], active_ids: set[str]) -> set[str]:
+    supported: set[str] = set()
     for spec in specs:
         if not isinstance(spec, dict):
             continue
         required = required_registry_ids(spec)
         if required and required.issubset(active_ids):
-            automated.update(required)
-    return automated
+            supported.update(required)
+    return supported
 
 
 def build_source_coverage(
@@ -37,7 +37,7 @@ def build_source_coverage(
     active_rows: list[dict[str, str]],
 ) -> dict[str, Any]:
     active_ids = {_clean(row.get("source_id")) for row in active_rows if _clean(row.get("source_id"))}
-    automated_ids = _automated_registry_ids(specs, active_ids)
+    adapter_ids = _adapter_registry_ids(specs, active_ids)
     sources: list[dict[str, Any]] = []
     counts: Counter[str] = Counter()
 
@@ -45,9 +45,9 @@ def build_source_coverage(
         source_id = _clean(row.get("source_id"))
         source_type = _clean(row.get("source_type"))
         base_url = _clean(row.get("base_url"))
-        if source_id in automated_ids:
-            mode = "github_adapter"
-            reason = "active source is represented by a verified repository adapter/spec"
+        if source_id in adapter_ids:
+            mode = "on_demand_adapter"
+            reason = "active source has an optional public adapter for an explicit on-demand run"
         elif source_type in _MAILBOX_TYPES:
             mode = "mailbox_read_only"
             reason = "application-evidence sources are reconciled by the mailbox workflow, not vacancy ingestion"
@@ -82,7 +82,7 @@ def build_source_coverage(
         "active_source_count": len(sources),
         "coverage_complete": not blocked and len(sources) == len(active_ids),
         "execution_counts": dict(sorted(counts.items())),
-        "automated_registry_source_ids": sorted(automated_ids),
+        "adapter_registry_source_ids": sorted(adapter_ids),
         "live_web_queue_count": len(live_web_queue),
         "live_web_queue": live_web_queue,
         "blocked": blocked,

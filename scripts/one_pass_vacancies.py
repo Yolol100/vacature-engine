@@ -937,7 +937,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         ["source_id", "status"],
         *[[row["source_id"], row["status"]] for row in tables["Bronnen"]],
     ])}
-    # This argument comes only from the owning workflow's explicit private
+    # This argument comes only from the owning specialist's explicit private
     # file; never copy an assessment from a feed, web page or observation.
     review_inputs = verified_assessments if verified_assessments is not None else []
     if not isinstance(review_inputs, list) or len(review_inputs) > 100:
@@ -1025,7 +1025,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         finally:
             runner.close()
     if not private_candidate_evidence_available:
-        # A public CI job may display unverified role links, but must never
+        # An explicitly requested public-mode run may show links, but must never
         # export private-evidence digests or claim a final candidate fit.
         if loop["evaluation"].get("final_recommendations"):
             raise ValueError("Public discovery cannot publish candidate scores")
@@ -1045,12 +1045,12 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         ),
     }
     # Audit-only proposals are generated from actual, timestamped attempts.
-    # The workflow holds read-only Register credentials and NEVER writes these
+    # The technical caller holds read-only Register credentials and never writes these
     # back into Google Sheets or fills missing historical health timestamps.
     audit_report["source_health"] = source_health_handoff(
         tables["Bronnen"], audit_report["coverage"], audit_report["source_attempts"],
     )
-    # Public digest-bound queue, NOT the owner's private specialist assessment.
+    # Public digest-bound review candidates, NOT private specialist assessments.
     # The existing validate_assessment gate remains the sole score authority.
     audit_report["specialist_handoff"] = public_specialist_handoff(
         loop["evaluation"].get("review_candidates", []),
@@ -1095,7 +1095,7 @@ def main() -> int:
     if discovery_round is not None and discovery_round < 0:
         parser.error("--discovery-round must be nonnegative")
     if args.public_discovery_only and args.verified_assessments is not None:
-        parser.error("Public GitHub discovery cannot accept a private specialist assessment")
+        parser.error("Public discovery mode cannot accept a private specialist assessment")
     try:
         tables = load_register(
             include_candidate_evidence=not args.public_discovery_only,

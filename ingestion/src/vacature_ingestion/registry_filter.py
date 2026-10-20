@@ -84,10 +84,11 @@ def active_source_rows_from_values(values: Any) -> list[dict[str, str]]:
         raise RegistrySourceError("Bronnen header is invalid")
     columns = {str(value).strip(): index for index, value in enumerate(header)}
     required = {"source_id", "status"}
-    if not required.issubset(columns):
-        raise RegistrySourceError("Bronnen must contain source_id and status columns")
+    if not required.issubset(columns) or len(columns) != len(header):
+        raise RegistrySourceError("Bronnen columns are missing or duplicated")
 
     rows: list[dict[str, str]] = []
+    seen_ids: set[str] = set()
     for raw_row in values[1:]:
         if not isinstance(raw_row, list):
             continue
@@ -97,7 +98,12 @@ def active_source_rows_from_values(values: Any) -> list[dict[str, str]]:
             continue
         source_id = str(raw_row[source_col] or "").strip()
         status = str(raw_row[status_col] if status_col < len(raw_row) else "").strip().lower()
-        if not source_id or status != "active":
+        if not source_id:
+            continue
+        if source_id in seen_ids:
+            raise RegistrySourceError("Duplicate source_id in Bronnen")
+        seen_ids.add(source_id)
+        if status != "active":
             continue
         row: dict[str, str] = {}
         for name, index in columns.items():
@@ -152,6 +158,14 @@ def filter_source_specs(
     blocked: list[dict[str, Any]] = []
     for spec in specs:
         if not isinstance(spec, dict):
+            continue
+        source_id = spec.get("source_id")
+        if not isinstance(source_id, str) or not source_id or source_id != source_id.strip():
+            blocked.append({
+                "source_instance": f"{source_id}:{spec.get('account')}",
+                "missing_active_registry_ids": [],
+                "reason": "invalid_source_id",
+            })
             continue
         required = required_registry_ids(spec)
         missing = sorted(required - active_source_ids)

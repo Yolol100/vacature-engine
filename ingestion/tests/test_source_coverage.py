@@ -21,7 +21,9 @@ class SourceCoverageTests(unittest.TestCase):
         coverage = build_source_coverage(specs, active_rows)
         modes = {row["source_id"]: row["execution_mode"] for row in coverage["sources"]}
         self.assertTrue(coverage["coverage_complete"])
-        self.assertEqual(modes["remote-ok"], "github_adapter")
+        self.assertEqual(modes["remote-ok"], "on_demand_adapter")
+        self.assertNotIn("github_adapter", coverage["execution_counts"])
+        self.assertEqual(["remote-ok"], coverage["adapter_registry_source_ids"])
         self.assertEqual(modes["jobgether"], "live_web_required")
         self.assertEqual(modes["gmail-application-evidence"], "mailbox_read_only")
 
@@ -38,8 +40,8 @@ class SourceCoverageTests(unittest.TestCase):
         }]
         coverage = build_source_coverage(specs, active_rows)
         modes = {row["source_id"]: row["execution_mode"] for row in coverage["sources"]}
-        self.assertEqual(modes["greenhouse"], "github_adapter")
-        self.assertEqual(modes["company-acme"], "github_adapter")
+        self.assertEqual(modes["greenhouse"], "on_demand_adapter")
+        self.assertEqual(modes["company-acme"], "on_demand_adapter")
         self.assertEqual(coverage["live_web_queue_count"], 0)
 
     def test_missing_base_url_fails_closed(self):
