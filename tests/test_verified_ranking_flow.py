@@ -122,6 +122,27 @@ class VerifiedRankingFlowTests(unittest.TestCase):
         self.assertNotIn("fixture:0", json.dumps(result))
         self.assertNotIn(t["CandidateEvidence"][0]["claim"], json.dumps(result))
 
+    def test_verified_library_cv_requires_exact_file_id_not_a_fake_link(self):
+        t, row, page, assessment = fixture()
+        live = t["CandidateEvidence"][0]
+        live.update(source_type="library_cv",
+                    source_ref="file_" + "0" * 32,
+                    source_locator="Experience, page 1")
+        for req in assessment["requirements"]:
+            for ref in req["candidate_evidence"]:
+                if ref["evidence_id"] == live["evidence_id"]:
+                    ref["source_ref"] = live["source_ref"]
+        config = {r["key"]: r["value"] for r in t["Config"]}
+        assessment.update(assessment_context(row, page, config, t["CandidateEvidence"]))
+        self.assertEqual(evaluate(t, row, page, assessment)["final_recommendations"][0]["score"], 85)
+        live["source_ref"] = "https://example.com/fake-cv"
+        for req in assessment["requirements"]:
+            for ref in req["candidate_evidence"]:
+                if ref["evidence_id"] == live["evidence_id"]:
+                    ref["source_ref"] = live["source_ref"]
+        assessment.update(assessment_context(row, page, config, t["CandidateEvidence"]))
+        self.assertEqual(evaluate(t, row, page, assessment)["final_recommendations"], [])
+
     def test_no_assessment_never_scores_even_when_technical_tokens_match(self):
         t, row, page, _ = fixture()
         result = evaluate(t, row, page, None)
