@@ -72,3 +72,8 @@ This check does not positively verify other roles as fully remote and does not
 automatically reject isolated team offsites, uncertain 'up to' bounds, or
 unrelated compensation percentages. Original dates, employer ownership,
 candidate evidence and all other official hard gates remain required.
+
+The travel-% detector ignores optional attendance and compensation-only travel
+percentages (costs, expenses, reimbursements, discounts and subsidies). This
+prevents synthetic travel-expense examples from blocking otherwise verified
+remote roles. Hard-required 30-50% client-site engagement remains blocked.
