@@ -188,6 +188,10 @@ class RemoteFirstPolicyTests(unittest.TestCase):
         self.assertTrue(gate["pass"])
         self.assertIn("date_missing", gate["warnings"])
 
+    def test_missing_date_cannot_reach_final_output_at_maximum_fit(self):
+        item = vacancy(posted_date=None, core_fit=50, evidence_fit=25, workstyle_fit=15)
+        self.assertEqual([], top_vacancies([item], today=TODAY, policy=POLICY))
+
     def test_malformed_and_future_dates_rejected(self):
         malformed = eligibility(vacancy(posted_date="2026-08-20Z"), today=TODAY, policy=POLICY)
         future = eligibility(vacancy(posted_date="2026-09-01"), today=TODAY, policy=POLICY)
