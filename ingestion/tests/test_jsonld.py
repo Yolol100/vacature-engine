@@ -36,6 +36,78 @@ class JsonLdTests(unittest.TestCase):
         row=adapter.normalize_records(adapter.fetch(FakeClient({url:html}),spec),spec)[0]
         self.assertIsNone(row["description"])
 
+    def test_structured_remote_hiring_area_overrides_physical_office(self):
+        import json
+        url = "https://example.test/jobs/wordpress"
+        common = {
+            "@type": "JobPosting",
+            "title": "WordPress Developer",
+            "url": url,
+            "identifier": {"value": "wp-remote"},
+            "jobLocationType": "TELECOMMUTE",
+        }
+        office = {"@type": "Place", "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Detroit", "addressRegion": "MI",
+            "addressCountry": {"@type": "Country", "name": "USA"},
+        }}
+        cases = [
+            ("country", {"applicantLocationRequirements": {
+                "@type": "Country", "name": "USA"}}, "USA"),
+            ("remote_eligible_eu_with_us_office", {
+                "jobLocation": office,
+                "applicantLocationRequirements": {
+                    "@type": "AdministrativeArea", "name": "European Union"},
+            }, "European Union"),
+            ("remote_restricted_us_with_eu_office", {
+                "jobLocation": {"@type": "Place", "address": {
+                    "addressLocality": "Utrecht",
+                    "addressCountry": {"@type": "Country", "name": "Netherlands"}}},
+                "applicantLocationRequirements": {
+                    "@type": "Country", "name": "USA"},
+            }, "USA"),
+            ("multiple_countries", {"applicantLocationRequirements": [
+                {"@type": "Country", "name": "USA"},
+                {"@type": "Country", "name": "Canada"},
+            ]}, "USA; Canada"),
+            ("physical_location_fallback", {
+                "jobLocation": office,
+            }, "Detroit, MI, USA"),
+        ]
+        spec = SourceSpec(
+            "company-acme", "employer_direct", "jsonld", "acme",
+            options={"urls": [url]})
+        for label, fields, location in cases:
+            with self.subTest(label=label):
+                payload = {**common, **fields}
+                html = ("<script type='application/ld+json'>"
+                        + json.dumps(payload) + "</script>")
+                obs = ADAPTERS["jsonld"].normalize_records(
+                    ADAPTERS["jsonld"].fetch(FakeClient({url: html}), spec),
+                    spec)[0]
+                self.assertEqual(obs["location"], location)
+                self.assertEqual(obs["remote"], True)
+                self.assertNotIn("'@type':", obs["location"])
+                self.assertEqual(obs["source_metadata"][
+                    "applicant_location_requirements"],
+                    payload.get("applicantLocationRequirements"))
+
+    def test_multiple_employment_types_do_not_leak_python_list_syntax(self):
+        import json
+        url = "https://example.test/jobs/wordpress"
+        payload = {
+            "@type": "JobPosting", "title": "WordPress Developer",
+            "url": url, "identifier": {"value": "wp-types"},
+            "employmentType": ["FULL_TIME", "CONTRACTOR"],
+        }
+        html = ("<script type='application/ld+json'>"
+                + json.dumps(payload) + "</script>")
+        spec = SourceSpec("company-acme", "employer_direct", "jsonld", "acme",
+                          options={"urls": [url]})
+        obs = ADAPTERS["jsonld"].normalize_records(
+            ADAPTERS["jsonld"].fetch(FakeClient({url: html}), spec), spec)[0]
+        self.assertEqual(obs["employment_type"], "FULL_TIME; CONTRACTOR")
+
     def test_empty_page(self):
         url="https://example.test/careers"; spec=SourceSpec("company-acme","employer_direct","jsonld","acme",options={"urls":[url]})
         self.assertEqual(ADAPTERS["jsonld"].fetch(FakeClient({url:"<html/>"}),spec),[])
