@@ -12,8 +12,8 @@ from typing import Any
 
 from vacature_engine.simple import VacancyPolicy, top_vacancies
 from .official_page import verified_source_account
-from .requirement_match import has_positive_skill_claim
-_SUPPORTED_EVIDENCE = {"canonical_cv", "github", "user_confirmed", "library_portfolio_master"}
+from .requirement_match import has_positive_skill_claim, valid_library_cv_source
+_SUPPORTED_EVIDENCE = {"canonical_cv", "library_cv", "github", "user_confirmed", "library_portfolio_master"}
 _CORE_TERMS: dict[str, tuple[str, ...]] = {
     "wordpress_ecosystem": ("wordpress", "woocommerce", "elementor", "gutenberg",
                             "plugin development", "plugin developer"),
@@ -116,6 +116,8 @@ def _strong_evidence_count(rows: list[dict[str, str]], families: list[str]) -> i
         if row.get("active", "").casefold() != "true":
             continue
         if row.get("source_type") not in _SUPPORTED_EVIDENCE:
+            continue
+        if not valid_library_cv_source(row):
             continue
         if row.get("confidence", "").casefold() not in {"high", "medium"}:
             continue
