@@ -1,6 +1,8 @@
 """Offline integration tests: no Google calls, external sites or Register writes."""
 import json
 import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from datetime import date
@@ -13,7 +15,7 @@ from vacature_ingestion.runner import SourceRunResult
 from scripts.one_pass_vacancies import (
     _official_page_exclusion, _missing_ranking_evidence,
     RegisterPreflightError, google_free_gate, live_policy, parse_table,
-    run_once, screen_review_candidates, select_free_specs,
+    plan_free_source_batches, run_once, screen_review_candidates, select_free_specs,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -547,12 +549,96 @@ class OnePassTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 run_once(tables(), ROOT, "page-1", max_free_sources=3)
 
+    def test_rotating_deploy_instances_reaches_sources_after_twenty(self):
+        specs = json.loads((ROOT / "ingestion/source-specs.deploy.json").read_text())
+        t = tables()
+        from vacature_ingestion.registry_filter import required_registry_ids
+        # ATS tenants are separately gated by employer-specific Register IDs.
+        unique = set().union(*(required_registry_ids(spec) for spec in specs))
+        t["Bronnen"] = [
+            {"source_id": sid, "status": "active", "source_type": "ats",
+             "priority": "medium"} for sid in sorted(unique)
+        ]
+        p0 = plan_free_source_batches(
+            specs, t, CONFIG, max_sources=20, round_index=0)
+        p1 = plan_free_source_batches(
+            specs, t, CONFIG, max_sources=20, round_index=1)
+        first = {spec.instance_id for batch in p0 for spec in batch}
+        second = {spec.instance_id for batch in p1 for spec in batch}
+        self.assertEqual(len(first), 20)
+        self.assertEqual(len(second), 20)
+        self.assertEqual(len(first | second), len(specs))
+        self.assertNotEqual(first, second)
+        self.assertTrue(all(len(batch) <= 8 for batch in p0 + p1))
+
+    def test_generated_google_plan_is_bounded_and_reports_discovery_not_scans(self):
+        t = tables()
+        t["Bronnen"].append({
+            "source_id": "company-special", "status": "active",
+            "source_type": "employer_direct", "priority": "high",
+            "base_url": "https://careers.example.org/openings",
+        })
+        t["Config"].extend([
+            {"key": "target_role_search_terms", "value": "wordpress,woocommerce"},
+            {"key": "google_xray_domains",
+             "value": "jobs.ashbyhq.com,job-boards.greenhouse.io"},
+        ])
+        observed = []
+
+        class FakeRunner:
+            def __init__(self, path): pass
+            def close(self): pass
+            def run_source(self, spec):
+                observed.append(spec)
+                return SourceRunResult(
+                    source_instance=spec.instance_id, success=True,
+                    fetched=0, normalized=0, observations=[],
+                    registry_source_ids=[spec.source_id],
+                )
+
+        with patch("scripts.one_pass_vacancies.google_free_gate",
+                   return_value="ready"), \
+             patch("scripts.one_pass_vacancies.IngestionRunner", FakeRunner), \
+             patch("scripts.one_pass_vacancies.evaluate_observations",
+                   return_value={"final_recommendations": [], "review_count": 0}):
+            result = run_once(
+                t, ROOT, "page-1", today=date(2026, 10, 20),
+                max_free_sources=3, discovery_round=0, google_queries_per_run=8)
+        google = [spec for spec in observed if spec.adapter == "serpapi_google"]
+        self.assertEqual(len(google), 1)
+        queries = google[0].options["queries"]
+        self.assertTrue(any("site:careers.example.org" in q for q in queries))
+        self.assertTrue(any("site:jobs.ashbyhq.com" in q for q in queries))
+        self.assertLessEqual(len(queries), 8)
+        self.assertEqual(google[0].options["max_requests_per_run"], len(queries))
+        coverage = result["coverage"]
+        self.assertEqual(coverage["google_query_count"], len(queries))
+        byid = {item["source_id"]: item for item in coverage["sources"]}
+        self.assertEqual(byid["company-special"]["coverage_route"],
+                         "google_site_discovery_only")
+        self.assertEqual(byid["company-special"]["execution"],
+                         "google_batch_succeeded_query_unconfirmed")
+        self.assertEqual(byid["google-jobs"]["execution"],
+                         "google_provider_batch_succeeded")
+        self.assertEqual(result["final_recommendations"], [])
+
+    def test_manual_script_entrypoint_imports_without_network(self):
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/one_pass_vacancies.py"), "--help"],
+            cwd=ROOT, capture_output=True, text=True, timeout=10, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr[-1500:])
+        self.assertIn("--discovery-round", result.stdout)
+        self.assertIn("--google-queries-per-run", result.stdout)
+
     def test_check_never_fetches_vacancies(self):
         with patch("scripts.one_pass_vacancies.google_free_gate", return_value="ready"), \
              patch("scripts.one_pass_vacancies.IngestionRunner") as runner:
             result = run_once(tables(), ROOT, "check")
         runner.assert_not_called()
         self.assertEqual(result["search_requests"], 0)
+        self.assertTrue(result["coverage"]["sources"])
+        self.assertEqual(result["coverage"]["execution_counts"].get(
+            "direct_attempt_succeeded", 0), 0)
 
 if __name__ == "__main__":
     unittest.main()

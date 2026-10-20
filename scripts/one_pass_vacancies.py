@@ -38,6 +38,11 @@ from vacature_ingestion.requirement_match import compare_requirements, compare_r
 from vacature_ingestion.final_review import (
     assessment_context, automated_ranking_blockers, validate_assessment,
 )
+# Called both as a package by tests and directly as an Actions CLI script.
+if __package__:
+    from .source_coverage import build_source_coverage, complete_source_coverage
+else:
+    from source_coverage import build_source_coverage, complete_source_coverage
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -203,7 +208,8 @@ def select_free_specs(raw: list[dict[str, Any]], tables: dict[str, list[dict[str
 def plan_free_source_batches(raw: list[dict[str, Any]],
                              tables: dict[str, list[dict[str, str]]],
                              config: dict[str, str], *, max_sources: int,
-                             batch_size: int = 8) -> list[list[SourceSpec]]:
+                             batch_size: int = 8,
+                             round_index: int = 0) -> list[list[SourceSpec]]:
     """Bound the whole run while making later approved employers reachable.
 
     Reuse the existing live source order and ATS/feed diversity in each batch;
@@ -213,18 +219,29 @@ def plan_free_source_batches(raw: list[dict[str, Any]],
         raise ValueError("Free source limit must be between 1 and 20")
     if type(batch_size) is not int or not 1 <= batch_size <= 8:
         raise ValueError("Free source batch size must be between 1 and 8")
-    batches: list[list[SourceSpec]] = []
+    if type(round_index) is not int or round_index < 0:
+        raise ValueError("Invalid source rotation round")
+    # Enumerate approved deploy specs only. Rotating the bounded window across
+    # successive explicit rounds prevents tenants past slot 20 from starving.
+    # It does NOT make inactive or unconfigured Register sources executable.
+    pool: list[SourceSpec] = []
     selected: set[str] = set()
-    while len(selected) < max_sources:
+    while len(selected) < len(raw):
         batch = select_free_specs(
-            raw, tables, config, limit=min(batch_size, max_sources - len(selected)),
+            raw, tables, config, limit=batch_size,
             excluded_instance_ids=selected,
         )
         if not batch:
             break
-        batches.append(batch)
+        pool.extend(batch)
         selected.update(spec.instance_id for spec in batch)
-    return batches
+    if not pool:
+        return []
+    offset = (round_index * max_sources) % len(pool)
+    window = [pool[(offset + i) % len(pool)]
+              for i in range(min(max_sources, len(pool)))]
+    return [window[i:i + batch_size]
+            for i in range(0, len(window), batch_size)]
 
 
 def _source_attempt_audit(result: SourceRunResult) -> dict[str, Any]:
@@ -895,7 +912,9 @@ def evaluate_observations(observations: list[dict[str, Any]],
 
 def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
              *, today: date | None = None, max_free_sources: int = 20,
-             verified_assessments: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+             verified_assessments: list[dict[str, Any]] | None = None,
+             discovery_round: int | None = None,
+             google_queries_per_run: int = 8) -> dict[str, Any]:
     if mode not in GOOGLE_MODES:
         raise ValueError("Unsupported safe search mode")
     today = today or datetime.now(ZoneInfo("Europe/Amsterdam")).date()
@@ -918,20 +937,50 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     google_list = json.loads((root / "ingestion/source-specs.google-optional.json").read_text(encoding="utf-8"))
     deploy_list = json.loads((root / "ingestion/source-specs.deploy.json").read_text(encoding="utf-8"))
     google_approved, _ = filter_source_specs(google_list, active_ids)
-    batches = plan_free_source_batches(deploy_list, tables, config, max_sources=max_free_sources)
+    round_index = today.toordinal() if discovery_round is None else discovery_round
+    batches = plan_free_source_batches(
+        deploy_list, tables, config, max_sources=max_free_sources,
+        round_index=round_index,
+    )
     pages = GOOGLE_MODES[mode]
+    seed_queries = (google_approved[0].get("options") or {}).get("queries", []) if (
+        len(google_approved) == 1 and google_approved[0].get("source_id") == "google-jobs"
+    ) else []
+    coverage_plan = build_source_coverage(
+        tables["Bronnen"], deploy_list, config, seed_queries,
+        round_index=round_index, max_google_queries=google_queries_per_run,
+        pages=pages,
+    )
     google_status = "not_registered"
     google_observations: list[dict[str, Any]] = []
     google_attempts: list[dict[str, Any]] = []
     if len(google_approved) == 1 and google_approved[0].get("source_id") == "google-jobs":
-        google_spec = SourceSpec.from_dict(google_approved[0])
-        google_status = google_free_gate(google_spec, pages)
+        initial_google_spec = SourceSpec.from_dict(google_approved[0])
+        google_queries = [q["query"] for q in coverage_plan["query_plan"]]
+        if google_queries:
+            google_options = dict(initial_google_spec.options)
+            google_options.update({
+                "queries": google_queries, "max_pages": max(1, pages),
+                "max_requests_per_run": max(1, pages) * len(google_queries),
+                "free_quota_reserve": 10,
+            })
+            google_spec = replace(initial_google_spec, options=google_options)
+            google_status = google_free_gate(google_spec, pages)
+        else:
+            google_spec = None
+            google_status = "invalid_generated_query_plan"
     else:
         google_spec = None
     if not pages:
-        return {"mode": mode, "google": google_status,
-                "fallback_sources_available": sum(len(b) for b in batches),
-                "search_requests": 0, "read_only": True, "source_attempts": []}
+        return {
+            "mode": mode, "google": google_status,
+            "fallback_sources_available": sum(len(b) for b in batches),
+            "search_requests": 0, "read_only": True, "source_attempts": [],
+            "coverage": complete_source_coverage(
+                coverage_plan, google_status=google_status,
+                source_attempts=[], mode=mode,
+            ),
+        }
     page_cache: dict[str, dict[str, Any]] = {}
     def evaluate(items):
         return evaluate_observations(
@@ -942,11 +991,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         runner = IngestionRunner(Path(temp) / "observations.sqlite3")
         try:
             if google_status == "ready" and google_spec is not None:
-                options = dict(google_spec.options)
-                options.update({"max_pages": pages, "max_requests_per_run":
-                                pages * len(set(options.get("queries", []))), "free_quota_reserve": 10})
-                requested = replace(google_spec, options=options)
-                google_result = runner.run_source(requested)
+                google_result = runner.run_source(google_spec)
                 google_attempts.append(_source_attempt_audit(google_result))
                 if google_result.success:
                     google_observations = google_result.observations or []
@@ -965,6 +1010,11 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         **{k: loop[k] for k in ("fallback_sources_attempted", "fallback_sources_successful",
                                "fallback_batches_completed", "fallback_stop_reason")},
         "source_attempts": google_attempts + loop["source_attempts"],
+        "coverage": complete_source_coverage(
+            coverage_plan, google_status=google_status,
+            source_attempts=google_attempts + loop["source_attempts"],
+            mode=mode,
+        ),
     }
     if (not any(attempt["success"] for attempt in google_attempts)
             and not loop["fallback_sources_successful"]):
@@ -984,11 +1034,24 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--max-free-sources", type=int, default=20)
+    parser.add_argument("--google-queries-per-run", type=int, default=8,
+                        help="Maximum planned Google queries (1-20); every page uses free quota")
+    parser.add_argument("--discovery-round", default="auto",
+                        help="Nonnegative rotating window number; auto rotates by Amsterdam date")
     parser.add_argument("--verified-assessments", type=Path,
                         help="Private vacature-search evidence handoff; never feed-provided JSON")
     args = parser.parse_args()
     if args.max_free_sources not in range(1, 21):
         parser.error("--max-free-sources must be between 1 and 20")
+    if args.google_queries_per_run not in range(1, 21):
+        parser.error("--google-queries-per-run must be between 1 and 20")
+    try:
+        discovery_round = (None if args.discovery_round == "auto"
+                           else int(args.discovery_round))
+    except ValueError:
+        parser.error("--discovery-round must be auto or a nonnegative integer")
+    if discovery_round is not None and discovery_round < 0:
+        parser.error("--discovery-round must be nonnegative")
     try:
         tables = load_register()
         assessments = None
@@ -996,8 +1059,11 @@ def main() -> int:
             if args.verified_assessments.stat().st_size > 2_000_000:
                 raise ValueError("Specialist assessment file exceeds size limit")
             assessments = json.loads(args.verified_assessments.read_text(encoding="utf-8"))
-        report = run_once(tables, args.root, args.mode, max_free_sources=args.max_free_sources,
-                          verified_assessments=assessments)
+        report = run_once(
+            tables, args.root, args.mode, max_free_sources=args.max_free_sources,
+            verified_assessments=assessments, discovery_round=discovery_round,
+            google_queries_per_run=args.google_queries_per_run,
+        )
     except DiscoveryUnavailableError as exc:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(exc.report, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -1012,9 +1078,16 @@ def main() -> int:
         return 2
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({key: value for key, value in report.items()
-                      if key not in {"review_candidates", "preflight_counts"}},
-                     ensure_ascii=False, sort_keys=True))
+    # Keep the full public source ledger in the artifact, not the runner logs.
+    safe_log = {key: value for key, value in report.items()
+                if key not in {"review_candidates", "preflight_counts",
+                               "coverage", "source_attempts"}}
+    coverage = report.get("coverage") or {}
+    safe_log["coverage_summary"] = coverage.get("summary", {})
+    safe_log["coverage_execution_counts"] = coverage.get("execution_counts", {})
+    safe_log["google_planned_query_count"] = coverage.get("google_query_count", 0)
+    safe_log["discovery_round"] = coverage.get("round_index")
+    print(json.dumps(safe_log, ensure_ascii=False, sort_keys=True))
     return 0
 
 
