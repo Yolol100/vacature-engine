@@ -39,6 +39,17 @@ class SpecialistHandoffTests(unittest.TestCase):
                         "PRIVATE SECTION", "private@example.org", "PRIVATE NAME"):
             self.assertNotIn(private, serialized)
 
+    def test_public_github_mode_drops_all_private_derived_context_digests(self):
+        item = {"official_role_candidate_url": "https://jobs.example.org/role",
+                "assessment_context": {
+                    "policy_sha256": "a"*64, "candidate_evidence_sha256": "b"*64,
+                    "observation_sha256": "c"*64, "official_page_sha256": "d"*64}}
+        public = public_specialist_handoff([item], private_evidence_available=False)
+        self.assertFalse(public["private_candidate_evidence_loaded"])
+        self.assertIsNone(public["queue"][0]["assessment_context"])
+        self.assertFalse(public["queue"][0]["ready_for_verified_assessment"])
+        self.assertNotIn("b"*64, json.dumps(public))
+
     def test_unconfirmed_context_stays_pending_with_no_score(self):
         result = public_specialist_handoff([{
             "official_role_candidate_url": "https://jobs.ashbyhq.com/a/role",
