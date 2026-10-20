@@ -63,10 +63,15 @@ Een Google-hit is nooit voldoende bewijs voor een actuele officiële vacature.
 
 ## Privacygrens voor specialistische beoordeling
 
-De sectie specialist_handoff bevat alleen:
+De sectie specialist_handoff bevat in de publieke Actions-uitvoering alleen:
 - opgeschoonde publieke HTTPS-rol-URL zonder tracking/signed querytokens;
-- een strikt allowlisted pakket SHA-256-contextdigests van de bron;
 - veilige machinecodes van nog benodigde verificatiestappen.
+Er worden in GitHub Actions ook **geen contextdigests van CandidateEvidence**
+aangemaakt of geëxporteerd. De workflow gebruikt --public-discovery-only,
+waardoor CandidateEvidence!A:AH niet eens via Google Sheets wordt opgehaald.
+In een aparte, geautoriseerde lokale specialistische sessie zijn de vier
+SHA-256 contextdigests wel toegestaan en opnieuw aan de actuele bronnen
+gebonden. De publieke worklist bevat deze digests niet.
 
 Deze overdracht bevat geen CV-claimteksten, bewijs-ID's, bronlocators,
 persoonlijke werkervaring, taalniveaus, privébestanden, scores of sollicitaties.
