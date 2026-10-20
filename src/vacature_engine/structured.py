@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from datetime import date, datetime
 import math
+import re
 from typing import Any
 
 STRUCTURED_JOBPOSTING_CONTRACT_VERSION = "1.0"
@@ -22,6 +23,11 @@ def _iso_date(value: Any) -> tuple[str | None, bool | None]:
         return None, False
     raw = value.strip()
     if len(raw) < 10:
+        return None, False
+    # datetime.fromisoformat normalizes offset minutes such as +02:99.
+    # Reject invalid ISO timezone fields before parsing employer evidence.
+    offset = re.search(r"[+-](\\d{2}):(\\d{2})$", raw)
+    if offset and (int(offset.group(1)) > 23 or int(offset.group(2)) > 59):
         return None, False
     try:
         if len(raw) == 10:
