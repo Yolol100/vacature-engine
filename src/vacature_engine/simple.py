@@ -176,6 +176,11 @@ def _posted_date(value: Any) -> date | None:
     if not isinstance(value, str) or len(value) < 10:
         return None
     raw = value.strip()
+    # datetime.fromisoformat normalizes offset minutes such as +02:99.
+    # Reject invalid ISO timezone fields before parsing employer evidence.
+    offset = re.search(r"[+-](\\d{2}):(\\d{2})$", raw)
+    if offset and (int(offset.group(1)) > 23 or int(offset.group(2)) > 59):
+        return None
     try:
         if len(raw) == 10:
             return date.fromisoformat(raw)
