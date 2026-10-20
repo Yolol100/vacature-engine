@@ -99,7 +99,8 @@ def parse_table(values: Any, required: set[str], name: str) -> list[dict[str, st
     return rows
 
 
-def load_register(spreadsheet_id: str = REGISTER_ID) -> dict[str, list[dict[str, str]]]:
+def load_register(spreadsheet_id: str = REGISTER_ID, *,
+                  include_candidate_evidence: bool = True) -> dict[str, list[dict[str, str]]]:
     """Use the ingestion package's existing read-only Google Sheets OAuth code."""
     raw = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
     if not raw:
@@ -111,6 +112,11 @@ def load_register(spreadsheet_id: str = REGISTER_ID) -> dict[str, list[dict[str,
         raise RegisterPreflightError("Cannot authenticate to the Vacature Register") from None
     tables: dict[str, list[dict[str, str]]] = {}
     for name, required in SHEETS.items():
+        if name == "CandidateEvidence" and not include_candidate_evidence:
+            # GitHub Actions is PUBLIC DISCOVERY ONLY. Never fetch a private
+            # CandidateEvidence claim/locator from Google Sheets in this mode.
+            tables[name] = []
+            continue
         try:
             range_ref = quote(name + "!A1:AH2000", safe="!")
             url = ("https://sheets.googleapis.com/v4/spreadsheets/"
@@ -918,10 +924,14 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
              *, today: date | None = None, max_free_sources: int = 20,
              verified_assessments: list[dict[str, Any]] | None = None,
              discovery_round: int | None = None,
-             google_queries_per_run: int = 8) -> dict[str, Any]:
+             google_queries_per_run: int = 8,
+             private_candidate_evidence_available: bool = True) -> dict[str, Any]:
     if mode not in GOOGLE_MODES:
         raise ValueError("Unsupported safe search mode")
     today = today or datetime.now(ZoneInfo("Europe/Amsterdam")).date()
+    if not private_candidate_evidence_available and (
+            verified_assessments or tables.get("CandidateEvidence")):
+        raise ValueError("Public discovery cannot accept private candidate evidence")
     config, policy = live_policy(tables)
     active_ids = {row["source_id"] for row in active_source_rows_from_values([
         ["source_id", "status"],
@@ -987,7 +997,9 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             # A check has no source attempts. Unknown health remains neutral.
             "source_health": source_health_handoff(
                 tables["Bronnen"], coverage_plan, []),
-            "specialist_handoff": public_specialist_handoff([]),
+            "specialist_handoff": public_specialist_handoff(
+                [], private_evidence_available=private_candidate_evidence_available,
+            ),
         }
     page_cache: dict[str, dict[str, Any]] = {}
     def evaluate(items):
@@ -1034,6 +1046,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     # The existing validate_assessment gate remains the sole score authority.
     audit_report["specialist_handoff"] = public_specialist_handoff(
         loop["evaluation"].get("review_candidates", []),
+        private_evidence_available=private_candidate_evidence_available,
     )
     if (not any(attempt["success"] for attempt in google_attempts)
             and not loop["fallback_sources_successful"]):
@@ -1059,6 +1072,8 @@ def main() -> int:
                         help="Nonnegative rotating window number; auto rotates by Amsterdam date")
     parser.add_argument("--verified-assessments", type=Path,
                         help="Private vacature-search evidence handoff; never feed-provided JSON")
+    parser.add_argument("--public-discovery-only", action="store_true",
+                        help="GitHub Actions mode: do not fetch or score private CandidateEvidence")
     args = parser.parse_args()
     if args.max_free_sources not in range(1, 21):
         parser.error("--max-free-sources must be between 1 and 20")
@@ -1071,8 +1086,12 @@ def main() -> int:
         parser.error("--discovery-round must be auto or a nonnegative integer")
     if discovery_round is not None and discovery_round < 0:
         parser.error("--discovery-round must be nonnegative")
+    if args.public_discovery_only and args.verified_assessments is not None:
+        parser.error("Public GitHub discovery cannot accept a private specialist assessment")
     try:
-        tables = load_register()
+        tables = load_register(
+            include_candidate_evidence=not args.public_discovery_only,
+        )
         assessments = None
         if args.verified_assessments is not None:
             if args.verified_assessments.stat().st_size > 2_000_000:
@@ -1082,6 +1101,7 @@ def main() -> int:
             tables, args.root, args.mode, max_free_sources=args.max_free_sources,
             verified_assessments=assessments, discovery_round=discovery_round,
             google_queries_per_run=args.google_queries_per_run,
+            private_candidate_evidence_available=not args.public_discovery_only,
         )
     except DiscoveryUnavailableError as exc:
         args.out.parent.mkdir(parents=True, exist_ok=True)
