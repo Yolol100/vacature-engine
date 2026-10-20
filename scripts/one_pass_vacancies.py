@@ -41,8 +41,10 @@ from vacature_ingestion.final_review import (
 # Called both as a package by tests and directly as an Actions CLI script.
 if __package__:
     from .source_coverage import build_source_coverage, complete_source_coverage
+    from .source_health_handoff import source_health_handoff
 else:
     from source_coverage import build_source_coverage, complete_source_coverage
+    from source_health_handoff import source_health_handoff
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -980,6 +982,9 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
                 coverage_plan, google_status=google_status,
                 source_attempts=[], mode=mode,
             ),
+            # A check has no source attempts. Unknown health remains neutral.
+            "source_health": source_health_handoff(
+                tables["Bronnen"], coverage_plan, []),
         }
     page_cache: dict[str, dict[str, Any]] = {}
     def evaluate(items):
@@ -1016,6 +1021,12 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             mode=mode,
         ),
     }
+    # Audit-only proposals are generated from actual, timestamped attempts.
+    # The workflow holds read-only Register credentials and NEVER writes these
+    # back into Google Sheets or fills missing historical health timestamps.
+    audit_report["source_health"] = source_health_handoff(
+        tables["Bronnen"], audit_report["coverage"], audit_report["source_attempts"],
+    )
     if (not any(attempt["success"] for attempt in google_attempts)
             and not loop["fallback_sources_successful"]):
         raise DiscoveryUnavailableError({
