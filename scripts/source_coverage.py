@@ -125,6 +125,9 @@ def build_source_coverage(
     public = []
     priorities = {"high": 0, "medium": 1, "low": 2}
     high_order = _csv(config.get("high_source_order", ""))
+    # The Register owns source-family precedence; do not let a high-priority
+    # aggregator suppress a lower-priority exact employer source.
+    class_order = _csv(config.get("direct_discovery_order", ""))
     for row in register_rows:
         source_id = str(row.get("source_id") or "").strip()
         if not source_id or source_id in ids:
@@ -160,6 +163,8 @@ def build_source_coverage(
         entries.append(item)
 
     public.sort(key=lambda pair: (
+        class_order.index(pair[0]["source_type"])
+        if pair[0]["source_type"] in class_order else len(class_order),
         priorities.get(pair[0]["priority"], 3),
         high_order.index(pair[0]["source_id"])
         if pair[0]["source_id"] in high_order else len(high_order),
@@ -186,8 +191,13 @@ def build_source_coverage(
         seen_queries.add(query.casefold())
         queries.append({"query": query, "lane": lane, "source_id": source_id})
 
-    source_slots = min(len(public), max(1, budget // 2)) if public and terms else 0
-    xray_slots = min(budget - source_slots, max(1, budget // 3)) if xray_domains and terms else 0
+    # Use the free budget for Register-driven X-ray discovery rather than
+    # repeatedly running all four older static seeds. Default budget 8:
+    # 3 registered public sources, 4 rotating X-ray pairs, 1 legacy seed.
+    source_slots = min(len(public), max(1, budget * 3 // 8)) if public and terms else 0
+    legacy_slots = min(1, budget - source_slots) if seeds else 0
+    xray_slots = (budget - source_slots - legacy_slots
+                  if xray_domains and terms else 0)
     source_pairs = len(public) * len(terms)
     if source_pairs:
         stride = _coprime_step(len(public), source_pairs)
@@ -206,7 +216,7 @@ def build_source_coverage(
             term = terms[index // len(xray_domains)]
             add(f'site:{host} "{term}" remote', "configured_xray_domain")
     if seeds:
-        for j in range(len(seeds)):
+        for j in range(legacy_slots):
             add(seeds[(round_index + j) % len(seeds)], "registered_google_seed")
     # Spend remaining permitted slots on rotating X-ray pairs, not repeats.
     if total_pairs:
@@ -216,6 +226,17 @@ def build_source_coverage(
             index = ((round_index * xray_slots + j) * xray_stride) % total_pairs
             add(f'site:{xray_domains[index % len(xray_domains)]} '
                 f'"{terms[index // len(xray_domains)]}" remote', "configured_xray_domain")
+    # When no X-ray domains are configured, spend remaining budget on
+    # rotating registered public domains instead of unused search slots.
+    if not total_pairs and source_pairs:
+        for j in range(source_slots, min(source_pairs + source_slots, budget * 4)):
+            if len(queries) >= budget:
+                break
+            index = ((round_index * source_slots + j) * stride) % source_pairs
+            item, host = public[index % len(public)]
+            term = terms[index // len(public)]
+            add(f'site:{host} "{term}" remote', "registered_source_domain",
+                item["source_id"])
     planned_ids = {q["source_id"] for q in queries if q["source_id"]}
     for item in entries:
         if item["source_id"] in planned_ids:
