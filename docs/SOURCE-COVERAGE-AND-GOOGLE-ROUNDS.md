@@ -38,7 +38,10 @@ Workflow: **One-pass vacancy discovery and review (free sources)**
    expliciet 0, 1, 2, enz. voor meerdere reproduceerbare vensters op één dag.
    Er ontstaat hiermee geen achtergrondtaak of periodieke zoekopdracht.
 5. Download het artifact register-coverage-and-vacancy-review-readonly
-   (retentie één dag). Ook de check mode maakt dit artifact.
+   (retentie één dag). Ook de check mode maakt dit artifact. Open de
+   meegeleverde source-coverage.html als modern offline dashboard: bron-ID
+   doorzoeken, filteren op route en echte uitvoeringsstatus inzien. Het
+   JSON-rapport vacature-review.json blijft de machineleesbare bron.
 
 De aparte oudere workflow **Free Google vacancy discovery** blijft voor
 historische compatibiliteit bestaan en gebruikt nog vier statische queries.
