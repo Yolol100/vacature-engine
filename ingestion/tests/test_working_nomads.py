@@ -20,9 +20,12 @@ ITEM = {
 }
 
 
+_DEFAULT = object()
+
+
 class Client:
-    def __init__(self, data=None):
-        self.data = [ITEM] if data is None else data
+    def __init__(self, data=_DEFAULT):
+        self.data = [ITEM] if data is _DEFAULT else data
         self.calls = []
 
     def get_json(self, url, headers=None):
