@@ -53,7 +53,8 @@ class SpecialistHandoffTests(unittest.TestCase):
     def test_unsafe_or_authenticated_urls_are_excluded(self):
         for link in (
             "javascript:alert(1)", "https://username:secret@jobs.example.org/x",
-            "http://127.0.0.1/role", "https://internal.local/job",
+            "http://127.0.0.1/role", "https://127.0.0.1/role",
+            "https://internal.local/job",
             "https://jobs.example.org:8443/role",
         ):
             with self.subTest(link=link):
