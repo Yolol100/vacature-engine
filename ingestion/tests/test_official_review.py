@@ -230,6 +230,67 @@ class OfficialReviewTests(unittest.TestCase):
         self.assertEqual(checks["remote"], "not_remote")
         self.assertEqual(checks["netherlands"], "unknown")
 
+    def test_rank_helper_must_reject_unverified_precalculated_scores(self):
+        # Reproducer: engine eligibility is not official employer/ATS proof.
+        # A complete-looking ranking payload is still not a validated assessment.
+        item = {
+            "title": "WordPress Developer",
+            "employer": "Synthetic Employer",
+            "canonical_url": "https://jobs.ashbyhq.com/synthetic/role-123",
+            "posted_date": "2026-10-19",
+            "fully_remote": True,
+            "geography_compatible": True,
+            "role_families": ["wordpress_ecosystem"],
+            "central_hard_mismatch": False,
+            "listing_language": "en",
+            "application_language": "en",
+            "required_languages": [],
+            "core_fit": 40,
+            "evidence_fit": 25,
+            "workstyle_fit": 10,
+            "authenticity": "verified",
+            "role_open": True,
+        }
+        self.assertEqual([], rank_fully_verified([item], policy=POLICY, today=TODAY))
+        self.assertEqual([], rank_fully_verified(
+            [{**item, "verification": {"reviewed_on": TODAY.isoformat()}}],
+            policy=POLICY, today=TODAY,
+        ))
+
+    def test_rank_helper_rejects_stale_or_incomplete_validated_handoffs(self):
+        # A same-process handoff still needs today's complete digest context.
+        from vacature_ingestion.official_review import _ValidatedRankingInput
+        sha = "a" * 64
+        data = {
+            "title": "WordPress Developer", "employer": "Synthetic Employer",
+            "canonical_url": "https://jobs.ashbyhq.com/synthetic/role-123",
+            "posted_date": "2026-10-19", "fully_remote": True,
+            "geography_compatible": True, "role_families": ["wordpress_ecosystem"],
+            "central_hard_mismatch": False, "listing_language": "en",
+            "application_language": "en", "required_languages": [],
+            "core_fit": 40, "evidence_fit": 25, "workstyle_fit": 10,
+            "authenticity": "verified", "role_open": True,
+            "verification": {
+                "assessment_sha256": sha, "policy_sha256": sha,
+                "candidate_evidence_sha256": sha, "observation_sha256": sha,
+                "official_page_sha256": sha, "reviewed_on": "2026-10-18",
+                "requirements": 2, "mandatory_requirements": 1,
+            },
+        }
+        self.assertEqual([], rank_fully_verified(
+            [_ValidatedRankingInput(data)], policy=POLICY, today=TODAY,
+        ))
+        data["verification"]["reviewed_on"] = TODAY.isoformat()
+        data["verification"]["policy_sha256"] = "not-a-digest"
+        self.assertEqual([], rank_fully_verified(
+            [_ValidatedRankingInput(data)], policy=POLICY, today=TODAY,
+        ))
+        data["verification"]["policy_sha256"] = sha
+        data["verification"]["requirements"] = 0
+        self.assertEqual([], rank_fully_verified(
+            [_ValidatedRankingInput(data)], policy=POLICY, today=TODAY,
+        ))
+
     def test_existing_engine_is_the_only_ranking_authority(self):
         # Nothing passes without complete supplied, verified signals.
         self.assertEqual(rank_fully_verified([], policy=POLICY, today=TODAY), [])
