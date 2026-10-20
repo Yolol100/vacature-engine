@@ -1,6 +1,8 @@
 """Offline integration tests: no Google calls, external sites or Register writes."""
 import json
 import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from datetime import date
@@ -619,6 +621,14 @@ class OnePassTests(unittest.TestCase):
         self.assertEqual(byid["google-jobs"]["execution"],
                          "google_provider_batch_succeeded")
         self.assertEqual(result["final_recommendations"], [])
+
+    def test_manual_script_entrypoint_imports_without_network(self):
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/one_pass_vacancies.py"), "--help"],
+            cwd=ROOT, capture_output=True, text=True, timeout=10, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr[-1500:])
+        self.assertIn("--discovery-round", result.stdout)
+        self.assertIn("--google-queries-per-run", result.stdout)
 
     def test_check_never_fetches_vacancies(self):
         with patch("scripts.one_pass_vacancies.google_free_gate", return_value="ready"), \
