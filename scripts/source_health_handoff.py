@@ -15,11 +15,23 @@ _FIELDS = frozenset({
     "last_success_at", "last_failure_at", "failure_category",
     "consecutive_failures",
 })
-_FAILURE_CATEGORIES = frozenset({
-    "rate_limited", "timeout_or_network", "malformed_result",
-    "parsing_or_adapter_failure", "other_technical_failure",
-    "http_client_error", "http_server_error", "access_denied",
-    "blocked_by_provider",
+# Actual Bronnen!I data validation allows only these literal labels. Internal
+# provider error codes are never written directly into this Register field.
+_CATEGORY_MAP = {
+    "rate_limited": "robots/access restriction",
+    "timeout_or_network": "timeout/transient network",
+    "malformed_result": "malformed result",
+    "parsing_or_adapter_failure": "parsing/structure change",
+    "other_technical_failure": "other technical failure",
+    "http_client_error": "other technical failure",
+    "http_server_error": "other technical failure",
+    "access_denied": "robots/access restriction",
+    "blocked_by_provider": "robots/access restriction",
+}
+_VALID_REGISTER_CATEGORIES = frozenset({
+    "", "blocked/login-required", "CAPTCHA", "robots/access restriction",
+    "paywall", "timeout/transient network", "malformed result",
+    "parsing/structure change", "other technical failure",
 })
 
 
@@ -111,32 +123,38 @@ def source_health_handoff(register_rows: list[dict[str, str]],
                 or (other and (previous_other is None or previous_other > latest))):
             stale += 1
             continue
-        updates = {field: latest}
+        old_category = row.get("failure_category", "") or ""
+        old_counter = row.get("consecutive_failures", "") or ""
+        if (old_category not in _VALID_REGISTER_CATEGORIES
+                or not old_counter.isdigit() or len(old_counter) > 7):
+            malformed += 1
+            continue
+        updates: dict[str, Any] = {field: latest}
         if outcome:
-            updates["consecutive_failures"] = "0"
+            updates["consecutive_failures"] = 0
             updates["failure_category"] = ""
         else:
-            previous = row.get("consecutive_failures", "") or ""
-            if not previous.isdigit() or len(previous) > 7:
-                malformed += 1
-                continue
-            updates["consecutive_failures"] = str(int(previous) + 1)
-            # A failure is documented even if the provider did not supply a
-            # recognized safe category. Do not log raw exception text.
-            categories = {x["category"] for x in attempts
+            updates["consecutive_failures"] = int(old_counter) + 1
+            # Generic category for unknown/mixed provider failure codes; no
+            # raw error text, and every value matches the live Sheets enum.
+            categories = {_CATEGORY_MAP[x["category"]] for x in attempts
                           if isinstance(x["category"], str)
-                          and x["category"] in _FAILURE_CATEGORIES}
-            if len(categories) == 1:
-                updates["failure_category"] = next(iter(categories))
+                          and x["category"] in _CATEGORY_MAP}
+            updates["failure_category"] = (
+                next(iter(categories)) if len(categories) == 1
+                else "other technical failure"
+            )
         if not set(updates).issubset(_FIELDS):
             raise ValueError("Attempted to update a non-health field")
+        expected = {key: (int(old_counter) if key == "consecutive_failures"
+                          else row.get(key, "") or "") for key in updates}
         proposals.append({
             "source_id": sid,
             "kind": "verified_direct_attempt" if route[sid] == "public_adapter"
                     else "verified_free_google_provider_attempt",
             "outcome": "success" if outcome else "failure",
             "evidence_timestamp": latest,
-            "expected": {key: row.get(key, "") or "" for key in updates},
+            "expected": expected,
             "proposed": updates,
         })
     unknown = sum(
