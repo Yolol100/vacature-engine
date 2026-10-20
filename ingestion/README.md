@@ -37,8 +37,9 @@ configuration. Only the registered `google-jobs` discovery source is allowed.
 Search hits are *not* final verified vacancies and are never complete
 snapshots for vacancy closure.
 
-The repository includes a **manual-only** GitHub Actions workflow for
-account checks and bounded discovery. There is no recurring scheduler,
-automatic application or forced API usage.
+GitHub Actions contains only offline tests. The only user-facing vacancy
+search entrypoint is an explicit ChatGPT `vacature-search` request. The
+optional free Google adapter remains source-gated and must not be scheduled
+or launched through GitHub Actions.
 
 See [FREE-GOOGLE-DISCOVERY.md](docs/FREE-GOOGLE-DISCOVERY.md).

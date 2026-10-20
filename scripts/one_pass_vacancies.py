@@ -113,7 +113,7 @@ def load_register(spreadsheet_id: str = REGISTER_ID, *,
     tables: dict[str, list[dict[str, str]]] = {}
     for name, required in SHEETS.items():
         if name == "CandidateEvidence" and not include_candidate_evidence:
-            # GitHub Actions is PUBLIC DISCOVERY ONLY. Never fetch a private
+            # Public discovery is always read-only. Never fetch a private
             # CandidateEvidence claim/locator from Google Sheets in this mode.
             tables[name] = []
             continue
@@ -1081,7 +1081,7 @@ def main() -> int:
     parser.add_argument("--verified-assessments", type=Path,
                         help="Private vacature-search evidence handoff; never feed-provided JSON")
     parser.add_argument("--public-discovery-only", action="store_true",
-                        help="GitHub Actions mode: do not fetch or score private CandidateEvidence")
+                        help="Public mode: do not fetch or score private CandidateEvidence")
     args = parser.parse_args()
     if args.max_free_sources not in range(1, 21):
         parser.error("--max-free-sources must be between 1 and 20")

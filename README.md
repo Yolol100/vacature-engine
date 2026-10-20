@@ -44,70 +44,18 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   **examples**, not authority to activate a source.
 - `tests/` and `ingestion/tests/`: deterministic regression suites.
 - `.github/workflows/ingestion-tests.yml`: offline tests only.
-- `.github/workflows/free-google-discovery.yml`: optional **manually
-  initiated**, quota-controlled discovery. No cron or recurring job.
-- `.github/workflows/one-pass-vacancy-review.yml`: optional **manual** one-pass
-  research preflight. Reads live Config, Bronnen and application/feedback
-  history; uses Google only after a zero-cost Free Plan check and continues
-  through the existing Register-active public ATS/API/feed adapters if
-  Google is unavailable, paid, or out of free quota. Sources follow the
-  live Register's discovery-class/high-source priorities and then the
-  curated tenant order in `source-specs.deploy.json`, rather than
-  alphabetical employer names. Retired sources remain disabled.
-  The default output is an **unverified review queue**. An explicitly supplied,
-  current specialist evidence handoff can now produce final recommendations
-  through the existing ranking engine. Exact official
-  role status, Netherlands-remote permission, language and CandidateEvidence
-  fit still require specialist verification before displaying a recommendation.
-  It does not write to the Register or send applications.
-  The official-check stage now recognizes only current, Register-approved ATS
-  observations as official evidence; it flags country restrictions, remote
-  status, declared language and active CandidateEvidence support. Direct
-  source restrictions and expired listings can remove obviously unsuitable
-  records before review. Search results and job boards **cannot verify
-  themselves**. Missing employer proof, Netherlands hiring eligibility,
-  application language or semantic fit remains `unverified_review_only`.
-  The canonical `vacature_engine.simple.top_vacancies` function is the only
-  final ranking authority after all hard gates and fit anchors are grounded;
-  missing evidence must never be converted into invented scores.
-  The evidence-match preflight now examines **explicit technical requirements**
-  from trusted ATS descriptions and compares them with **active, source-backed
-  CandidateEvidence**. It reports counts for mapped, unproven and ambiguous
-  requirements, never raw personal claims or evidence IDs. Optional skills,
-  marketing copy, unverified language or experience requirements cannot
-  become invented fit. The existing validated 30-case ranking benchmark and
-  score anchors are unchanged; even full mapped skill coverage is **not**
-  a final ranked recommendation until the official job route, candidate
-  eligibility, full semantic fit and scoring anchor evidence are established.
-  The tenant-bound official-page checker also requires the exact job title
-  to appear in visible page content alongside matching first-party JobPosting
-  markup. A matching JSON-LD script alone is not sufficient.
-  ATS job descriptions can be flattened by upstream normalization. The
-  requirement comparison therefore recovers only explicitly marked sections
-  such as `Requirements:` and `Benefits:`; it never treats benefits or
-  negative CandidateEvidence claims as required-skill proof.
-  ATS `published_at` can mean the **last** publication, not the original
-  posting date; recently republished roles remain unverified until an
-  original employer date is confirmed. An application page's `<html lang>`
-  reports interface language only, not which language applications may use.
-  A 200 OK response from the exact ATS application route is not enough to
-  confirm a usable form: the read-only checker also looks for a visible form
-  with email and submit controls. Client-side or inaccessible forms stay
-  unknown rather than being marked suitable.
-  The review output lists missing official, remote/NL, language and skill-fit
-  evidence; it suppresses only definitive official 404/410, expired
-  `validThrough`, and first-party original posting dates outside live
-  policy. Missing information is not a rejection or a match score.
-  Every discovery observation must originate from an active Register source
-  before it can enter review. Existing third-party boards/feeds are
-  negative-only geographic filters: explicit Philippines/LATAM-only locations
-  and exclusive foreign residency statements are withheld from the NL
-  review queue, but never used as positive proof of NL eligibility or to
-  change a vacancy/application lifecycle state. A stale board publication
-  timestamp adds only a `discovery_date_older_than_policy` review alert:
-  the original employer posting date remains unknown. These limits prevent
-  expired or region-restricted board listings from being mistaken for newly
-  verified job recommendations, even when Google search quota is exhausted.
+- GitHub Actions runs **offline CI/regression tests only**. There are no
+  scheduled or manually triggerable GitHub vacancy searches.
+- `ingestion/source-specs.deploy.json` and
+  `ingestion/source-specs.google-optional.json` are technical adapter examples;
+  neither activates a source. Only live `Vacature Register:Bronnen` does.
+- On explicit user requests, ChatGPT `vacature-search` reads the live
+  `Config` and active sources, performs discovery and specialist validation,
+  then delegates deterministic selection to `vacature-engine`.
+- Public observations are **unverified** until the exact official employer/ATS
+  role, original publication date, remote-NL execution, language, authenticity
+  and CandidateEvidence have been checked. No code or GitHub workflow
+  automatically submits or changes application status.
 
 ## Verified ranking and bounded expansion
 
@@ -147,8 +95,8 @@ Only complete verified inputs reach `top_vacancies`; existing score anchors,
 thresholds, weights and ordering are unchanged. Public output contains the
 score components and proof digests, not private CandidateEvidence claims/IDs.
 
-The manual GitHub workflow remains discovery/review-only because it has no
-private specialist handoff. A caller using the Python API can retain the
+GitHub Actions are CI-only; public discovery and private specialist review are
+started exclusively by explicit ChatGPT vacancy-search requests. A caller using the Python API can retain the
 observations and page cache, review them and call `evaluate_observations` again
 within the same current evidence session. Never commit these private inputs or
 upload them as public workflow artifacts. A local run may use Python 3.13 when
