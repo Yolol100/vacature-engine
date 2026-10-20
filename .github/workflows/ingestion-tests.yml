@@ -15,8 +15,6 @@ on:
       - "AGENTS.md"
       - "docs/**"
       - ".github/workflows/ingestion-tests.yml"
-      - ".github/workflows/free-google-discovery.yml"
-      - ".github/workflows/one-pass-vacancy-review.yml"
   workflow_dispatch:
 
 permissions:

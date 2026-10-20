@@ -253,13 +253,15 @@ class FreeDiscoveryTests(unittest.TestCase):
             runner.close()
 
 
-    def test_manual_workflow_cannot_run_on_schedule_or_pull_request(self):
-        workflow = (Path(__file__).resolve().parents[2] / ".github/workflows/free-google-discovery.yml").read_text(encoding="utf-8")
-        self.assertIn("workflow_dispatch:", workflow)
-        self.assertNotIn("schedule:", workflow)
-        self.assertNotIn("pull_request:", workflow)
-        self.assertIn("permissions:\n  contents: read", workflow)
-        self.assertIn("filter-specs", workflow)
+    def test_chatgpt_only_discovery_not_in_github_actions(self):
+        root = Path(__file__).resolve().parents[2]
+        workflow_files = sorted(p.name for p in (root / ".github/workflows").glob("*.yml"))
+        self.assertEqual(["ingestion-tests.yml"], workflow_files)
+        ci = (root / ".github/workflows/ingestion-tests.yml").read_text(encoding="utf-8")
+        self.assertIn("pull_request:", ci)
+        self.assertIn("contents: read", ci)
+        self.assertNotIn("schedule:", ci)
+        self.assertNotIn("one_pass_vacancies.py", ci)
 
     @patch("vacature_ingestion.adapters.serpapi_google._get_json")
     def test_repeating_query_terms_do_not_spend_extra_requests(self, get):
@@ -647,7 +649,6 @@ class FreeDiscoveryTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[2]
         paths = (
             root / ".github/workflows/ingestion-tests.yml",
-            root / ".github/workflows/free-google-discovery.yml",
         )
         for path in paths:
             for line in path.read_text(encoding="utf-8").splitlines():
