@@ -42,9 +42,11 @@ from vacature_ingestion.final_review import (
 if __package__:
     from .source_coverage import build_source_coverage, complete_source_coverage
     from .source_health_handoff import source_health_handoff
+    from .specialist_handoff import public_specialist_handoff
 else:
     from source_coverage import build_source_coverage, complete_source_coverage
     from source_health_handoff import source_health_handoff
+    from specialist_handoff import public_specialist_handoff
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -985,6 +987,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             # A check has no source attempts. Unknown health remains neutral.
             "source_health": source_health_handoff(
                 tables["Bronnen"], coverage_plan, []),
+            "specialist_handoff": public_specialist_handoff([]),
         }
     page_cache: dict[str, dict[str, Any]] = {}
     def evaluate(items):
@@ -1026,6 +1029,11 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     # back into Google Sheets or fills missing historical health timestamps.
     audit_report["source_health"] = source_health_handoff(
         tables["Bronnen"], audit_report["coverage"], audit_report["source_attempts"],
+    )
+    # Public digest-bound queue, NOT the owner's private specialist assessment.
+    # The existing validate_assessment gate remains the sole score authority.
+    audit_report["specialist_handoff"] = public_specialist_handoff(
+        loop["evaluation"].get("review_candidates", []),
     )
     if (not any(attempt["success"] for attempt in google_attempts)
             and not loop["fallback_sources_successful"]):
