@@ -109,7 +109,9 @@ def build_source_coverage(
         elif isinstance(extra, list):
             required.update(str(x).strip() for x in extra if str(x).strip())
         if ident and required.issubset(active_ids):
-            adapters.add(ident)
+            # Count the approved provider AND its employer-specific Register
+            # IDs: one ATS request may cover a registered employer source.
+            adapters.update(required)
     entries = []
     public = []
     priorities = {"high": 0, "medium": 1, "low": 2}
