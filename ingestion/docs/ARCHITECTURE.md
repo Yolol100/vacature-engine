@@ -61,3 +61,14 @@ search, JSON or public feed records — including invented scores or self-claime
 defense-in-depth check, not a second semantic verifier or a new set of proof
 states. The deterministic engine weights and thresholds remain unchanged.
 No public GitHub workflow is used for vacancy search.
+
+## Negative-only regular travel gate
+
+A Remote label cannot override clear first-party requirements for regular
+customer/site travel. The specialist's final-review preflight blocks a
+quantified, non-ambiguous travel load of at least 20% (e.g. 30-50% onsite
+customer deployments) using substantial_required_travel before final scoring.
+This check does not positively verify other roles as fully remote and does not
+automatically reject isolated team offsites, uncertain 'up to' bounds, or
+unrelated compensation percentages. Original dates, employer ownership,
+candidate evidence and all other official hard gates remain required.

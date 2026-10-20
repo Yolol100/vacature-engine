@@ -110,6 +110,44 @@ def evaluate(t, row, page, assessment):
 
 
 class VerifiedRankingFlowTests(unittest.TestCase):
+    def test_substantial_required_onsite_travel_never_scores_as_fully_remote(self):
+        # Regression from the exact official n8n Forward Deployed Engineer EMEA
+        # vacancy. Even a valid Remote label can contradict duties requiring
+        # 30-50% customer travel. This is synthetic, never a live application.
+        for travel_clause in (
+            "Willingness to travel: You are open to travelling roughly 30-50% "
+            "of the time for on-site customer engagements.",
+            "Required travel 40% of the time for in-person customer deployments.",
+            "You must travel approximately 30–50% for onsite workshops.",
+        ):
+            with self.subTest(clause=travel_clause):
+                t, row, page, assessment = fixture()
+                page["visible_text"] += " " + travel_clause
+                config = {r["key"]: r["value"] for r in t["Config"]}
+                assessment.update(assessment_context(
+                    row, page, config, t["CandidateEvidence"]
+                ))
+                result = evaluate(t, row, page, assessment)
+                self.assertEqual([], result["final_recommendations"])
+                self.assertIn(
+                    "substantial_required_travel",
+                    result["review_candidates"][0]["still_to_verify"],
+                )
+
+    def test_rare_remote_team_offsite_and_unrelated_percentage_do_not_block(self):
+        t, row, page, assessment = fixture()
+        page["visible_text"] += (
+            " Optional quarterly team offsites total three days annually. "
+            "The benefits plan offers a 30-50% matching bonus."
+        )
+        config = {r["key"]: r["value"] for r in t["Config"]}
+        assessment.update(assessment_context(
+            row, page, config, t["CandidateEvidence"]
+        ))
+        self.assertEqual(
+            1, len(evaluate(t, row, page, assessment)["final_recommendations"])
+        )
+
     def test_complete_verified_role_uses_existing_engine_and_optional_unknown_is_allowed(self):
         t, row, page, assessment = fixture()
         result = evaluate(t, row, page, assessment)

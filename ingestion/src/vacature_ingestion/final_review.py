@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import date, datetime
 from typing import Any
 from urllib.parse import urlsplit
@@ -112,6 +113,28 @@ def _verified_evidence(rows: list[dict[str, str]], today: date,
     return index
 
 
+# An employer's ATS can label a customer deployment role "Remote" while
+# requiring substantial in-person travel. This is negative-only evidence.
+_SUBSTANTIAL_TRAVEL = re.compile(
+    r"\b(?:travelling|traveling|travel)\b[^\n.!?]{0,120}?\b(?P<minimum>\d{1,3})"
+    r"\s*(?:[-–—]\s*\d{1,3})?\s*%",
+    re.IGNORECASE,
+)
+
+
+def _has_substantial_required_travel(page: dict[str, Any]) -> bool:
+    visible = page.get("visible_text")
+    if not isinstance(visible, str):
+        return False
+    for match in _SUBSTANTIAL_TRAVEL.finditer(visible[:25_000]):
+        # An uncertain upper bound alone cannot establish mandatory travel.
+        if "up to" in match.group(0).casefold():
+            continue
+        if int(match.group("minimum")) >= 20:
+            return True
+    return False
+
+
 def automated_ranking_blockers(candidate: dict[str, Any], page: dict[str, Any],
                               policy: VacancyPolicy, today: date) -> list[str]:
     """Non-overridable machine checks plus the specialist-owned proof gates."""
@@ -138,6 +161,9 @@ def automated_ranking_blockers(candidate: dict[str, Any], page: dict[str, Any],
         missing.append("unexpired_official_role")
     if checks.get("remote") != "confirmed" or info.get("remote_signal") is not True:
         missing.append("fully_remote_from_first_party")
+    if (page.get("status") == "matching_first_party_jobposting"
+            and _has_substantial_required_travel(page)):
+        missing.append("substantial_required_travel")
     locations = info.get("applicant_locations")
     if (checks.get("netherlands") != "allowed" or not isinstance(locations, list)
             or not all(isinstance(x, str) for x in locations)
