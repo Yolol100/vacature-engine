@@ -111,7 +111,21 @@ _LANGUAGE_REQUIREMENT = re.compile(
     r"(?:english|dutch|german|french|spanish|nederlands|duits|frans|engels)\b",
     re.I,
 )
-_ALLOWED_SOURCES = {"canonical_cv", "github", "user_confirmed", "library_portfolio_master"}
+_ALLOWED_SOURCES = {"canonical_cv", "library_cv", "github", "user_confirmed", "library_portfolio_master"}
+_LIBRARY_CV_ID = re.compile(r"file_[0-9a-f]{32}\Z")
+
+
+def valid_library_cv_source(row: dict[str, Any]) -> bool:
+    """An archived Library CV is traceable evidence, never a canonical-CV alias.
+
+    Library file IDs and exact content locators are required. Existence and
+    relevance still need current specialist verification; ID format is not proof.
+    """
+    if row.get("source_type") != "library_cv":
+        return True
+    ref, locator = row.get("source_ref"), row.get("source_locator")
+    return (isinstance(ref, str) and _LIBRARY_CV_ID.fullmatch(ref) is not None
+            and isinstance(locator, str) and bool(locator.strip()))
 
 
 def _skill_tags(value: str) -> set[str]:
@@ -153,6 +167,8 @@ def _verified_claims(evidence: list[dict[str, str]], *,
                 or str(row.get("confidence", "")).casefold() not in {"high", "medium"}
                 or not isinstance(row.get("evidence_id"), str)
                 or not row["evidence_id"].strip()):
+            continue
+        if not valid_library_cv_source(row):
             continue
         claim = row.get("claim", "")
         if not has_positive_skill_claim(claim):

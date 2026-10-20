@@ -19,14 +19,14 @@ from vacature_engine.simple import (
     VacancyPolicy, eligibility,
 )
 from .official_page import verified_source_account
-from .requirement_match import has_positive_requirement_claim
+from .requirement_match import has_positive_requirement_claim, valid_library_cv_source
 from .adapters.serpapi_google import _safe_candidate_url
 from .official_review import geography_signal
 
 REVIEW_DIMENSIONS = frozenset({
     "skills", "experience", "languages", "projects", "responsibilities", "workstyle",
 })
-_SOURCES = {"canonical_cv", "github", "user_confirmed", "library_portfolio_master"}
+_SOURCES = {"canonical_cv", "library_cv", "github", "user_confirmed", "library_portfolio_master"}
 _ROLE_FIELDS = (
     "canonical_url", "source_id", "source_instance", "source_job_id", "title",
     "employer", "description", "location", "remote", "published_at", "apply_url",
@@ -98,6 +98,7 @@ def _verified_evidence(rows: list[dict[str, str]], today: date) -> dict[str, dic
                 or str(row.get("confidence", "")).casefold() not in {"high", "medium"}
                 or not identity or verified > today
                 or not _text(row.get("source_ref")) or not _text(row.get("source_locator"))
+                or not valid_library_cv_source(row)
                 or not has_positive_requirement_claim(row.get("claim"))):
             continue
         index[identity] = row

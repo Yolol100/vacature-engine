@@ -27,6 +27,25 @@ class RequirementMatchTests(unittest.TestCase):
         self.assertEqual(r["requirements_with_candidate_evidence"], 4)
         self.assertFalse(r["final_score_authorized"])
 
+    def test_versioned_library_cv_requires_id_and_exact_locator(self):
+        record = proof("Built PHP and WordPress plugins", source="library_cv")
+        record.update({"source_ref": "file_" + "0" * 32,
+                       "source_locator": "Professional experience, page 1",
+                       "verified_at": "2026-10-20"})
+        listing = row("Requirements:\nExperience with PHP and WordPress.")
+        result = compare_requirements(listing, [record])
+        self.assertEqual(result["status"], "mapped_skills_have_evidence")
+        self.assertEqual(result["requirements_with_candidate_evidence"], 2)
+        self.assertFalse(result["final_score_authorized"])
+        for corrupt in ({"source_ref": "https://example.com/fake-cv"},
+                        {"source_ref": "file_invalid"},
+                        {"source_locator": ""}):
+            with self.subTest(corrupt=corrupt):
+                altered = {**record, **corrupt}
+                bad = compare_requirements(listing, [altered])
+                self.assertEqual(bad["requirements_with_candidate_evidence"], 0)
+                self.assertFalse(bad["final_score_authorized"])
+
     def test_missing_claim_not_hard_ability_rejection(self):
         r = compare_requirements(row("Requirements:\nExperience with React."), [
             proof("WordPress JavaScript")
