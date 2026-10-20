@@ -43,7 +43,10 @@ def _public_role_link(value: Any) -> str | None:
         return None
 
 
-def public_specialist_handoff(review_candidates: list[dict[str, Any]]) -> dict[str, Any]:
+def public_specialist_handoff(
+    review_candidates: list[dict[str, Any]], *,
+    private_evidence_available: bool = True,
+) -> dict[str, Any]:
     queue = []
     for candidate in review_candidates:
         if not isinstance(candidate, dict):
@@ -52,7 +55,7 @@ def public_specialist_handoff(review_candidates: list[dict[str, Any]]) -> dict[s
         if link is None:
             continue
         context = candidate.get("assessment_context")
-        digests = (context if isinstance(context, dict) and
+        digests = (context if private_evidence_available and isinstance(context, dict) and
                    set(context) == _FIELDS and
                    all(isinstance(v, str) and _SHA.fullmatch(v)
                        for v in context.values()) else None)
@@ -74,6 +77,7 @@ def public_specialist_handoff(review_candidates: list[dict[str, Any]]) -> dict[s
         "read_only": True,
         "requires_human_verification": True,
         "no_personal_candidate_claims": True,
+        "private_candidate_evidence_loaded": private_evidence_available,
         "privacy_boundary": "github_public_role_and_digests_only",
         "queue": queue,
     }
