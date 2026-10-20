@@ -77,3 +77,19 @@ The travel-% detector ignores optional attendance and compensation-only travel
 percentages (costs, expenses, reimbursements, discounts and subsidies). This
 prevents synthetic travel-expense examples from blocking otherwise verified
 remote roles. Hard-required 30-50% client-site engagement remains blocked.
+
+## Exact first-party residence exclusions override Remote metadata
+
+A current employer-owned role page can say Remote or have a stale JobPosting
+applicant-location field while explicitly **only considering candidates based
+in North America, the United States, or another non-NL region**. The final
+review uses a deliberately narrow, **negative-only** visible-page gate for
+explicit mandatory or exclusive candidate residence statements, labeled
+`exclusive_non_nl_residence_on_official_page`. It does not positively verify
+other geographic claims and does not reject incidental foreign clients,
+offices or colleagues. The specialist must still validate the specific role,
+original employer date, languages, and all candidate evidence. The exact
+Automattic Newspack employer restriction motivated the synthetic ATS tests;
+this module's trusted ATS review is not a claim to directly parse arbitrary
+Automattic employer pages. Historical Register statuses and scores remain
+separate from new eligibility decisions.
