@@ -7,6 +7,7 @@ This module does not access the network, score candidates or change lifecycle.
 from __future__ import annotations
 
 import ipaddress
+import math
 import re
 from typing import Any
 from urllib.parse import urlsplit
@@ -68,6 +69,14 @@ def _terms(config: dict[str, str]) -> list[str]:
             result.append(term)
             seen.add(key)
     return result
+
+
+def _coprime_step(radix: int, combinations: int) -> int:
+    """Interleave domains and terms without dropping combinations."""
+    stride = radix + 1
+    while math.gcd(stride, combinations) != 1:
+        stride += 1
+    return stride
 
 
 def build_source_coverage(
@@ -179,17 +188,23 @@ def build_source_coverage(
 
     source_slots = min(len(public), max(1, budget // 2)) if public and terms else 0
     xray_slots = min(budget - source_slots, max(1, budget // 3)) if xray_domains and terms else 0
-    for j in range(source_slots):
-        index = (round_index * source_slots + j) % len(public)
-        item, host = public[index]
-        term = terms[((round_index * source_slots + j) // len(public)) % len(terms)]
-        add(f'site:{host} "{term}" remote', "registered_source_domain", item["source_id"])
+    source_pairs = len(public) * len(terms)
+    if source_pairs:
+        stride = _coprime_step(len(public), source_pairs)
+        for j in range(source_slots):
+            index = ((round_index * source_slots + j) * stride) % source_pairs
+            item, host = public[index % len(public)]
+            term = terms[index // len(public)]
+            add(f'site:{host} "{term}" remote', "registered_source_domain",
+                item["source_id"])
     total_pairs = len(xray_domains) * len(terms)
-    for j in range(xray_slots):
-        index = (round_index * xray_slots + j) % total_pairs
-        host = xray_domains[index % len(xray_domains)]
-        term = terms[index // len(xray_domains)]
-        add(f'site:{host} "{term}" remote', "configured_xray_domain")
+    if total_pairs:
+        xray_stride = _coprime_step(len(xray_domains), total_pairs)
+        for j in range(xray_slots):
+            index = ((round_index * xray_slots + j) * xray_stride) % total_pairs
+            host = xray_domains[index % len(xray_domains)]
+            term = terms[index // len(xray_domains)]
+            add(f'site:{host} "{term}" remote', "configured_xray_domain")
     if seeds:
         for j in range(len(seeds)):
             add(seeds[(round_index + j) % len(seeds)], "registered_google_seed")
@@ -198,7 +213,7 @@ def build_source_coverage(
         for j in range(xray_slots, min(total_pairs + xray_slots, budget * 5)):
             if len(queries) >= budget:
                 break
-            index = (round_index * xray_slots + j) % total_pairs
+            index = ((round_index * xray_slots + j) * xray_stride) % total_pairs
             add(f'site:{xray_domains[index % len(xray_domains)]} '
                 f'"{terms[index // len(xray_domains)]}" remote', "configured_xray_domain")
     planned_ids = {q["source_id"] for q in queries if q["source_id"]}
