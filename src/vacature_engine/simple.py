@@ -363,7 +363,7 @@ def top_vacancies(
         if not isinstance(item, dict):
             continue
         gate = eligibility(item, today=today, policy=runtime_policy)
-        if not gate["pass"]:
+        if not gate["pass"] or gate["age_days"] is None:
             continue
         ranked = dict(item)
         ranked["age_days"] = gate["age_days"]
