@@ -104,7 +104,11 @@ def source_health_handoff(register_rows: list[dict[str, str]],
         field = "last_success_at" if outcome else "last_failure_at"
         old = row.get(field, "") or ""
         existing = _utc_timestamp(old, asof) if old else None
-        if old and (existing is None or existing >= latest):
+        other_field = "last_failure_at" if outcome else "last_success_at"
+        other = row.get(other_field, "") or ""
+        previous_other = _utc_timestamp(other, asof) if other else None
+        if ((old and (existing is None or existing >= latest))
+                or (other and (previous_other is None or previous_other > latest))):
             stale += 1
             continue
         updates = {field: latest}
