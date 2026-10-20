@@ -26,7 +26,7 @@ def _iso_date(value: Any) -> tuple[str | None, bool | None]:
         return None, False
     # datetime.fromisoformat normalizes offset minutes such as +02:99.
     # Reject invalid ISO timezone fields before parsing employer evidence.
-    offset = re.search(r"[+-](\\d{2}):(\\d{2})$", raw)
+    offset = re.search(r"[+-]([0-9]{2}):([0-9]{2})$", raw)
     if offset and (int(offset.group(1)) > 23 or int(offset.group(2)) > 59):
         return None, False
     try:
