@@ -31,16 +31,26 @@ def _is_job_posting(value: dict[str, Any]) -> bool:
     return False
 
 
+def _named_text(value: Any) -> str | None:
+    """Use Schema.org name/value, never stringify a nested object."""
+    if isinstance(value, dict):
+        value = value.get("name") or value.get("value")
+    if isinstance(value, (dict, list)):
+        return None
+    return clean_text(value)
+
+
 def _address_text(value: Any) -> str | None:
     if not isinstance(value, dict):
-        return clean_text(value)
+        return _named_text(value)
     address = value.get("address") if isinstance(value.get("address"), dict) else value
     parts = [
-        clean_text(address.get("addressLocality")),
-        clean_text(address.get("addressRegion")),
-        clean_text(address.get("addressCountry")),
+        _named_text(address.get("addressLocality")),
+        _named_text(address.get("addressRegion")),
+        _named_text(address.get("addressCountry")),
     ]
-    return ", ".join(part for part in parts if part) or None
+    joined = ", ".join(part for part in parts if part)
+    return joined or _named_text(address)
 
 
 def _location_text(value: Any) -> str | None:
@@ -48,6 +58,13 @@ def _location_text(value: Any) -> str | None:
         parts = [_address_text(item) for item in value]
         return "; ".join(part for part in parts if part) or None
     return _address_text(value)
+
+
+def _employment_types(value: Any) -> str | None:
+    if isinstance(value, list):
+        parts = [clean_text(item) for item in value if isinstance(item, str)]
+        return "; ".join(part for part in parts if part) or None
+    return clean_text(value) if isinstance(value, str) else None
 
 
 def _identifier(value: Any) -> str | None:
@@ -122,6 +139,12 @@ class JsonLdAdapter(Adapter):
         job_location_type = clean_text(record.get("jobLocationType"))
         remote = True if job_location_type and "telecommute" in job_location_type.casefold() else None
         description = html_to_text(record.get("description")) or clean_text(record.get("__page_text_fallback"))
+        physical_location = _location_text(record.get("jobLocation"))
+        applicant_location = _location_text(record.get("applicantLocationRequirements"))
+        # For TELECOMMUTE roles, applicant eligibility outranks a secondary
+        # office location. Both fields remain available in source_metadata.
+        location = (applicant_location or physical_location if remote is True
+                    else physical_location or applicant_location)
         return {
             "source_id": spec.source_id,
             "source_type": spec.source_type,
@@ -132,12 +155,12 @@ class JsonLdAdapter(Adapter):
             "url": url,
             "employer": spec.employer or clean_text(organization.get("name")) or spec.account,
             "title": title,
-            "location": _location_text(record.get("jobLocation")) or clean_text(record.get("applicantLocationRequirements")),
+            "location": location,
             "description": description,
             "published_at": clean_text(record.get("datePosted")),
             "updated_at": None,
             "valid_through": clean_text(record.get("validThrough")),
-            "employment_type": clean_text(record.get("employmentType")),
+            "employment_type": _employment_types(record.get("employmentType")),
             "salary": record.get("baseSalary") if isinstance(record.get("baseSalary"), (dict, list)) else None,
             "listing_language": spec.listing_language,
             "apply_url": url,
