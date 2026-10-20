@@ -21,7 +21,7 @@ from vacature_engine.simple import (
 from .official_page import verified_source_account
 from .requirement_match import has_positive_requirement_claim, valid_library_cv_source
 from .adapters.serpapi_google import _safe_candidate_url
-from .official_review import geography_signal
+from .official_review import _ValidatedRankingInput, geography_signal
 
 REVIEW_DIMENSIONS = frozenset({
     "skills", "experience", "languages", "projects", "responsibilities", "workstyle",
@@ -343,5 +343,7 @@ def validate_assessment(
     if not gate["pass"]:
         result.update(status="ineligible", reasons=gate["reasons"])
         return result
-    result.update(status="verified", missing=[], engine_input=normalized)
+    # Only the complete private specialist gate can create a ranking handoff.
+    # The dict subtype remains JSON-serializable for existing test/report callers.
+    result.update(status="verified", missing=[], engine_input=_ValidatedRankingInput(normalized))
     return result

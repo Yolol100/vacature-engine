@@ -45,3 +45,19 @@ All requested source IDs and employer bindings must be active in `Bronnen`;
 if any one is blocked, no source request or SQLite mutation may begin.
 Missing credentials and ambiguous registry IDs fail closed. No search
 scheduling or automatic application is possible through these commands.
+
+## Verified final ranking admission
+
+Only `final_review.validate_assessment` may turn a review candidate into an
+internal `_ValidatedRankingInput`. That gate binds the exact official ATS role,
+employer ownership, current visible official page, original posting date,
+Netherlands remote execution, employer languages, private CandidateEvidence,
+requirements and anchored specialist scoring to live policy and proof digests.
+
+`official_review.rank_fully_verified` accepts only that in-memory handoff with
+a current matching review date and all five SHA-256 context fields. Raw ATS,
+search, JSON or public feed records — including invented scores or self-claimed
+`authenticity=verified` — cannot reach final ranking. This is a structural
+defense-in-depth check, not a second semantic verifier or a new set of proof
+states. The deterministic engine weights and thresholds remain unchanged.
+No public GitHub workflow is used for vacancy search.

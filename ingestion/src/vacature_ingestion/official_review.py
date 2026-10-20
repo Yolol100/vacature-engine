@@ -202,11 +202,50 @@ def assess_official_observation(
     return status, None
 
 
+class _ValidatedRankingInput(dict):
+    """Internal in-memory handoff emitted only after validate_assessment passes.
+
+    Parsed JSON/ATS/feed observations are plain dictionaries and cannot enter
+    final scoring by copying score fields. This tag is not independent official
+    evidence: final_review.validate_assessment still owns every semantic gate.
+    """
+
+
+_RANKING_DIGEST_FIELDS = (
+    "assessment_sha256", "policy_sha256", "candidate_evidence_sha256",
+    "observation_sha256", "official_page_sha256",
+)
+
+
 def rank_fully_verified(
     verified_inputs: list[dict[str, Any]],
     *,
     policy: VacancyPolicy,
     today: date,
 ) -> list[dict[str, Any]]:
-    """Reuse the existing central ranking engine; never invent an AI score."""
-    return top_vacancies(verified_inputs, policy=policy, today=today)
+    """Apply a second *structural* check to validated specialist handoffs.
+
+    Verification is owned by validate_assessment, not by this helper. Keep
+    the existing central top_vacancies scores, thresholds and sorting intact.
+    A raw score payload, stale handoff or incomplete digest cannot be ranked.
+    """
+    admitted = []
+    for item in verified_inputs:
+        if not isinstance(item, _ValidatedRankingInput):
+            continue
+        if item.get("authenticity") != "verified" or item.get("role_open") is not True:
+            continue
+        proof = item.get("verification")
+        if not isinstance(proof, dict) or proof.get("reviewed_on") != today.isoformat():
+            continue
+        if any(not isinstance(proof.get(field), str)
+               or re.fullmatch(r"[0-9a-f]{64}", proof[field]) is None
+               for field in _RANKING_DIGEST_FIELDS):
+            continue
+        required = proof.get("requirements")
+        mandatory = proof.get("mandatory_requirements")
+        if (type(required) is not int or not 1 <= required <= 100
+                or type(mandatory) is not int or not 0 <= mandatory <= required):
+            continue
+        admitted.append(item)
+    return top_vacancies(admitted, policy=policy, today=today)
