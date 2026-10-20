@@ -110,6 +110,49 @@ def evaluate(t, row, page, assessment):
 
 
 class VerifiedRankingFlowTests(unittest.TestCase):
+    def test_explicit_foreign_residence_on_first_party_page_blocks_nl(self):
+        # A real official Automattic role is labelled remote, but explicitly
+        # considers only North American candidates. Even a stale NL-positive
+        # JobPosting field and a rebound specialist digest may not override it.
+        exclusive = (
+            "We're only considering candidates based in North America at this time.",
+            "Applicants must be based in the United States or Canada.",
+            "We are only accepting candidates currently located in Canada.",
+            "We only hire people located in the United States.",
+        )
+        for statement in exclusive:
+            with self.subTest(statement=statement):
+                t, row, page, assessment = fixture()
+                page["visible_text"] += " " + statement
+                config = {r["key"]: r["value"] for r in t["Config"]}
+                assessment.update(assessment_context(
+                    row, page, config, t["CandidateEvidence"]
+                ))
+                outcome = evaluate(t, row, page, assessment)
+                self.assertEqual([], outcome["final_recommendations"])
+                self.assertIn(
+                    "exclusive_non_nl_residence_on_official_page",
+                    outcome["review_candidates"][0]["still_to_verify"],
+                )
+
+    def test_foreign_office_or_client_mentions_do_not_block_nl_eligible_role(self):
+        examples = (
+            "We serve North American clients and build WordPress sites globally.",
+            "Our leadership office is in the United States, while the team works worldwide.",
+            "Some customer accounts are based in Canada, with no residency limits.",
+        )
+        for statement in examples:
+            with self.subTest(statement=statement):
+                t, row, page, assessment = fixture()
+                page["visible_text"] += " " + statement
+                config = {r["key"]: r["value"] for r in t["Config"]}
+                assessment.update(assessment_context(
+                    row, page, config, t["CandidateEvidence"]
+                ))
+                self.assertEqual(
+                    1, len(evaluate(t, row, page, assessment)["final_recommendations"])
+                )
+
     def test_substantial_required_onsite_travel_never_scores_as_fully_remote(self):
         # Regression from the exact official n8n Forward Deployed Engineer EMEA
         # vacancy. Even a valid Remote label can contradict duties requiring
