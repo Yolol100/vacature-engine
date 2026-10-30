@@ -198,6 +198,18 @@ class RemoteFirstPolicyTests(unittest.TestCase):
         self.assertIn("date_invalid", malformed["reasons"])
         self.assertIn("future_date", future["reasons"])
 
+    def test_invalid_datetime_suffix_does_not_enter_final_ranking(self):
+        invalid = ["2026-08-31Tgarbage", "2026-08-31T99:99:99", "2026-08-31T", "2026-08-31 12:99", "2026-08-31T12:00:00Zgarbage", "2026-08-31T25:12:34", "2026-08-31T12:60:00", "2026-08-31T12:15:60", "2026-08-31T12:34:56+99:00", "2026-08-31T12:34:56+02:99", "2026-08-31T12:34:56+00:00junk", "2026-08-31T2026-08-31", "2026-08-31 midnight"]
+        for posted in invalid:
+            with self.subTest(posted=posted):
+                row = vacancy(posted_date=posted, core_fit=50, evidence_fit=25, workstyle_fit=15)
+                gate = eligibility(row, today=TODAY, policy=POLICY)
+                self.assertIn("date_invalid", gate["reasons"])
+                self.assertEqual([], top_vacancies([row], today=TODAY, policy=POLICY))
+        for posted in ["2026-08-31", "2026-08-31T00:00:00Z", "2026-08-31 12:34:56+02:00", "2026-08-31T12:00:00.500+02:00"]:
+            with self.subTest(valid=posted):
+                self.assertTrue(eligibility(vacancy(posted_date=posted), today=TODAY, policy=POLICY)["pass"])
+
     def test_missing_date_gets_low_recency_not_fresh_bonus(self):
         missing = vacancy(title="Missing date", posted_date=None)
         fresh = vacancy(title="Fresh", posted_date=TODAY.isoformat())
