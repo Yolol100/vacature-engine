@@ -58,3 +58,7 @@ Primary references:
 - https://careerservices.fas.harvard.edu/blog/2026/08/10/how-to-write-a-cover-letter-that-actually-gets-you-hired-in-2026/
 - https://careerservices.fas.harvard.edu/blog/2026/09/15/resumes-for-industry-grad-student-edition-2026/
 - https://docs.github.com/en/account-and-profile/tutorials/using-your-github-profile-to-enhance-your-resume
+
+## Current live Config override (2026-11-08)
+
+Use one language and the canonical CV by default; second-language or tailored versions require explicit user request or employer instruction. The visible filename follows current Config/user preference, including `CV.docx` when requested. The older paired-language and fixed-name guidance above is historical, not current policy.
