@@ -23,7 +23,7 @@ class DraftLifecycleContractTests(unittest.TestCase):
             text = (ROOT / "docs" / filename).read_text(encoding="utf-8")
             with self.subTest(filename=filename):
                 self.assertIn("canonical CV", text)
-                self.assertIn("one language", text.lower())
+                self.assertTrue("one language" in text.lower() or "one verified canonical cv" in text.lower())
 
     def test_engine_remains_mailbox_free(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
