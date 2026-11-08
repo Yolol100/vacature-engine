@@ -69,3 +69,7 @@ See `docs/APPLICATION-PACK-BEST-PRACTICES.md` for the online evidence used to va
 ## Bilingual CV and motivation companion
 
 The form answers themselves stay in the official form/application language and exact field structure. Separately, the caller prepares Dutch and English vacancy-specific CV + motivation variants for user review from the same verified evidence map. The official application language remains primary for the actual upload. Named project/case/repository sections stay out of the CV; relevant verified work samples may appear only in the motivation companion when useful/requested.
+
+## Current live Config override (2026-11-08)
+
+Use one verified canonical CV in the official application language by default. A second language or tailored CV is produced only on explicit user request or employer requirement. The visible filename follows current user/Config preference (for example `CV.docx`), not an obsolete fixed filename. Verify actual file contents and format before use.
