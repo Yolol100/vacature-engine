@@ -52,9 +52,13 @@ For evidence-backed CV/portfolio presentation, see [Career presentation handoff]
 
 Current Harvard career guidance was rechecked for the caller-owned pack contract: cover letters should be specific, human and concise, connect role/employer needs to relevant evidence, and avoid simply restating the resume. Current resume guidance supports selective role-relevant content and clear action/result framing. GitHub's official profile guidance supports highlighting a small number of relevant projects on the GitHub/profile surface rather than turning the CV into a project catalog.
 
-Caller policy therefore prepares paired NL+EN CV/motivation variants from one evidence map, keeps named projects/cases/repos out of the CV, allows at most three verified vacancy-relevant work-sample links in the motivation when useful/requested, and uses plain language a nontechnical reader can follow. Exact employer instructions still override these defaults.
+Current policy prepares one official-language CV/motivation by default from one evidence map, keeps named projects/cases/repos out of the CV, allows at most three verified vacancy-relevant work-sample links in the motivation when useful/requested, and uses plain language a nontechnical reader can follow. Exact employer instructions still override these defaults.
 
 Primary references:
 - https://careerservices.fas.harvard.edu/blog/2026/08/10/how-to-write-a-cover-letter-that-actually-gets-you-hired-in-2026/
 - https://careerservices.fas.harvard.edu/blog/2026/09/15/resumes-for-industry-grad-student-edition-2026/
 - https://docs.github.com/en/account-and-profile/tutorials/using-your-github-profile-to-enhance-your-resume
+
+## Current live Config override (2026-11-08)
+
+Use one language and the canonical CV by default; second-language or tailored versions require explicit user request or employer instruction. The visible filename follows current Config/user preference, including `CV.docx` when requested. The older paired-language and fixed-name guidance above is historical, not current policy.

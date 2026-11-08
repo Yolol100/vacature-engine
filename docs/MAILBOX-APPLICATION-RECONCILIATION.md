@@ -67,3 +67,6 @@ Candidate-facing dedupe should treat at least these states as previously handled
 - `ingestion/`: remains public vacancy-source acquisition only; mailbox evidence is not a discovery source.
 
 This separation prevents personal mailbox data from entering public ingestion or deterministic vacancy-scoring code while still making mailbox evidence part of the end-to-end vacancy workflow.
+## Historical event precision and authorized draft workflow
+
+An invitation dated 21 May is an employer reply, not evidence that a meeting took place on that date. `interview_at` requires actual interview evidence; distinguish invitation, occurrence, confirmation and recording timestamps. Keep event history and document any corrections. Read-only mailbox reconciliation never creates, changes or removes drafts. Separately authorized Outlook draft work must first find existing drafts, verify exact CV bytes and attachment list, and enforce one active verified draft per vacancy and recipient. If in-place attachment replacement is unsupported, verify a replacement before retiring the old draft. A draft is not a submission.

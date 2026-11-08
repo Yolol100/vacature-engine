@@ -8,7 +8,7 @@ For each form-based vacancy, the caller prepares:
 
 1. **Vacancy name** - exact role title + employer.
 2. **Answers to the questions** - in official form order, evidence-bound, short and ready for the user to review/fill.
-3. **CV** - vacancy-specific, based on the canonical CV.
+3. **CV** - the canonical CV by default, tailored only on request or employer requirement.
 
 Only the official canonical employer/ATS form may be used as the question source. Hidden or inaccessible questions must never be guessed.
 
@@ -66,6 +66,7 @@ A pack is only ready when every visible required field is accounted for with a v
 The live `Vacature Register` owns feature switches, source/evidence registry, application state, approved reusable answers, and lifecycle evidence. The Skill owns form interpretation, field-constraint handling, answer drafting, evidence checks, user-action blockers, CV preparation and final pack presentation.
 
 See `docs/APPLICATION-PACK-BEST-PRACTICES.md` for the online evidence used to validate these defaults.
-## Bilingual CV and motivation companion
 
-The form answers themselves stay in the official form/application language and exact field structure. Separately, the caller prepares Dutch and English vacancy-specific CV + motivation variants for user review from the same verified evidence map. The official application language remains primary for the actual upload. Named project/case/repository sections stay out of the CV; relevant verified work samples may appear only in the motivation companion when useful/requested.
+## Current live Config override (2026-11-08)
+
+Use one verified canonical CV in the official application language by default. A second language or tailored CV is produced only on explicit user request or employer requirement. The visible filename follows current user/Config preference (for example `CV.docx`), not an obsolete fixed filename. Verify actual file contents and format before use.

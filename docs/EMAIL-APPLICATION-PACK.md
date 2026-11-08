@@ -1,74 +1,23 @@
-# Email application pack boundary
+# Email application and Outlook draft boundary
 
-`vacature-search` may prepare an email application pack only when a canonically verified employer or employer-owned ATS vacancy explicitly names email as the official application route. This is caller-owned preparation. `vacature-engine` does not write candidate prose, inspect outbound mail composition, create drafts, attach files, or send email.
+Owner: `vacature-search` under `webactueel-workflow`. Live Vacature Register Config and official employer instructions are authoritative. `vacature-engine` never writes emails, connects to mailboxes, drafts or sends.
 
-## Output contract
+## Prepare
 
-For an official email route, the caller prepares these items in this order:
+1. Verify exact official role, recipient, required subject, application language, AI/original-work restrictions and any required attachments. Never guess the recipient or candidate facts.
+2. Read `Applications`, `ApplicationEvents`, `CandidateEvidence`, live Config and canonical CV. Reuse the verified canonical CV by default; tailor or create a second language only on explicit request or employer requirement.
+3. Default DOCX unless the employer requires PDF. Follow the user's current visible filename (including `CV.docx`), otherwise live Config; keep vacancy-scoped internal artifact identity. Verify real bytes, content, extension and size, not just filename.
+4. For a first application, use the official language and two short substantive paragraphs unless employer instructions override. For a previously submitted role, use a concise follow-up asking whether the position is open and whether the candidate remains eligible; no new motivation required.
 
-1. **Vacancy name** - exact role title and employer.
-2. **Email subject** - use the employer-required subject exactly; when none is specified, use the exact vacancy title plus candidate name according to live Config.
-3. **Email content** - a short vacancy-specific motivation letter with a greeting, exactly two compact content paragraphs, and a sign-off.
-4. **CV** - the vacancy-specific CV based on the immutable canonical CV.
+## Outlook draft: one active draft per vacancy and recipient
 
-Employer instructions always override defaults. If a separate cover letter, portfolio, references, question responses, specific filename, or other material is required, prepare it or block readiness rather than silently omit it.
-
-## Recipient and subject rules
-
-- Use only the exact application email address published on the verified canonical vacancy.
-- Never infer, guess, construct, or substitute a recipient address.
-- Copy an employer-required subject line literally, including any job ID or naming convention.
-- Without an employer subject instruction, keep the fallback concise and identifiable: exact vacancy title + candidate name.
-
-## Motivation email rules
-
-- Use the vacancy language.
-- Keep exactly two content paragraphs; greeting and sign-off are separate.
-- The message should answer why this role/employer and why this candidate without restating the CV.
-- Use one or two directly relevant verified experiences.
-- Keep the writing personal, human, simple and active; avoid generic application cliches, inflated claims and AI-like phrasing.
-- Target roughly 80-130 total words unless the employer or live Config imposes a stricter limit.
-- Use only employer/company details verifiable on the official vacancy or official employer site.
-- If a separate cover letter attachment is required, keep the email body shorter to avoid duplication.
-
-## AI / original-work instructions
-
-Before application prose is prepared, inspect the official instructions for explicit rules around AI, ChatGPT, generative AI, disclosure, original work, or own words.
-
-- Follow those rules exactly.
-- If AI-generated application prose is prohibited, do not produce a ready-made email body; provide factual evidence bullets for the user to write from.
-- If disclosure is required, follow the requested disclosure format.
-
-## CV and filename
-
-User-facing delivery policy:
-
-1. Use DOCX by default.
-2. Switch to PDF only when the official email instructions explicitly require a PDF attachment or otherwise make PDF mandatory.
-3. PDF being supported or generally preferred is not enough to override the DOCX default.
-4. If the employer prescribes an exact filename, use it exactly. Otherwise use `Andrew_Baeten_Resume.<ext>` when the official flow calls the document `Resume`; otherwise use `Andrew_Baeten_CV.<ext>`.
-5. Do not add employer, role, date, `final`, or version numbers to the default visible filename. Keep vacancy-bound artifact identity/provenance internal.
-6. Check extension and any explicit/provider file-size limit before readiness.
-
-Keep the CV reader/ATS friendly: simple one-column structure where practical, standard section headings, no photos/graphics/word art, no core content dependent on tables/text boxes, and no essential contact information only in headers/footers.
+1. Use Outlook when selected by live Config. Search existing Outlook drafts and exact recipient/role before creating any new draft. Gmail historical checks are read-only unless separately authorized.
+2. When connector supports in-place update/removal, replace the old CV attachment on the existing draft. Otherwise, create a replacement only after checking the original, verify the new draft with exactly one correct CV, then retire the old draft. Never stack multiple active drafts.
+3. Read back recipient, subject, body, exact attachment names/count and unsent state. A draft never means submitted. Do not fabricate `draft_created_at` or claim attachment-content verification from a filename alone.
+4. Record verified `draft_provider`, `draft_id`, `cv_file_name` and evidence in live Register only after readback. No automatic sending.
 
 ## Final QA
 
-A pack is only ready when the exact recipient/route, subject, role/employer/job ID, two-paragraph structure, word limit, factual support, spelling/grammar, attachment name/format/size, required extra materials and AI/original-work rules all pass review. Nothing is sent automatically.
+Check employer requirements, factual claims, CV content/format, language, exact recipient/subject, one active draft, one correct CV, unsent state, and register readback. If a required connector action or source is unavailable, mark blocked/unknown rather than PASS.
 
-## Draft and submission boundary
-
-If live Config enables an Outlook review draft, the caller may create one only after verification, fit, content, recipient, CV, material and QA gates pass. Draft creation is not submission. The caller must never auto-send. `submitted` or `applied` requires provider evidence or explicit user confirmation.
-
-## Runtime ownership
-
-The live `Vacature Register` owns the email-pack feature switch, subject/body/style rules, recipient policy, draft mode, application status and evidence. The Skill owns route interpretation, evidence-bound writing, CV preparation, QA and user-facing pack presentation.
-
-See `docs/APPLICATION-PACK-BEST-PRACTICES.md` for the online evidence used to validate these defaults.
-## Bilingual user-review contract
-
-For a normal allowed NL/EN vacancy, the caller prepares both Dutch and English motivation + CV variants from the same verified candidate-evidence map. The official vacancy/application language is the only primary outbound draft language; the other variant is for user review unless the user deliberately chooses otherwise and employer instructions allow it.
-
-Each motivation variant uses a greeting, exactly two substantive paragraphs, an optional block of 1-3 verified relevant-work links only when the vacancy requests work samples or such evidence materially proves a central requirement, the stable portfolio line `Portfolio: https://andrewbaeten.nl/category/cases`, and a first-name-only sign-off. Dutch defaults to `Vriendelijke groet,` followed by `Andrew`; English defaults to `Kind regards,` followed by `Andrew`. Never guess case slugs or repository URLs.
-
-Named projects/cases/repositories must not be added as a CV section. The CV stays focused on verified experience and skills. This is a caller-owned presentation contract; `vacature-engine` still writes no candidate prose.
+See `docs/MAILBOX-APPLICATION-RECONCILIATION.md` for the read-only mailbox and historical-event boundary.
