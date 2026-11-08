@@ -9,7 +9,7 @@ For an official email route, the caller prepares these items in this order:
 1. **Vacancy name** - exact role title and employer.
 2. **Email subject** - use the employer-required subject exactly; when none is specified, use the exact vacancy title plus candidate name according to live Config.
 3. **Email content** - a short vacancy-specific motivation letter with a greeting, exactly two compact content paragraphs, and a sign-off.
-4. **CV** - the vacancy-specific CV based on the immutable canonical CV.
+4. **CV** - the verified canonical CV by default; tailor only when requested or required.
 
 Employer instructions always override defaults. If a separate cover letter, portfolio, references, question responses, specific filename, or other material is required, prepare it or block readiness rather than silently omit it.
 
@@ -65,13 +65,6 @@ If live Config enables an Outlook review draft, the caller may create one only a
 The live `Vacature Register` owns the email-pack feature switch, subject/body/style rules, recipient policy, draft mode, application status and evidence. The Skill owns route interpretation, evidence-bound writing, CV preparation, QA and user-facing pack presentation.
 
 See `docs/APPLICATION-PACK-BEST-PRACTICES.md` for the online evidence used to validate these defaults.
-## Bilingual user-review contract
-
-For a normal allowed NL/EN vacancy, the caller prepares both Dutch and English motivation + CV variants from the same verified candidate-evidence map. The official vacancy/application language is the only primary outbound draft language; the other variant is for user review unless the user deliberately chooses otherwise and employer instructions allow it.
-
-Each motivation variant uses a greeting, exactly two substantive paragraphs, an optional block of 1-3 verified relevant-work links only when the vacancy requests work samples or such evidence materially proves a central requirement, the stable portfolio line `Portfolio: https://andrewbaeten.nl/category/cases`, and a first-name-only sign-off. Dutch defaults to `Vriendelijke groet,` followed by `Andrew`; English defaults to `Kind regards,` followed by `Andrew`. Never guess case slugs or repository URLs.
-
-Named projects/cases/repositories must not be added as a CV section. The CV stays focused on verified experience and skills. This is a caller-owned presentation contract; `vacature-engine` still writes no candidate prose.
 
 ## Current CV, language and Outlook draft rules (2026-11-08)
 
