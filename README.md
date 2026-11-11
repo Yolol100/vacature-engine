@@ -103,6 +103,11 @@ non-check run instead attempts **every active registered source**:
   pending and cannot become CV-ready recommendations.
 - Reports now expose the configured review/official budgets, number exceeding
   the candidate review budget and how many verified matches were ranked.
+- Exhaustive official ATS page evidence uses at most three concurrent reads,
+  retaining the same strict page budget, original candidate order, exact URL
+  cache, no login/redirect access and all existing eligibility gates. This
+  reduces waiting, but a successful test is not proof of real-world vacancy
+  coverage.
   Exceeding a budget is *incomplete coverage*, not proof of no jobs.
 - These are on-demand limits, not a recurring search. Official role pages
   can be slow or inaccessible; external ATS, search results and country/age
