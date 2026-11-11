@@ -85,9 +85,29 @@ non-check run instead attempts **every active registered source**:
   public HTML link discovery, plain reachability and verified matches remain
   separate. An empty HTML link pass is **not** zero-vacancy proof.
 - Final recommendations still require the independent official-page and
-  candidate evidence gates. Official-role checks are cached and their
-  **ten-role safety budget stays unchanged**. A full source-attempt audit must
-  not be mistaken for exhaustive vacancy verification.
+  candidate evidence gates. Official-role checks are cached. Normal mode
+  retains its **10-role** safety budget; exhaustive mode can use explicit,
+  bounded live Register limits without relaxing any evidence gate.
+  A full source-attempt audit must not be mistaken for exhaustive vacancy
+  verification.
+
+### Optional exhaustive verification limits (live Config)
+
+- `vacancy_exhaustive_review_candidate_budget`: maximum candidates screened
+  after full discovery (1–500; absent = existing normal cap).
+- `vacancy_exhaustive_official_page_budget`: maximum unique official ATS job
+  pages checked for date/remote/NL/form evidence (1–100; absent = 10).
+- `vacancy_exhaustive_return_all_verified`: `TRUE` returns **all actually
+  verified matches within the above review/official budgets**, rather than
+  using the normal `max_output_roles` display cap. Unverified roles remain
+  pending and cannot become CV-ready recommendations.
+- Reports now expose the configured review/official budgets, number exceeding
+  the candidate review budget and how many verified matches were ranked.
+  Exceeding a budget is *incomplete coverage*, not proof of no jobs.
+- These are on-demand limits, not a recurring search. Official role pages
+  can be slow or inaccessible; external ATS, search results and country/age
+  restrictions still determine real completeness. The specialist skill, not
+  this deterministic engine, produces per-role CVs and motivation text.
 
 The `check` mode remains completely offline/read-only: it plans and reports
 source coverage without making website requests.
