@@ -153,6 +153,26 @@ class SourceCoverageTests(unittest.TestCase):
         self.assertTrue(all("succeeded" not in x["execution"]
                             for x in check["sources"]))
 
+    def test_public_link_discovery_is_not_mistaken_for_verified_vacancies(self):
+        plan = planned(public_count=1)
+        employer = next(
+            x["source_id"] for x in plan["sources"]
+            if x["source_id"].startswith("employer-")
+        )
+        ready = complete_source_coverage(
+            plan, google_status="not_configured", mode="page-1",
+            source_attempts=[{
+                "source_instance": "web:" + employer,
+                "registry_source_ids": [employer],
+                "success": True,
+                "attempt_kind": "public_html_job_link_discovery",
+                "candidate_links_unverified": 3,
+            }],
+        )
+        states = {x["source_id"]: x["execution"] for x in ready["sources"]}
+        self.assertEqual(states[employer], "public_job_links_discovered_unverified")
+        self.assertNotEqual(states[employer], "direct_attempt_succeeded")
+
     def test_employer_tenant_is_direct_only_when_both_register_ids_active(self):
         rows, cfg, _, seeds = fixture(public_count=0)
         rows.extend([
