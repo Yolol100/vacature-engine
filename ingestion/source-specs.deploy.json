@@ -1,5 +1,29 @@
 [
   {
+    "source_id": "wordpress-jobs",
+    "source_type": "wordpress_discovery",
+    "adapter": "wordpressjobs",
+    "account": "development",
+    "endpoint": "https://jobs.wordpress.net/job_category/development/feed/",
+    "listing_language": "en",
+    "max_jobs": 80,
+    "options": {
+      "discovery_only": true
+    }
+  },
+  {
+    "source_id": "wordpress-jobs",
+    "source_type": "wordpress_discovery",
+    "adapter": "wordpressjobs",
+    "account": "design",
+    "endpoint": "https://jobs.wordpress.net/job_category/design/feed/",
+    "listing_language": "en",
+    "max_jobs": 80,
+    "options": {
+      "discovery_only": true
+    }
+  },
+  {
     "source_id": "greenhouse",
     "source_type": "ats",
     "adapter": "greenhouse",
