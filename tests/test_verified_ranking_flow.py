@@ -238,6 +238,48 @@ class VerifiedRankingFlowTests(unittest.TestCase):
         self.assertEqual(ranking.call_args_list[0].kwargs["policy"].max_output_roles, 1)
         self.assertEqual(policy_from_config(config).max_output_roles, 5)
 
+    def test_exhaustive_prefetches_unique_official_pages_without_promoting_unknowns(self):
+        from scripts.one_pass_vacancies import evaluate_observations
+        t, row, page, _ = fixture()
+        t["Config"].extend([
+            {"key": "vacancy_search_mode", "value": "exhaustive_all_active_sources"},
+            {"key": "vacancy_exhaustive_official_page_budget", "value": "2"},
+            {"key": "vacancy_exhaustive_review_candidate_budget", "value": "15"},
+            {"key": "vacancy_exhaustive_return_all_verified", "value": "TRUE"},
+        ])
+        rows = []
+        for i in range(3):
+            role_url = f"https://jobs.ashbyhq.com/fixtureco/role-{i}"
+            rows.append({**row, "canonical_url": role_url, "url": role_url,
+                         "apply_url": role_url + "/apply", "source_job_id": f"role-{i}",
+                         "title": "WordPress Developer " + str(i)})
+        cfg = {x["key"]: x["value"] for x in t["Config"]}
+        fetched = []
+        def fake_fetch(original, **kwargs):
+            fetched.append(original["canonical_url"])
+            return dict(page)
+        with patch("scripts.one_pass_vacancies.fetch_official_page_evidence",
+                   side_effect=fake_fetch):
+            result = evaluate_observations(
+                rows, t, cfg, policy_from_config(cfg),
+                today=TODAY, assessments={}, page_cache={},
+            )
+        self.assertEqual(len(fetched), 2)
+        self.assertEqual(len(set(fetched)), 2)
+        self.assertEqual(result["official_pages_checked"], 2)
+        self.assertEqual(result["official_page_budget"], 2)
+        self.assertEqual(result["final_recommendations"], [])
+        self.assertTrue(any(
+            "official_page_check_budget_reached" in item["still_to_verify"]
+            for item in result["review_candidates"]
+        ))
+
+    def test_normal_mode_does_not_change_the_official_page_budget(self):
+        t, row, page, assessment = fixture()
+        outcome = evaluate(t, row, page, assessment)
+        self.assertEqual(outcome["official_page_budget"], 10)
+        self.assertEqual(outcome["final_recommendations"][0]["score"], 85)
+
     def test_complete_verified_role_uses_existing_engine_and_optional_unknown_is_allowed(self):
         t, row, page, assessment = fixture()
         result = evaluate(t, row, page, assessment)
