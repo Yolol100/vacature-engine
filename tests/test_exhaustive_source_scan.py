@@ -7,7 +7,10 @@ from unittest.mock import Mock, patch
 
 from vacature_ingestion.models import SourceSpec
 from vacature_ingestion.runner import SourceRunResult
-from scripts.exhaustive_source_scan import _public_url, probe_unadapted_active_sources
+from scripts.exhaustive_source_scan import (
+    _public_url, probe_unadapted_active_sources,
+    public_job_links, scan_unadapted_public_job_links,
+)
 from scripts.one_pass_vacancies import (
     RegisterPreflightError, plan_free_source_batches, run_free_discovery_batches,
     run_once,
@@ -159,8 +162,8 @@ class ExhaustiveScanTests(unittest.TestCase):
             ]
         with patch("scripts.one_pass_vacancies.google_free_gate", return_value="not_configured"), \
              patch("scripts.one_pass_vacancies.IngestionRunner", return_value=runner), \
-             patch("scripts.one_pass_vacancies.probe_unadapted_active_sources",
-                   side_effect=fake_probes), \
+             patch("scripts.one_pass_vacancies.scan_unadapted_public_job_links",
+                   side_effect=lambda rows, covered: (fake_probes(rows, covered), [])), \
              patch("scripts.one_pass_vacancies.evaluate_observations",
                    return_value={"review_candidates": [], "final_recommendations": []}):
             result = run_once(t, ROOT, "page-1")
@@ -216,6 +219,58 @@ class ExhaustiveScanTests(unittest.TestCase):
         self.assertEqual(runner.run_source.call_count, 8)
         evaluate.assert_called_once()
         self.assertEqual(result["fallback_stop_reason"], "verified_target_reached")
+
+    def test_public_html_job_links_remain_unverified(self):
+        html = '''
+        <html><body>
+          <a href="/careers/wordpress-developer/">WordPress Developer</a>
+          <a href="/careers/wordpress-developer/?utm_source=test">WordPress Developer</a>
+          <a href="/jobs/woocommerce-support-specialist">WooCommerce Support Specialist</a>
+          <a href="/about">About the company</a>
+          <a href="javascript:alert(1)">WordPress Developer</a>
+          <a href="https://127.0.0.1/wordpress-developer">WordPress Developer</a>
+          <a href="/job/marketing-manager">WordPress Marketing Manager</a>
+        </body></html>
+        '''
+        source = {
+            "source_id": "company-example", "source_type": "employer_direct",
+            "source_name": "Example Studio", "base_url": "https://example.org/",
+            "status": "active",
+        }
+        items = public_job_links(html, source)
+        self.assertEqual(len(items), 2)
+        self.assertEqual(items[0]["source_id"], "company-example")
+        self.assertEqual(items[0]["employer"], "Example Studio")
+        self.assertEqual(items[0]["canonical_url"],
+                         "https://example.org/careers/wordpress-developer")
+        self.assertTrue(all(x["source_metadata"]["public_html_job_link_unverified"]
+                            for x in items))
+        self.assertTrue(all(not x.get("published_at") for x in items))
+        self.assertTrue(all(not x.get("remote") for x in items))
+
+    def test_bounded_scan_records_all_failed_and_successful_sources(self):
+        rows = [
+            {"source_id": "company-" + str(i),
+             "source_name": "Company " + str(i),
+             "source_type": "employer_direct", "status": "active",
+             "base_url": "https://example.org/jobs"}
+            for i in range(220)
+        ]
+        def fetch(url):
+            if not url:
+                return None, "fetch_unavailable"
+            return '<a href="/career/wordpress-developer">WordPress Developer</a>', None
+        attempted, observations = scan_unadapted_public_job_links(
+            rows, {"company-0", "company-1"},
+            fetch=fetch, max_workers=2,
+        )
+        self.assertEqual(len(attempted), 218)
+        self.assertEqual(len(observations), 218)
+        self.assertTrue(all(x["candidate_links_unverified"] == 1 for x in attempted))
+        self.assertTrue(all(x["attempt_kind"] == "public_html_job_link_discovery"
+                            for x in attempted))
+        self.assertEqual(len({x["source_id"] for x in observations}), 218)
+        self.assertTrue(all(x["source_type"] == "discovery" for x in observations))
 
     def test_coverage_reports_website_probe_not_verified_role(self):
         plan = {"sources": [

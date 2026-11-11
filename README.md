@@ -69,16 +69,21 @@ non-check run instead attempts **every active registered source**:
   batches of up to 8, with no early stop at the output target. Each instance
   is attempted once even on failure; existing per-adapter caps/retries remain.
 - Registered sources without adapters get one limited, redirect-disabled public
-  landing-page reachability check. **This is not a full vacancy search or
-  verified listing**. Login, blocked, rate-limited, unsafe and unreachable
-  sources retain explicit failure states; no CAPTCHA/robots/login bypass.
+  landing-page HTML read. Up to 25 visible, role-specific WordPress/WooCommerce
+  links may be collected for **unverified** specialist review; sources without
+  readable HTML or matching visible links retain explicit statuses. This is
+  **not** a full site search, employer authenticity check or verified listing.
+  JavaScript-only listings, search pages, multi-page boards, blocked/logged-in
+  content and vacancies beyond the first HTML page may not be visible.
+  No CAPTCHA/robots/login bypass or bulk page crawling is performed.
 - Free Google search still requires the existing account/quota gate. Without
   authorization, its registered public page can be checked for reachability
   only; no paid searches are initiated.
-- The report records a per-source attempt ledger and
-  `source_visit_summary.all_active_sources_attempted`. The distinction between
-  adapter ingestion, public page reachability and verified job matches remains
-  explicit; a source cannot be marked as yielding zero jobs from a probe.
+- The report records a per-source attempt ledger,
+  `source_visit_summary.all_active_sources_attempted` and
+  `public_job_links_discovered_unverified`. Adapter ingestion, unverified
+  public HTML link discovery, plain reachability and verified matches remain
+  separate. An empty HTML link pass is **not** zero-vacancy proof.
 - Final recommendations still require the independent official-page and
   candidate evidence gates. Official-role checks are cached and their
   **ten-role safety budget stays unchanged**. A full source-attempt audit must
