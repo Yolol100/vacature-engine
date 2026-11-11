@@ -11,6 +11,7 @@ import json
 import os
 import re
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
@@ -894,6 +895,31 @@ def evaluate_observations(observations: list[dict[str, Any]],
                   "official_original_post_too_old": 0,
                   "verified_mandatory_requirement_mismatch": 0,
                   "verified_below_live_thresholds": 0}
+    # Exhaustive review may inspect up to 100 independent official ATS pages.
+    # Fetch a bounded set concurrently, but preserve candidate order, unique
+    # URL caching and all subsequent employer/date/NL/assessment gates.
+    # In the default (non-exhaustive) mode the original sequential flow stays.
+    if exhaustive and page_budget > 1:
+        queued: list[tuple[str, dict[str, Any]]] = []
+        planned = set(page_cache)
+        for candidate in candidates:
+            url = candidate["official_role_candidate_url"]
+            original = originals.get(url)
+            if (url in planned or original is None or
+                    candidate["official_checks"]["official_role"] != "confirmed_current_public_ats"):
+                continue
+            if len(planned) >= page_budget:
+                break
+            planned.add(url)
+            queued.append((url, original))
+        if len(queued) > 1:
+            def fetch_one(item: tuple[str, dict[str, Any]]) -> dict[str, Any]:
+                return fetch_official_page_evidence(
+                    item[1], active_ids=active_ids, today=today,
+                )
+            with ThreadPoolExecutor(max_workers=min(3, len(queued))) as pool:
+                for (url, _), page in zip(queued, pool.map(fetch_one, queued)):
+                    page_cache[url] = page
     pending: list[dict[str, Any]] = []
     verified: list[dict[str, Any]] = []
     for candidate in candidates:
