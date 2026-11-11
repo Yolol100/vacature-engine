@@ -82,6 +82,33 @@ class ExhaustiveScanTests(unittest.TestCase):
         self.assertEqual(out["fallback_stop_reason"], "planned_sources_exhausted")
         self.assertEqual(runner.run_source.call_count, 29)
 
+    def test_exhaustive_evaluates_only_once_after_all_batches(self):
+        raw = [
+            {"source_id": "ashby", "source_type": "ats", "adapter": "ashby",
+             "account": "company-" + str(i)}
+            for i in range(28)
+        ]
+        table = {"Bronnen": [{"source_id": "ashby", "status": "active",
+                               "priority": "high", "source_type": "ats"}]}
+        batches = plan_free_source_batches(
+            raw, table, {"direct_discovery_order": "ats"},
+            max_sources=20, exhaustive=True,
+        )
+        runner = Mock()
+        runner.run_source.side_effect = lambda spec: SourceRunResult(
+            source_instance=spec.instance_id, success=True,
+            fetched=0, normalized=0, observations=[],
+        )
+        evaluator = Mock(return_value={"final_recommendations": ["already enough"]})
+        report = run_free_discovery_batches(
+            runner, batches, initial_observations=[], evaluate=evaluator,
+            target_verified=1, exhaustive=True,
+        )
+        self.assertEqual(runner.run_source.call_count, 28)
+        evaluator.assert_called_once()
+        self.assertEqual(report["fallback_batches_completed"], 4)
+        self.assertEqual(report["fallback_stop_reason"], "planned_sources_exhausted")
+
     def test_register_mode_is_required_and_stop_gate_fail_closed(self):
         t = tables()
         t["Config"] += [
