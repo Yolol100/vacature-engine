@@ -326,13 +326,21 @@ def run_free_discovery_batches(runner: IngestionRunner,
         if not remaining:
             continue
         rounds += 1
-        for source in remaining:
+        unique_remaining = []
+        for spec in remaining:
             # Also dedupe repeated instances within a malformed batch.
-            if source.instance_id in attempted:
+            if spec.instance_id in attempted:
                 continue
-            attempted.add(source.instance_id)
-            attempted_order.append(source.instance_id)
-            result = runner.run_source(source)
+            attempted.add(spec.instance_id)
+            attempted_order.append(spec.instance_id)
+            unique_remaining.append(spec)
+        if exhaustive and isinstance(runner, IngestionRunner) and len(unique_remaining) > 1:
+            # Only network fetches overlap. IngestionRunner persists every
+            # result in original order on its owner SQLite thread.
+            results = runner.run_many_parallel(unique_remaining, max_workers=3)
+        else:
+            results = [runner.run_source(spec) for spec in unique_remaining]
+        for result in results:
             source_attempts.append(_source_attempt_audit(result))
             if result.success:
                 successes += 1
