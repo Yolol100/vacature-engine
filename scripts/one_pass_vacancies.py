@@ -988,6 +988,18 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     if (exhaustive and config.get("vacancy_search_stop_when_target_verified", "").casefold()
             != "false"):
         raise RegisterPreflightError("Exhaustive mode requires stop_when_target_verified=false")
+    if exhaustive:
+        _bounded_exhaustive_config(
+            config, "vacancy_exhaustive_review_candidate_budget",
+            max(20, min(100, policy.max_output_roles * 12)), 500,
+        )
+        _bounded_exhaustive_config(
+            config, "vacancy_exhaustive_official_page_budget", 10, 100,
+        )
+        if config.get("vacancy_exhaustive_return_all_verified", "FALSE").upper() not in {
+            "TRUE", "FALSE",
+        }:
+            raise RegisterPreflightError("Invalid exhaustive result mode")
     active_ids = {row["source_id"] for row in active_source_rows_from_values([
         ["source_id", "status"],
         *[[row["source_id"], row["status"]] for row in tables["Bronnen"]],
