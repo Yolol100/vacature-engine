@@ -80,6 +80,7 @@ class WordPressJobsAdapterTests(unittest.TestCase):
                           "status": "active", "priority": "high"}]}
         active = select_free_specs(raw, t, cfg, limit=5)
         self.assertEqual({x.account for x in active}, {"development", "design"})
+        t["Bronnen"].append({"source_id": "ashby", "status": "active", "priority": "low"})
         t["Bronnen"][0]["status"] = "retired"
         self.assertEqual(select_free_specs(raw, t, cfg, limit=5), [])
 
