@@ -59,12 +59,33 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
 
 ## Verified ranking and bounded expansion
 
-A requested run can inspect up to **20 existing active sources in batches of
-8 → 8 → 4**. It evaluates cumulative results after each batch and stops when
-the live verified-output target is met. Unverified candidates do not stop
-expansion. Each source instance is processed once per run, with the adapter's
-existing bounded pagination and retries. Official role checks are cached;
-the official-page budget remains ten roles.
+The default requested run inspects up to **20 existing active adapter sources
+in batches of 8 → 8 → 4** and may stop when the verified-output target is met.
+When live Register `vacancy_search_mode=exhaustive_all_active_sources` and
+`vacancy_search_stop_when_target_verified=FALSE`, an explicitly requested
+non-check run instead attempts **every active registered source**:
+
+- All Register-approved configured ATS/feed adapter instances run in bounded
+  batches of up to 8, with no early stop at the output target. Each instance
+  is attempted once even on failure; existing per-adapter caps/retries remain.
+- Registered sources without adapters get one limited, redirect-disabled public
+  landing-page reachability check. **This is not a full vacancy search or
+  verified listing**. Login, blocked, rate-limited, unsafe and unreachable
+  sources retain explicit failure states; no CAPTCHA/robots/login bypass.
+- Free Google search still requires the existing account/quota gate. Without
+  authorization, its registered public page can be checked for reachability
+  only; no paid searches are initiated.
+- The report records a per-source attempt ledger and
+  `source_visit_summary.all_active_sources_attempted`. The distinction between
+  adapter ingestion, public page reachability and verified job matches remains
+  explicit; a source cannot be marked as yielding zero jobs from a probe.
+- Final recommendations still require the independent official-page and
+  candidate evidence gates. Official-role checks are cached and their
+  **ten-role safety budget stays unchanged**. A full source-attempt audit must
+  not be mistaken for exhaustive vacancy verification.
+
+The `check` mode remains completely offline/read-only: it plans and reports
+source coverage without making website requests.
 
 Known unsafe Arbeitnow links are quarantined per record. Safe results remain
 available, and an incomplete feed cannot mark existing vacancies missing or
