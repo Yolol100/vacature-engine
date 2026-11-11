@@ -43,12 +43,12 @@ if __package__:
     from .source_coverage import build_source_coverage, complete_source_coverage
     from .source_health_handoff import source_health_handoff
     from .specialist_handoff import public_specialist_handoff
-    from .exhaustive_source_scan import probe_unadapted_active_sources
+    from .exhaustive_source_scan import probe_unadapted_active_sources, scan_unadapted_public_job_links
 else:
     from source_coverage import build_source_coverage, complete_source_coverage
     from source_health_handoff import source_health_handoff
     from specialist_handoff import public_specialist_handoff
-    from exhaustive_source_scan import probe_unadapted_active_sources
+    from exhaustive_source_scan import probe_unadapted_active_sources, scan_unadapted_public_job_links
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -1022,6 +1022,8 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             ),
         }
     page_cache: dict[str, dict[str, Any]] = {}
+    landing_attempts: list[dict[str, Any]] = []
+    landing_observations: list[dict[str, Any]] = []
     def evaluate(items):
         return evaluate_observations(
             items, tables, config, policy, today=today,
@@ -1038,22 +1040,34 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
                     google_status = "searched"
                 else:
                     google_status = "provider_unavailable_or_quota_blocked"
+            if exhaustive:
+                # Run the bounded public-link pass BEFORE evaluating candidates,
+                # avoiding a second expensive specialist screening invocation.
+                covered_ids = {
+                    source_id
+                    for attempt in google_attempts
+                    for source_id in attempt.get("registry_source_ids", [])
+                }
+                for batch in batches:
+                    for spec in batch:
+                        covered_ids.add(spec.source_id)
+                        extra = spec.options.get("registry_source_id")
+                        if isinstance(extra, str):
+                            covered_ids.add(extra)
+                        elif isinstance(extra, list):
+                            covered_ids.update(str(value) for value in extra)
+                landing_attempts, landing_observations = scan_unadapted_public_job_links(
+                    tables["Bronnen"], covered_ids,
+                )
             loop = run_free_discovery_batches(
-                runner, batches, initial_observations=google_observations,
+                runner, batches,
+                initial_observations=google_observations + landing_observations,
                 evaluate=evaluate, target_verified=policy.max_output_roles,
                 exhaustive=exhaustive,
             )
         finally:
             runner.close()
     adapter_attempts = google_attempts + loop["source_attempts"]
-    landing_attempts = []
-    if exhaustive:
-        covered_ids = {
-            source_id
-            for attempt in adapter_attempts
-            for source_id in attempt.get("registry_source_ids", [])
-        }
-        landing_attempts = probe_unadapted_active_sources(tables["Bronnen"], covered_ids)
     all_attempts = adapter_attempts + landing_attempts
     attempted_ids = {
         source_id
@@ -1066,6 +1080,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         "not_attempted_source_ids": sorted(active_ids - attempted_ids),
         "landing_only_attempts": len(landing_attempts),
         "landing_only_successes": sum(bool(row["success"]) for row in landing_attempts),
+        "public_job_links_discovered_unverified": len(landing_observations),
         "all_active_sources_attempted": active_ids.issubset(attempted_ids),
         "listing_verified_by_landing_probes": False,
     }
@@ -1104,7 +1119,8 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         private_evidence_available=private_candidate_evidence_available,
     )
     if (not any(attempt["success"] for attempt in google_attempts)
-            and not loop["fallback_sources_successful"]):
+            and not loop["fallback_sources_successful"]
+            and not landing_observations):
         raise DiscoveryUnavailableError({
             **audit_report, "status": "blocked",
             "blocked_reason": "discovery_sources_unavailable",
