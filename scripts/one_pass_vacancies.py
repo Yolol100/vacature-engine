@@ -324,13 +324,14 @@ def run_free_discovery_batches(runner: IngestionRunner,
             if result.success:
                 successes += 1
                 observations.extend(result.observations or [])
-        # The caller canonicalizes/deduplicates cumulative observations while
-        # retaining evidence from multiple sources for the same vacancy.
-        evaluation = evaluate(list(observations))
-        if (not exhaustive and
-                len(evaluation.get("final_recommendations", [])) >= target_verified):
-            stop_reason = "verified_target_reached"
-            break
+        # Exhaustive mode cannot stop early: defer expensive screening,
+        # canonicalization and official-page checks until all batches finish.
+        # The regular bounded mode keeps its existing early-stop semantics.
+        if not exhaustive:
+            evaluation = evaluate(list(observations))
+            if len(evaluation.get("final_recommendations", [])) >= target_verified:
+                stop_reason = "verified_target_reached"
+                break
     if evaluation is None:
         evaluation = evaluate(list(observations))
     return {
