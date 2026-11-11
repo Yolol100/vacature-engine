@@ -72,11 +72,13 @@ class ExhaustiveScanTests(unittest.TestCase):
             return SourceRunResult(source_instance=spec.instance_id, success=True,
                                    fetched=0, normalized=0, observations=[])
         runner.run_source.side_effect = result
+        evaluate = Mock(return_value={"final_recommendations": ["already sufficient"]})
         out = run_free_discovery_batches(
             runner, batches, initial_observations=[],
-            evaluate=lambda _: {"final_recommendations": ["already sufficient"]},
+            evaluate=evaluate,
             target_verified=1, exhaustive=True,
         )
+        evaluate.assert_called_once()
         self.assertEqual(out["fallback_sources_attempted"], 29)
         self.assertEqual(out["fallback_batches_completed"], 4)
         self.assertEqual(out["fallback_stop_reason"], "planned_sources_exhausted")
