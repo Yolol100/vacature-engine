@@ -70,7 +70,9 @@ class OnePassTests(unittest.TestCase):
             row = [
                 "active" if col == "status" else
                 "test" if col == "source_id" else
-                "TRUE" if col == "value" else
+                "TRUE" if col in {"value", "active"} else
+                "claim" if col == "claim" else
+                "evidence-1" if col == "evidence_id" else
                 "key" if col == "key" else ""
                 for col in header
             ]
