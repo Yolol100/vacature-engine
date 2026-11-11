@@ -334,7 +334,8 @@ def run_free_discovery_batches(runner: IngestionRunner,
             attempted.add(spec.instance_id)
             attempted_order.append(spec.instance_id)
             unique_remaining.append(spec)
-        if exhaustive and isinstance(runner, IngestionRunner) and len(unique_remaining) > 1:
+        if (exhaustive and len(unique_remaining) > 1
+                and callable(getattr(type(runner), "run_many_parallel", None))):
             # Only network fetches overlap. IngestionRunner persists every
             # result in original order on its owner SQLite thread.
             results = runner.run_many_parallel(unique_remaining, max_workers=3)
