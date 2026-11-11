@@ -47,6 +47,18 @@ class SourceSpecTests(unittest.TestCase):
         self.assertIsNone(board[0].get("endpoint"))
         self.assertTrue(board[0].get("options", {}).get("discovery_only"))
 
+    def test_official_wordpress_jobs_rss_only_through_register_owned_source(self):
+        specs = _load("source-specs.deploy.json")
+        feeds = [s for s in specs if s.get("adapter") == "wordpressjobs"]
+        self.assertEqual(len(feeds), 2)
+        self.assertEqual({s["account"] for s in feeds}, {"development", "design"})
+        self.assertTrue(all(s["source_id"] == "wordpress-jobs" for s in feeds))
+        self.assertTrue(all(s["source_type"] == "wordpress_discovery" for s in feeds))
+        self.assertTrue(all(s["endpoint"] ==
+            "https://jobs.wordpress.net/job_category/" + s["account"] + "/feed/"
+            for s in feeds))
+        self.assertTrue(all(s["max_response_bytes"] <= 1048576 for s in feeds))
+
     def test_google_requires_explicit_registered_source(self):
         google = _load("source-specs.google-optional.json")
         self.assertEqual(1, len(google))
