@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from datetime import date
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 from unittest.mock import patch
 
 from vacature_engine.simple import policy_from_config
@@ -57,30 +58,75 @@ def observation(url, title="WordPress Developer", source_type="ats", **kwargs):
             "employer": "Acme", **kwargs}
 
 class OnePassTests(unittest.TestCase):
-    def test_public_discovery_never_fetches_candidate_evidence_tab(self):
+    def _register_batch_response(self, url):
+        from scripts.one_pass_vacancies import SHEETS
+        self.assertIn("/values:batchGet?", url)
+        names = parse_qs(urlsplit(url).query).get("ranges", [])
+        result = []
+        for ref in names:
+            name = ref.split("!", 1)[0]
+            self.assertIn(name, SHEETS)
+            header = sorted(SHEETS[name])
+            row = [
+                "active" if col == "status" else
+                "test" if col == "source_id" else
+                "TRUE" if col == "value" else
+                "key" if col == "key" else ""
+                for col in header
+            ]
+            result.append({"range": name + "!A1:AH2000",
+                           "values": [header, row]})
+        return {"valueRanges": result}
+
+    def test_public_discovery_batch_never_requests_private_evidence(self):
         seen = []
 
         def fake_request(url, token):
             seen.append(url)
-            if "CandidateEvidence" in url:
-                self.fail("Private CandidateEvidence was requested from Sheets")
-            from scripts.one_pass_vacancies import SHEETS
-            name = next((tab for tab in SHEETS if tab in url), None)
-            self.assertIsNotNone(name)
-            header = sorted(SHEETS[name])
-            return {"values": [header, [("active" if h == "status"
-                                          else "test" if h == "source_id"
-                                          else "TRUE" if h == "value"
-                                          else "key" if h == "key"
-                                          else "") for h in header]]}
+            self.assertNotIn("CandidateEvidence", url)
+            return self._register_batch_response(url)
 
         with patch.dict(os.environ, {"GOOGLE_SERVICE_ACCOUNT_JSON": '{"fake":"secret"}'}), \
              patch("scripts.one_pass_vacancies._service_account_token", return_value="synthetic"), \
              patch("scripts.one_pass_vacancies._request_json", side_effect=fake_request):
             result = load_register(include_candidate_evidence=False)
         self.assertEqual(result["CandidateEvidence"], [])
-        self.assertFalse(any("CandidateEvidence" in url for url in seen))
-        self.assertEqual(len(seen), 7)
+        self.assertEqual(len(seen), 1)
+        self.assertEqual(len(parse_qs(urlsplit(seen[0]).query)["ranges"]), 7)
+        self.assertTrue(result["Config"] and result["Bronnen"])
+
+    def test_private_register_batch_includes_only_requested_tabs(self):
+        seen = []
+        def fake_request(url, token):
+            seen.append(url)
+            return self._register_batch_response(url)
+        with patch.dict(os.environ, {"GOOGLE_SERVICE_ACCOUNT_JSON": '{"fake":"secret"}'}), \
+             patch("scripts.one_pass_vacancies._service_account_token", return_value="synthetic"), \
+             patch("scripts.one_pass_vacancies._request_json", side_effect=fake_request):
+            result = load_register(include_candidate_evidence=True)
+        self.assertEqual(len(seen), 1)
+        self.assertIn("CandidateEvidence!A1:AH2000",
+                      parse_qs(urlsplit(seen[0]).query)["ranges"])
+        self.assertEqual(len(parse_qs(urlsplit(seen[0]).query)["ranges"]), 8)
+        self.assertEqual(len(result["CandidateEvidence"]), 1)
+
+    def test_register_batch_fails_closed_on_missing_or_wrong_tab(self):
+        for kind in ("missing", "mismatch", "malformed"):
+            with self.subTest(kind=kind):
+                def fake_request(url, token):
+                    response = self._register_batch_response(url)
+                    if kind == "missing":
+                        response["valueRanges"].pop()
+                    elif kind == "mismatch":
+                        response["valueRanges"][0]["range"] = "Other!A1:AH2000"
+                    else:
+                        response["valueRanges"][0]["values"] = []
+                    return response
+                with patch.dict(os.environ, {"GOOGLE_SERVICE_ACCOUNT_JSON": '{"fake":"secret"}'}), \
+                     patch("scripts.one_pass_vacancies._service_account_token", return_value="synthetic"), \
+                     patch("scripts.one_pass_vacancies._request_json", side_effect=fake_request), \
+                     self.assertRaises(RegisterPreflightError):
+                    load_register(include_candidate_evidence=False)
 
     def test_public_run_rejects_private_receipts_or_injected_cv_claims(self):
         t = tables()
