@@ -621,14 +621,16 @@ def _observed_age(row: dict[str, Any], today: date) -> int | None:
 def screen_review_candidates(observations: list[dict[str, Any]],
                              tables: dict[str, list[dict[str, str]]],
                              policy: VacancyPolicy, *, today: date,
-                             limit: int = 60) -> tuple[list[dict[str, Any]], dict[str, int]]:
+                             limit: int = 60,
+                             count_overflow: bool = False,
+                             ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     """Suppress prior roles; hard-exclude only explicit mismatches; keep all unknowns unverified."""
     historical_keys, weak = _previous_index(tables)
     counted = {"unapproved_source": 0, "previously_registered": 0, "possible_prior_match": 0,
                "explicit_mismatch": 0, "unsafe_link": 0, "off_target": 0,
                "official_region_rejected": 0, "source_location_restricted": 0,
                "non_job_page": 0, "source_expired": 0, "awaiting_verification": 0,
-               "nonproduction": 0}
+               "nonproduction": 0, "review_limit_exceeded": 0}
     active_ids = {r.get("source_id", "") for r in tables["Bronnen"]
                   if r.get("status", "").casefold() == "active"}
     config = {row.get("key"): row.get("value", "") for row in tables["Config"]}
@@ -740,7 +742,10 @@ def screen_review_candidates(observations: list[dict[str, Any]],
             counted["official_region_rejected"] += 1
             continue
         if len(output) >= limit:
-            break
+            counted["review_limit_exceeded"] += 1
+            if not count_overflow:
+                break
+            continue
         # Only verified ATS-provider records can be compared with private,
         # active CandidateEvidence. The report contains counts, not claims.
         requirement_review = (
@@ -833,15 +838,39 @@ def _missing_ranking_evidence(candidate: dict[str, Any],
     return automated_ranking_blockers(candidate, page, policy, today)
 
 
+def _bounded_exhaustive_config(config: dict[str, str], key: str,
+                               default: int, maximum: int) -> int:
+    """Read live bounded review limits; malformed values fail closed."""
+    raw = config.get(key)
+    if raw is None or raw == "":
+        return default
+    if not isinstance(raw, str) or not re.fullmatch(r"[1-9][0-9]{0,3}", raw):
+        raise RegisterPreflightError("Invalid exhaustive review limit: " + key)
+    parsed = int(raw)
+    if parsed > maximum:
+        raise RegisterPreflightError("Exhaustive review limit exceeds safe cap: " + key)
+    return parsed
+
+
 def evaluate_observations(observations: list[dict[str, Any]],
                           tables: dict[str, list[dict[str, str]]],
                           config: dict[str, str], policy: VacancyPolicy, *, today: date,
                           assessments: dict[str, dict[str, Any]],
                           page_cache: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    """Reuse screening, fetch each official page at most once, then rank proof."""
+    """Verify every eligible candidate up to live bounded on-demand budgets."""
+    exhaustive = config.get("vacancy_search_mode") == "exhaustive_all_active_sources"
+    default_review = max(20, min(100, policy.max_output_roles * 12))
+    review_budget = (_bounded_exhaustive_config(
+        config, "vacancy_exhaustive_review_candidate_budget", default_review, 500,
+    ) if exhaustive else default_review)
+    page_budget = (_bounded_exhaustive_config(
+        config, "vacancy_exhaustive_official_page_budget", 10, 100,
+    ) if exhaustive else 10)
+    all_results = exhaustive and config.get(
+        "vacancy_exhaustive_return_all_verified", "FALSE").strip().upper() == "TRUE"
     candidates, counts = screen_review_candidates(
         observations, tables, policy, today=today,
-        limit=max(20, min(100, policy.max_output_roles * 12)),
+        limit=review_budget, count_overflow=exhaustive,
     )
     active_ids = {r["source_id"] for r in tables["Bronnen"]
                   if r.get("status", "").casefold() == "active"}
@@ -875,7 +904,7 @@ def evaluate_observations(observations: list[dict[str, Any]],
             pending.append(candidate)
             continue
         if url not in page_cache:
-            if len(page_cache) >= 10:
+            if len(page_cache) >= page_budget:
                 candidate["still_to_verify"].append("official_page_check_budget_reached")
                 pending.append(candidate)
                 continue
@@ -914,7 +943,9 @@ def evaluate_observations(observations: list[dict[str, Any]],
             candidate["still_to_verify"] = decision["missing"]
             pending.append(candidate)
     # Existing anchors, weights, threshold boundaries and sorting stay intact.
-    final = rank_fully_verified(verified, policy=policy, today=today)
+    rank_policy = (replace(policy, max_output_roles=max(1, len(verified)))
+                   if all_results else policy)
+    final = rank_fully_verified(verified, policy=rank_policy, today=today)
     exclusions["verified_below_live_thresholds"] = sum(
         not rank_fully_verified([item], policy=policy, today=today) for item in verified
     )
@@ -925,7 +956,13 @@ def evaluate_observations(observations: list[dict[str, Any]],
         item["score_breakdown"]["recency"] = item["score"] - sum(item["score_breakdown"].values())
     return {
         "raw_observations": len(observations), "review_count": len(pending),
-        "official_pages_checked": len(page_cache), "preflight_counts": counts,
+        "official_pages_checked": len(page_cache),
+        "official_page_budget": page_budget,
+        "review_candidate_budget": review_budget,
+        "review_candidates_over_budget": counts["review_limit_exceeded"],
+        "all_verified_results_requested": all_results,
+        "verified_results_ranked": len(final),
+        "preflight_counts": counts,
         "official_exclusion_counts": exclusions, "review_candidates": pending,
         "final_recommendations": final,
         "reason_no_final_recommendations": (
@@ -951,6 +988,18 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     if (exhaustive and config.get("vacancy_search_stop_when_target_verified", "").casefold()
             != "false"):
         raise RegisterPreflightError("Exhaustive mode requires stop_when_target_verified=false")
+    if exhaustive:
+        _bounded_exhaustive_config(
+            config, "vacancy_exhaustive_review_candidate_budget",
+            max(20, min(100, policy.max_output_roles * 12)), 500,
+        )
+        _bounded_exhaustive_config(
+            config, "vacancy_exhaustive_official_page_budget", 10, 100,
+        )
+        if config.get("vacancy_exhaustive_return_all_verified", "FALSE").upper() not in {
+            "TRUE", "FALSE",
+        }:
+            raise RegisterPreflightError("Invalid exhaustive result mode")
     active_ids = {row["source_id"] for row in active_source_rows_from_values([
         ["source_id", "status"],
         *[[row["source_id"], row["status"]] for row in tables["Bronnen"]],

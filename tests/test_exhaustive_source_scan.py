@@ -13,7 +13,7 @@ from scripts.exhaustive_source_scan import (
 )
 from scripts.one_pass_vacancies import (
     RegisterPreflightError, plan_free_source_batches, run_free_discovery_batches,
-    run_once,
+    run_once, _bounded_exhaustive_config, screen_review_candidates,
 )
 from scripts.source_coverage import complete_source_coverage
 from test_one_pass_vacancies import ROOT, tables
@@ -113,6 +113,45 @@ class ExhaustiveScanTests(unittest.TestCase):
         evaluator.assert_called_once()
         self.assertEqual(report["fallback_batches_completed"], 4)
         self.assertEqual(report["fallback_stop_reason"], "planned_sources_exhausted")
+
+    def test_exhaustive_candidate_review_counts_every_overflow(self):
+        from vacature_engine.simple import policy_from_config
+        from test_one_pass_vacancies import CONFIG
+        t = tables()
+        t["Vacatures"] = []
+        t["Applications"] = []
+        t["Feedback"] = []
+        t["ApplicationEvents"] = []
+        incoming = [
+            {"source_id": "ashby", "source_type": "ats",
+             "canonical_url": f"https://jobs.ashbyhq.com/team{i}/wordpress-developer-{i}",
+             "title": "WordPress Developer " + str(i),
+             "employer": "Team " + str(i)}
+            for i in range(6)
+        ]
+        kept, counted = screen_review_candidates(
+            incoming, t, policy_from_config(CONFIG),
+            today=__import__("datetime").date(2026, 10, 19),
+            limit=2, count_overflow=True,
+        )
+        self.assertEqual(len(kept), 2)
+        self.assertEqual(counted["review_limit_exceeded"], 4)
+
+    def test_exhaustive_review_limits_are_preflight_validated(self):
+        self.assertEqual(_bounded_exhaustive_config({}, "budget", 10, 100), 10)
+        self.assertEqual(_bounded_exhaustive_config({"budget": "100"},
+                                                   "budget", 10, 100), 100)
+        for raw in ("0", "-1", "nan", "101", "1001", "1e2"):
+            with self.subTest(raw=raw), self.assertRaises(RegisterPreflightError):
+                _bounded_exhaustive_config({"budget": raw}, "budget", 10, 100)
+        t = tables()
+        t["Config"] += [
+            {"key": "vacancy_search_mode", "value": "exhaustive_all_active_sources"},
+            {"key": "vacancy_search_stop_when_target_verified", "value": "FALSE"},
+            {"key": "vacancy_exhaustive_official_page_budget", "value": "101"},
+        ]
+        with self.assertRaises(RegisterPreflightError):
+            run_once(t, ROOT, "check")
 
     def test_register_mode_is_required_and_stop_gate_fail_closed(self):
         t = tables()
