@@ -267,6 +267,16 @@ def build_source_coverage(
     }
 
 
+def _public_landing_outcome(attempts: list[dict[str, Any]]) -> str:
+    """Separate unverified job-link discovery from mere page reachability."""
+    if any(x.get("success") is True
+           and int(x.get("candidate_links_unverified") or 0) > 0 for x in attempts):
+        return "public_job_links_discovered_unverified"
+    if any(x.get("success") is True for x in attempts):
+        return "public_landing_reachable_listing_unverified"
+    return "public_landing_probe_failed"
+
+
 def complete_source_coverage(
     plan: dict[str, Any], *,
     google_status: str,
@@ -304,20 +314,22 @@ def complete_source_coverage(
             elif mode != "check":
                 row["execution"] = "not_selected_within_round_limit"
         elif row["coverage_route"] == "free_google_optional":
-            landing_probes = [x for x in own if x.get("attempt_kind") == "public_landing_probe_only"]
+            landing_probes = [x for x in own if x.get("attempt_kind") in {
+                "public_landing_probe_only", "public_html_job_link_discovery",
+                "public_landing_probe_failed",
+            }]
             if google_status == "searched":
                 row["execution"] = "google_provider_batch_succeeded"
             elif landing_probes:
-                row["execution"] = ("public_landing_reachable_listing_unverified"
-                                    if any(x.get("success") is True for x in landing_probes)
-                                    else "public_landing_probe_failed")
+                row["execution"] = _public_landing_outcome(landing_probes)
                 row["google_provider_status"] = google_status
             elif google_status not in {"ready", "not_registered"}:
                 row["execution"] = "google_provider_" + google_status
-        elif any(x.get("attempt_kind") == "public_landing_probe_only" for x in own):
-            row["execution"] = ("public_landing_reachable_listing_unverified"
-                                if any(x.get("success") is True for x in own)
-                                else "public_landing_probe_failed")
+        elif any(x.get("attempt_kind") in {
+                "public_landing_probe_only", "public_html_job_link_discovery",
+                "public_landing_probe_failed",
+        } for x in own):
+            row["execution"] = _public_landing_outcome(own)
         elif row["execution"] == "google_query_planned_not_executed" and mode != "check":
             row["execution"] = (
                 "google_batch_succeeded_query_unconfirmed"
