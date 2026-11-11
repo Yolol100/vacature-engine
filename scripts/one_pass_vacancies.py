@@ -113,24 +113,36 @@ def load_register(spreadsheet_id: str = REGISTER_ID, *,
         token = _service_account_token(credentials)
     except Exception:
         raise RegisterPreflightError("Cannot authenticate to the Vacature Register") from None
-    tables: dict[str, list[dict[str, str]]] = {}
-    for name, required in SHEETS.items():
-        if name == "CandidateEvidence" and not include_candidate_evidence:
-            # Public discovery is always read-only. Never fetch a private
-            # CandidateEvidence claim/locator from Google Sheets in this mode.
-            tables[name] = []
-            continue
-        try:
-            range_ref = quote(name + "!A1:AH2000", safe="!")
-            url = ("https://sheets.googleapis.com/v4/spreadsheets/"
-                   + quote(spreadsheet_id, safe="") + "/values/" + range_ref)
-            result = _request_json(url, token)
-            values = result.get("values") if isinstance(result, dict) else None
-            tables[name] = parse_table(values, required, name)
-        except RegisterPreflightError:
-            raise
-        except Exception:
-            raise RegisterPreflightError("Cannot read required Register tab: " + name) from None
+    # One read-only batchGet shares a single OAuth token, network roundtrip
+    # and consistent response contract across all required Register tabs.
+    # Public searches must exclude the private CandidateEvidence range at the
+    # REQUEST level, not just omit it from the returned tables.
+    requested = [
+        name for name in SHEETS
+        if include_candidate_evidence or name != "CandidateEvidence"
+    ]
+    query = urlencode([("ranges", name + "!A1:AH2000") for name in requested])
+    url = ("https://sheets.googleapis.com/v4/spreadsheets/"
+           + quote(spreadsheet_id, safe="") + "/values:batchGet?" + query)
+    try:
+        response = _request_json(url, token)
+        ranges = response.get("valueRanges") if isinstance(response, dict) else None
+        if not isinstance(ranges, list) or len(ranges) != len(requested):
+            raise RegisterPreflightError("Required Register batch read is incomplete")
+        tables: dict[str, list[dict[str, str]]] = {}
+        for name, data in zip(requested, ranges):
+            if not isinstance(data, dict):
+                raise RegisterPreflightError("Required Register range is malformed: " + name)
+            returned_name = str(data.get("range") or "").split("!", 1)[0].strip("'")
+            if returned_name != name:
+                raise RegisterPreflightError("Register batch ranges mismatch: " + name)
+            tables[name] = parse_table(data.get("values"), SHEETS[name], name)
+        if not include_candidate_evidence:
+            tables["CandidateEvidence"] = []
+    except RegisterPreflightError:
+        raise
+    except Exception:
+        raise RegisterPreflightError("Cannot read required Register batch") from None
     if not tables["Bronnen"] or not tables["Config"]:
         raise RegisterPreflightError("Live Register has no source policy")
     return tables
@@ -314,13 +326,22 @@ def run_free_discovery_batches(runner: IngestionRunner,
         if not remaining:
             continue
         rounds += 1
-        for source in remaining:
+        unique_remaining = []
+        for spec in remaining:
             # Also dedupe repeated instances within a malformed batch.
-            if source.instance_id in attempted:
+            if spec.instance_id in attempted:
                 continue
-            attempted.add(source.instance_id)
-            attempted_order.append(source.instance_id)
-            result = runner.run_source(source)
+            attempted.add(spec.instance_id)
+            attempted_order.append(spec.instance_id)
+            unique_remaining.append(spec)
+        if (exhaustive and len(unique_remaining) > 1
+                and callable(getattr(type(runner), "run_many_parallel", None))):
+            # Only network fetches overlap. IngestionRunner persists every
+            # result in original order on its owner SQLite thread.
+            results = runner.run_many_parallel(unique_remaining, max_workers=3)
+        else:
+            results = [runner.run_source(spec) for spec in unique_remaining]
+        for result in results:
             source_attempts.append(_source_attempt_audit(result))
             if result.success:
                 successes += 1

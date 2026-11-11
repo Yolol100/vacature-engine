@@ -57,6 +57,19 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   and CandidateEvidence have been checked. No code or GitHub workflow
   automatically submits or changes application status.
 
+## Performance and safety
+
+- The authorized live `Vacature Register` is now fetched via **one** Google
+  Sheets read-only `values:batchGet` call, instead of 7–8 sequential tab
+  requests. Public discovery explicitly omits private `CandidateEvidence`.
+  Missing or misordered tab results still stop the run before discovery.
+- The code runs no scheduled job searches or applications. Concurrent reads
+  are limited to avoid provider rate limits. No source, application history
+  or mandatory vacancy verification gate is removed.
+- CI tests assert overlapping public fetches, sequential SQLite writes,
+  deterministic source order, private evidence exclusion and failed provider
+  isolation. Relative time savings depend on actual API latency.
+
 ## Verified ranking and bounded expansion
 
 The default requested run inspects up to **20 existing active adapter sources
@@ -75,6 +88,10 @@ non-check run instead attempts **every active registered source**:
 - All Register-approved configured ATS/feed adapter instances run in bounded
   batches of up to 8, with no early stop at the output target. Each instance
   is attempted once even on failure; existing per-adapter caps/retries remain.
+  Exhaustive mode fetches up to **three independent ATS/feed sources at once**,
+  then writes observations and handles deduplication **sequentially on one
+  SQLite thread**. This avoids unsafe concurrent database access, duplicate
+  requests and changing the source order. Default mode remains sequential.
 - Registered sources without adapters get one limited, redirect-disabled public
   landing-page HTML read. Up to 25 visible, role-specific WordPress/WooCommerce
   links may be collected for **unverified** specialist review; sources without

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -51,6 +52,15 @@ class SourceRunResult:
         return data
 
 
+@dataclass
+class _FetchedSource:
+    """Network-only result; StateStore writes remain on the caller thread."""
+    started_at: str
+    elapsed_seconds: float
+    records: list[dict[str, Any]] | None = None
+    error: Exception | None = None
+
+
 class IngestionRunner:
     def __init__(self, state_path: str | Path):
         self.state = StateStore(state_path)
@@ -68,20 +78,31 @@ class IngestionRunner:
                 queue.append(item)
         return queue
 
-    def run_source(self, spec: SourceSpec, *, client: HttpClient | None = None) -> SourceRunResult:
+    def run_source(self, spec: SourceSpec, *, client: HttpClient | None = None,
+                   prefetched: _FetchedSource | None = None) -> SourceRunResult:
         adapter = ADAPTERS.get(spec.adapter)
         if adapter is None:
             raise ValueError(f"unknown adapter: {spec.adapter}")
-        client = client or HttpClient(
-            timeout_seconds=spec.timeout_seconds,
-            retries=spec.retries,
-            max_response_bytes=spec.max_response_bytes,
-        )
-        started_at = datetime.now(timezone.utc).isoformat()
+        if prefetched is None:
+            client = client or HttpClient(
+                timeout_seconds=spec.timeout_seconds,
+                retries=spec.retries,
+                max_response_bytes=spec.max_response_bytes,
+            )
+        started_at = (prefetched.started_at if prefetched
+                      else datetime.now(timezone.utc).isoformat())
         run_id = self.state.start_run(spec.instance_id, started_at)
         t0 = time.perf_counter()
+        fetch_elapsed = prefetched.elapsed_seconds if prefetched else 0.0
         try:
-            records = adapter.fetch(client, spec)
+            if prefetched is None:
+                records = adapter.fetch(client, spec)
+            elif prefetched.error is not None:
+                raise prefetched.error
+            else:
+                records = prefetched.records
+                if not isinstance(records, list):
+                    raise ValueError("Prefetched adapter result must be a list")
             batch = adapter.normalize_batch(records, spec, now=started_at)
             observations = batch.observations
             complete_snapshot = not batch.quarantine_count and adapter.is_complete_snapshot(spec, records)
@@ -102,7 +123,7 @@ class IngestionRunner:
                 registry_source_ids=_registry_source_ids(spec),
                 new=counts.new, updated=counts.updated, unchanged=counts.unchanged,
                 duplicate_observations=counts.duplicate_observations, missing=counts.missing, closed=counts.closed,
-                duration_seconds=time.perf_counter() - t0, observations=observations,
+                duration_seconds=fetch_elapsed + time.perf_counter() - t0, observations=observations,
                 review_observations=review_observations,
                 quarantine_count=batch.quarantine_count, complete_snapshot=complete_snapshot,
                 started_at=started_at,
@@ -114,7 +135,7 @@ class IngestionRunner:
             return SourceRunResult(
                 source_instance=spec.instance_id, success=False, fetched=0, normalized=0,
                 registry_source_ids=_registry_source_ids(spec),
-                failure_category=category, failure_message=str(exc), duration_seconds=time.perf_counter() - t0,
+                failure_category=category, failure_message=str(exc), duration_seconds=fetch_elapsed + time.perf_counter() - t0,
                 observations=[], review_observations=[],
                 started_at=started_at,
             )
@@ -124,6 +145,46 @@ class IngestionRunner:
         for spec in specs:
             results.append(self.run_source(spec))
         return results
+
+    def run_many_parallel(self, specs: Iterable[SourceSpec], *,
+                          max_workers: int = 3) -> list[SourceRunResult]:
+        """Overlap bounded provider I/O; persist in original order on one SQLite thread.
+
+        No shared SQLite connection is accessed by worker threads. Each worker
+        receives an isolated HttpClient. Fetch exceptions are recorded once
+        through the normal failed-source path, without re-requesting a provider.
+        """
+        ordered = list(specs)
+        if type(max_workers) is not int or not 1 <= max_workers <= 3:
+            raise ValueError("Concurrent source fetch limit must be 1..3")
+        if len(ordered) > 8:
+            raise ValueError("Only one bounded source batch may be prefetched")
+        ids = [spec.instance_id for spec in ordered]
+        if len(ids) != len(set(ids)):
+            raise ValueError("Duplicate source instance in parallel fetch")
+        for spec in ordered:
+            if spec.adapter not in ADAPTERS:
+                raise ValueError("unknown adapter: " + spec.adapter)
+        if not ordered:
+            return []
+
+        def fetch(spec: SourceSpec) -> _FetchedSource:
+            start = datetime.now(timezone.utc).isoformat()
+            t0 = time.perf_counter()
+            client = HttpClient(
+                timeout_seconds=spec.timeout_seconds,
+                retries=spec.retries,
+                max_response_bytes=spec.max_response_bytes,
+            )
+            try:
+                records = ADAPTERS[spec.adapter].fetch(client, spec)
+                return _FetchedSource(start, time.perf_counter() - t0, records=records)
+            except Exception as exc:
+                return _FetchedSource(start, time.perf_counter() - t0, error=exc)
+
+        with ThreadPoolExecutor(max_workers=min(max_workers, len(ordered))) as pool:
+            return [self.run_source(spec, prefetched=fetched)
+                    for spec, fetched in zip(ordered, pool.map(fetch, ordered))]
 
     def ingest_records(self, spec: SourceSpec, records: list[dict[str, Any]], *, complete_snapshot: bool = True,
                        now: str | None = None) -> SourceRunResult:
