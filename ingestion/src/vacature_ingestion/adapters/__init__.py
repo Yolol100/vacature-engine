@@ -11,6 +11,7 @@ from .serpapi_google import SerpApiGoogleAdapter
 from .remotive import RemotiveAdapter
 from .smartrecruiters import SmartRecruitersAdapter
 from .weworkremotely import WeWorkRemotelyAdapter
+from .wordpressjobs import WordPressJobsAdapter
 from .workable import WorkableAdapter
 
 ADAPTERS = {
@@ -27,6 +28,7 @@ ADAPTERS = {
     "remotive": RemotiveAdapter(),
     "smartrecruiters": SmartRecruitersAdapter(),
     "weworkremotely": WeWorkRemotelyAdapter(),
+    "wordpressjobs": WordPressJobsAdapter(),
     "workable": WorkableAdapter(),
 }
 

@@ -65,6 +65,13 @@ When live Register `vacancy_search_mode=exhaustive_all_active_sources` and
 `vacancy_search_stop_when_target_verified=FALSE`, an explicitly requested
 non-check run instead attempts **every active registered source**:
 
+- The registered `wordpress-jobs` source now has dedicated, bounded
+  **official WordPress Jobs RSS** discovery for the Development and Design
+  categories. This reads curated feed items rather than only the homepage,
+  but the RSS date is *not* employer-original posting proof, and `Remote`
+  or work-from-Netherlands permission is never inferred from the feed.
+  Exact employer/ATS, original date and candidate evidence must still be
+  verified separately. Feed failures cannot mark roles absent or closed.
 - All Register-approved configured ATS/feed adapter instances run in bounded
   batches of up to 8, with no early stop at the output target. Each instance
   is attempted once even on failure; existing per-adapter caps/retries remain.

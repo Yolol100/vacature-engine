@@ -66,7 +66,7 @@ SHEETS = {
 }
 # Source-specific rank is taken from the live Register, not duplicated here.
 _ATS = {"ats"}
-_FREE_DISCOVERY = {"discovery_api", "job_board", "discovery"}
+_FREE_DISCOVERY = {"discovery_api", "job_board", "discovery", "wordpress_discovery"}
 _ROLE_TERMS = {
     "wordpress_ecosystem": ("wordpress", "woocommerce", "gutenberg", "elementor", "block editor"),
     "web_design_development": ("web designer", "web developer", "front-end", "frontend",
