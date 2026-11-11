@@ -80,7 +80,7 @@ def probe_unadapted_active_sources(
 ) -> list[dict[str, Any]]:
     """Probe active sources not covered by an ATS/feed adapter.
 
-    The Google provider is handled separately by its free-quota gate.
+    The Google provider is queried here only if its separately gated API was not attempted.
     Results include only source IDs, safe outcome codes and attempt times.
     """
     if type(max_workers) is not int or not 1 <= max_workers <= 8:
@@ -89,7 +89,6 @@ def probe_unadapted_active_sources(
         row for row in active_rows
         if str(row.get("status", "")).lower() == "active"
         and row.get("source_id") not in covered_source_ids
-        and row.get("source_id") != "google-jobs"
     ]
     seen: set[str] = set()
     for row in missing:
