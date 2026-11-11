@@ -43,10 +43,12 @@ if __package__:
     from .source_coverage import build_source_coverage, complete_source_coverage
     from .source_health_handoff import source_health_handoff
     from .specialist_handoff import public_specialist_handoff
+    from .exhaustive_source_scan import probe_unadapted_active_sources
 else:
     from source_coverage import build_source_coverage, complete_source_coverage
     from source_health_handoff import source_health_handoff
     from specialist_handoff import public_specialist_handoff
+    from exhaustive_source_scan import probe_unadapted_active_sources
 
 
 REGISTER_ID = "1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0"
@@ -219,7 +221,8 @@ def plan_free_source_batches(raw: list[dict[str, Any]],
                              tables: dict[str, list[dict[str, str]]],
                              config: dict[str, str], *, max_sources: int,
                              batch_size: int = 8,
-                             round_index: int = 0) -> list[list[SourceSpec]]:
+                             round_index: int = 0,
+                             exhaustive: bool = False) -> list[list[SourceSpec]]:
     """Bound the whole run while making later approved employers reachable.
 
     Reuse the existing live source order and ATS/feed diversity in each batch;
@@ -231,6 +234,8 @@ def plan_free_source_batches(raw: list[dict[str, Any]],
         raise ValueError("Free source batch size must be between 1 and 8")
     if type(round_index) is not int or round_index < 0:
         raise ValueError("Invalid source rotation round")
+    if type(exhaustive) is not bool:
+        raise ValueError("Invalid exhaustive mode")
     # Enumerate approved deploy specs only. Rotating the bounded window across
     # successive explicit rounds prevents tenants past slot 20 from starving.
     # It does NOT make inactive or unconfigured Register sources executable.
@@ -247,9 +252,14 @@ def plan_free_source_batches(raw: list[dict[str, Any]],
         selected.update(spec.instance_id for spec in batch)
     if not pool:
         return []
-    offset = (round_index * max_sources) % len(pool)
-    window = [pool[(offset + i) % len(pool)]
-              for i in range(min(max_sources, len(pool)))]
+    if exhaustive:
+        # An explicit exhaustive search covers *all* active configured adapters,
+        # preserving the proven bounded per-source timeout and pagination.
+        window = pool
+    else:
+        offset = (round_index * max_sources) % len(pool)
+        window = [pool[(offset + i) % len(pool)]
+                  for i in range(min(max_sources, len(pool)))]
     return [window[i:i + batch_size]
             for i in range(0, len(window), batch_size)]
 
@@ -273,7 +283,8 @@ def run_free_discovery_batches(runner: IngestionRunner,
                                batches: list[list[SourceSpec]], *,
                                initial_observations: list[dict[str, Any]],
                                evaluate: Callable[[list[dict[str, Any]]], dict[str, Any]],
-                               target_verified: int) -> dict[str, Any]:
+                               target_verified: int,
+                               exhaustive: bool = False) -> dict[str, Any]:
     """Run only the planned free batches until verified output is sufficient.
 
     Evaluation uses the existing caller-owned verification and ranking engine.
@@ -283,7 +294,8 @@ def run_free_discovery_batches(runner: IngestionRunner,
     if type(target_verified) is not int or target_verified < 1:
         raise ValueError("Verified output target must be a positive integer")
     planned = {spec.instance_id for batch in batches for spec in batch}
-    if len(planned) > 20 or any(len(batch) > 8 for batch in batches):
+    if (len(planned) > (300 if exhaustive else 20)
+            or any(len(batch) > 8 for batch in batches)):
         raise ValueError("Free source plan exceeds the bounded run budget")
     if any(spec.adapter == "serpapi_google" or spec.source_type not in _ATS | _FREE_DISCOVERY
            for batch in batches for spec in batch):
@@ -315,7 +327,8 @@ def run_free_discovery_batches(runner: IngestionRunner,
         # The caller canonicalizes/deduplicates cumulative observations while
         # retaining evidence from multiple sources for the same vacancy.
         evaluation = evaluate(list(observations))
-        if len(evaluation.get("final_recommendations", [])) >= target_verified:
+        if (not exhaustive and
+                len(evaluation.get("final_recommendations", [])) >= target_verified):
             stop_reason = "verified_target_reached"
             break
     if evaluation is None:
@@ -933,6 +946,10 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             verified_assessments or tables.get("CandidateEvidence")):
         raise ValueError("Public discovery cannot accept private candidate evidence")
     config, policy = live_policy(tables)
+    exhaustive = config.get("vacancy_search_mode") == "exhaustive_all_active_sources"
+    if (exhaustive and config.get("vacancy_search_stop_when_target_verified", "").casefold()
+            != "false"):
+        raise RegisterPreflightError("Exhaustive mode requires stop_when_target_verified=false")
     active_ids = {row["source_id"] for row in active_source_rows_from_values([
         ["source_id", "status"],
         *[[row["source_id"], row["status"]] for row in tables["Bronnen"]],
@@ -955,6 +972,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     batches = plan_free_source_batches(
         deploy_list, tables, config, max_sources=max_free_sources,
         round_index=round_index,
+        exhaustive=exhaustive,
     )
     pages = GOOGLE_MODES[mode]
     seed_queries = (google_approved[0].get("options") or {}).get("queries", []) if (
@@ -989,6 +1007,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         return {
             "mode": mode, "google": google_status,
             "fallback_sources_available": sum(len(b) for b in batches),
+            "exhaustive_requested": exhaustive,
             "search_requests": 0, "read_only": True, "source_attempts": [],
             "coverage": complete_source_coverage(
                 coverage_plan, google_status=google_status,
@@ -1021,9 +1040,34 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
             loop = run_free_discovery_batches(
                 runner, batches, initial_observations=google_observations,
                 evaluate=evaluate, target_verified=policy.max_output_roles,
+                exhaustive=exhaustive,
             )
         finally:
             runner.close()
+    adapter_attempts = google_attempts + loop["source_attempts"]
+    landing_attempts = []
+    if exhaustive:
+        covered_ids = {
+            source_id
+            for attempt in adapter_attempts
+            for source_id in attempt.get("registry_source_ids", [])
+        }
+        landing_attempts = probe_unadapted_active_sources(tables["Bronnen"], covered_ids)
+    all_attempts = adapter_attempts + landing_attempts
+    attempted_ids = {
+        source_id
+        for attempt in all_attempts
+        for source_id in attempt.get("registry_source_ids", [])
+    }
+    source_visit_summary = {
+        "registered_active": len(active_ids),
+        "attempted_source_ids": len(active_ids & attempted_ids),
+        "not_attempted_source_ids": sorted(active_ids - attempted_ids),
+        "landing_only_attempts": len(landing_attempts),
+        "landing_only_successes": sum(bool(row["success"]) for row in landing_attempts),
+        "all_active_sources_attempted": active_ids.issubset(attempted_ids),
+        "listing_verified_by_landing_probes": False,
+    }
     if not private_candidate_evidence_available:
         # An explicitly requested public-mode run may show links, but must never
         # export private-evidence digests or claim a final candidate fit.
@@ -1037,10 +1081,12 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
         "google_observations": len(google_observations),
         **{k: loop[k] for k in ("fallback_sources_attempted", "fallback_sources_successful",
                                "fallback_batches_completed", "fallback_stop_reason")},
-        "source_attempts": google_attempts + loop["source_attempts"],
+        "exhaustive_requested": exhaustive,
+        "source_visit_summary": source_visit_summary,
+        "source_attempts": all_attempts,
         "coverage": complete_source_coverage(
             coverage_plan, google_status=google_status,
-            source_attempts=google_attempts + loop["source_attempts"],
+            source_attempts=all_attempts,
             mode=mode,
         ),
     }
@@ -1048,7 +1094,7 @@ def run_once(tables: dict[str, list[dict[str, str]]], root: Path, mode: str,
     # The technical caller holds read-only Register credentials and never writes these
     # back into Google Sheets or fills missing historical health timestamps.
     audit_report["source_health"] = source_health_handoff(
-        tables["Bronnen"], audit_report["coverage"], audit_report["source_attempts"],
+        tables["Bronnen"], audit_report["coverage"], adapter_attempts,
     )
     # Public digest-bound review candidates, NOT private specialist assessments.
     # The existing validate_assessment gate remains the sole score authority.

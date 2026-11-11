@@ -304,10 +304,20 @@ def complete_source_coverage(
             elif mode != "check":
                 row["execution"] = "not_selected_within_round_limit"
         elif row["coverage_route"] == "free_google_optional":
+            landing_probes = [x for x in own if x.get("attempt_kind") == "public_landing_probe_only"]
             if google_status == "searched":
                 row["execution"] = "google_provider_batch_succeeded"
+            elif landing_probes:
+                row["execution"] = ("public_landing_reachable_listing_unverified"
+                                    if any(x.get("success") is True for x in landing_probes)
+                                    else "public_landing_probe_failed")
+                row["google_provider_status"] = google_status
             elif google_status not in {"ready", "not_registered"}:
                 row["execution"] = "google_provider_" + google_status
+        elif any(x.get("attempt_kind") == "public_landing_probe_only" for x in own):
+            row["execution"] = ("public_landing_reachable_listing_unverified"
+                                if any(x.get("success") is True for x in own)
+                                else "public_landing_probe_failed")
         elif row["execution"] == "google_query_planned_not_executed" and mode != "check":
             row["execution"] = (
                 "google_batch_succeeded_query_unconfirmed"

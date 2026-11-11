@@ -8,8 +8,12 @@ On an explicit ChatGPT `vacature-search` request:
    theoretical or cached counts.
 2. Search employer/ATS first; Google and existing free feeds are supplemental
    and never automatically prove authenticity, age, NL eligibility or fit.
-3. Use bounded, rotating X-ray/source expansion. Stop once the verified output
-   target is met; unverified observations must not stop expansion.
+3. Default route: use bounded, rotating X-ray/source expansion. Stop once
+   the verified output target is met; unverified observations cannot stop expansion.
+   Exhaustive Register mode: do not stop at the target. Attempt all active
+   registered sources once through approved ATS/feed adapters or bounded public
+   landing-page checks, recording inaccessible/unsupported routes explicitly.
+   Landing-page reachability is **not** verification of job availability.
 4. If a provider fails, report `unknown/blocked`, never zero opportunities.
    Do not modify source priority from a failed index check.
 5. Keep public source observations separate from private CandidateEvidence.
