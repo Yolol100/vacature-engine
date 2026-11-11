@@ -210,6 +210,34 @@ class VerifiedRankingFlowTests(unittest.TestCase):
                 self.assertEqual(1, len(result["final_recommendations"]))
                 self.assertEqual(result["final_recommendations"][0]["score"], 85)
 
+    def test_exhaustive_budget_and_full_results_opt_in_preserve_verified_gate(self):
+        from vacature_ingestion.official_review import rank_fully_verified
+        t, row, page, assessment = fixture()
+        t["Config"].extend([
+            {"key": "vacancy_search_mode",
+             "value": "exhaustive_all_active_sources"},
+            {"key": "vacancy_search_stop_when_target_verified", "value": "FALSE"},
+            {"key": "vacancy_exhaustive_review_candidate_budget", "value": "180"},
+            {"key": "vacancy_exhaustive_official_page_budget", "value": "50"},
+            {"key": "vacancy_exhaustive_return_all_verified", "value": "TRUE"},
+        ])
+        config = {x["key"]: x["value"] for x in t["Config"]}
+        assessment.update(assessment_context(row, page, config, t["CandidateEvidence"]))
+        with patch("scripts.one_pass_vacancies.rank_fully_verified",
+                   wraps=rank_fully_verified) as ranking:
+            report = evaluate_observations(
+                [row], t, config, policy_from_config(config), today=TODAY,
+                assessments={URL: assessment}, page_cache={URL: page},
+            )
+        self.assertEqual(report["review_candidate_budget"], 180)
+        self.assertEqual(report["official_page_budget"], 50)
+        self.assertTrue(report["all_verified_results_requested"])
+        self.assertEqual(report["review_candidates_over_budget"], 0)
+        self.assertEqual(report["verified_results_ranked"], 1)
+        self.assertEqual(report["final_recommendations"][0]["score"], 85)
+        self.assertEqual(ranking.call_args_list[0].kwargs["policy"].max_output_roles, 1)
+        self.assertEqual(policy_from_config(config).max_output_roles, 5)
+
     def test_complete_verified_role_uses_existing_engine_and_optional_unknown_is_allowed(self):
         t, row, page, assessment = fixture()
         result = evaluate(t, row, page, assessment)
