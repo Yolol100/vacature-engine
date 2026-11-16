@@ -130,9 +130,25 @@ function radarHttp_(url) {
     headers: {Accept: 'application/json, application/rss+xml, application/xml, text/xml'}
   });
   if (response.getResponseCode() !== 200) throw new Error('Source HTTP ' + response.getResponseCode());
+  // Large official Greenhouse boards (GitLab ~3.9 MB) cannot use the
+  // previous 2.5 MB ceiling. Keep a bounded 4.25 MB overall budget.
   var raw = response.getContentText();
-  if (raw.length > 2500000) throw new Error('Source response exceeds safety budget');
+  if (raw.length > 4250000) throw new Error('Source response exceeds safety budget');
   return raw;
+}
+
+function radarFetchSource_(spec) {
+  var url = radarSpecUrl_(spec);
+  if (!url) throw new Error('Unsupported approved source');
+  try {
+    return radarHttp_(url);
+  } catch (error) {
+    if (spec.adapter !== 'greenhouse' ||
+        !/Source response exceeds safety budget/.test(String(error))) throw error;
+    // Official Greenhouse jobs list without full descriptions is smaller.
+    // Do not silently label missing descriptions as verified role matches.
+    return radarHttp_(url.replace('content=true', 'content=false'));
+  }
 }
 
 function radarSpecUrl_(spec) {
@@ -147,7 +163,7 @@ function radarSpecUrl_(spec) {
       var region = spec.options && spec.options.api_region === 'eu' ? 'api.eu.lever.co' : 'api.lever.co';
       return 'https://' + region + '/v0/postings/' + encodeURIComponent(account) + '?mode=json&limit=100';
     case 'workable':
-      return 'https://www.workable.com/api/accounts/' + encodeURIComponent(account) + '?details=true';
+      return 'https://apply.workable.com/api/v1/widget/accounts/' + encodeURIComponent(account) + '?details=true';
     case 'personio':
       return 'https://' + account + '.jobs.personio.com/xml?language=en';
     case 'wordpressjobs':
@@ -382,7 +398,7 @@ function runVacatureRadar() {
       var spec = sourceDue[i];
       attempts++;
       try {
-        var observations = radarCandidates_(spec, radarHttp_(radarSpecUrl_(spec)));
+        var observations = radarCandidates_(spec, radarFetchSource_(spec));
         inspected += observations.length;
         props.setProperty(radarSourceDue_(spec, started, props).key, String(started));
         for (var j = 0; j < observations.length; j++) {
@@ -401,7 +417,8 @@ function runVacatureRadar() {
         }
       } catch (error) {
         failures++;
-        console.warn('Source failed: ' + String(spec.source_id) +
+        console.warn('Source failed: ' + String(spec.source_id) + '/' +
+          String(spec.account) +
           ' (' + String(error && error.message || error).slice(0, 120) + ')');
       }
       if (additions.length >= VACATURE_RADAR.maxNewRows) break;
