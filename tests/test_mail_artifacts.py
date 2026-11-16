@@ -153,3 +153,29 @@ class MailArtifactTests(unittest.TestCase):
         unpadded = encoded[:-1]
         with self.assertRaisesRegex(ValueError, "malformed MIME"):
             self.check(raw.replace(encoded, unpadded, 1))
+
+    def test_duplicate_transfer_encoding_headers_are_rejected(self):
+        raw = draft()
+        original = b"Content-Transfer-Encoding: base64\\n"
+        self.assertIn(original, raw)
+        ambiguous = raw.replace(
+            original,
+            original + b"Content-Transfer-Encoding: quoted-printable\\n",
+            1,
+        )
+        with self.assertRaisesRegex(ValueError, "malformed MIME"):
+            self.check(ambiguous)
+
+    def test_inline_encapsulated_message_types_cannot_supply_cv(self):
+        inner = BytesParser(policy=policy.default).parsebytes(draft())
+        for subtype in ("global", "news"):
+            with self.subTest(subtype=subtype):
+                outer = EmailMessage()
+                outer["To"] = "jobs@example.org"
+                outer["Subject"] = "Application"
+                outer["X-Unsent"] = "1"
+                outer.set_content("The CV is nested inside another message.")
+                outer.add_attachment(inner, subtype=subtype)
+                outer.get_payload()[-1].replace_header("Content-Disposition", "inline")
+                with self.assertRaisesRegex(ValueError, "exactly one DOCX"):
+                    self.check(outer.as_bytes())
