@@ -35,6 +35,13 @@ class AshbyAdapter(Adapter):
                 "summary": compensation.get("scrapeableCompensationSalarySummary") or compensation.get("compensationTierSummary"),
                 "components": compensation.get("summaryComponents"),
             }
+        # Ashby's isRemote=True also covers HYBRID vacancies.  Only a
+        # workplaceType of Remote proves the fully-remote part of eligibility.
+        workplace_type = clean_text(record.get("workplaceType"))
+        workplace_norm = (workplace_type or "").casefold()
+        fully_remote = (True if workplace_norm == "remote" else
+                        False if workplace_norm in {"hybrid", "onsite"} else None)
+        reported_remote = record.get("isRemote") if isinstance(record.get("isRemote"), bool) else None
         return {
             "source_id": spec.source_id,
             "source_type": spec.source_type,
@@ -54,10 +61,13 @@ class AshbyAdapter(Adapter):
             "salary": salary,
             "listing_language": spec.listing_language,
             "apply_url": clean_text(record.get("applyUrl")) or url,
-            "remote": record.get("isRemote") if isinstance(record.get("isRemote"), bool) else None,
-            "workplace_type": clean_text(record.get("workplaceType")),
+            "remote": fully_remote,
+            "workplace_type": workplace_type,
             "source_metadata": {
                 "provider": "ashby",
+                "reported_is_remote": reported_remote,
+                "date_semantics": "last_published_not_original",
+                "provider_last_published_at": clean_text(record.get("publishedAt")),
                 "department": record.get("department"),
                 "team": record.get("team"),
                 "is_listed": record.get("isListed"),
