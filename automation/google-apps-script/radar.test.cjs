@@ -105,6 +105,73 @@ test('supported non-ATS discovery feeds produce only observations', () => {
   }
 });
 
+
+test('Workable uses confirmed public widget endpoint directly (no HTTP 302)', () => {
+  const s = load();
+  assert.equal(
+    s.radarSpecUrl_({adapter:'workable',account:'humanmade'}),
+    'https://apply.workable.com/api/v1/widget/accounts/humanmade?details=true'
+  );
+  assert.equal(
+    s.radarSpecUrl_({adapter:'workable',account:'awesomemotive'}),
+    'https://apply.workable.com/api/v1/widget/accounts/awesomemotive?details=true'
+  );
+});
+
+test('Greenhouse accepts a bounded large board and falls back to official summary only above cap', () => {
+  const reqs = [];
+  const ctx = load({
+    UrlFetchApp: {
+      fetch(url) {
+        reqs.push(url);
+        return {
+          getResponseCode() {return 200;},
+          getContentText() {
+            return url.includes('content=false') ? JSON.stringify({jobs: []}) : 'x'.repeat(4250001);
+          }
+        };
+      }
+    }
+  });
+  assert.equal(ctx.radarFetchSource_({adapter:'greenhouse',account:'gitlab'}), '{"jobs":[]}');
+  assert.equal(reqs.length, 2);
+  assert.match(reqs[0], /content=true$/);
+  assert.match(reqs[1], /content=false$/);
+  assert.throws(() => ctx.radarHttp_('https://boards-api.greenhouse.io/test'), /safety budget/);
+  const normal = load({UrlFetchApp:{fetch() {return {
+    getResponseCode() {return 200;},
+    getContentText() {return 'x'.repeat(3900000);}
+  };}}});
+  assert.equal(normal.radarHttp_('https://boards-api.greenhouse.io/test').length, 3900000);
+});
+
+test('Only material WordPress and website roles pass the current role-family policy', () => {
+  const s = load();
+  assert.equal(s.radarRelevant_('Senior Systems Engineer', 'We host WordPress websites', ['wordpress_ecosystem']), false);
+  assert.equal(s.radarRelevant_('Sales Engineer', 'Help customers with WordPress hosting', ['wordpress_ecosystem']), false);
+  assert.equal(s.radarRelevant_('Senior Product Designer', 'WordPress can be used by clients', ['wordpress_ecosystem']), false);
+  assert.equal(s.radarRelevant_('Web Developer', 'Build custom WordPress themes', ['wordpress_ecosystem']), true);
+  assert.equal(s.radarRelevant_('PHP Engineer', 'Build WooCommerce plugins', ['wordpress_ecosystem']), true);
+  assert.equal(s.radarRelevant_('AI Automation Engineer', 'Build n8n automation and market WordPress products', ['wordpress_ecosystem']), false);
+});
+
+test('Past date, unknown date, US-only, hybrid and remote-Europe are distinct review outcomes', () => {
+  const s=load();
+  const now=Date.parse('2026-11-17T00:00:00Z');
+  const config={max_posting_age_days: '7'};
+  const base={title:'WordPress Developer', publishedHint:'2026-11-15T10:00:00Z',
+    description:'Build WordPress plugins for remote teams',location:'Remote - Europe'};
+  const check=(x)=>s.radarReview_({...base,...x},config,now);
+  assert.equal(check({}).status,'needs_official_review');
+  assert.equal(check({publishedHint:'2026-08-17T00:00:00Z'}).status,'historical_review');
+  assert.equal(check({publishedHint:''}).status,'date_unknown_review');
+  assert.equal(check({location:'Hybrid - Amsterdam'}).status,'not_fully_remote_review');
+  assert.equal(check({location:'Remote - US only',description:'US only applicants'}).status,'geography_restricted_review');
+  assert.equal(check({location:'Remote',description:'Build WordPress plugins'}).status,'remote_nl_unknown_review');
+  assert.equal(check({location:'Remote - Worldwide'}).alert,true);
+  assert.equal(check({publishedHint:'2026-11-19T00:00:00Z'}).status,'date_conflict_review');
+});
+
 function dataSheet(name, rows) {
   return {
     getName() {return name;},
@@ -198,7 +265,7 @@ test('enabled discovery appends only a new, unverified lead and dedupes on re-ru
   assert.equal(one.newLeads, 1);
   assert.equal(one.attemptedSources, 1);
   assert.equal(m.radar['Bronvondsten'].getLastRow(), 2);
-  assert.equal(m.radar['Bronvondsten'].getDataRange().getValues()[1][10], 'needs_official_review');
+  assert.equal(m.radar['Bronvondsten'].getDataRange().getValues()[1][10], 'remote_nl_unknown_review');
   assert.equal(m.register.Vacatures.getLastRow(), 1);
   assert.equal(m.register.Applications.getLastRow(), 1);
   // Force the same provider to be fetched again, proving cross-run URL dedupe.

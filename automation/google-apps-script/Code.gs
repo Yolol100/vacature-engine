@@ -67,13 +67,50 @@ function radarNormalizeUrl_(value) {
 
 function radarRelevant_(title, description, family) {
   var t = String(title || '').toLowerCase();
-  var d = String(description || '').slice(0, 10000).toLowerCase();
-  var wordpress = /\bwordpress\b|\bwoocommerce\b|\belementor\b|\bgutenberg\b|\bwpml\b|\bacf\b/.test(t) ||
-    (/\bdeveloper\b|\bengineer\b|\bdesigner\b|\bsupport\b|\bweb\b|\bfrontend\b|\bfront.end\b|\bphp\b/.test(t) &&
-     /\bwordpress\b|\bwoocommerce\b|\belementor\b|\bgutenberg\b/.test(d));
-  if (wordpress) return true;
+  var d = String(description || '').slice(0, 16000).toLowerCase()
+    .replace(/<[^>]+>/g, ' ').replace(/&nbsp;|&#160;/g, ' ');
+  // A standalone engineering, operations, sales, AI or product role is not
+  // WordPress work merely because the company uses a WordPress website.
+  if (/\b(ai automation|sales engineer|systems engineer|onboarding engineer|product designer|mobile developer|data engineer)\b/.test(t) &&
+      !/\b(wordpress|woocommerce|elementor|gutenberg|acf|wpml)\b/.test(t)) return false;
+  if (/\b(wordpress|woocommerce|elementor|gutenberg|wpml|acf)\b/.test(t)) return true;
+  var relevantTitle = /\b(web\s?designer|web\s?developer|frontend|front.end|php developer|php engineer|website|web ux|web ui|theme developer|plugin developer)\b/.test(t);
+  var relevantDuty = /(?:build|develop|maintain|customiz|migrat|implement|design|support|create|work with|bouwen|ontwikkel|onderhoud|beheer|ontwerp|migrer|plugins|themes)[\s\S]{0,90}\b(wordpress|woocommerce|elementor|gutenberg|acf|wpml)\b|\b(wordpress|woocommerce|elementor|gutenberg|acf|wpml)\b[\s\S]{0,90}(?:build|develop|maintain|customiz|migrat|implement|design|support|create|bouwen|ontwikkel|onderhoud|beheer|ontwerp|plugins|themes)/.test(d);
+  if (relevantTitle && relevantDuty) return true;
   return family.indexOf('web_design_development') !== -1 &&
     /\bweb\s?designer\b|\bfront.?end\b|\bwebsite\b|\bweb developer\b|\bweb ux\b/.test(t);
+}
+
+function radarReview_(job, config, nowMs) {
+  var maxAge = Number(config.max_posting_age_days);
+  if (!Number.isFinite(maxAge) || maxAge < 1 || maxAge > 90) maxAge = 7;
+  var published = Date.parse(String(job.publishedHint || ''));
+  if (Number.isFinite(published) && published > nowMs + 86400000) {
+    return {status: 'date_conflict_review', alert: false, reason: 'Future publication hint'};
+  }
+  if (Number.isFinite(published) && nowMs - published > maxAge * 86400000) {
+    return {status: 'historical_review', alert: false, reason: 'Posting hint older than ' + maxAge + ' days'};
+  }
+  if (!Number.isFinite(published)) {
+    return {status: 'date_unknown_review', alert: false, reason: 'Original posting date unverified'};
+  }
+  var geo = (String(job.location || '') + ' ' + String(job.description || '').slice(0, 10000)).toLowerCase()
+    .replace(/<[^>]+>/g, ' ');
+  var location = String(job.location || '').toLowerCase();
+  if (/\b(?:us|usa|united states|canada)\s*(?:only|based|residents)|(?:only|based|residents)\s*(?:in|from)\s*(?:us|usa|united states|canada)\b/.test(geo) &&
+      !/\b(?:netherlands|europe|emea|worldwide|global)\b/.test(location)) {
+    return {status: 'geography_restricted_review', alert: false, reason: 'North America restriction; check NL eligibility'};
+  }
+  if (/\b(hybrid|on.site|in.office|office.based)\b/.test(location)) {
+    return {status: 'not_fully_remote_review', alert: false, reason: 'Location indicates hybrid/on-site'};
+  }
+  var remote = /\b(remote|fully remote|work from anywhere|distributed|thuiswerken|op afstand)\b/.test(geo);
+  var eligibleGeo = /\b(netherlands|nederland|dutch|europe|eu remote|emea|worldwide|global|anywhere|cet|cest)\b/.test(geo);
+  if (!remote || !eligibleGeo) {
+    return {status: 'remote_nl_unknown_review', alert: false, reason: 'Full remote and NL eligibility still unverified'};
+  }
+  // This is only a promising observation, never proof of employer eligibility.
+  return {status: 'needs_official_review', alert: true, reason: 'Recent remote/NL signal; official verification still required'};
 }
 
 function radarKnownUrls_(register, radar) {
@@ -130,9 +167,25 @@ function radarHttp_(url) {
     headers: {Accept: 'application/json, application/rss+xml, application/xml, text/xml'}
   });
   if (response.getResponseCode() !== 200) throw new Error('Source HTTP ' + response.getResponseCode());
+  // Large official Greenhouse boards (GitLab ~3.9 MB) cannot use the
+  // previous 2.5 MB ceiling. Keep a bounded 4.25 MB overall budget.
   var raw = response.getContentText();
-  if (raw.length > 2500000) throw new Error('Source response exceeds safety budget');
+  if (raw.length > 4250000) throw new Error('Source response exceeds safety budget');
   return raw;
+}
+
+function radarFetchSource_(spec) {
+  var url = radarSpecUrl_(spec);
+  if (!url) throw new Error('Unsupported approved source');
+  try {
+    return radarHttp_(url);
+  } catch (error) {
+    if (spec.adapter !== 'greenhouse' ||
+        !/Source response exceeds safety budget/.test(String(error))) throw error;
+    // Official Greenhouse jobs list without full descriptions is smaller.
+    // Do not silently label missing descriptions as verified role matches.
+    return radarHttp_(url.replace('content=true', 'content=false'));
+  }
 }
 
 function radarSpecUrl_(spec) {
@@ -147,7 +200,7 @@ function radarSpecUrl_(spec) {
       var region = spec.options && spec.options.api_region === 'eu' ? 'api.eu.lever.co' : 'api.lever.co';
       return 'https://' + region + '/v0/postings/' + encodeURIComponent(account) + '?mode=json&limit=100';
     case 'workable':
-      return 'https://www.workable.com/api/accounts/' + encodeURIComponent(account) + '?details=true';
+      return 'https://apply.workable.com/api/v1/widget/accounts/' + encodeURIComponent(account) + '?details=true';
     case 'personio':
       return 'https://' + account + '.jobs.personio.com/xml?language=en';
     case 'wordpressjobs':
@@ -331,6 +384,8 @@ function radarUpdateDashboard_(radar, active, run) {
     dashboard.getRange('B12').setValue(run.failedSources);
     dashboard.getRange('B13').setValue(run.newLeads);
     dashboard.getRange('B14').setValue(run.inspected);
+    dashboard.getRange('B16').setValue(run.alertCandidates || 0);
+    dashboard.getRange('B17').setValue((run.failedAccounts || []).join(', ') || '-');
   }
 }
 
@@ -366,7 +421,8 @@ function runVacatureRadar() {
       if (url) known[url] = true;
     });
     var now = new Date().toISOString();
-    var additions = [], attempts = 0, failures = 0, inspected = 0;
+    var additions = [], alerts = [], attempts = 0, failures = 0, inspected = 0;
+    var reviewCounts = {}, failedAccounts = [];
     var props = PropertiesService.getScriptProperties();
     var sourceDue = sourceSpecs.filter(function (spec) {
       return radarSourceDue_(spec, started, props).ready;
@@ -382,7 +438,7 @@ function runVacatureRadar() {
       var spec = sourceDue[i];
       attempts++;
       try {
-        var observations = radarCandidates_(spec, radarHttp_(radarSpecUrl_(spec)));
+        var observations = radarCandidates_(spec, radarFetchSource_(spec));
         inspected += observations.length;
         props.setProperty(radarSourceDue_(spec, started, props).key, String(started));
         for (var j = 0; j < observations.length; j++) {
@@ -392,16 +448,22 @@ function runVacatureRadar() {
           if (oldKeys[key] || known[row.url]) continue;
           oldKeys[key] = true;
           known[row.url] = true;
-          additions.push([
+          var review = radarReview_(row, config, started);
+          reviewCounts[review.status] = (reviewCounts[review.status] || 0) + 1;
+          var saved = [
             key, now, now, row.sourceId, row.jobId, row.employer, row.title,
-            row.url, row.publishedHint, row.location, 'needs_official_review',
-            row.sourceType, row.note
-          ].map(radarSafeCell_));
+            row.url, row.publishedHint, row.location, review.status,
+            row.sourceType, row.note + '; ' + review.reason
+          ].map(radarSafeCell_);
+          additions.push(saved);
+          if (review.alert) alerts.push(saved);
           if (additions.length >= VACATURE_RADAR.maxNewRows) break;
         }
       } catch (error) {
         failures++;
-        console.warn('Source failed: ' + String(spec.source_id) +
+        failedAccounts.push(String(spec.source_id) + '/' + String(spec.account));
+        console.warn('Source failed: ' + String(spec.source_id) + '/' +
+          String(spec.account) +
           ' (' + String(error && error.message || error).slice(0, 120) + ')');
       }
       if (additions.length >= VACATURE_RADAR.maxNewRows) break;
@@ -421,14 +483,14 @@ function runVacatureRadar() {
       SpreadsheetApp.flush();
       var email = String(props.getProperty('VACATURE_RADAR_ALERT_EMAIL') ||
         Session.getEffectiveUser().getEmail() || '').trim();
-      if (email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-        var summary = additions.slice(0, 20).map(function (row) {
+      if (alerts.length && email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        var summary = alerts.slice(0, 20).map(function (row) {
           return row[5] + ' - ' + row[6] + '\n' + row[7];
         }).join('\n\n');
         try {
           MailApp.sendEmail({
             to: email,
-            subject: 'Nieuwe vacaturekandidaten ter controle: ' + additions.length,
+            subject: 'Nieuwe actuele remote-vacaturekandidaten: ' + alerts.length,
             body: 'Nog NIET geverifieerd of sollicitatieklaar.\n\n' + summary +
               '\n\nControleer originele datum, remote vanuit Nederland, talen en employer-ATS.' +
               '\nRadar: https://docs.google.com/spreadsheets/d/' + VACATURE_RADAR.radarId
@@ -441,6 +503,8 @@ function runVacatureRadar() {
     }
     var result = {status: 'ok', newLeads: additions.length,
       inspected: inspected, attemptedSources: attempts, failedSources: failures,
+      alertCandidates: alerts.length, reviewCounts: reviewCounts,
+      failedAccounts: failedAccounts,
       incomplete: attempts < sourceDue.length, at: now};
     props.setProperty('VACATURE_RADAR_LAST_RUN', JSON.stringify(result));
     radarUpdateDashboard_(radar, true, result);
