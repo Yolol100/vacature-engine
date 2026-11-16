@@ -250,9 +250,9 @@ function radarCandidates_(spec, raw) {
       note = 'Workable public listing; original date and NL eligibility still unverified';
     } else if (adapter === 'smartrecruiters') {
       title = job.name || job.title; jobId = job.id || job.uuid;
-      // SmartRecruiters' "ref" is an API endpoint, NOT a verified application URL.
-      url = job.applyUrl || (jobId && 'https://jobs.smartrecruiters.com/' +
-        encodeURIComponent(spec.account) + '/' + encodeURIComponent(String(jobId)));
+      // The public list may omit a job-specific application link. Never
+      // fabricate one from a provider ID: wait for official detail review.
+      url = job.applyUrl || '';
       dateHint = job.releasedDate || job.publicationDate || '';
       location = job.location && (job.location.city || job.location.country);
       description = '';
