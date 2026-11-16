@@ -13,7 +13,14 @@ class LeverAdapter(Adapter):
 
     def fetch(self, client: Any, spec: SourceSpec) -> list[dict[str, Any]]:
         limit = min(100, max(1, int(spec.options.get("page_size", 100))))
-        base = spec.endpoint or f"https://api.lever.co/v0/postings/{quote(spec.account)}"
+        # EU-hosted Lever boards are separate from global boards.  The
+        # region is explicit per employer; a 404 is not authorization to
+        # sweep the other data-residency region.
+        region = str(spec.options.get("api_region", "global")).casefold()
+        if region not in {"global", "eu"}:
+            raise ValueError("Lever API region must be global or eu")
+        host = "api.eu.lever.co" if region == "eu" else "api.lever.co"
+        base = spec.endpoint or f"https://{host}/v0/postings/{quote(spec.account)}"
         jobs: list[dict[str, Any]] = []
         skip = 0
         while len(jobs) < spec.max_jobs:
@@ -60,6 +67,11 @@ class LeverAdapter(Adapter):
             "workplace_type": clean_text(record.get("workplaceType")),
             "source_metadata": {
                 "provider": "lever",
+                # createdAt is not independently confirmed original-publication
+                # evidence; preserve for reviewer provenance only.
+                "provider_created_at": record.get("createdAt"),
+                "original_publication_unverified": True,
+                "api_region": str(spec.options.get("api_region", "global")).casefold(),
                 "provider_job_id": record.get("id"),
                 "team": categories.get("team"),
                 "department": categories.get("department"),
