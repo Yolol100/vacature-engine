@@ -16,12 +16,12 @@ from .cv_artifacts import CV_ARTIFACT_MIME, sha256_bytes
 
 def _outer_message_parts(message):
     """Visit outer parts; count named containers but never enter attached content."""
-    if message.get_content_type() == "message/rfc822":
+    if message.get_content_maintype() == "message":
         yield message
         return
     if message.is_multipart():
         for part in message.iter_parts():
-            if part.get_content_type() == "message/rfc822" or (
+            if part.get_content_maintype() == "message" or (
                 part.get_content_disposition() == "attachment" and part.is_multipart()
             ):
                 yield part
@@ -98,6 +98,8 @@ def verify_unsent_eml_cv(
         raise ValueError("embedded CV filename does not match current CV")
     if actual_cv.get_content_type() != CV_ARTIFACT_MIME:
         raise ValueError("unexpected CV attachment MIME type")
+    if len(actual_cv.get_all("Content-Transfer-Encoding", [])) != 1:
+        raise ValueError("malformed MIME or CV transfer encoding")
     actual_bytes = actual_cv.get_payload(decode=True)
     if message.defects or actual_cv.defects:
         raise ValueError("malformed MIME or CV transfer encoding")
