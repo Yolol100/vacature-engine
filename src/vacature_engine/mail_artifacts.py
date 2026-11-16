@@ -14,6 +14,25 @@ from pathlib import PurePath
 from .cv_artifacts import CV_ARTIFACT_MIME, sha256_bytes
 
 
+def _outer_message_parts(message):
+    """Visit outer MIME parts, never entering attached messages or containers."""
+    if message.get_content_type() == "message/rfc822":
+        return
+    if message.is_multipart():
+        for part in message.iter_parts():
+            if part.get_content_disposition() == "attachment" and part.is_multipart():
+                continue
+            yield from _outer_message_parts(part)
+    else:
+        yield message
+
+
+def _is_docx_candidate(part):
+    """Include inline DOCX, mislabeled filename and DOCX MIME duplicates."""
+    name = part.get_filename() or ""
+    return name.lower().endswith(".docx") or part.get_content_type() == CV_ARTIFACT_MIME
+
+
 def verify_unsent_eml_cv(
     eml_bytes: bytes,
     expected_cv_bytes: bytes,
@@ -39,23 +58,38 @@ def verify_unsent_eml_cv(
         raise ValueError("expected_filename must not contain a path")
 
     message = BytesParser(policy=policy.default).parsebytes(eml_bytes)
-    if require_unsent and message.get("X-Unsent", "").strip() != "1":
+    unsent_headers = message.get_all("X-Unsent", [])
+    if require_unsent and (len(unsent_headers) != 1 or str(unsent_headers[0]).strip() != "1"):
         raise ValueError("local .eml must be explicitly marked X-Unsent: 1")
-    if expected_recipient is not None:
-        actual = {address.lower() for _, address in getaddresses(message.get_all("To", []))}
-        if expected_recipient.strip().lower() not in actual:
-            raise ValueError("recipient does not match intended recipient")
-    if expected_subject is not None and str(message.get("Subject", "")) != expected_subject:
+
+    subjects = message.get_all("Subject", [])
+    if len(subjects) > 1:
+        raise ValueError("duplicate email subject headers are not allowed")
+    if expected_subject is not None and (
+        len(subjects) != 1 or str(subjects[0]) != expected_subject
+    ):
         raise ValueError("email subject does not match intended subject")
 
+    if expected_recipient is not None:
+        if not isinstance(expected_recipient, str) or not expected_recipient.strip():
+            raise ValueError("expected_recipient must be one non-empty address")
+        to_headers = message.get_all("To", [])
+        extra_destinations = ("Cc", "Bcc", "Resent-To", "Resent-Cc", "Resent-Bcc")
+        if len(to_headers) != 1 or any(message.get_all(h, []) for h in extra_destinations):
+            raise ValueError("recipient does not match intended recipient")
+        actual = getaddresses(to_headers)
+        if len(actual) != 1 or actual[0][1].strip().lower() != expected_recipient.strip().lower():
+            raise ValueError("recipient does not match intended recipient")
+
     cv_parts = [
-        part for part in message.walk()
-        if part.get_content_disposition() == "attachment"
-        and (part.get_filename() or "").lower().endswith(".docx")
+        part for part in _outer_message_parts(message)
+        if _is_docx_candidate(part)
     ]
     if len(cv_parts) != 1:
         raise ValueError("exactly one DOCX CV attachment is required")
     actual_cv = cv_parts[0]
+    if actual_cv.get_content_disposition() != "attachment":
+        raise ValueError("DOCX CV must be a direct attachment")
     if actual_cv.get_filename() != expected_filename:
         raise ValueError("embedded CV filename does not match current CV")
     if actual_cv.get_content_type() != CV_ARTIFACT_MIME:
