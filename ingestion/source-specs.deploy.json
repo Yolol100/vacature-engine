@@ -37,7 +37,8 @@
     "employer": "Automattic",
     "max_jobs": 20000,
     "options": {
-      "registry_source_id": "company-automattic"
+      "registry_source_id": "company-automattic",
+      "original_date_detail_limit": 8
     }
   },
   {
@@ -72,7 +73,8 @@
     "employer": "Acquia",
     "max_jobs": 20000,
     "options": {
-      "registry_source_id": "company-acquia"
+      "registry_source_id": "company-acquia",
+      "original_date_detail_limit": 8
     }
   },
   {
@@ -113,7 +115,8 @@
     "employer": "GitLab",
     "max_jobs": 20000,
     "options": {
-      "registry_source_id": "company-gitlab"
+      "registry_source_id": "company-gitlab",
+      "original_date_detail_limit": 8
     }
   },
   {
@@ -124,7 +127,8 @@
     "employer": "DigitalOcean",
     "max_jobs": 20000,
     "options": {
-      "registry_source_id": "company-digitalocean"
+      "registry_source_id": "company-digitalocean",
+      "original_date_detail_limit": 8
     }
   },
   {
@@ -135,7 +139,8 @@
     "employer": "Pantheon",
     "max_jobs": 20000,
     "options": {
-      "registry_source_id": "company-pantheon"
+      "registry_source_id": "company-pantheon",
+      "original_date_detail_limit": 8
     }
   },
   {
