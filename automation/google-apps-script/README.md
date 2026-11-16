@@ -36,6 +36,19 @@ vacature-register, geen betaalde provider.
   nieuw ontdekte kandidaten, bekeken vacatures, alert-kandidaten en
   mislukte bron/accounts. De historische eerste 30 kandidaten blijven
   behouden en worden niet automatisch heringedeeld.
+- Bij 0 bronnen aan de beurt meldt de radar `idle_no_sources_due`, niet
+  een zogenaamd geslaagde verse broncontrole. De datum van de **laatste
+  echte bronopvraag** staat los van de laatste triggeruitvoering. Het
+  dashboard toont in rijen 19–22 scanstatus, laatste bronfetch, aantal
+  ingestelde snelle bronnen en aantal bronnen dat aan de beurt was.
+- Na een bronfout probeert de radar die bron niet elke 15 minuten opnieuw:
+  backoff van 15, 30, 60, 120 tot 240 minuten. Een succesvolle bronopvraag
+  herstelt de foutteller. Zo vermijden we onnodige verzoeken en API-blokkades.
+- Werk vanuit Nederland wordt voor meldingen alleen als **mogelijk**
+  beoordeeld als de locatie zelf Nederland/Europa/EMEA/wereldwijd vermeldt
+  of een duidelijke toelatingszin voor NL/Europa aanwezig is. Vermelding
+  van Europese klanten in een functietekst is nooit genoeg. De exacte
+  officiële werkgeverspagina moet dit daarna bevestigen.
 
 ## Eénmalige gebruikersstap: daadwerkelijk in Google installeren
 
