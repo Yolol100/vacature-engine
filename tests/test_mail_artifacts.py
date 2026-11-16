@@ -156,11 +156,11 @@ class MailArtifactTests(unittest.TestCase):
 
     def test_duplicate_transfer_encoding_headers_are_rejected(self):
         raw = draft()
-        original = b"Content-Transfer-Encoding: base64\\n"
+        original = b"Content-Transfer-Encoding: base64\n"
         self.assertIn(original, raw)
         ambiguous = raw.replace(
             original,
-            original + b"Content-Transfer-Encoding: quoted-printable\\n",
+            original + b"Content-Transfer-Encoding: quoted-printable\n",
             1,
         )
         with self.assertRaisesRegex(ValueError, "malformed MIME"):
