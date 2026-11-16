@@ -189,6 +189,8 @@ test('Past date, unknown date, US-only, hybrid and remote-Europe are distinct re
   assert.equal(check({location:'Remote',description:'Build WordPress plugins'}).status,'remote_nl_unknown_review');
   assert.equal(check({location:'Remote - Worldwide'}).alert,true);
   assert.equal(check({publishedHint:'2026-11-19T00:00:00Z'}).status,'date_conflict_review');
+  assert.equal(check({location:'Remote - Spain', description:'We serve customers across Europe and build WordPress plugins'}).status, 'remote_nl_unknown_review');
+  assert.equal(check({location:'Remote - Netherlands', description:'Build WordPress plugins'}).alert, true);
 });
 
 function dataSheet(name, rows) {
@@ -278,6 +280,43 @@ test('disabled policy makes no public requests, writes or emails', () => {
   assert.equal(m.mails.length, 0);
 });
 
+
+test('source failures have bounded exponential retry delay and success does not use the cooldown', () => {
+  const s=load();
+  const source={adapter:'greenhouse',source_id:'greenhouse',account:'acme'};
+  const now=Date.parse('2026-11-17T00:00:00Z');
+  const state=new Map();
+  const props={getProperty(k) {return state.get(k) || null;}};
+  assert.equal(s.radarSourceDue_(source,now,props).ready,true);
+  const info=s.radarSourceDue_(source,now,props);
+  state.set(info.failAtKey,String(now));
+  state.set(info.failCountKey,'3'); // 60-minute cooldown
+  assert.equal(s.radarSourceDue_(source,now+15*60000,props).ready,false);
+  assert.equal(s.radarSourceDue_(source,now+59*60000,props).ready,false);
+  assert.equal(s.radarSourceDue_(source,now+60*60000,props).ready,true);
+  state.set(info.failAtKey,'0');
+  state.set(info.failCountKey,'0');
+  assert.equal(s.radarSourceDue_(source,now+60*60000,props).ready,true);
+  state.set(info.key,String(now+60*60000));
+  assert.equal(s.radarSourceDue_(source,now+65*60000,props).ready,false);
+  assert.equal(s.radarSourceDue_(source,now+75*60000,props).ready,true);
+});
+
+test('an idle 15-minute run is reported as no sources due, not a fresh successful poll', () => {
+  const m=mockRun('apps_script_15m_fastlane_and_on_demand_deep');
+  m.props.set('RADAR_SOURCE_SUCCESS_greenhouse_acme',String(Date.now()));
+  const result=m.s.runVacatureRadar();
+  assert.equal(result.status,'idle_no_sources_due');
+  assert.equal(result.configuredSources,1);
+  assert.equal(result.dueSources,0);
+  assert.equal(result.attemptedSources,0);
+  assert.equal(result.failedSources,0);
+  assert.equal(result.lastSourceFetchAt,'');
+  assert.equal(m.radar['Bronvondsten'].getLastRow(),1);
+  assert.equal(m.mails.length,0);
+  // GitHub spec manifest is retrieved once, but the source API is not polled.
+  assert.equal(m.fetches.filter(x=>x.includes('greenhouse.io')).length,0);
+});
 test('enabled discovery appends only a new, unverified lead and dedupes on re-run', () => {
   const m = mockRun('apps_script_15m_fastlane_and_on_demand_deep');
   const one = m.s.runVacatureRadar();
