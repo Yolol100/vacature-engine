@@ -145,6 +145,25 @@ test('Greenhouse accepts a bounded large board and falls back to official summar
   assert.equal(normal.radarHttp_('https://boards-api.greenhouse.io/test').length, 3900000);
 });
 
+
+test('Unix-second and Unix-millisecond publication dates are classified correctly', () => {
+  const s=load();
+  const now=Date.parse('2026-11-17T00:00:00Z');
+  const d=Date.parse('2026-11-15T00:00:00Z');
+  assert.equal(s.radarPublicationMs_(String(Math.trunc(d / 1000))), d);
+  assert.equal(s.radarPublicationMs_(String(d)), d);
+  assert.equal(s.radarPublicationMs_('2026-11-15T00:00:00Z'), d);
+  assert.ok(Number.isNaN(s.radarPublicationMs_('')));
+  assert.ok(Number.isNaN(s.radarPublicationMs_('abc')));
+  const base={publishedHint:String(Math.trunc(d / 1000)),
+    title:'WordPress Developer', location:'Remote - Netherlands',
+    description:'Build WordPress plugins'};
+  const result=s.radarReview_(base, {max_posting_age_days:'7'}, now);
+  assert.equal(result.status,'needs_official_review');
+  assert.equal(s.radarReview_({...base,publishedHint:'1792675549'},
+       {max_posting_age_days:'7'},now).status,'historical_review');
+});
+
 test('Only material WordPress and website roles pass the current role-family policy', () => {
   const s = load();
   assert.equal(s.radarRelevant_('Senior Systems Engineer', 'We host WordPress websites', ['wordpress_ecosystem']), false);
