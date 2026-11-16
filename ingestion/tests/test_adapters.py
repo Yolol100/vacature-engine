@@ -17,7 +17,7 @@ class AdapterTests(unittest.TestCase):
 
     def test_ashby_maps_published_remote_salary(self):
         spec = SourceSpec("ashby", "ats", "ashby", "Acme", "Acme")
-        row = {"id":"abc","title":"WordPress Engineer","location":"Remote","descriptionPlain":"Build WP","publishedAt":"2026-09-01T00:00:00Z","isRemote":True,"jobUrl":"https://jobs.ashbyhq.com/Acme/abc","compensation":{"scrapeableCompensationSalarySummary":"$80K - $100K","summaryComponents":[]}}
+        row = {"id":"abc","title":"WordPress Engineer","location":"Remote","descriptionPlain":"Build WP","publishedAt":"2026-09-01T00:00:00Z","isRemote":True,"workplaceType":"Remote","jobUrl":"https://jobs.ashbyhq.com/Acme/abc","compensation":{"scrapeableCompensationSalarySummary":"$80K - $100K","summaryComponents":[]}}
         out = ADAPTERS["ashby"].normalize_records([row], spec)[0]
         self.assertTrue(out["remote"])
         self.assertEqual(out["salary"]["summary"], "$80K - $100K")
