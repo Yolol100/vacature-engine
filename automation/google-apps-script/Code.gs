@@ -156,6 +156,20 @@ function radarSpecUrl_(spec) {
     case 'weworkremotely':
       return account === 'programming' ?
         'https://weworkremotely.com/categories/remote-programming-jobs.rss' : '';
+    case 'remoteok':
+      return account === 'global' ? 'https://remoteok.com/api' : '';
+    case 'himalayas':
+      return account === 'global' ?
+        'https://himalayas.app/jobs/api/search?q=wordpress&sort=recent&page=1' : '';
+    case 'jobicy':
+      return account === 'global' ?
+        'https://jobicy.com/api/v2/remote-jobs?count=100&tag=wordpress' : '';
+    case 'remotive':
+      return account === 'global' ?
+        'https://remotive.com/api/remote-jobs' : '';
+    case 'smartrecruiters':
+      return 'https://api.smartrecruiters.com/v1/companies/' +
+        encodeURIComponent(account) + '/postings?limit=100&offset=0&destination=PUBLIC';
     default:
       return '';
   }
@@ -169,13 +183,17 @@ function radarXmlChildText_(item, name) {
 function radarCandidates_(spec, raw) {
   var jobs = [];
   var adapter = spec.adapter;
-  if (['greenhouse', 'ashby', 'lever', 'workable'].indexOf(adapter) !== -1) {
+  if (['greenhouse', 'ashby', 'lever', 'workable', 'smartrecruiters',
+       'remoteok', 'himalayas', 'jobicy', 'remotive'].indexOf(adapter) !== -1) {
     var parsed = JSON.parse(raw);
-    if (adapter === 'lever') {
-      if (!Array.isArray(parsed)) throw new Error('Lever response is not an array');
+    if (adapter === 'lever' || adapter === 'remoteok') {
+      if (!Array.isArray(parsed)) throw new Error('Feed response is not an array');
       jobs = parsed;
+    } else if (adapter === 'smartrecruiters') {
+      jobs = parsed && (parsed.content || parsed.postings);
+      if (!Array.isArray(jobs)) throw new Error('SmartRecruiters response has no postings');
     } else {
-      if (!parsed || !Array.isArray(parsed.jobs)) throw new Error('ATS response has no jobs');
+      if (!parsed || !Array.isArray(parsed.jobs)) throw new Error('ATS/feed response has no jobs');
       jobs = parsed.jobs;
     }
   } else {
@@ -230,6 +248,38 @@ function radarCandidates_(spec, raw) {
       dateHint = job.published_on || ''; location = job.location && job.location.location_str;
       description = job.description || job.full_description;
       note = 'Workable public listing; original date and NL eligibility still unverified';
+    } else if (adapter === 'smartrecruiters') {
+      title = job.name || job.title; jobId = job.id || job.uuid;
+      // SmartRecruiters' "ref" is an API endpoint, NOT a verified application URL.
+      url = job.applyUrl || (jobId && 'https://jobs.smartrecruiters.com/' +
+        encodeURIComponent(spec.account) + '/' + encodeURIComponent(String(jobId)));
+      dateHint = job.releasedDate || job.publicationDate || '';
+      location = job.location && (job.location.city || job.location.country);
+      description = '';
+      note = 'SmartRecruiters listing only; review exact official job link';
+    } else if (adapter === 'remoteok') {
+      title = job.position; url = job.apply_url || job.url; jobId = job.id;
+      dateHint = job.date || ''; location = job.location || 'Remote';
+      description = job.description || ''; 
+      note = 'Remote OK aggregator: official employer role and date unverified';
+    } else if (adapter === 'himalayas') {
+      title = job.title; url = job.applicationLink; jobId = job.guid;
+      dateHint = job.pubDate || '';
+      location = Array.isArray(job.locationRestrictions) ?
+        job.locationRestrictions.map(function (v) { return typeof v === 'string' ? v : (v && v.name || ''); }).join(', ') :
+        'Worldwide';
+      description = job.description || ''; 
+      note = 'Himalayas discovery only: provider date may differ from first publish';
+    } else if (adapter === 'jobicy') {
+      title = job.jobTitle; url = job.url; jobId = job.id;
+      dateHint = job.pubDate || ''; location = job.jobGeo || 'Remote';
+      description = job.jobDescription || '';
+      note = 'Jobicy discovery only: employer confirmation required';
+    } else if (adapter === 'remotive') {
+      title = job.title; url = job.url; jobId = job.id;
+      dateHint = job.publication_date || ''; location = job.candidate_required_location || 'Remote';
+      description = job.description || '';
+      note = 'Remotive delayed discovery feed, employer date unverified';
     } else {
       title = job.title; url = job.url; jobId = job.id;
       dateHint = job.published || ''; location = job.office || '';
@@ -257,6 +307,33 @@ function radarCandidates_(spec, raw) {
  * Run by the authenticated user's installable 15-minute clock trigger.
  * Return new UNVERIFIED leads, not verified matches or applications.
  */
+function radarSourceDue_(spec, nowMs, properties) {
+  // Public aggregators update slowly; avoid repeated polling and wasted quota.
+  var cadenceMinutes = ({
+    'himalayas': 1440, 'remotive': 1440,
+    'jobicy': 120, 'remoteok': 60, 'weworkremotely': 60,
+    'wordpressjobs': 60, 'smartrecruiters': 60
+  })[spec.adapter] || 15;
+  var key = 'RADAR_SOURCE_SUCCESS_' + spec.source_id + '_' + spec.account;
+  var last = Number(properties.getProperty(key) || 0);
+  return {key: key, ready: !last || nowMs - last >= cadenceMinutes * 60000};
+}
+
+function radarUpdateDashboard_(radar, active, run) {
+  var dashboard = radar.getSheetByName('Dashboard');
+  if (!dashboard) return;
+  dashboard.getRange('B3').setValue(active ?
+    'Actief - Google Apps Script iedere 15 minuten' :
+    'Uitgeschakeld - nog geen automatische trigger');
+  if (run) {
+    dashboard.getRange('B10').setValue(run.at);
+    dashboard.getRange('B11').setValue(run.attemptedSources);
+    dashboard.getRange('B12').setValue(run.failedSources);
+    dashboard.getRange('B13').setValue(run.newLeads);
+    dashboard.getRange('B14').setValue(run.inspected);
+  }
+}
+
 function runVacatureRadar() {
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(2000)) return {status: 'busy'};
@@ -290,14 +367,24 @@ function runVacatureRadar() {
     });
     var now = new Date().toISOString();
     var additions = [], attempts = 0, failures = 0, inspected = 0;
-    for (var i = 0; i < sourceSpecs.length; i++) {
+    var props = PropertiesService.getScriptProperties();
+    var sourceDue = sourceSpecs.filter(function (spec) {
+      return radarSourceDue_(spec, started, props).ready;
+    });
+    var cursor = Math.max(0, Number(props.getProperty('VACATURE_RADAR_CURSOR') || 0) || 0);
+    if (sourceDue.length) {
+      cursor = cursor % sourceDue.length;
+      sourceDue = sourceDue.slice(cursor).concat(sourceDue.slice(0, cursor));
+    }
+    for (var i = 0; i < sourceDue.length; i++) {
       if (attempts >= VACATURE_RADAR.maxRequests ||
           Date.now() - started > VACATURE_RADAR.maxRuntimeMs) break;
-      var spec = sourceSpecs[i];
+      var spec = sourceDue[i];
       attempts++;
       try {
         var observations = radarCandidates_(spec, radarHttp_(radarSpecUrl_(spec)));
         inspected += observations.length;
+        props.setProperty(radarSourceDue_(spec, started, props).key, String(started));
         for (var j = 0; j < observations.length; j++) {
           var row = observations[j];
           if (!radarRelevant_(row.title, row.description, permittedFamily)) continue;
@@ -319,29 +406,44 @@ function runVacatureRadar() {
       }
       if (additions.length >= VACATURE_RADAR.maxNewRows) break;
     }
+    // Move the cursor past the attempted segment, even if a source failed.
+    if (sourceDue.length) {
+      props.setProperty('VACATURE_RADAR_CURSOR',
+        String((cursor + attempts) % sourceDue.length));
+    }
     if (additions.length) {
+      var needed = leads.getLastRow() + additions.length;
+      if (needed > leads.getMaxRows()) {
+        leads.insertRowsAfter(leads.getMaxRows(), needed - leads.getMaxRows());
+      }
       leads.getRange(leads.getLastRow() + 1, 1, additions.length, RADAR_LEAD_COLUMNS.length)
         .setValues(additions);
       SpreadsheetApp.flush();
-      var email = String(PropertiesService.getScriptProperties()
-        .getProperty('VACATURE_RADAR_ALERT_EMAIL') || '').trim();
+      var email = String(props.getProperty('VACATURE_RADAR_ALERT_EMAIL') ||
+        Session.getEffectiveUser().getEmail() || '').trim();
       if (email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
         var summary = additions.slice(0, 20).map(function (row) {
           return row[5] + ' - ' + row[6] + '\n' + row[7];
         }).join('\n\n');
-        MailApp.sendEmail({
-          to: email,
-          subject: 'Nieuwe vacaturekandidaten ter controle: ' + additions.length,
-          body: 'Nog NIET geverifieerd of sollicitatieklaar.\n\n' + summary +
-            '\n\nControleer originele datum, remote vanuit Nederland, talen en employer-ATS.' +
-            '\nRadar: https://docs.google.com/spreadsheets/d/' + VACATURE_RADAR.radarId
-        });
+        try {
+          MailApp.sendEmail({
+            to: email,
+            subject: 'Nieuwe vacaturekandidaten ter controle: ' + additions.length,
+            body: 'Nog NIET geverifieerd of sollicitatieklaar.\n\n' + summary +
+              '\n\nControleer originele datum, remote vanuit Nederland, talen en employer-ATS.' +
+              '\nRadar: https://docs.google.com/spreadsheets/d/' + VACATURE_RADAR.radarId
+          });
+        } catch (error) {
+          console.warn('Notification delivery failed (leads preserved): ' +
+            String(error && error.message || error).slice(0, 140));
+        }
       }
     }
     var result = {status: 'ok', newLeads: additions.length,
       inspected: inspected, attemptedSources: attempts, failedSources: failures,
-      incomplete: attempts < sourceSpecs.length, at: now};
-    PropertiesService.getScriptProperties().setProperty('VACATURE_RADAR_LAST_RUN', JSON.stringify(result));
+      incomplete: attempts < sourceDue.length, at: now};
+    props.setProperty('VACATURE_RADAR_LAST_RUN', JSON.stringify(result));
+    radarUpdateDashboard_(radar, true, result);
     return result;
   } finally {
     lock.releaseLock();
@@ -379,6 +481,7 @@ function enableVacatureRadar() {
   }
   radarTab_(register, 'Config').getRange(live.rows.ingestion_schedule, 2)
     .setValue(VACATURE_RADAR.allowedSchedule);
+  radarUpdateDashboard_(radar, true, null);
   SpreadsheetApp.flush();
   return {status: 'installed', intervalMinutes: 15, usesCloudflare: false};
 }
@@ -393,5 +496,6 @@ function disableVacatureRadar() {
     radarTab_(register, 'Config').getRange(live.rows.ingestion_schedule, 2)
       .setValue('on_demand_chatgpt_only');
   }
+  radarUpdateDashboard_(SpreadsheetApp.openById(VACATURE_RADAR.radarId), false, null);
   return {status: 'paused', dataPreserved: true};
 }
