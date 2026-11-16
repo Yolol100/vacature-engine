@@ -123,5 +123,59 @@ class ATSPrecisionTests(unittest.TestCase):
         self.assertTrue(client.url.startswith("https://api.lever.co/v0/postings/acme?"))
 
 
+    def test_greenhouse_can_enrich_one_wordpress_role_from_official_detail(self):
+        class Client:
+            def __init__(self):
+                self.urls = []
+
+            def get_json(self, url):
+                self.urls.append(url)
+                if url.endswith("?content=true"):
+                    return {"jobs": [
+                        {"id": 13, "title": "General Counsel",
+                         "absolute_url": "https://boards.greenhouse.io/acme/jobs/13"},
+                        {"id": 42, "title": "WordPress Developer",
+                         "absolute_url": "https://boards.greenhouse.io/acme/jobs/42",
+                         "updated_at": "2026-11-16T00:00:00Z"},
+                    ]}
+                if url.endswith("/jobs/42"):
+                    return {"id": 42, "first_published": "2026-11-01T00:00:00Z"}
+                raise AssertionError(f"Unexpected detail request: {url}")
+
+        spec = SourceSpec("greenhouse", "ats", "greenhouse", "acme",
+                          options={"original_date_detail_limit": 1})
+        client = Client()
+        rows = ADAPTERS["greenhouse"].fetch(client, spec)
+        self.assertEqual(len(client.urls), 2)
+        self.assertEqual(rows[1]["first_published"], "2026-11-01T00:00:00Z")
+        output = ADAPTERS["greenhouse"].normalize_records(rows, spec)[1]
+        self.assertEqual(output["source_metadata"]["first_published_evidence_source"],
+                         "official_job_detail")
+        self.assertEqual(output["published_at"], "2026-11-01T00:00:00Z")
+
+    def test_greenhouse_detail_mismatch_does_not_invent_date(self):
+        class Client:
+            def get_json(self, url):
+                if url.endswith("?content=true"):
+                    return {"jobs": [{"id": 42, "title": "WordPress Developer",
+                                     "absolute_url": "https://boards.greenhouse.io/acme/jobs/42"}]}
+                return {"id": 99, "first_published": "2026-11-16T00:00:00Z"}
+
+        spec = SourceSpec("greenhouse", "ats", "greenhouse", "acme",
+                          options={"original_date_detail_limit": 1})
+        rows = ADAPTERS["greenhouse"].fetch(Client(), spec)
+        self.assertIsNone(ADAPTERS["greenhouse"].normalize_records(rows, spec)[0]["published_at"])
+
+    def test_greenhouse_detail_limit_rejects_unbounded_requests(self):
+        class Client:
+            def get_json(self, url):
+                return {"jobs": []}
+
+        spec = SourceSpec("greenhouse", "ats", "greenhouse", "acme",
+                          options={"original_date_detail_limit": 999})
+        with self.assertRaisesRegex(ValueError, "original_date_detail_limit"):
+            ADAPTERS["greenhouse"].fetch(Client(), spec)
+
+
 if __name__ == "__main__":
     unittest.main()
