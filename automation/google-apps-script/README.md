@@ -19,9 +19,23 @@ vacature-register, geen betaalde provider.
   Remote OK, Himalayas, Jobicy en Remotive. Momenteel 22 technische
   broninstellingen van 26. De resterende actieve Register-bronnen blijven
   bestemd voor een **aparte volledige zoekopdracht** door \`vacature-search\`.
-- Maximaal 35 requests en 150 nieuwe kandidaten per run. Langzamere
-  aggregators worden minder vaak bevraagd. Een lege of falende bron is
-  **geen** bewijs dat er geen actuele vacatures zijn.
+- Maximaal 35 bronrondes en 150 nieuwe kandidaten per run. Langzamere
+  aggregators worden minder vaak bevraagd. Grote Greenhouse-JSON-antwoorden
+  zijn begrensd op 4,25 MB, met een officiële metadatafallback boven de limiet.
+  Workable gebruikt direct het openbare `apply.workable.com` widget-endpoint.
+  Een lege of falende bron is **geen** bewijs dat er geen actuele vacatures zijn.
+- `Bronvondsten.review_status` onderscheidt recent mogelijke remote-NL-kansen
+  (`needs_official_review`) van `historical_review`,
+  `date_unknown_review`, `remote_nl_unknown_review`,
+  `geography_restricted_review`, `not_fully_remote_review` en
+  `date_conflict_review`. Alle kandidaten blijven **ongeverifieerd**.
+  Alleen nieuwe recente kandidaten met plausibele volledige remote-NL-signalen
+  mogen een mailmelding opleveren. Oudere/missende datums worden bewaard, maar
+  niet als verse kansen gemeld. De actuele 7-dagenregel komt uit Config.
+- Het dashboard toont laatste scan, aantal gescande bronnen, fouten,
+  nieuw ontdekte kandidaten, bekeken vacatures, alert-kandidaten en
+  mislukte bron/accounts. De historische eerste 30 kandidaten blijven
+  behouden en worden niet automatisch heringedeeld.
 
 ## Eénmalige gebruikersstap: daadwerkelijk in Google installeren
 
