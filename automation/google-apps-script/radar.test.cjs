@@ -201,7 +201,10 @@ test('enabled discovery appends only a new, unverified lead and dedupes on re-ru
   assert.equal(m.radar['Bronvondsten'].getDataRange().getValues()[1][10], 'needs_official_review');
   assert.equal(m.register.Vacatures.getLastRow(), 1);
   assert.equal(m.register.Applications.getLastRow(), 1);
+  // Force the same provider to be fetched again, proving cross-run URL dedupe.
+  m.props.set('RADAR_SOURCE_SUCCESS_greenhouse_acme', '0');
   const two = m.s.runVacatureRadar();
+  assert.equal(two.attemptedSources, 1);
   assert.equal(two.newLeads, 0);
   assert.equal(m.radar['Bronvondsten'].getLastRow(), 2);
   assert.equal(m.mails.length, 0);
