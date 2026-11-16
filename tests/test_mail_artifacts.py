@@ -1,4 +1,5 @@
 """Synthetic regression tests for current CV bytes embedded in an unsent .eml."""
+import base64
 import unittest
 from email import policy
 from email.message import EmailMessage
@@ -130,3 +131,25 @@ class MailArtifactTests(unittest.TestCase):
         duplicated = raw.replace(b"X-Unsent: 1\n", b"X-Unsent: 1\nX-Unsent: 1\n", 1)
         with self.assertRaisesRegex(ValueError, "X-Unsent"):
             self.check(duplicated)
+
+    def test_multipart_docx_named_container_rejected(self):
+        msg = BytesParser(policy=policy.default).parsebytes(draft())
+        attached = EmailMessage()
+        attached.make_mixed()
+        attached.add_attachment(b"nested payload", maintype="application", subtype="octet-stream", filename="nested.bin")
+        attached.add_header("Content-Disposition", "attachment", filename="stale.docx")
+        msg.attach(attached)
+        with self.assertRaisesRegex(ValueError, "exactly one DOCX"):
+            self.check(msg.as_bytes())
+
+    def test_invalid_base64_characters_and_padding_fail_closed(self):
+        raw = draft()
+        encoded = base64.b64encode(CV)
+        self.assertIn(encoded, raw)
+        malformed = encoded[:8] + b"!" + encoded[8:]
+        with self.assertRaisesRegex(ValueError, "malformed MIME"):
+            self.check(raw.replace(encoded, malformed, 1))
+        self.assertTrue(encoded.endswith(b"="))
+        unpadded = encoded[:-1]
+        with self.assertRaisesRegex(ValueError, "malformed MIME"):
+            self.check(raw.replace(encoded, unpadded, 1))
