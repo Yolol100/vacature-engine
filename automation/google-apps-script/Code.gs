@@ -81,10 +81,20 @@ function radarRelevant_(title, description, family) {
     /\bweb\s?designer\b|\bfront.?end\b|\bwebsite\b|\bweb developer\b|\bweb ux\b/.test(t);
 }
 
+function radarPublicationMs_(hint) {
+  var text = String(hint == null ? '' : hint).trim();
+  if (!text) return NaN;
+  // Himalayas pubDate is Unix seconds. Also accept milliseconds only
+  // when the exact integer shape is present; don't guess other numbers.
+  if (/^\d{10}$/.test(text)) return Number(text) * 1000;
+  if (/^\d{13}$/.test(text)) return Number(text);
+  return Date.parse(text);
+}
+
 function radarReview_(job, config, nowMs) {
   var maxAge = Number(config.max_posting_age_days);
   if (!Number.isFinite(maxAge) || maxAge < 1 || maxAge > 90) maxAge = 7;
-  var published = Date.parse(String(job.publishedHint || ''));
+  var published = radarPublicationMs_(job.publishedHint);
   if (Number.isFinite(published) && published > nowMs + 86400000) {
     return {status: 'date_conflict_review', alert: false, reason: 'Future publication hint'};
   }
