@@ -115,7 +115,13 @@ function radarReview_(job, config, nowMs) {
     return {status: 'not_fully_remote_review', alert: false, reason: 'Location indicates hybrid/on-site'};
   }
   var remote = /\b(remote|fully remote|work from anywhere|distributed|thuiswerken|op afstand)\b/.test(geo);
-  var eligibleGeo = /\b(netherlands|nederland|dutch|europe|eu remote|emea|worldwide|global|anywhere|cet|cest)\b/.test(geo);
+  // Employer location and candidate geography take priority. A job
+  // description may mention Europe as a *customer market* while the
+  // role is restricted to Spain or another country.
+  var eligibleGeo = /\b(netherlands|nederland|europe|eu remote|emea|worldwide|global|anywhere)\b/.test(location);
+  if (!eligibleGeo && /^\s*remote\s*$/.test(location)) {
+    eligibleGeo = /\b(?:candidates?|applicants?|residents?|working from|hire|hiring)\b[\s\S]{0,60}\b(?:netherlands|nederland|europe|emea|worldwide|anywhere)\b/.test(geo);
+  }
   if (!remote || !eligibleGeo) {
     return {status: 'remote_nl_unknown_review', alert: false, reason: 'Full remote and NL eligibility still unverified'};
   }
@@ -378,8 +384,19 @@ function radarSourceDue_(spec, nowMs, properties) {
     'wordpressjobs': 60, 'smartrecruiters': 60
   })[spec.adapter] || 15;
   var key = 'RADAR_SOURCE_SUCCESS_' + spec.source_id + '_' + spec.account;
+  var failAtKey = 'RADAR_SOURCE_FAILURE_AT_' + spec.source_id + '_' + spec.account;
+  var failCountKey = 'RADAR_SOURCE_FAILURE_COUNT_' + spec.source_id + '_' + spec.account;
   var last = Number(properties.getProperty(key) || 0);
-  return {key: key, ready: !last || nowMs - last >= cadenceMinutes * 60000};
+  var lastFailed = Number(properties.getProperty(failAtKey) || 0);
+  var failCount = Math.max(0, Math.min(10, Number(properties.getProperty(failCountKey) || 0)));
+  // Exponential backoff up to 4 h for failed feeds; never hot-loop a
+  // repeatedly blocked/429 provider. The next healthy run resets the streak.
+  var backoff = failCount ? Math.min(240, 15 * Math.pow(2, Math.min(5, failCount - 1))) : 0;
+  return {
+    key: key, failAtKey: failAtKey, failCountKey: failCountKey,
+    ready: (!last || nowMs - last >= cadenceMinutes * 60000) &&
+      (!lastFailed || nowMs - lastFailed >= backoff * 60000)
+  };
 }
 
 function radarUpdateDashboard_(radar, active, run) {
@@ -396,6 +413,11 @@ function radarUpdateDashboard_(radar, active, run) {
     dashboard.getRange('B14').setValue(run.inspected);
     dashboard.getRange('B16').setValue(run.alertCandidates || 0);
     dashboard.getRange('B17').setValue((run.failedAccounts || []).join(', ') || '-');
+    dashboard.getRange('B19').setValue(run.status === 'idle_no_sources_due' ?
+      'In orde - deze ronde geen bronnen aan de beurt' : run.status);
+    dashboard.getRange('B20').setValue(run.lastSourceFetchAt || 'Nog geen broncontrole');
+    dashboard.getRange('B21').setValue(run.configuredSources);
+    dashboard.getRange('B22').setValue(run.dueSources);
   }
 }
 
@@ -450,7 +472,10 @@ function runVacatureRadar() {
       try {
         var observations = radarCandidates_(spec, radarFetchSource_(spec));
         inspected += observations.length;
-        props.setProperty(radarSourceDue_(spec, started, props).key, String(started));
+        var successKeys = radarSourceDue_(spec, started, props);
+        props.setProperty(successKeys.key, String(started));
+        props.setProperty(successKeys.failAtKey, '0');
+        props.setProperty(successKeys.failCountKey, '0');
         for (var j = 0; j < observations.length; j++) {
           var row = observations[j];
           if (!radarRelevant_(row.title, row.description, permittedFamily)) continue;
@@ -472,6 +497,10 @@ function runVacatureRadar() {
       } catch (error) {
         failures++;
         failedAccounts.push(String(spec.source_id) + '/' + String(spec.account));
+        var failKeys = radarSourceDue_(spec, started, props);
+        var count = Math.min(10, Number(props.getProperty(failKeys.failCountKey) || 0) + 1);
+        props.setProperty(failKeys.failAtKey, String(started));
+        props.setProperty(failKeys.failCountKey, String(count));
         console.warn('Source failed: ' + String(spec.source_id) + '/' +
           String(spec.account) +
           ' (' + String(error && error.message || error).slice(0, 120) + ')');
@@ -511,11 +540,17 @@ function runVacatureRadar() {
         }
       }
     }
-    var result = {status: 'ok', newLeads: additions.length,
+    if (attempts) props.setProperty('VACATURE_RADAR_LAST_SOURCE_FETCH_AT', now);
+    var result = {
+      status: sourceDue.length === 0 ? 'idle_no_sources_due' : 'ok',
+      newLeads: additions.length,
       inspected: inspected, attemptedSources: attempts, failedSources: failures,
+      configuredSources: sourceSpecs.length, dueSources: sourceDue.length,
+      lastSourceFetchAt: props.getProperty('VACATURE_RADAR_LAST_SOURCE_FETCH_AT') || '',
       alertCandidates: alerts.length, reviewCounts: reviewCounts,
       failedAccounts: failedAccounts,
-      incomplete: attempts < sourceDue.length, at: now};
+      incomplete: attempts < sourceDue.length, at: now
+    };
     props.setProperty('VACATURE_RADAR_LAST_RUN', JSON.stringify(result));
     radarUpdateDashboard_(radar, true, result);
     return result;
