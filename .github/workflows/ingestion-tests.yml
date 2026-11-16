@@ -9,6 +9,7 @@ on:
       - "tests/**"
       - "scripts/**"
       - "ingestion/**"
+      - "automation/**"
       - "pyproject.toml"
       - "README.md"
       - "CHANGELOG.md"
@@ -21,6 +22,17 @@ permissions:
   contents: read
 
 jobs:
+  apps-script-regression:
+    name: Apps Script V8 mock tests (no network)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Run offline vacancy radar regression tests
+        run: node --test automation/google-apps-script/radar.test.cjs
+
   python-regression:
     # Preserve the existing protected-branch context by actually running its
     # Python version, alongside the requested 3.11/3.13 coverage.
