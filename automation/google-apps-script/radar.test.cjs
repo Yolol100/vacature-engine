@@ -306,6 +306,14 @@ test('source failures have bounded exponential retry delay and success does not 
   assert.equal(s.radarSourceDue_(source,now+75*60000,props).ready,true);
 });
 
+test('a cooling-down source remains degraded while another source is due', () => {
+  const s=load();
+  assert.equal(s.radarRunStatus_(1,0,1),'degraded_source_cooldown');
+  assert.equal(s.radarRunStatus_(0,0,0),'idle_no_sources_due');
+  assert.equal(s.radarRunStatus_(1,0,0),'ok');
+  assert.equal(s.radarRunStatus_(0,1,0),'degraded_source_failures');
+});
+
 test('a source cooling down after repeated errors remains visibly degraded', () => {
   const m=mockRun('apps_script_15m_fastlane_and_on_demand_deep');
   const now=Date.now();
