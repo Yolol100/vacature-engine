@@ -402,6 +402,12 @@ function radarSourceDue_(spec, nowMs, properties) {
   };
 }
 
+function radarRunStatus_(dueCount, failureCount, coolingDownCount) {
+  if (failureCount) return 'degraded_source_failures';
+  if (coolingDownCount) return 'degraded_source_cooldown';
+  return dueCount === 0 ? 'idle_no_sources_due' : 'ok';
+}
+
 function radarUpdateDashboard_(radar, active, run) {
   var dashboard = radar.getSheetByName('Dashboard');
   if (!dashboard) return;
@@ -558,10 +564,7 @@ function runVacatureRadar() {
     }
     if (attempts) props.setProperty('VACATURE_RADAR_LAST_SOURCE_FETCH_AT', now);
     var result = {
-      status: failures ? 'degraded_source_failures' :
-        (sourceDue.length === 0 && coolingDownSources.length ?
-          'degraded_source_cooldown' :
-          (sourceDue.length === 0 ? 'idle_no_sources_due' : 'ok')),
+      status: radarRunStatus_(sourceDue.length, failures, coolingDownSources.length),
       newLeads: additions.length,
       inspected: inspected, attemptedSources: attempts, failedSources: failures,
       configuredSources: sourceSpecs.length, dueSources: sourceDue.length,
