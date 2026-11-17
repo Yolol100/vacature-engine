@@ -191,6 +191,9 @@ test('Past date, unknown date, US-only, hybrid and remote-Europe are distinct re
   assert.equal(check({publishedHint:'2026-11-19T00:00:00Z'}).status,'date_conflict_review');
   assert.equal(check({location:'Remote - Spain', description:'We serve customers across Europe and build WordPress plugins'}).status, 'remote_nl_unknown_review');
   assert.equal(check({location:'Remote - Netherlands', description:'Build WordPress plugins'}).alert, true);
+  assert.equal(check({location:'Remote',description:'You can be based anywhere in Europe'}).alert, true);
+  assert.equal(check({location:'Remote',description:'Work from anywhere in Europe'}).alert, true);
+  assert.equal(check({location:'Remote',description:'We work with customers in Europe'}).status,'remote_nl_unknown_review');
 });
 
 function dataSheet(name, rows) {
@@ -292,6 +295,7 @@ test('source failures have bounded exponential retry delay and success does not 
   state.set(info.failAtKey,String(now));
   state.set(info.failCountKey,'3'); // 60-minute cooldown
   assert.equal(s.radarSourceDue_(source,now+15*60000,props).ready,false);
+  assert.equal(s.radarSourceDue_(source,now+15*60000,props).coolingDown,true);
   assert.equal(s.radarSourceDue_(source,now+59*60000,props).ready,false);
   assert.equal(s.radarSourceDue_(source,now+60*60000,props).ready,true);
   state.set(info.failAtKey,'0');
@@ -300,6 +304,19 @@ test('source failures have bounded exponential retry delay and success does not 
   state.set(info.key,String(now+60*60000));
   assert.equal(s.radarSourceDue_(source,now+65*60000,props).ready,false);
   assert.equal(s.radarSourceDue_(source,now+75*60000,props).ready,true);
+});
+
+test('a source cooling down after repeated errors remains visibly degraded', () => {
+  const m=mockRun('apps_script_15m_fastlane_and_on_demand_deep');
+  const now=Date.now();
+  m.props.set('RADAR_SOURCE_FAILURE_AT_greenhouse_acme',String(now));
+  m.props.set('RADAR_SOURCE_FAILURE_COUNT_greenhouse_acme','3');
+  const result=m.s.runVacatureRadar();
+  assert.equal(result.status,'degraded_source_cooldown');
+  assert.equal(result.coolingDownSources[0],'greenhouse/acme');
+  assert.equal(result.attemptedSources,0);
+  assert.equal(result.failedSources,0);
+  assert.equal(m.fetches.filter(x=>x.includes('greenhouse.io')).length,0);
 });
 
 test('an idle 15-minute run is reported as no sources due, not a fresh successful poll', () => {
