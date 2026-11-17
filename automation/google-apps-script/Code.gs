@@ -120,7 +120,9 @@ function radarReview_(job, config, nowMs) {
   // role is restricted to Spain or another country.
   var eligibleGeo = /\b(netherlands|nederland|europe|eu remote|emea|worldwide|global|anywhere)\b/.test(location);
   if (!eligibleGeo && /^\s*remote\s*$/.test(location)) {
-    eligibleGeo = /\b(?:candidates?|applicants?|residents?|working from|hire|hiring)\b[\s\S]{0,60}\b(?:netherlands|nederland|europe|emea|worldwide|anywhere)\b/.test(geo);
+    var directEligibility = /\b(?:work|working)\s+from\s+anywhere\s+(?:in|within|across)\s+(?:the\s+)?(?:netherlands|nederland|europe|emea)\b|\b(?:you\s+can\s+be\s+)?based\s+anywhere\s+(?:in|within|across)\s+(?:the\s+)?(?:netherlands|nederland|europe|emea)\b|\b(?:work|working)\s+(?:from\s+)?(?:the\s+)?(?:netherlands|nederland|europe|emea)\b/.test(geo);
+    eligibleGeo = directEligibility ||
+      /\b(?:candidates?|applicants?|residents?|working from|hire|hiring)\b[\s\S]{0,60}\b(?:netherlands|nederland|europe|emea|worldwide|anywhere)\b/.test(geo);
   }
   if (!remote || !eligibleGeo) {
     return {status: 'remote_nl_unknown_review', alert: false, reason: 'Full remote and NL eligibility still unverified'};
@@ -392,10 +394,11 @@ function radarSourceDue_(spec, nowMs, properties) {
   // Exponential backoff up to 4 h for failed feeds; never hot-loop a
   // repeatedly blocked/429 provider. The next healthy run resets the streak.
   var backoff = failCount ? Math.min(240, 15 * Math.pow(2, Math.min(5, failCount - 1))) : 0;
+  var coolingDown = !!(failCount && lastFailed && nowMs - lastFailed < backoff * 60000);
   return {
     key: key, failAtKey: failAtKey, failCountKey: failCountKey,
-    ready: (!last || nowMs - last >= cadenceMinutes * 60000) &&
-      (!lastFailed || nowMs - lastFailed >= backoff * 60000)
+    coolingDown: coolingDown,
+    ready: (!last || nowMs - last >= cadenceMinutes * 60000) && !coolingDown
   };
 }
 
@@ -412,9 +415,14 @@ function radarUpdateDashboard_(radar, active, run) {
     dashboard.getRange('B13').setValue(run.newLeads);
     dashboard.getRange('B14').setValue(run.inspected);
     dashboard.getRange('B16').setValue(run.alertCandidates || 0);
-    dashboard.getRange('B17').setValue((run.failedAccounts || []).join(', ') || '-');
-    dashboard.getRange('B19').setValue(run.status === 'idle_no_sources_due' ?
-      'In orde - deze ronde geen bronnen aan de beurt' : run.status);
+    var problemSources = (run.failedAccounts || []).concat(run.coolingDownSources || []);
+    dashboard.getRange('B17').setValue(problemSources.join(', ') || '-');
+    var statusText = {
+      idle_no_sources_due: 'In orde - deze ronde geen bronnen aan de beurt',
+      degraded_source_cooldown: 'Probleem - bron(nen) wachten op herstart na fout',
+      degraded_source_failures: 'Probleem - een of meer broncontroles faalden'
+    }[run.status] || run.status;
+    dashboard.getRange('B19').setValue(statusText);
     dashboard.getRange('B20').setValue(run.lastSourceFetchAt || 'Nog geen broncontrole');
     dashboard.getRange('B21').setValue(run.configuredSources);
     dashboard.getRange('B22').setValue(run.dueSources);
@@ -456,9 +464,17 @@ function runVacatureRadar() {
     var additions = [], alerts = [], attempts = 0, failures = 0, inspected = 0;
     var reviewCounts = {}, failedAccounts = [];
     var props = PropertiesService.getScriptProperties();
-    var sourceDue = sourceSpecs.filter(function (spec) {
-      return radarSourceDue_(spec, started, props).ready;
+    var sourceReadiness = sourceSpecs.map(function (spec) {
+      return {spec: spec, state: radarSourceDue_(spec, started, props)};
     });
+    var coolingDownSources = sourceReadiness.filter(function (entry) {
+      return entry.state.coolingDown;
+    }).map(function (entry) {
+      return String(entry.spec.source_id) + '/' + String(entry.spec.account);
+    });
+    var sourceDue = sourceReadiness.filter(function (entry) {
+      return entry.state.ready;
+    }).map(function (entry) { return entry.spec; });
     var cursor = Math.max(0, Number(props.getProperty('VACATURE_RADAR_CURSOR') || 0) || 0);
     if (sourceDue.length) {
       cursor = cursor % sourceDue.length;
@@ -542,10 +558,14 @@ function runVacatureRadar() {
     }
     if (attempts) props.setProperty('VACATURE_RADAR_LAST_SOURCE_FETCH_AT', now);
     var result = {
-      status: sourceDue.length === 0 ? 'idle_no_sources_due' : 'ok',
+      status: failures ? 'degraded_source_failures' :
+        (sourceDue.length === 0 && coolingDownSources.length ?
+          'degraded_source_cooldown' :
+          (sourceDue.length === 0 ? 'idle_no_sources_due' : 'ok')),
       newLeads: additions.length,
       inspected: inspected, attemptedSources: attempts, failedSources: failures,
       configuredSources: sourceSpecs.length, dueSources: sourceDue.length,
+      coolingDownSources: coolingDownSources,
       lastSourceFetchAt: props.getProperty('VACATURE_RADAR_LAST_SOURCE_FETCH_AT') || '',
       alertCandidates: alerts.length, reviewCounts: reviewCounts,
       failedAccounts: failedAccounts,
