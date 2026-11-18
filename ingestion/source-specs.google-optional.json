@@ -9,10 +9,10 @@
     "retries": 0,
     "options": {
       "queries": [
-        "site:jobs.ashbyhq.com WordPress remote",
-        "site:job-boards.greenhouse.io WooCommerce remote",
-        "site:jobs.lever.co web developer remote",
-        "AI workflow automation engineer remote Europe"
+        "site:jobs.wordpress.net/job WordPress Developer WooCommerce Elementor remote",
+        "(site:jobs.ashbyhq.com OR site:job-boards.greenhouse.io) (WordPress OR WooCommerce) (remote OR Netherlands OR Europe OR EMEA)",
+        "(site:jobs.lever.co OR site:apply.workable.com) (WordPress OR WooCommerce) (remote OR Netherlands OR Europe OR EMEA)",
+        "(\"Elementor Developer\" OR \"WordPress Support\" OR \"WordPress Web Designer\") (remote OR Netherlands OR Europe OR EMEA)"
       ],
       "max_pages": 10,
       "max_requests_per_run": 12,
