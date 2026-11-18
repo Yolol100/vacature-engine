@@ -178,10 +178,10 @@ function radarConfig_(register) {
   return { config: config, rows: position };
 }
 
-function radarHttp_(url) {
+function radarHttp_(url, allowRedirects) {
   var response = UrlFetchApp.fetch(url, {
     muteHttpExceptions: true,
-    followRedirects: false,
+    followRedirects: allowRedirects === true,
     headers: {Accept: 'application/json, application/rss+xml, application/xml, text/xml'}
   });
   if (response.getResponseCode() !== 200) throw new Error('Source HTTP ' + response.getResponseCode());
@@ -196,7 +196,9 @@ function radarFetchSource_(spec) {
   var url = radarSpecUrl_(spec);
   if (!url) throw new Error('Unsupported approved source');
   try {
-    return radarHttp_(url);
+    // Workable's official public endpoint redirects to its hosted jobs widget.
+    // Follow that redirect only for this provider; keep other feeds strict.
+    return radarHttp_(url, spec.adapter === 'workable');
   } catch (error) {
     if (spec.adapter !== 'greenhouse' ||
         !/Source response exceeds safety budget/.test(String(error))) throw error;
