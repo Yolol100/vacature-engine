@@ -118,6 +118,23 @@ test('Workable uses the official public careers API endpoint', () => {
   );
 });
 
+test('only Workable follows its official careers endpoint redirect', () => {
+  const options = [];
+  const s = load({UrlFetchApp:{fetch(url, opts) {
+    options.push({url, opts});
+    return {
+      getResponseCode() {return 200;},
+      getContentText() {return JSON.stringify({jobs:[]});}
+    };
+  }}});
+  s.radarFetchSource_({adapter:'workable',account:'humanmade'});
+  s.radarFetchSource_({adapter:'greenhouse',account:'acme'});
+  assert.equal(options[0].url,
+    'https://www.workable.com/api/accounts/humanmade?details=true');
+  assert.equal(options[0].opts.followRedirects, true);
+  assert.equal(options[1].opts.followRedirects, false);
+});
+
 test('Greenhouse accepts a bounded large board and falls back to official summary only above cap', () => {
   const reqs = [];
   const ctx = load({
