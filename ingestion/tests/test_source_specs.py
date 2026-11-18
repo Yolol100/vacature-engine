@@ -64,5 +64,16 @@ class SourceSpecTests(unittest.TestCase):
         self.assertEqual(1, len(google))
         self.assertEqual("google-jobs", google[0].get("source_id"))
 
+    def test_google_queries_target_wordpress_roles_only(self):
+        google = _load("source-specs.google-optional.json")
+        options = google[0].get("options", {})
+        queries = options.get("queries", [])
+        self.assertEqual(4, len(queries))
+        combined = "\n".join(queries).casefold()
+        self.assertIn("woocommerce", combined)
+        self.assertIn("elementor", combined)
+        self.assertIn("wordpress support", combined)
+        self.assertNotIn("ai workflow automation", combined)
+
 if __name__ == "__main__":
     unittest.main()
