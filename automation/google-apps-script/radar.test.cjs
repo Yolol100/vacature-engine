@@ -106,15 +106,15 @@ test('supported non-ATS discovery feeds produce only observations', () => {
 });
 
 
-test('Workable uses confirmed public widget endpoint directly (no HTTP 302)', () => {
+test('Workable uses the official public careers API endpoint', () => {
   const s = load();
   assert.equal(
     s.radarSpecUrl_({adapter:'workable',account:'humanmade'}),
-    'https://apply.workable.com/api/v1/widget/accounts/humanmade?details=true'
+    'https://www.workable.com/api/accounts/humanmade?details=true'
   );
   assert.equal(
     s.radarSpecUrl_({adapter:'workable',account:'awesomemotive'}),
-    'https://apply.workable.com/api/v1/widget/accounts/awesomemotive?details=true'
+    'https://www.workable.com/api/accounts/awesomemotive?details=true'
   );
 });
 

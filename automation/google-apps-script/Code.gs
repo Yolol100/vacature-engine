@@ -218,7 +218,7 @@ function radarSpecUrl_(spec) {
       var region = spec.options && spec.options.api_region === 'eu' ? 'api.eu.lever.co' : 'api.lever.co';
       return 'https://' + region + '/v0/postings/' + encodeURIComponent(account) + '?mode=json&limit=100';
     case 'workable':
-      return 'https://apply.workable.com/api/v1/widget/accounts/' + encodeURIComponent(account) + '?details=true';
+      return 'https://www.workable.com/api/accounts/' + encodeURIComponent(account) + '?details=true';
     case 'personio':
       return 'https://' + account + '.jobs.personio.com/xml?language=en';
     case 'wordpressjobs':
