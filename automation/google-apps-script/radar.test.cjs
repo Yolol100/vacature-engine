@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const code = fs.readFileSync(path.join(__dirname, 'Code.gs'), 'utf8');
 function load(extras = {}) {
-  const sandbox = vm.createContext({console: {warn() {}}, ...extras});
+  const sandbox = vm.createContext({console: {warn() {}, info() {}}, ...extras});
   vm.runInContext(code, sandbox, {filename: 'Code.gs', timeout: 2000});
   return sandbox;
 }
@@ -498,4 +498,36 @@ test('a new recent remote NL lead uses the radar alert and is not emailed again'
   m.props.set('RADAR_SOURCE_SUCCESS_greenhouse_acme', '0');
   assert.equal(m.s.runVacatureRadar().alertCandidates, 0);
   assert.equal(m.mails.length, 1);
+});
+
+test('Servebolt RSS is pinned to its official employer source', () => {
+  const s = load();
+  const spec = {source_id:'teamtailor', source_type:'ats', adapter:'teamtailor', account:'servebolt',
+    endpoint:'https://careers.servebolt.com/jobs.rss', options:{registry_source_id:'company-servebolt'}};
+  assert.equal(s.radarSpecUrl_(spec), spec.endpoint);
+  assert.equal(s.radarSpecUrl_({...spec, endpoint:'https://elsewhere.example/jobs.rss'}), '');
+  assert.equal(s.radarSpecUrl_({...spec, options:{registry_source_id:'company-other'}}), '');
+  assert.throws(() => s.radarCandidates_(spec, '<!DOCTYPE rss><rss/>'), /declaration/);
+});
+
+test('Servebolt RSS keeps the official job ID and never guesses a remote country', () => {
+  const item = fields => ({getChild(name) {
+    return Object.hasOwn(fields, name) ? {getText() {return fields[name];}} : null;
+  }});
+  const rows = [
+    item({title:'WordPress Developer', link:'https://careers.servebolt.com/jobs/123-wordpress-developer',
+          remoteStatus:'fully', pubDate:'Wed, 18 Nov 2026 16:02:43 +0100'}),
+    item({title:'WordPress Developer', link:'https://careers.servebolt.com/jobs/124-wordpress-developer',
+          remoteStatus:'hybrid'}),
+    item({title:'WordPress Developer', link:'https://elsewhere.example/jobs/125-wordpress-developer'}),
+  ];
+  const s = load({XmlService:{parse() {return {getRootElement() {
+    return {getChild(name) {return name === 'channel' ? {getChildren() {return rows;}} : null;}};
+  }};}}});
+  const spec = {source_id:'teamtailor', source_type:'ats', adapter:'teamtailor', account:'servebolt'};
+  const result = s.radarCandidates_(spec, '<rss/>');
+  assert.equal(result.length, 1);
+  assert.equal(result[0].jobId, 'servebolt:123');
+  assert.equal(result[0].location, 'Remote');
+  assert.equal(s.radarReview_(result[0], {max_posting_age_days:7}, Date.parse('2026-11-19')).alert, false);
 });

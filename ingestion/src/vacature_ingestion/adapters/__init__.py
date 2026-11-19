@@ -10,6 +10,7 @@ from .remoteok import RemoteOkAdapter
 from .serpapi_google import SerpApiGoogleAdapter
 from .remotive import RemotiveAdapter
 from .smartrecruiters import SmartRecruitersAdapter
+from .teamtailor import TeamtailorAdapter
 from .weworkremotely import WeWorkRemotelyAdapter
 from .wordpressjobs import WordPressJobsAdapter
 from .workable import WorkableAdapter
@@ -27,6 +28,7 @@ ADAPTERS = {
     "serpapi_google": SerpApiGoogleAdapter(),
     "remotive": RemotiveAdapter(),
     "smartrecruiters": SmartRecruitersAdapter(),
+    "teamtailor": TeamtailorAdapter(),
     "weworkremotely": WeWorkRemotelyAdapter(),
     "wordpressjobs": WordPressJobsAdapter(),
     "workable": WorkableAdapter(),
