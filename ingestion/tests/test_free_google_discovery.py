@@ -256,12 +256,23 @@ class FreeDiscoveryTests(unittest.TestCase):
     def test_chatgpt_only_discovery_not_in_github_actions(self):
         root = Path(__file__).resolve().parents[2]
         workflow_files = sorted(p.name for p in (root / ".github/workflows").glob("*.yml"))
-        self.assertEqual(["ingestion-tests.yml"], workflow_files)
+        # GitHub may inspect/sync an existing script's source, but may never
+        # start Google discovery or create a second vacancy scheduler.
+        self.assertEqual(
+            ["ingestion-tests.yml", "vacature-radar-script-sync.yml"], workflow_files
+        )
         ci = (root / ".github/workflows/ingestion-tests.yml").read_text(encoding="utf-8")
         self.assertIn("pull_request:", ci)
         self.assertIn("contents: read", ci)
         self.assertNotIn("schedule:", ci)
         self.assertNotIn("one_pass_vacancies.py", ci)
+        sync = (root / ".github/workflows/vacature-radar-script-sync.yml").read_text(encoding="utf-8")
+        self.assertIn("workflow_dispatch:", sync)
+        self.assertIn("vars.VACATURE_RADAR_AUTO_DEPLOY == 'true'", sync)
+        self.assertIn("RADAR_EXPECTED_LIVE_SHA256", sync)
+        self.assertNotIn("schedule:", sync)
+        self.assertNotIn("one_pass_vacancies.py", sync)
+        self.assertNotIn("runVacatureRadar", sync)
 
     @patch("vacature_ingestion.adapters.serpapi_google._get_json")
     def test_repeating_query_terms_do_not_spend_extra_requests(self, get):
