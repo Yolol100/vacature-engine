@@ -17,6 +17,10 @@ on:
         description: Required for deploy (copy the live SHA256 from a fresh inspect run)
         required: false
         type: string
+      expected_github_sha256:
+        description: Required for deploy (copy the GitHub SHA256 from the same inspect run)
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -52,24 +56,39 @@ jobs:
           BEFORE_SHA: ${{ github.event.before }}
           USER_MODE: ${{ inputs.operation }}
           USER_EXPECTED_SHA: ${{ inputs.expected_live_sha256 }}
+          USER_EXPECTED_GITHUB_SHA: ${{ inputs.expected_github_sha256 }}
         run: |
           set -euo pipefail
           if [[ "$EVENT_NAME" == "push" ]]; then
-            # The old main file must match live; otherwise a push is blocked.
-            if ! [[ "$BEFORE_SHA" =~ ^[a-f0-9]{40}$ ]] || [[ "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
-              echo "BLOCKED: missing previous main commit"; exit 1
+            # GitHub may replace a pending workflow run. Any first-parent
+            # predecessor is valid only if its scanner code matches live.
+            # This accepts skipped intermediate pushes but rejects editor drift.
+            approved=""
+            mapfile -t revisions < <(git rev-list --first-parent --max-count=100 HEAD)
+            for commit in "${revisions[@]:1}"; do
+              if git cat-file -e "$commit:automation/google-apps-script/Code.gs" 2>/dev/null; then
+                digest="$(git show "$commit:automation/google-apps-script/Code.gs" | sha256sum | cut -d ' ' -f 1)"
+                approved="${approved:+$approved,}$digest"
+              fi
+            done
+            if [[ -z "$approved" ]]; then
+              echo "BLOCKED: no known prior main code hash"; exit 1
             fi
-            git show "$BEFORE_SHA:automation/google-apps-script/Code.gs" > "$RUNNER_TEMP/radar-previous.gs"
-            expected="$(sha256sum "$RUNNER_TEMP/radar-previous.gs" | cut -d ' ' -f 1)"
             echo "RADAR_SYNC_MODE=deploy" >> "$GITHUB_ENV"
-            echo "RADAR_EXPECTED_LIVE_SHA256=$expected" >> "$GITHUB_ENV"
+            echo "RADAR_APPROVED_LIVE_SHA256S=$approved" >> "$GITHUB_ENV"
+            echo "RADAR_EXPECTED_GITHUB_SHA256=$(sha256sum automation/google-apps-script/Code.gs | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
           elif [[ "$USER_MODE" == "inspect" ]]; then
             echo "RADAR_SYNC_MODE=inspect" >> "$GITHUB_ENV"
-          elif [[ "$USER_MODE" == "deploy" && "$USER_EXPECTED_SHA" =~ ^[a-f0-9]{64}$ ]]; then
+          elif [[ "$USER_MODE" == "deploy" && "$USER_EXPECTED_SHA" =~ ^[a-f0-9]{64}$ && "$USER_EXPECTED_GITHUB_SHA" =~ ^[a-f0-9]{64}$ ]]; then
+            actual_github="$(sha256sum automation/google-apps-script/Code.gs | cut -d ' ' -f 1)"
+            if [[ "$USER_EXPECTED_GITHUB_SHA" != "$actual_github" ]]; then
+              echo "BLOCKED: reviewed GitHub code changed since inspect"; exit 1
+            fi
             echo "RADAR_SYNC_MODE=deploy" >> "$GITHUB_ENV"
             echo "RADAR_EXPECTED_LIVE_SHA256=$USER_EXPECTED_SHA" >> "$GITHUB_ENV"
+            echo "RADAR_EXPECTED_GITHUB_SHA256=$USER_EXPECTED_GITHUB_SHA" >> "$GITHUB_ENV"
           else
-            echo "BLOCKED: deploy requires a 64-character inspected live SHA256"; exit 1
+            echo "BLOCKED: deploy requires both inspected live and GitHub SHA256 values"; exit 1
           fi
       - name: Inspect or synchronize existing bound project (never create triggers)
         env:
