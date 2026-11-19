@@ -23,7 +23,11 @@ test('idle trigger preserves the last real scan counts and records trigger separ
   const s = load();
   const writes = {};
   const radar = {getSheetByName() {return {getRange(cell) {
-    return {setValue(value) {writes[cell] = value;}};
+    return {
+      setValue(value) {writes[cell] = value;},
+      getValue() {return cell === 'B29' ? 11 : '';},
+      setValues(value) {writes[cell] = value;}
+    };
   }};}};
   s.radarUpdateDashboard_(radar, true, {
     at: '2026-11-19T11:00:00.000Z', attemptedSources: 0,
@@ -32,12 +36,14 @@ test('idle trigger preserves the last real scan counts and records trigger separ
     configuredSources: 20, dueSources: 0, lastSourceFetchAt: '2026-11-19T10:50:00.000Z'
   }, {});
   assert.equal(writes.B10, '2026-11-19T11:00:00.000Z');
-  assert.equal(writes.B19, 'In orde - trigger gedraaid, geen bronnen aan de beurt');
+  assert.equal(writes.B19, 'Geen bronnen aan de beurt bij deze uitvoering');
   for (const cell of ['B11','B12','B13','B14','B16','B17','B20','B22']) {
     assert.equal(Object.hasOwn(writes, cell), false, cell);
   }
-  assert.equal(writes.A10, 'Laatste triggeruitvoering (UTC)');
+  assert.equal(writes.A10, 'Laatste uitvoering (UTC)');
   assert.equal(writes.B23, 0);
+  assert.equal(writes['A28:B34'][1][1], 11);
+  assert.equal(writes['A28:B34'][6][1], 'Handmatig');
 });
 
 test('application dashboard metrics exclude test records', () => {
@@ -50,17 +56,24 @@ test('application dashboard metrics exclude test records', () => {
       if (name === 'Applications') return sheet([
         ['vacancy_id','status'],
         ['real-ready','prepared_cv_ready'], ['real-submitted','submitted'],
-        ['real-rejected','rejected'], ['test:ready','prepared_cv_ready']
+        ['real-rejected','rejected'], ['test:ready','prepared_cv_ready'],
+        ['real-applied','applied'], ['history:applied','applied']
       ]);
       if (name === 'ApplicationEvents') return sheet([
-        ['vacancy_id','event_type'],
-        ['real-reply','employer_reply'], ['test:reply','employer_reply']
+        ['event_id','vacancy_id','event_type'],
+        ['reply-1','real-reply','employer_reply'], ['reply-1','real-reply','employer_reply'],
+        ['reply-2','test:reply','employer_reply'],
+        ['submitted-1','real-applied','submitted'],
+        ['submitted-2','real-rejected','submitted']
+      ]);
+      if (name === 'Vacatures') return sheet([
+        ['vacancy_id','status'], ['real-closed','closed'], ['history:closed','closed']
       ]);
       throw new Error('Unexpected sheet: ' + name);
     }
   };
   assert.deepEqual(JSON.parse(JSON.stringify(s.radarApplicationMetrics_(register))), {
-    readyPackages: 1, submitted: 1, replies: 1, interviews: 0, closedOrRejected: 1
+    readyPackages: 1, submitted: 3, replies: 1, interviews: 0, closedOrRejected: 1, closedVacancies: 1
   });
 });
 
@@ -266,6 +279,11 @@ function dataSheet(name, rows) {
     getMaxRows() {return 1500;},
     insertRowsAfter() {throw new Error('Unexpected sheet enlargement');},
     getRange(a, b, c, d) {
+      if (typeof a === 'string') {
+        const cell = a.match(/^([AB])(\d+)/);
+        b = cell[1] === 'A' ? 1 : 2;
+        a = Number(cell[2]);
+      }
       return {
         getValue() {return rows[a - 1]?.[b - 1] || '';},
         setValue(v) {
@@ -283,7 +301,7 @@ function dataSheet(name, rows) {
     }
   };
 }
-function mockRun(schedule) {
+function mockRun(schedule, jobOverrides = {}) {
   const cols = ['candidate_key','first_seen_utc','last_seen_utc','source_id',
     'source_job_id','employer','title','official_or_board_url','published_hint',
     'location','review_status','source_type','review_note'];
@@ -313,7 +331,8 @@ function mockRun(schedule) {
     LockService: {getScriptLock() {return {tryLock() {return true;}, releaseLock() {}};}},
     PropertiesService: {getScriptProperties() {return {
       getProperty(k) {return props.get(k) || null;},
-      setProperty(k, v) {props.set(k, String(v));}
+      setProperty(k, v) {props.set(k, String(v));},
+      deleteProperty(k) {props.delete(k);}
     };}},
     UrlFetchApp: {fetch(url) {
       fetches.push(url);
@@ -324,7 +343,7 @@ function mockRun(schedule) {
         raw = JSON.stringify({jobs:[{
           id:1,title:'WordPress Developer',
           absolute_url:'https://boards.greenhouse.io/acme/jobs/1?utm_source=radar',
-          first_published:'2026-11-15T00:00:00Z'
+          first_published:'2026-11-15T00:00:00Z', ...jobOverrides
         }]});
       } else {
         throw new Error('Unexpected request: ' + url);
@@ -416,10 +435,67 @@ test('enabled discovery appends only a new, unverified lead and dedupes on re-ru
   assert.equal(m.register.Applications.getLastRow(), 1);
   // Force the same provider to be fetched again, proving cross-run URL dedupe.
   m.props.set('RADAR_SOURCE_SUCCESS_greenhouse_acme', '0');
-  const two = m.s.runVacatureRadar();
+  const two = m.s.runVacatureRadar({triggerUid: 'schedule'});
+  assert.equal(two.triggered, true);
+  assert.equal(two.lastTriggerAt, two.at);
+  assert.equal(two.lastSourceSuccessAt, two.at);
   assert.equal(two.attemptedSources, 1);
   assert.equal(two.newLeads, 0);
   assert.equal(m.radar['Bronvondsten'].getLastRow(), 2);
   assert.equal(m.mails.length, 0);
   assert.equal(m.props.get('VACATURE_RADAR_LAST_RUN') !== undefined, true);
+});
+
+test('rate-limit responses keep the provider Retry-After delay', () => {
+  const s = load({UrlFetchApp: {fetch() {
+    return {getResponseCode() {return 429;}, getAllHeaders() {return {'Retry-After': '1800'};}};
+  }}});
+  const now = Date.now();
+  assert.throws(() => s.radarFetchSource_({adapter:'workable', account:'humanmade'}), error =>
+    /429/.test(error.message) && error.retryAt >= now + 1800000);
+  assert.equal(s.radarRetryAfterMs_({'retry-after': 'Thu, 19 Nov 2026 11:00:00 GMT'},
+    Date.parse('2026-11-19T10:00:00Z')), Date.parse('2026-11-19T11:00:00Z'));
+  const state = new Map();
+  const props = {getProperty(k) {return state.get(k) || null;}};
+  const spec = {adapter:'workable', source_id:'workable', account:'humanmade'};
+  const keys = s.radarSourceDue_(spec, now, props);
+  state.set(keys.retryAtKey, String(now + 1800000));
+  assert.equal(s.radarSourceDue_(spec, now + 900000, props).ready, false);
+  assert.equal(s.radarSourceDue_(spec, now + 1800000, props).ready, true);
+});
+
+test('Himalayas missing geography does not imply worldwide eligibility', () => {
+  const s = load();
+  const rows = s.radarCandidates_({adapter:'himalayas', source_id:'himalayas', account:'global'},
+    JSON.stringify({jobs:[{guid:'x', title:'WordPress Developer', pubDate:1795000000,
+      description:'Remote work with CET hours on a contractor contract.',
+      applicationLink:'https://himalayas.app/jobs/wp-dev'}]}));
+  assert.equal(rows[0].location, '');
+  assert.equal(s.radarPublicationMs_(rows[0].publishedHint), 1795000000000);
+  assert.equal(s.radarReview_(rows[0], {max_posting_age_days:7}, 1795000000000).alert, false);
+});
+
+test('Workable public job locations never turn Remote Spain into remote Netherlands', () => {
+  const s = load();
+  const rows = s.radarCandidates_({adapter:'workable', source_id:'workable', account:'acme'},
+    JSON.stringify({jobs:[{shortcode:'x', title:'WordPress Developer', published_on:'2026-11-18',
+      telecommuting:true, locations:[{country:'Spain'}],
+      url:'https://apply.workable.com/j/x'}]}));
+  assert.equal(rows[0].location, 'Remote - Spain');
+  assert.equal(s.radarReview_(rows[0], {max_posting_age_days:7}, Date.parse('2026-11-19')).alert, false);
+});
+
+test('a new recent remote NL lead uses the radar alert and is not emailed again', () => {
+  const m = mockRun('apps_script_15m_fastlane_and_on_demand_deep', {
+    first_published: new Date().toISOString(), location: {name:'Remote - Netherlands'}
+  });
+  m.props.set('VACATURE_RADAR_ALERT_EMAIL', 'radar@example.com');
+  const first = m.s.runVacatureRadar();
+  assert.equal(first.alertCandidates, 1);
+  assert.equal(m.mails.length, 1);
+  assert.equal(m.mails[0].to, 'radar@example.com');
+  assert.match(m.mails[0].body, /NIET geverifieerd/);
+  m.props.set('RADAR_SOURCE_SUCCESS_greenhouse_acme', '0');
+  assert.equal(m.s.runVacatureRadar().alertCandidates, 0);
+  assert.equal(m.mails.length, 1);
 });

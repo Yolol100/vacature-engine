@@ -22,7 +22,7 @@ vacature-register, geen betaalde provider.
 - Maximaal 35 bronrondes en 150 nieuwe kandidaten per run. Langzamere
   aggregators worden minder vaak bevraagd. Grote Greenhouse-JSON-antwoorden
   zijn begrensd op 4,25 MB, met een officiële metadatafallback boven de limiet.
-  Workable gebruikt direct het openbare `apply.workable.com` widget-endpoint.
+  Workable gebruikt het gedocumenteerde openbare `www.workable.com/api/accounts/…` endpoint en volgt de redirect van Workable. Bij HTTP 429 of 503 houdt de radar rekening met `Retry-After` en de bestaande wachttijd.
   Een lege of falende bron is **geen** bewijs dat er geen actuele vacatures zijn.
 - `Bronvondsten.review_status` onderscheidt recent mogelijke remote-NL-kansen
   (`needs_official_review`) van `historical_review`,
