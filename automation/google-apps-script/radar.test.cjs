@@ -19,6 +19,51 @@ test('Apps Script code parses in V8 without executing a schedule', () => {
   assert.equal(typeof ctx.disableVacatureRadar, 'function');
 });
 
+test('idle trigger preserves the last real scan counts and records trigger separately', () => {
+  const s = load();
+  const writes = {};
+  const radar = {getSheetByName() {return {getRange(cell) {
+    return {setValue(value) {writes[cell] = value;}};
+  }};}};
+  s.radarUpdateDashboard_(radar, true, {
+    at: '2026-11-19T11:00:00.000Z', attemptedSources: 0,
+    failedSources: 0, newLeads: 0, inspected: 0, alertCandidates: 0,
+    failedAccounts: [], coolingDownSources: [], status: 'idle_no_sources_due',
+    configuredSources: 20, dueSources: 0, lastSourceFetchAt: '2026-11-19T10:50:00.000Z'
+  }, {});
+  assert.equal(writes.B10, '2026-11-19T11:00:00.000Z');
+  assert.equal(writes.B19, 'In orde - trigger gedraaid, geen bronnen aan de beurt');
+  for (const cell of ['B11','B12','B13','B14','B16','B17','B20','B22']) {
+    assert.equal(Object.hasOwn(writes, cell), false, cell);
+  }
+  assert.equal(writes.A10, 'Laatste triggeruitvoering (UTC)');
+  assert.equal(writes.B23, 0);
+});
+
+test('application dashboard metrics exclude test records', () => {
+  const s = load();
+  function sheet(rows) {return {getName() {return 'mock';}, getDataRange() {
+    return {getValues() {return rows;}};
+  }};}
+  const register = {
+    getSheetByName(name) {
+      if (name === 'Applications') return sheet([
+        ['vacancy_id','status'],
+        ['real-ready','prepared_cv_ready'], ['real-submitted','submitted'],
+        ['real-rejected','rejected'], ['test:ready','prepared_cv_ready']
+      ]);
+      if (name === 'ApplicationEvents') return sheet([
+        ['vacancy_id','event_type'],
+        ['real-reply','employer_reply'], ['test:reply','employer_reply']
+      ]);
+      throw new Error('Unexpected sheet: ' + name);
+    }
+  };
+  assert.deepEqual(JSON.parse(JSON.stringify(s.radarApplicationMetrics_(register))), {
+    readyPackages: 1, submitted: 1, replies: 1, interviews: 0, closedOrRejected: 1
+  });
+});
+
 test('canonical URL removes tracking parameters, never private or HTTP hosts', () => {
   const s = load();
   assert.equal(s.radarNormalizeUrl_('https://jobs.example.com/role/1/?utm_source=a&gclid=1&ref=person#apply'),
@@ -247,7 +292,8 @@ function mockRun(schedule) {
       ['target_role_families', 'wordpress_ecosystem']]),
     Bronnen: dataSheet('Bronnen', [['source_id','status'], ['greenhouse','active']]),
     Vacatures: dataSheet('Vacatures', [['canonical_url','official_url']]),
-    Applications: dataSheet('Applications', [['application_url']]),
+    Applications: dataSheet('Applications', [['vacancy_id','application_url','status']]),
+    ApplicationEvents: dataSheet('ApplicationEvents', [['event_id','vacancy_id','event_type']]),
     JobSnapshots: dataSheet('JobSnapshots', [['canonical_url']]),
   };
   const radar = {
