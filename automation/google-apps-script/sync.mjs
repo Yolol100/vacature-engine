@@ -5,6 +5,9 @@ import { readFile } from 'node:fs/promises';
 export const RADAR_SHEET_ID = '1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ';
 export const REGISTER_ID = '1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0';
 export const hashSource = (value) => createHash('sha256').update(value, 'utf8').digest('hex');
+const canonicalFiles = (files) => JSON.stringify(
+  [...files].sort((a, b) => a.name.localeCompare(b.name)));
+
 
 function assertSource(value) {
   if (typeof value !== 'string' ||
@@ -108,20 +111,26 @@ export async function synchronize({ mode, env = process.env, fetchImpl = fetch,
     log('NO_CHANGE: same scanner code already installed; no write');
     return { state: 'NO_CHANGE', liveHash: snapshot.sha256, desiredHash };
   }
-  const expected = env.RADAR_EXPECTED_LIVE_SHA256;
-  if (!/^[a-f0-9]{64}$/.test(expected || '') || expected !== snapshot.sha256) {
+  if (env.RADAR_EXPECTED_GITHUB_SHA256 !== desiredHash) {
+    throw new Error('Expected GitHub SHA256 missing or mismatched; refusing deployment');
+  }
+  const approved = env.RADAR_APPROVED_LIVE_SHA256S ?
+    env.RADAR_APPROVED_LIVE_SHA256S.split(',') : [env.RADAR_EXPECTED_LIVE_SHA256];
+  if (approved.length === 0 || approved.length > 100 ||
+      approved.some((digest) => !/^[a-f0-9]{64}$/.test(digest || '')) ||
+      !approved.includes(snapshot.sha256)) {
     throw new Error('Expected live SHA256 missing or mismatched; refusing deployment');
   }
   // Re-read immediately before PUT to reduce overwriting a simultaneous editor change.
   const fresh = inspectFiles(await api('/content'));
-  if (fresh.sha256 !== expected ||
-      JSON.stringify(fresh.files) !== JSON.stringify(snapshot.files)) {
+  if (fresh.sha256 !== snapshot.sha256 ||
+      canonicalFiles(fresh.files) !== canonicalFiles(snapshot.files)) {
     throw new Error('Live project changed during preflight; refusing deployment');
   }
   await api('/content', 'PUT', {files: updatedFiles(fresh, desiredSource)});
   const verified = inspectFiles(await api('/content'));
   if (verified.sha256 !== desiredHash ||
-      JSON.stringify(verified.files) !== JSON.stringify(updatedFiles(fresh, desiredSource))) {
+      canonicalFiles(verified.files) !== canonicalFiles(updatedFiles(fresh, desiredSource))) {
     throw new Error('WRITE_NOT_VERIFIED: live readback differs; inspect before any retry');
   }
   log('PASS: updated existing scanner file; preserved other files and manifest');
