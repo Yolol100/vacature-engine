@@ -110,5 +110,8 @@ voorbereid concept is nooit een ingediende sollicitatie. **Geen autosend.**
   door quota, 403, 429 of gewijzigde feeds tijdelijk ontbreken.
 - Bevestig Google-toestemming en een echte geslaagde Apps Script-run
   **voordat** je de radar als actief presenteert.
-- GitHub Actions blijft **uitsluitend CI**: er wordt bewust geen
-  tweede live vacature-scheduler aangemaakt.
+- GitHub Actions gebruikt standaard alleen **CI**. Een apart, optioneel en
+  standaard uitgeschakeld Apps Script API-synchronisatiepad kan de bestaande
+  scriptcode na expliciete OAuth-autorisatie en live-hashcontrole bijwerken.
+  Zie [SYNC.md](./SYNC.md). Er wordt **geen tweede live vacature-scheduler**
+  aangemaakt.
