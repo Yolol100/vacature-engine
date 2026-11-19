@@ -184,12 +184,35 @@ function radarHttp_(url, allowRedirects) {
     followRedirects: allowRedirects === true,
     headers: {Accept: 'application/json, application/rss+xml, application/xml, text/xml'}
   });
-  if (response.getResponseCode() !== 200) throw new Error('Source HTTP ' + response.getResponseCode());
+  var status = response.getResponseCode();
+  if (status !== 200) {
+    var failure = new Error('Source HTTP ' + status);
+    if (status === 429 || status === 503) {
+      failure.retryAt = radarRetryAfterMs_(response.getAllHeaders(), Date.now());
+    }
+    throw failure;
+  }
   // Large official Greenhouse boards (GitLab ~3.9 MB) cannot use the
   // previous 2.5 MB ceiling. Keep a bounded 4.25 MB overall budget.
   var raw = response.getContentText();
   if (raw.length > 4250000) throw new Error('Source response exceeds safety budget');
   return raw;
+}
+
+function radarRetryAfterMs_(headers, nowMs) {
+  var key = Object.keys(headers || {}).filter(function (name) {
+    return name.toLowerCase() === 'retry-after';
+  })[0];
+  var value = key && headers[key];
+  if (Array.isArray(value)) value = value[0];
+  var text = String(value || '').trim();
+  if (!text) return 0;
+  if (/^\d+$/.test(text)) {
+    var delayed = nowMs + Number(text) * 1000;
+    return Number.isSafeInteger(delayed) ? delayed : 0;
+  }
+  var date = Date.parse(text);
+  return Number.isFinite(date) && date > nowMs ? date : 0;
 }
 
 function radarFetchSource_(spec) {
@@ -319,6 +342,14 @@ function radarCandidates_(spec, raw) {
     } else if (adapter === 'workable') {
       title = job.title; url = job.url || job.shortlink; jobId = job.id || job.shortcode;
       dateHint = job.published_on || ''; location = job.location && job.location.location_str;
+      if (!location && Array.isArray(job.locations)) {
+        location = job.locations.map(function (entry) {
+          return entry && (entry.location_str || entry.country) || '';
+        }).filter(Boolean).join(', ');
+      }
+      if (!location) location = [job.city, job.country].filter(Boolean).join(', ');
+      if (job.telecommuting === true && location) location = 'Remote - ' + location;
+      if (job.telecommuting === true && !location) location = 'Remote';
       description = job.description || job.full_description;
       note = 'Workable public listing; original date and NL eligibility still unverified';
     } else if (adapter === 'smartrecruiters') {
@@ -340,7 +371,7 @@ function radarCandidates_(spec, raw) {
       dateHint = job.pubDate || '';
       location = Array.isArray(job.locationRestrictions) ?
         job.locationRestrictions.map(function (v) { return typeof v === 'string' ? v : (v && v.name || ''); }).join(', ') :
-        'Worldwide';
+        '';
       description = job.description || ''; 
       note = 'Himalayas discovery only: provider date may differ from first publish';
     } else if (adapter === 'jobicy') {
@@ -390,15 +421,18 @@ function radarSourceDue_(spec, nowMs, properties) {
   var key = 'RADAR_SOURCE_SUCCESS_' + spec.source_id + '_' + spec.account;
   var failAtKey = 'RADAR_SOURCE_FAILURE_AT_' + spec.source_id + '_' + spec.account;
   var failCountKey = 'RADAR_SOURCE_FAILURE_COUNT_' + spec.source_id + '_' + spec.account;
+  var retryAtKey = 'RADAR_SOURCE_RETRY_AT_' + spec.source_id + '_' + spec.account;
   var last = Number(properties.getProperty(key) || 0);
   var lastFailed = Number(properties.getProperty(failAtKey) || 0);
   var failCount = Math.max(0, Math.min(10, Number(properties.getProperty(failCountKey) || 0)));
   // Exponential backoff up to 4 h for failed feeds; never hot-loop a
   // repeatedly blocked/429 provider. The next healthy run resets the streak.
   var backoff = failCount ? Math.min(240, 15 * Math.pow(2, Math.min(5, failCount - 1))) : 0;
-  var coolingDown = !!(failCount && lastFailed && nowMs - lastFailed < backoff * 60000);
+  var retryAt = Number(properties.getProperty(retryAtKey) || 0);
+  var coolingDown = retryAt > nowMs ||
+    !!(failCount && lastFailed && nowMs - lastFailed < backoff * 60000);
   return {
-    key: key, failAtKey: failAtKey, failCountKey: failCountKey,
+    key: key, failAtKey: failAtKey, failCountKey: failCountKey, retryAtKey: retryAtKey,
     coolingDown: coolingDown,
     ready: (!last || nowMs - last >= cadenceMinutes * 60000) && !coolingDown
   };
@@ -410,40 +444,54 @@ function radarRunStatus_(dueCount, failureCount, coolingDownCount) {
   return dueCount === 0 ? 'idle_no_sources_due' : 'ok';
 }
 
-function radarApplicationMetrics_(register) {
-  function countStatuses(sheetName, statusColumn) {
-    var sheet = radarTab_(register, sheetName);
-    var mapped = radarRecordMap_(sheet);
-    var statusIndex = mapped.names[statusColumn];
-    var idIndex = mapped.names.vacancy_id;
-    if (statusIndex == null || idIndex == null) return {};
-    var counts = {};
-    mapped.values.forEach(function (row) {
-      var id = String(row[idIndex] || '');
-      if (!id || /^test(?::|_)/i.test(id)) return;
-      var status = String(row[statusIndex] || '').trim().toLowerCase();
-      if (status) counts[status] = (counts[status] || 0) + 1;
-    });
-    return counts;
-  }
-  var applications = countStatuses('Applications', 'status');
-  var eventSheet = radarTab_(register, 'ApplicationEvents');
-  var events = radarRecordMap_(eventSheet);
-  var typeIndex = events.names.event_type;
-  var eventVacancyIndex = events.names.vacancy_id;
-  var replies = 0;
-  if (typeIndex != null) events.values.forEach(function (row) {
-    var id = eventVacancyIndex == null ? '' : String(row[eventVacancyIndex] || '');
-    if (id && !/^test(?::|_)/i.test(id) &&
-        String(row[typeIndex] || '').trim().toLowerCase() === 'employer_reply') replies++;
+function radarProductionId_(id, config) {
+  var value = String(id || '').trim();
+  var prefixes = String(config.nonproduction_vacancy_id_prefixes || 'test:,history:')
+    .split(',').map(function (prefix) { return prefix.trim().toLowerCase(); }).filter(Boolean);
+  return value && !prefixes.some(function (prefix) {
+    return value.toLowerCase().indexOf(prefix) === 0;
+  }) ? value : '';
+}
+
+function radarApplicationMetrics_(register, config) {
+  config = config || {};
+  var ready = new Set(), submitted = new Set(), interviews = new Set(), closed = new Set();
+  var applications = radarRecordMap_(radarTab_(register, 'Applications'));
+  applications.values.forEach(function (row) {
+    var id = radarProductionId_(row[applications.names.vacancy_id], config);
+    if (!id) return;
+    var status = String(row[applications.names.status] || '').trim().toLowerCase();
+    if (status === 'prepared_cv_ready') ready.add(id);
+    if (status === 'submitted' || status === 'applied') submitted.add(id);
+    if (status === 'interview') interviews.add(id);
+    if (['closed', 'rejected', 'declined', 'withdrawn'].indexOf(status) !== -1) closed.add(id);
+  });
+  var events = radarRecordMap_(radarTab_(register, 'ApplicationEvents'));
+  var replies = new Set();
+  events.values.forEach(function (row) {
+    var id = radarProductionId_(row[events.names.vacancy_id], config);
+    if (!id) return;
+    var type = String(row[events.names.event_type] || '').trim().toLowerCase();
+    if (type === 'submitted') submitted.add(id);
+    if (type === 'interview') interviews.add(id);
+    var eventId = String(row[events.names.event_id] || '');
+    if (type === 'employer_reply' && eventId) replies.add(eventId);
+  });
+  var vacancies = radarRecordMap_(radarTab_(register, 'Vacatures'));
+  var closedVacancies = new Set();
+  vacancies.values.forEach(function (row) {
+    var id = radarProductionId_(row[vacancies.names.vacancy_id], config);
+    if (id && String(row[vacancies.names.status] || '').trim().toLowerCase() === 'closed') {
+      closedVacancies.add(id);
+    }
   });
   return {
-    readyPackages: applications.prepared_cv_ready || 0,
-    submitted: applications.submitted || 0,
-    replies: replies,
-    interviews: applications.interview || 0,
-    closedOrRejected: (applications.closed || 0) + (applications.rejected || 0) +
-      (applications.declined || 0)
+    readyPackages: ready.size,
+    submitted: submitted.size,
+    replies: replies.size,
+    interviews: interviews.size,
+    closedOrRejected: closed.size,
+    closedVacancies: closedVacancies.size
   };
 }
 
@@ -454,7 +502,7 @@ function radarUpdateDashboard_(radar, active, run, applicationMetrics) {
     'Actief - Google Apps Script iedere 15 minuten' :
     'Uitgeschakeld - nog geen automatische trigger');
   if (run) {
-    dashboard.getRange('A10').setValue('Laatste triggeruitvoering (UTC)');
+    dashboard.getRange('A10').setValue('Laatste uitvoering (UTC)');
     dashboard.getRange('B10').setValue(run.at);
     // An idle trigger is not a source scan. Keep the last real round's counts.
     if (run.attemptedSources > 0) {
@@ -463,13 +511,13 @@ function radarUpdateDashboard_(radar, active, run, applicationMetrics) {
       dashboard.getRange('B13').setValue(run.newLeads);
       dashboard.getRange('B14').setValue(run.inspected);
       dashboard.getRange('B16').setValue(run.alertCandidates || 0);
-      var problemSources = (run.failedAccounts || []).concat(run.coolingDownSources || []);
+      var problemSources = run.failedAccounts || [];
       dashboard.getRange('B17').setValue(problemSources.join(', ') || '-');
       dashboard.getRange('B20').setValue(run.lastSourceFetchAt || 'Nog geen broncontrole');
       dashboard.getRange('B22').setValue(run.dueSources);
     }
     var statusText = {
-      idle_no_sources_due: 'In orde - trigger gedraaid, geen bronnen aan de beurt',
+      idle_no_sources_due: 'Geen bronnen aan de beurt bij deze uitvoering',
       degraded_source_cooldown: 'Probleem - bron(nen) wachten op herstart na fout',
       degraded_source_failures: 'Probleem - een of meer broncontroles faalden'
     }[run.status] || run.status;
@@ -479,17 +527,27 @@ function radarUpdateDashboard_(radar, active, run, applicationMetrics) {
     dashboard.getRange('A24').setValue('Ingediende sollicitaties');
     dashboard.getRange('A25').setValue('Werkgeversreacties');
     dashboard.getRange('A26').setValue('Sollicitaties met gesprek');
-    dashboard.getRange('A27').setValue('Gesloten of afgewezen');
+    dashboard.getRange('A27').setValue('Afgesloten of afgewezen sollicitaties');
     var metrics = applicationMetrics || {};
     dashboard.getRange('B23').setValue(metrics.readyPackages || 0);
     dashboard.getRange('B24').setValue(metrics.submitted || 0);
     dashboard.getRange('B25').setValue(metrics.replies || 0);
     dashboard.getRange('B26').setValue(metrics.interviews || 0);
     dashboard.getRange('B27').setValue(metrics.closedOrRejected || 0);
+    dashboard.getRange('A28:B34').setValues([
+      ['Laatste succesvolle broncontrole (UTC)', run.lastSourceSuccessAt || 'Nog niet gemeten'],
+      ['Geslaagde bronnen bij laatste bronronde', run.attemptedSources > 0 ?
+        run.attemptedSources - run.failedSources : dashboard.getRange('B29').getValue()],
+      ['Laatste automatische uitvoering (UTC)', run.lastTriggerAt || 'Nog niet gemeten'],
+      ['Bronnen in wachttijd', (run.coolingDownSources || []).join(', ') || '-'],
+      ['Oudere leads volgens bronhint', run.historicalLeads || 0],
+      ['Gesloten vacatures in Register', metrics.closedVacancies || 0],
+      ['Type laatste uitvoering', run.triggered ? 'Automatisch' : 'Handmatig']
+    ]);
   }
 }
 
-function runVacatureRadar() {
+function runVacatureRadar(event) {
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(2000)) return {status: 'busy'};
   try {
@@ -552,6 +610,7 @@ function runVacatureRadar() {
         props.setProperty(successKeys.key, String(started));
         props.setProperty(successKeys.failAtKey, '0');
         props.setProperty(successKeys.failCountKey, '0');
+        props.deleteProperty(successKeys.retryAtKey);
         for (var j = 0; j < observations.length; j++) {
           var row = observations[j];
           if (!radarRelevant_(row.title, row.description, permittedFamily)) continue;
@@ -575,7 +634,10 @@ function runVacatureRadar() {
         failedAccounts.push(String(spec.source_id) + '/' + String(spec.account));
         var failKeys = radarSourceDue_(spec, started, props);
         var count = Math.min(10, Number(props.getProperty(failKeys.failCountKey) || 0) + 1);
-        props.setProperty(failKeys.failAtKey, String(started));
+        props.setProperty(failKeys.failAtKey, String(Date.now()));
+        if (error && error.retryAt > Date.now()) {
+          props.setProperty(failKeys.retryAtKey, String(error.retryAt));
+        }
         props.setProperty(failKeys.failCountKey, String(count));
         console.warn('Source failed: ' + String(spec.source_id) + '/' +
           String(spec.account) +
@@ -617,6 +679,12 @@ function runVacatureRadar() {
       }
     }
     if (attempts) props.setProperty('VACATURE_RADAR_LAST_SOURCE_FETCH_AT', now);
+    if (attempts > failures) props.setProperty('VACATURE_RADAR_LAST_SOURCE_SUCCESS_AT', now);
+    var triggered = !!(event && event.triggerUid);
+    if (triggered) props.setProperty('VACATURE_RADAR_LAST_TRIGGER_AT', now);
+    var historicalLeads = mapped.values.concat(additions).filter(function (row) {
+      return row[10] === 'historical_review';
+    }).length;
     var result = {
       status: radarRunStatus_(sourceDue.length, failures, coolingDownSources.length),
       newLeads: additions.length,
@@ -624,12 +692,15 @@ function runVacatureRadar() {
       configuredSources: sourceSpecs.length, dueSources: sourceDue.length,
       coolingDownSources: coolingDownSources,
       lastSourceFetchAt: props.getProperty('VACATURE_RADAR_LAST_SOURCE_FETCH_AT') || '',
+      lastSourceSuccessAt: props.getProperty('VACATURE_RADAR_LAST_SOURCE_SUCCESS_AT') || '',
+      lastTriggerAt: props.getProperty('VACATURE_RADAR_LAST_TRIGGER_AT') || '',
+      triggered: triggered, historicalLeads: historicalLeads,
       alertCandidates: alerts.length, reviewCounts: reviewCounts,
       failedAccounts: failedAccounts,
       incomplete: attempts < sourceDue.length, at: now
     };
     props.setProperty('VACATURE_RADAR_LAST_RUN', JSON.stringify(result));
-    radarUpdateDashboard_(radar, true, result, radarApplicationMetrics_(register));
+    radarUpdateDashboard_(radar, true, result, radarApplicationMetrics_(register, config));
     return result;
   } finally {
     lock.releaseLock();
