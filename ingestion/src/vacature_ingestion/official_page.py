@@ -205,6 +205,10 @@ def _trusted_tenant_url(url: Any, *, provider: str, account: str) -> bool:
         tenant = account.casefold()
         if provider == "personio":
             return host in {tenant + ".jobs.personio.com", tenant + ".jobs.personio.de"} and len(parts) >= 2
+        if provider == "teamtailor":
+            return (tenant == "servebolt" and host == "careers.servebolt.com"
+                    and len(parts) == 2 and parts[0] == "jobs"
+                    and re.fullmatch(r"[1-9]\d*-[a-z0-9-]+", parts[1]) is not None)
         if host not in _STATIC_ATS_HOSTS.get(provider, set()):
             return False
         return bool(parts) and parts[0] == tenant and len(parts) >= 2
@@ -224,6 +228,11 @@ def verified_source_account(row: dict[str, Any], *, active_ids: set[str]) -> tup
     if not instance.startswith(prefix) or not instance[len(prefix):]:
         return None
     account = instance[len(prefix):]
+    if provider == "teamtailor" and (
+            account != "servebolt"
+            or metadata.get("registry_source_id") != "company-servebolt"
+            or "company-servebolt" not in active_ids):
+        return None
     if not _trusted_tenant_url(row.get("canonical_url"), provider=provider, account=account):
         return None
     return provider, account

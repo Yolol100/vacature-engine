@@ -192,6 +192,41 @@ class OfficialPageTests(unittest.TestCase):
         self.assertEqual(result["apply_http_status"],200)
         self.assertFalse(result["application_form_detected"])
 
+    def test_servebolt_teamtailor_requires_both_registered_sources_and_exact_role_url(self):
+        item = {
+            "source_type": "ats",
+            "source_id": "teamtailor",
+            "source_instance": "teamtailor:servebolt",
+            "source_metadata": {
+                "provider": "teamtailor",
+                "registry_source_id": "company-servebolt",
+            },
+            "canonical_url": "https://careers.servebolt.com/jobs/123-wordpress-developer",
+            "title": "WordPress Developer",
+            "employer": "Servebolt",
+        }
+        active = {"teamtailor", "company-servebolt"}
+        self.assertEqual(
+            verified_source_account(item, active_ids=active), ("teamtailor", "servebolt")
+        )
+        self.assertIsNone(verified_source_account(item, active_ids={"teamtailor"}))
+        self.assertIsNone(verified_source_account(item, active_ids={"company-servebolt"}))
+        for url in (
+            "https://careers.servebolt.com/jobs/",
+            "https://careers.servebolt.com/jobs/123",
+            "https://careers.servebolt.com/jobs/123-wordpress-developer/apply",
+            "https://evil.example/jobs/123-wordpress-developer",
+            "https://careers.servebolt.com/other/123-wordpress-developer",
+        ):
+            with self.subTest(url=url):
+                self.assertIsNone(verified_source_account(
+                    {**item, "canonical_url": url}, active_ids=active
+                ))
+        self.assertIsNone(verified_source_account(
+            {**item, "source_metadata": {"provider": "teamtailor"}},
+            active_ids=active,
+        ))
+
     @patch("vacature_ingestion.official_page._fetch_html")
     def test_enabled_form_after_disabled_fieldset_still_proves_application(self,fetch):
         form=("<fieldset disabled><fieldset><input name='unused'></fieldset></fieldset>"

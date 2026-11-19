@@ -248,6 +248,7 @@ function radarSpecUrl_(spec) {
       return 'https://' + account + '.jobs.personio.com/xml?language=en';
     case 'teamtailor':
       return spec.source_id === 'teamtailor' && account === 'servebolt' &&
+        spec.employer === 'Servebolt' &&
         spec.endpoint === 'https://careers.servebolt.com/jobs.rss' &&
         spec.options && spec.options.registry_source_id === 'company-servebolt' ?
         spec.endpoint : '';
