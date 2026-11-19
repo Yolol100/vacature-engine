@@ -15,9 +15,10 @@ vacature-register, geen betaalde provider.
   van \`main\` plus iedere keer de **actuele** actieve IDs uit het Register.
   Een repo-brondefinitie is nooit op zichzelf autorisatie.
 - Ondersteunde snelle adapters: Greenhouse, Ashby, Lever (globaal en expliciet
-  EU), Workable, Personio, SmartRecruiters, WordPress Jobs, We Work Remotely,
-  Remote OK, Himalayas, Jobicy en Remotive. Momenteel 22 technische
-  broninstellingen van 26. De resterende actieve Register-bronnen blijven
+  EU), Workable, Personio, SmartRecruiters, de officiële Teamtailor RSS van Servebolt,
+  WordPress Jobs, We Work Remotely,
+  Remote OK, Himalayas, Jobicy en Remotive. De actuele aantallen staan op het dashboard.
+  De resterende actieve Register-bronnen blijven
   bestemd voor een **aparte volledige zoekopdracht** door \`vacature-search\`.
 - Maximaal 35 bronrondes en 150 nieuwe kandidaten per run. Langzamere
   aggregators worden minder vaak bevraagd. Grote Greenhouse-JSON-antwoorden

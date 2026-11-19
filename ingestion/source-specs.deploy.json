@@ -312,5 +312,19 @@
       "discovery_only": true,
       "provider_date_not_original": true
     }
+  },
+  {
+    "source_id": "teamtailor",
+    "source_type": "ats",
+    "adapter": "teamtailor",
+    "account": "servebolt",
+    "employer": "Servebolt",
+    "endpoint": "https://careers.servebolt.com/jobs.rss",
+    "listing_language": "en",
+    "max_jobs": 50,
+    "max_response_bytes": 1048576,
+    "options": {
+      "registry_source_id": "company-servebolt"
+    }
   }
 ]

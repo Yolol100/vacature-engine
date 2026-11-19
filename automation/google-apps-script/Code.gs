@@ -246,6 +246,11 @@ function radarSpecUrl_(spec) {
       return 'https://www.workable.com/api/accounts/' + encodeURIComponent(account) + '?details=true';
     case 'personio':
       return 'https://' + account + '.jobs.personio.com/xml?language=en';
+    case 'teamtailor':
+      return spec.source_id === 'teamtailor' && account === 'servebolt' &&
+        spec.endpoint === 'https://careers.servebolt.com/jobs.rss' &&
+        spec.options && spec.options.registry_source_id === 'company-servebolt' ?
+        spec.endpoint : '';
     case 'wordpressjobs':
       return ['development', 'design'].indexOf(account) !== -1 ?
         'https://jobs.wordpress.net/job_category/' + account + '/feed/' : '';
@@ -293,6 +298,9 @@ function radarCandidates_(spec, raw) {
       jobs = parsed.jobs;
     }
   } else {
+    if (adapter === 'teamtailor' && /<!DOCTYPE|<!ENTITY/i.test(raw)) {
+      throw new Error('Unexpected Teamtailor RSS declaration');
+    }
     var document = XmlService.parse(raw);
     var root = document.getRootElement();
     if (adapter === 'personio') {
@@ -315,6 +323,7 @@ function radarCandidates_(spec, raw) {
           title: radarXmlChildText_(item, 'title'),
           url: radarXmlChildText_(item, 'link'),
           published: radarXmlChildText_(item, 'pubDate'),
+          remoteStatus: radarXmlChildText_(item, 'remoteStatus'),
           description: radarXmlChildText_(item, 'description')
         };
       });
@@ -352,6 +361,16 @@ function radarCandidates_(spec, raw) {
       if (job.telecommuting === true && !location) location = 'Remote';
       description = job.description || job.full_description;
       note = 'Workable public listing; original date and NL eligibility still unverified';
+    } else if (adapter === 'teamtailor') {
+      title = job.title; url = job.url;
+      var identity = String(url || '').match(/^https:\/\/careers\.servebolt\.com\/jobs\/([1-9]\d*)-[a-z0-9-]+\/?(?:[?#].*)?$/i);
+      if (!identity) return null;
+      var remoteStatus = String(job.remoteStatus || '').trim().toLowerCase();
+      if (/^(hybrid|none|on[ -]?site|temporary)$/.test(remoteStatus)) return null;
+      location = /^(fully|fully remote|remote)$/.test(remoteStatus) ? 'Remote' : '';
+      jobId = identity[1]; dateHint = job.published || '';
+      description = job.description;
+      note = 'Employer Teamtailor feed; original date and NL eligibility still unverified';
     } else if (adapter === 'smartrecruiters') {
       title = job.name || job.title; jobId = job.id || job.uuid;
       // The public list may omit a job-specific application link. Never
@@ -416,7 +435,7 @@ function radarSourceDue_(spec, nowMs, properties) {
   var cadenceMinutes = ({
     'himalayas': 1440, 'remotive': 1440,
     'jobicy': 120, 'remoteok': 60, 'weworkremotely': 60,
-    'wordpressjobs': 60, 'smartrecruiters': 60
+    'wordpressjobs': 60, 'smartrecruiters': 60, 'teamtailor': 60
   })[spec.adapter] || 15;
   var key = 'RADAR_SOURCE_SUCCESS_' + spec.source_id + '_' + spec.account;
   var failAtKey = 'RADAR_SOURCE_FAILURE_AT_' + spec.source_id + '_' + spec.account;
@@ -606,6 +625,8 @@ function runVacatureRadar(event) {
       try {
         var observations = radarCandidates_(spec, radarFetchSource_(spec));
         inspected += observations.length;
+        console.info('Source succeeded: ' + spec.source_id + '/' +
+          spec.account + ' (' + observations.length + ' observations)');
         var successKeys = radarSourceDue_(spec, started, props);
         props.setProperty(successKeys.key, String(started));
         props.setProperty(successKeys.failAtKey, '0');
