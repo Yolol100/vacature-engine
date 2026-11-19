@@ -23,6 +23,7 @@ class ChatGPTOnlyWorkflowTests(unittest.TestCase):
         self.assertIn("automation/google-apps-script/Code.gs", sync)
         self.assertIn("vars.VACATURE_RADAR_AUTO_DEPLOY == 'true'", sync)
         self.assertIn("RADAR_EXPECTED_LIVE_SHA256", sync)
+        self.assertIn("RADAR_EXPECTED_GITHUB_SHA256", sync)
         self.assertIn("secrets.RADAR_SCRIPT_ID", sync)
         self.assertNotIn("schedule:", sync)
         self.assertNotIn("runVacatureRadar", sync)
