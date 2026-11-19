@@ -410,30 +410,82 @@ function radarRunStatus_(dueCount, failureCount, coolingDownCount) {
   return dueCount === 0 ? 'idle_no_sources_due' : 'ok';
 }
 
-function radarUpdateDashboard_(radar, active, run) {
+function radarApplicationMetrics_(register) {
+  function countStatuses(sheetName, statusColumn) {
+    var sheet = radarTab_(register, sheetName);
+    var mapped = radarRecordMap_(sheet);
+    var statusIndex = mapped.names[statusColumn];
+    var idIndex = mapped.names.vacancy_id;
+    if (statusIndex == null || idIndex == null) return {};
+    var counts = {};
+    mapped.values.forEach(function (row) {
+      var id = String(row[idIndex] || '');
+      if (!id || /^test(?::|_)/i.test(id)) return;
+      var status = String(row[statusIndex] || '').trim().toLowerCase();
+      if (status) counts[status] = (counts[status] || 0) + 1;
+    });
+    return counts;
+  }
+  var applications = countStatuses('Applications', 'status');
+  var eventSheet = radarTab_(register, 'ApplicationEvents');
+  var events = radarRecordMap_(eventSheet);
+  var typeIndex = events.names.event_type;
+  var eventVacancyIndex = events.names.vacancy_id;
+  var replies = 0;
+  if (typeIndex != null) events.values.forEach(function (row) {
+    var id = eventVacancyIndex == null ? '' : String(row[eventVacancyIndex] || '');
+    if (id && !/^test(?::|_)/i.test(id) &&
+        String(row[typeIndex] || '').trim().toLowerCase() === 'employer_reply') replies++;
+  });
+  return {
+    readyPackages: applications.prepared_cv_ready || 0,
+    submitted: applications.submitted || 0,
+    replies: replies,
+    interviews: applications.interview || 0,
+    closedOrRejected: (applications.closed || 0) + (applications.rejected || 0) +
+      (applications.declined || 0)
+  };
+}
+
+function radarUpdateDashboard_(radar, active, run, applicationMetrics) {
   var dashboard = radar.getSheetByName('Dashboard');
   if (!dashboard) return;
   dashboard.getRange('B3').setValue(active ?
     'Actief - Google Apps Script iedere 15 minuten' :
     'Uitgeschakeld - nog geen automatische trigger');
   if (run) {
+    dashboard.getRange('A10').setValue('Laatste triggeruitvoering (UTC)');
     dashboard.getRange('B10').setValue(run.at);
-    dashboard.getRange('B11').setValue(run.attemptedSources);
-    dashboard.getRange('B12').setValue(run.failedSources);
-    dashboard.getRange('B13').setValue(run.newLeads);
-    dashboard.getRange('B14').setValue(run.inspected);
-    dashboard.getRange('B16').setValue(run.alertCandidates || 0);
-    var problemSources = (run.failedAccounts || []).concat(run.coolingDownSources || []);
-    dashboard.getRange('B17').setValue(problemSources.join(', ') || '-');
+    // An idle trigger is not a source scan. Keep the last real round's counts.
+    if (run.attemptedSources > 0) {
+      dashboard.getRange('B11').setValue(run.attemptedSources);
+      dashboard.getRange('B12').setValue(run.failedSources);
+      dashboard.getRange('B13').setValue(run.newLeads);
+      dashboard.getRange('B14').setValue(run.inspected);
+      dashboard.getRange('B16').setValue(run.alertCandidates || 0);
+      var problemSources = (run.failedAccounts || []).concat(run.coolingDownSources || []);
+      dashboard.getRange('B17').setValue(problemSources.join(', ') || '-');
+      dashboard.getRange('B20').setValue(run.lastSourceFetchAt || 'Nog geen broncontrole');
+      dashboard.getRange('B22').setValue(run.dueSources);
+    }
     var statusText = {
-      idle_no_sources_due: 'In orde - deze ronde geen bronnen aan de beurt',
+      idle_no_sources_due: 'In orde - trigger gedraaid, geen bronnen aan de beurt',
       degraded_source_cooldown: 'Probleem - bron(nen) wachten op herstart na fout',
       degraded_source_failures: 'Probleem - een of meer broncontroles faalden'
     }[run.status] || run.status;
     dashboard.getRange('B19').setValue(statusText);
-    dashboard.getRange('B20').setValue(run.lastSourceFetchAt || 'Nog geen broncontrole');
     dashboard.getRange('B21').setValue(run.configuredSources);
-    dashboard.getRange('B22').setValue(run.dueSources);
+    dashboard.getRange('A23').setValue('Sollicitatiepakketten klaar');
+    dashboard.getRange('A24').setValue('Ingediende sollicitaties');
+    dashboard.getRange('A25').setValue('Werkgeversreacties');
+    dashboard.getRange('A26').setValue('Sollicitaties met gesprek');
+    dashboard.getRange('A27').setValue('Gesloten of afgewezen');
+    var metrics = applicationMetrics || {};
+    dashboard.getRange('B23').setValue(metrics.readyPackages || 0);
+    dashboard.getRange('B24').setValue(metrics.submitted || 0);
+    dashboard.getRange('B25').setValue(metrics.replies || 0);
+    dashboard.getRange('B26').setValue(metrics.interviews || 0);
+    dashboard.getRange('B27').setValue(metrics.closedOrRejected || 0);
   }
 }
 
@@ -577,7 +629,7 @@ function runVacatureRadar() {
       incomplete: attempts < sourceDue.length, at: now
     };
     props.setProperty('VACATURE_RADAR_LAST_RUN', JSON.stringify(result));
-    radarUpdateDashboard_(radar, true, result);
+    radarUpdateDashboard_(radar, true, result, radarApplicationMetrics_(register));
     return result;
   } finally {
     lock.releaseLock();
