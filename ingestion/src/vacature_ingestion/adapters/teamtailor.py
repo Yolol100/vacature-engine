@@ -77,6 +77,7 @@ class TeamtailorAdapter(Adapter):
             "listing_language": spec.listing_language,
             "source_metadata": {
                 "provider": "teamtailor",
+                "registry_source_id": "company-servebolt",
                 "provider_pub_date": _published_at(_first(fields, "pubdate")),
                 "original_employer_publication_unverified": True,
                 "remote_from_netherlands_unverified": True,
