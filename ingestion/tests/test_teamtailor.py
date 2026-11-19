@@ -41,6 +41,7 @@ class TeamtailorTests(unittest.TestCase):
         self.assertEqual(job["location"], "Remote")
         self.assertIsNone(job["published_at"])
         self.assertTrue(job["source_metadata"]["remote_from_netherlands_unverified"])
+        self.assertEqual(job["source_metadata"]["registry_source_id"], "company-servebolt")
 
     def test_different_feed_is_never_fetched(self):
         feed = Feed(FIXTURE)
@@ -56,6 +57,9 @@ class TeamtailorTests(unittest.TestCase):
 
     def test_external_and_hybrid_job_rows_are_not_candidates(self):
         for text in (FIXTURE.replace(URL, "https://other.example/jobs/123-wordpress-developer"),
-                     FIXTURE.replace("fully", "hybrid")):
+                     FIXTURE.replace("fully", "hybrid"),
+                     FIXTURE.replace("fully", "onsite"),
+                     FIXTURE.replace("fully", "on-site"),
+                     FIXTURE.replace("fully", "on site")):
             record, = self.adapter.fetch(Feed(text), SPEC)
             self.assertIsNone(self.adapter.normalize_record(record, SPEC, ""))
