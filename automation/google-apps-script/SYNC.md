@@ -6,7 +6,7 @@ This is **code synchronization only**. It does not create a script, timer, scann
 
 - Automatic sync from `main` is **disabled** until repository variable `VACATURE_RADAR_AUTO_DEPLOY` is explicitly set to `true`.
 - Manual `workflow_dispatch` defaults to `inspect` (no writes).
-- First `deploy` requires the **exact current live scanner SHA256** from `inspect`. Future automatic sync compares live code to the *previous* main commit's scanner. Any mismatch stops the write.
+- First `deploy` requires **both** the current live scanner SHA256 **and** the reviewed GitHub scanner SHA256 from the same `inspect`. Future automatic sync accepts live code matching a scanner version from the last 99 first-parent `main` commits, to tolerate skipped queued GitHub runs. Unrecognized live edits stop the write.
 - The Google project must be bound to the [existing Radar spreadsheet](https://docs.google.com/spreadsheets/d/1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ/edit); scanner code must contain the expected Radar and Register IDs. Extra script files and `appsscript.json` are preserved.
 - Only Apps Script HEAD code changes. Neither script creation nor trigger changes occur. The full set of project files is read back after writing.
 - A successful sync **does not** prove that the next scheduled scan ran successfully or that exactly one timer exists. Verify those independently.
@@ -31,7 +31,7 @@ The connected Google Drive/Sheets tools do not expose Apps Script project code o
 
    Leave repository variable `VACATURE_RADAR_AUTO_DEPLOY` **unset/false** for initial setup.
 6. Once the PR is merged into `main`, open **GitHub -> Actions -> Vacature Radar - Apps Script code sync (no vacancy scans)**. Run `inspect`. It prints **Live SHA256** and **GitHub SHA256** after verifying the project identity. Preserve a copy of the current live script before changing it.
-7. Verify the intended change, then run `deploy` manually using the exact **Live SHA256** from the most recent `inspect`. Successful results are `PASS: updated existing scanner file` or `NO_CHANGE`.
+7. Verify the intended change, then run `deploy` manually using both **Live SHA256** and **GitHub SHA256** from the most recent `inspect`. The workflow refuses a changed GitHub source or live source. Successful results are `PASS: updated existing scanner file` or `NO_CHANGE`.
 8. In Apps Script check **Triggers**: exactly one `runVacatureRadar` every 15 minutes. Check **Executions** and the [Radar Dashboard](https://docs.google.com/spreadsheets/d/1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ/edit) after the next real source check. Existing source cooldown is not automatically a fresh failure.
 9. Only after an initially verified deployment and live smoke test, set repository **variable** `VACATURE_RADAR_AUTO_DEPLOY=true`. Subsequent merges modifying `Code.gs` on `main` attempt to update **that same script**, refusing live drift.
 
