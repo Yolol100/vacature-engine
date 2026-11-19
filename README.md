@@ -44,8 +44,12 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
   **examples**, not authority to activate a source.
 - `tests/` and `ingestion/tests/`: deterministic regression suites.
 - `.github/workflows/ingestion-tests.yml`: offline tests only.
-- GitHub Actions runs **offline CI/regression tests only**. There are no
-  scheduled or manually triggerable GitHub vacancy searches.
+- GitHub Actions runs offline CI for vacancy logic. A separate, opt-in
+  [code-only Apps Script sync workflow](automation/google-apps-script/SYNC.md)
+  can update the **existing** scanner after Google OAuth and an exact live-hash
+  check. It does not perform vacancy searches, create a trigger or run a
+  second scheduler. There are no scheduled or manually triggerable GitHub
+  vacancy searches.
 - `ingestion/source-specs.deploy.json` and
   `ingestion/source-specs.google-optional.json` are technical adapter examples;
   neither activates a source. Only live `Vacature Register:Bronnen` does.
@@ -170,8 +174,10 @@ Only complete verified inputs reach `top_vacancies`; existing score anchors,
 thresholds, weights and ordering are unchanged. Public output contains the
 score components and proof digests, not private CandidateEvidence claims/IDs.
 
-GitHub Actions are CI-only; public discovery and private specialist review are
-started exclusively by explicit ChatGPT vacancy-search requests. A caller using the Python API can retain the
+GitHub Actions are CI-only for vacancy research and review; an opt-in
+code-only Apps Script API sync has no search or scheduler authority. Public
+discovery and private specialist review are started exclusively by explicit
+ChatGPT vacancy-search requests. A caller using the Python API can retain the
 observations and page cache, review them and call `evaluate_observations` again
 within the same current evidence session. Never commit these private inputs or
 upload them as public workflow artifacts. A local run may use Python 3.13 when
