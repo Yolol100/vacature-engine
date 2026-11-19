@@ -270,6 +270,7 @@ class FreeDiscoveryTests(unittest.TestCase):
         self.assertIn("workflow_dispatch:", sync)
         self.assertIn("vars.VACATURE_RADAR_AUTO_DEPLOY == 'true'", sync)
         self.assertIn("RADAR_EXPECTED_LIVE_SHA256", sync)
+        self.assertIn("RADAR_EXPECTED_GITHUB_SHA256", sync)
         self.assertNotIn("schedule:", sync)
         self.assertNotIn("one_pass_vacancies.py", sync)
         self.assertNotIn("runVacatureRadar", sync)
