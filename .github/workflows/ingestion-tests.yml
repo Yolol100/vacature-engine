@@ -31,7 +31,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Run offline vacancy radar regression tests
-        run: node --test automation/google-apps-script/radar.test.cjs automation/google-apps-script/sync.test.mjs
+        run: node --test automation/google-apps-script/radar.test.cjs automation/google-apps-script/sync.test.mjs automation/google-apps-script/workflow.test.mjs
 
   python-regression:
     # Preserve the existing protected-branch context by actually running its
