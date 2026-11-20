@@ -3,3 +3,11 @@
 /src/ @Yolol100
 /tests/ @Yolol100
 /scripts/ @Yolol100
+
+# Explicit owners for the live Radar source feed and deployment controls.
+/ingestion/source-specs.deploy.json @Yolol100
+/ingestion/tests/test_source_specs.py @Yolol100
+/automation/google-apps-script/Code.gs @Yolol100
+/automation/google-apps-script/sync.mjs @Yolol100
+/.github/workflows/ @Yolol100
+/.github/CODEOWNERS @Yolol100

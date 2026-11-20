@@ -68,6 +68,53 @@ historische kandidaten worden niet verwijderd.
   van Europese klanten in een functietekst is nooit genoeg. De exacte
   officiële werkgeverspagina moet dit daarna bevestigen.
 
+## Bronconfiguratie: audit en statusbewijs
+
+De live scanner leest `ingestion/source-specs.deploy.json` op `main` bij
+iedere scan. Dit is **een afzonderlijk productie-invoerkanaal**: een wijziging
+kan nieuwe ATS-accounts, selectie of requestgedrag veroorzaken zonder
+`Code.gs` te wijzigen. De bestaande code-SHA256-healthcheck detecteert
+dit **niet**. De bestaande CI test daarom de bronconfiguratie tegen een
+allowlist van adapters, bron-ID's, expliciete HTTPS-doelen, schema en
+dubbele `(source_id, account)`-instanties. CODEOWNERS en PR-provenance
+zijn aanvullend; een solo-codeowner is geen onafhankelijke reviewer.
+
+Bij een toekomstige release moeten **twee hashes** worden vastgelegd,
+beide voor de daadwerkelijk gebruikte ruwe bestandsbytes:
+- `code_sha256`: de Apps Script-code, live versus GitHub.
+- `source_specs_sha256`: bronconfiguratie op GitHub, vergeleken met
+  de bronconfiguratie die de scanner werkelijk ophaalt zodra die
+  runtime-meting na een aparte release beschikbaar is.
+
+Een Git-blob-SHA is niet hetzelfde als SHA256. Tot de runtime-meting
+is geïmplementeerd: `source_specs_sha256=NOT_MEASURED_AT_RUNTIME`.
+Claim daarom geen volledige bronpariteit op basis van alleen de codehash.
+Geen automatische pin, rewrite, rollback of deploy door deze controles.
+
+**Brondekking is een trechter, geen synoniem voor succesvol scannen:**
+Register totaal → Register actief → GitHub-specificaties → technisch
+fastlane-geschikt → in deze bronronde due → geprobeerd → geslaagd /
+mislukt → in cooldown. De aantallen worden per controle dynamisch
+berekend; historische dashboardteksten (zoals 223) zijn niet leidend.
+Eén bronspecificatie kan een provider en een werkgeversbron binden.
+De fastlane omvat niet alle actieve Registerbronnen.
+
+Voor iedere broninstantie `source_id/account` leg je afzonderlijk vast:
+`last_actual_attempt_utc`, `last_success_utc`, `last_failure_utc`,
+`last_http_status_if_logged`, `failure_count`, `retry_at_utc`,
+`state` (`SUCCESS`, `FAILED`, `COOLDOWN`, `NOT_DUE`,
+`NOT_ATTEMPTED`), en de herkomst van het bewijs.
+Een oude `Bronnen.last_success_at` is **geen** bewijs van een recente
+Apps Script-vraag. `COOLDOWN` betekent niet dat nul vacatures
+beschikbaar zijn. Alleen een bewezen bronopvraag mag als geslaagd worden
+geteld; nieuwe kandidaten en officieel geverifieerde vacatures zijn
+aparte aantallen.
+
+**Productiegrens:** deze documentatie en offline CI schrijven niet naar
+Google Sheets of Apps Script en wijzigen geen triggers of cooldowns.
+Nieuwe runtimevelden vragen een afzonderlijk geautoriseerde
+`Code.gs`-release met nulmeting, back-up en rollback.
+
 ## Eénmalige gebruikersstap: daadwerkelijk in Google installeren
 
 **Deze stap kan niet door alleen de GitHub/Drive-connector worden uitgevoerd.**
