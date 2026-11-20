@@ -11,7 +11,7 @@ const env = {
   RADAR_GOOGLE_CLIENT_SECRET:'dummy-secret', RADAR_GOOGLE_REFRESH_TOKEN:'dummy-refresh'
 };
 function mockGoogle({files = [sourceFile(1),otherFile,manifest],parentId=RADAR_SHEET_ID,
-  drift=false,refusePut=false,reorderAfterPut=false}={}) {
+  drift=false,refusePut=false,reorderAfterPut=false,corruptReadback=false}={}) {
   let live=structuredClone(files);
   const calls=[];
   let getCount=0;
@@ -23,7 +23,9 @@ function mockGoogle({files = [sourceFile(1),otherFile,manifest],parentId=RADAR_S
     if (url.endsWith('/content') && opts.method === 'GET') {
       getCount++;
       if (drift && getCount === 2) live[0].source=sample(9);
-      return reply({files:reorderAfterPut && getCount >= 3 ? [...live].reverse() : live});
+      return reply({files:corruptReadback && getCount >= 3 ?
+        [{...live[0],source:sample(99)},...live.slice(1)] :
+        (reorderAfterPut && getCount >= 3 ? [...live].reverse() : live)});
     }
     if (url.endsWith('/content') && opts.method === 'PUT') {
       if (refusePut) return reply({error:'not allowed'},403);
@@ -163,4 +165,52 @@ test('post-write Google file reordering is not a false deployment failure', asyn
       RADAR_EXPECTED_GITHUB_SHA256:hashSource(sample(2))},
     fetchImpl:fake.fetchImpl,readSource:async()=>sample(2),log:()=>{}});
   assert.equal(result.state,'DEPLOYED');
+});
+
+test('expired or revoked OAuth refresh token fails before any Apps Script access', async () => {
+  const calls=[];
+  const fetchImpl=async (url, opts) => {
+    calls.push({url,method:opts.method});
+    return {ok:false,status:401};
+  };
+  await assert.rejects(synchronize({mode:'inspect',env,fetchImpl,
+    readSource:async()=>sample(1),log:()=>{}}),/Google OAuth failed: HTTP 401/);
+  assert.equal(calls.length,1);
+  assert.equal(calls[0].url,'https://oauth2.googleapis.com/token');
+  assert.equal(calls.some(c=>c.method==='PUT'),false);
+});
+
+test('OAuth HTTP 200 without a usable access token fails closed', async () => {
+  let calls=0;
+  const fetchImpl=async () => {
+    calls++;
+    return {ok:true,status:200,json:async()=>({access_token:null})};
+  };
+  await assert.rejects(synchronize({mode:'inspect',env,fetchImpl,
+    readSource:async()=>sample(1),log:()=>{}}),/did not return an access token/);
+  assert.equal(calls,1);
+});
+
+test('remote Apps Script 429 throttling fails closed without a write or blind retry', async () => {
+  const calls=[];
+  const fetchImpl=async (url,opts) => {
+    calls.push({url,method:opts.method});
+    if (url==='https://oauth2.googleapis.com/token')
+      return {ok:true,status:200,json:async()=>({access_token:'mock'})};
+    return {ok:false,status:429};
+  };
+  await assert.rejects(synchronize({mode:'deploy',env,fetchImpl,
+    readSource:async()=>sample(2),log:()=>{}}),/HTTP 429/);
+  assert.equal(calls.length,2);
+  assert.equal(calls.some(c=>c.method==='PUT'),false);
+});
+
+test('post-write readback corruption is reported as unverified, without an extra write', async () => {
+  const fake=mockGoogle({corruptReadback:true});
+  await assert.rejects(synchronize({mode:'deploy',
+    env:{...env,RADAR_EXPECTED_LIVE_SHA256:hashSource(sample(1)),
+      RADAR_EXPECTED_GITHUB_SHA256:hashSource(sample(2))},
+    fetchImpl:fake.fetchImpl,readSource:async()=>sample(2),log:()=>{}}),
+    /WRITE_NOT_VERIFIED/);
+  assert.equal(fake.calls.filter(c=>c.method==='PUT').length,1);
 });
