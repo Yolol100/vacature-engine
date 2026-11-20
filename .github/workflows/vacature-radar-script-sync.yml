@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - automation/google-apps-script/Code.gs
+  # Read-only token-health and code-drift check; never runs a vacancy scan.
+  schedule:
+    - cron: '23 4 * * 0'
   workflow_dispatch:
     inputs:
       operation:
@@ -24,6 +27,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read # Verify auto-deploy push originated from a merged PR.
 
 # Never overlap an automatic push and a manual deployment.
 concurrency:
@@ -32,10 +36,11 @@ concurrency:
 
 jobs:
   apps-script-sync:
-    # Explicitly OFF for automatic updates until first inspected manual sync.
+    # Scheduled checks always inspect without writing; automatic deploy remains gated.
     if: >-
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'push' && vars.VACATURE_RADAR_AUTO_DEPLOY == 'true')
+      (github.event_name == 'schedule' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.VACATURE_RADAR_AUTO_DEPLOY == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -47,6 +52,22 @@ jobs:
         with:
           node-version: '22'
           package-manager-cache: false
+      - name: Reject direct pushes for automatic Apps Script deployments
+        if: github.event_name == 'push'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RADAR_REPO: ${{ github.repository }}
+          RADAR_PUSH_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          # A direct administrator push must not silently overwrite live scanner code.
+          # Check the merge commit exactly; an unrelated/old PR is insufficient.
+          merged_shas="$(gh api "repos/$RADAR_REPO/commits/$RADAR_PUSH_SHA/pulls"             --jq '.[] | select(.merged_at != null and .base.ref == "main") | .merge_commit_sha')"
+          if ! grep -Fxq "$RADAR_PUSH_SHA" <<< "$merged_shas"; then
+            echo "BLOCKED: auto-sync requires a merged PR into main; use manual inspect+deploy for emergencies"
+            exit 1
+          fi
       - name: Run isolated no-network regression tests
         run: node --test automation/google-apps-script/radar.test.cjs automation/google-apps-script/sync.test.mjs
       - name: Choose safe mode and expected live hash
@@ -77,7 +98,7 @@ jobs:
             echo "RADAR_SYNC_MODE=deploy" >> "$GITHUB_ENV"
             echo "RADAR_APPROVED_LIVE_SHA256S=$approved" >> "$GITHUB_ENV"
             echo "RADAR_EXPECTED_GITHUB_SHA256=$(sha256sum automation/google-apps-script/Code.gs | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
-          elif [[ "$USER_MODE" == "inspect" ]]; then
+          elif [[ "$EVENT_NAME" == "schedule" ]] || [[ "$EVENT_NAME" == "workflow_dispatch" && "$USER_MODE" == "inspect" ]]; then
             echo "RADAR_SYNC_MODE=inspect" >> "$GITHUB_ENV"
           elif [[ "$USER_MODE" == "deploy" && "$USER_EXPECTED_SHA" =~ ^[a-f0-9]{64}$ && "$USER_EXPECTED_GITHUB_SHA" =~ ^[a-f0-9]{64}$ ]]; then
             actual_github="$(sha256sum automation/google-apps-script/Code.gs | cut -d ' ' -f 1)"
