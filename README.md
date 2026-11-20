@@ -39,6 +39,7 @@ Example: “Find new suitable remote jobs posted within the last seven days.”
 
 - `src/vacature_engine/`: deterministic canonicalization, gates,
   ranking and optional CV metadata. The `vacature-engine` does not generate CV or motivation prose and does not infer candidate experience.
+- `src/vacature_engine/mail_artifacts.py`: optional **read-only** integrity check for locally prepared, unsent `.eml` drafts. Given the latest approved CV bytes, expected attachment filename and optional recipient/subject, `verify_unsent_eml_cv` checks that exactly one DOCX attachment matches byte-for-byte (SHA-256). Re-run after **every CV edit** before offering the mail draft. This check does not create/send mail, verify skills/claims, or change application status. Never commit private CV or email contents; use synthetic fixtures only.
 - `ingestion/`: bounded, read-only public ATS/feed adapters and a
   supplementary Google discovery adapter. Static `source-specs.*` files are
   **examples**, not authority to activate a source.
