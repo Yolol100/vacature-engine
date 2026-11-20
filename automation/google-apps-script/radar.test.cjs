@@ -626,3 +626,28 @@ test('two role IDs on one generic careers URL are stored separately and deduped 
   assert.equal(second.newLeads,0);
   assert.equal(m.radar.Bronvondsten.getLastRow(),3);
 });
+
+
+test('one-time Workable migration clears only stale old-URL cooldown and preserves future backoff', () => {
+  const s = load();
+  const values = new Map([
+    ['RADAR_SOURCE_FAILURE_AT_workable_awesomemotive','1000'],
+    ['RADAR_SOURCE_FAILURE_COUNT_workable_awesomemotive','4'],
+    ['RADAR_SOURCE_RETRY_AT_workable_awesomemotive','9999999999999'],
+    ['RADAR_SOURCE_FAILURE_AT_workable_humanmade','1000'],
+    ['RADAR_SOURCE_FAILURE_COUNT_workable_humanmade','4'],
+    ['RADAR_SOURCE_RETRY_AT_workable_humanmade','9999999999999'],
+    ['RADAR_SOURCE_FAILURE_COUNT_greenhouse_acme','5']
+  ]);
+  const props={getProperty(k){return values.get(k)||null;},setProperty(k,v){values.set(k,String(v));},deleteProperty(k){values.delete(k);}};
+  const specs=[{adapter:'workable',source_id:'workable',account:'awesomemotive'},
+               {adapter:'workable',source_id:'workable',account:'humanmade'},
+               {adapter:'greenhouse',source_id:'greenhouse',account:'acme'}];
+  assert.equal(s.radarMigrateWorkableDirectEndpoint_(specs,props),true);
+  assert.equal(values.has('RADAR_SOURCE_RETRY_AT_workable_awesomemotive'),false);
+  assert.equal(values.has('RADAR_SOURCE_RETRY_AT_workable_humanmade'),false);
+  assert.equal(values.get('RADAR_SOURCE_FAILURE_COUNT_greenhouse_acme'),'5');
+  values.set('RADAR_SOURCE_FAILURE_COUNT_workable_humanmade','1');
+  assert.equal(s.radarMigrateWorkableDirectEndpoint_(specs,props),false);
+  assert.equal(values.get('RADAR_SOURCE_FAILURE_COUNT_workable_humanmade'),'1');
+});

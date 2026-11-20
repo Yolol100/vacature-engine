@@ -617,6 +617,24 @@ function radarUpdateDashboard_(radar, active, run, applicationMetrics) {
   }
 }
 
+// One-time migration for stale cooldowns caused by the former Workable 302 API.
+// Only the two verified direct-widget sources are reset. Subsequent real
+// HTTP failures immediately regain normal bounded backoff.
+function radarMigrateWorkableDirectEndpoint_(specs, props) {
+  var marker = 'VACATURE_RADAR_WORKABLE_DIRECT_V1';
+  if (props.getProperty(marker) === 'done') return false;
+  specs.forEach(function (spec) {
+    if (spec.adapter !== 'workable' ||
+        ['awesomemotive', 'humanmade'].indexOf(spec.account) === -1) return;
+    var prefix = spec.source_id + '_' + spec.account;
+    props.deleteProperty('RADAR_SOURCE_FAILURE_AT_' + prefix);
+    props.deleteProperty('RADAR_SOURCE_FAILURE_COUNT_' + prefix);
+    props.deleteProperty('RADAR_SOURCE_RETRY_AT_' + prefix);
+  });
+  props.setProperty(marker, 'done');
+  return true;
+}
+
 function runVacatureRadar(event) {
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(2000)) return {status: 'busy'};
@@ -661,6 +679,7 @@ function runVacatureRadar(event) {
     var additions = [], alerts = [], attempts = 0, failures = 0, inspected = 0;
     var reviewCounts = {}, failedAccounts = [];
     var props = PropertiesService.getScriptProperties();
+    radarMigrateWorkableDirectEndpoint_(sourceSpecs, props);
     var sourceReadiness = sourceSpecs.map(function (spec) {
       return {spec: spec, state: radarSourceDue_(spec, started, props)};
     });
