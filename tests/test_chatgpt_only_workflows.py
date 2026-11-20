@@ -4,10 +4,10 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 class ChatGPTOnlyWorkflowTests(unittest.TestCase):
-    def test_github_actions_are_ci_only(self):
+    def test_github_actions_do_not_schedule_vacancy_searches(self):
         workflows = ROOT / ".github" / "workflows"
-        # Only offline CI plus the explicitly authorized, non-scheduling
-        # code-only Apps Script sync workflow are allowed in this repository.
+        # Only offline CI plus code-only Apps Script sync are allowed here.
+        # A weekly OAuth/code-hash health check is read-only, not a vacancy search.
         self.assertEqual(
             ["ingestion-tests.yml", "vacature-radar-script-sync.yml"],
             sorted(p.name for p in workflows.glob("*.yml")),
@@ -25,7 +25,11 @@ class ChatGPTOnlyWorkflowTests(unittest.TestCase):
         self.assertIn("RADAR_EXPECTED_LIVE_SHA256", sync)
         self.assertIn("RADAR_EXPECTED_GITHUB_SHA256", sync)
         self.assertIn("secrets.RADAR_SCRIPT_ID", sync)
-        self.assertNotIn("schedule:", sync)
+        self.assertIn("schedule:", sync)
+        self.assertIn("github.event_name == 'schedule'", sync)
+        self.assertIn("RADAR_SYNC_MODE=inspect", sync)
+        self.assertIn("Reject direct pushes for automatic Apps Script deployments", sync)
+        self.assertIn("pull-requests: read", sync)
         self.assertNotIn("runVacatureRadar", sync)
         self.assertNotIn("scripts/one_pass_vacancies.py", sync)
 
