@@ -11,11 +11,11 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: Inspect the existing project, or deploy after reviewing the live hash
+        description: Inspect hashes, check code parity, or deploy after reviewing both hashes
         required: true
         type: choice
         default: inspect
-        options: [inspect, deploy]
+        options: [inspect, healthcheck, deploy]
       expected_live_sha256:
         description: Required for deploy (copy the live SHA256 from a fresh inspect run)
         required: false
@@ -36,7 +36,7 @@ concurrency:
 
 jobs:
   apps-script-sync:
-    # Scheduled checks always inspect without writing; automatic deploy remains gated.
+    # Scheduled healthchecks fail on drift without writing; automatic deploy remains gated.
     if: >-
       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'schedule' && github.ref == 'refs/heads/main') ||
@@ -98,7 +98,9 @@ jobs:
             echo "RADAR_SYNC_MODE=deploy" >> "$GITHUB_ENV"
             echo "RADAR_APPROVED_LIVE_SHA256S=$approved" >> "$GITHUB_ENV"
             echo "RADAR_EXPECTED_GITHUB_SHA256=$(sha256sum automation/google-apps-script/Code.gs | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
-          elif [[ "$EVENT_NAME" == "schedule" ]] || [[ "$EVENT_NAME" == "workflow_dispatch" && "$USER_MODE" == "inspect" ]]; then
+          elif [[ "$EVENT_NAME" == "schedule" ]] || [[ "$EVENT_NAME" == "workflow_dispatch" && "$USER_MODE" == "healthcheck" ]]; then
+            echo "RADAR_SYNC_MODE=healthcheck" >> "$GITHUB_ENV"
+          elif [[ "$EVENT_NAME" == "workflow_dispatch" && "$USER_MODE" == "inspect" ]]; then
             echo "RADAR_SYNC_MODE=inspect" >> "$GITHUB_ENV"
           elif [[ "$USER_MODE" == "deploy" && "$USER_EXPECTED_SHA" =~ ^[a-f0-9]{64}$ && "$USER_EXPECTED_GITHUB_SHA" =~ ^[a-f0-9]{64}$ ]]; then
             actual_github="$(sha256sum automation/google-apps-script/Code.gs | cut -d ' ' -f 1)"

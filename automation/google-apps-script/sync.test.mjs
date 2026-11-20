@@ -1,5 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { hashSource, inspectFiles, updatedFiles, synchronize, RADAR_SHEET_ID, REGISTER_ID } from './sync.mjs';
 
 const sample = (version) => `var VACATURE_RADAR = {radarId:'${RADAR_SHEET_ID}',registerId:'${REGISTER_ID}'};\nfunction runVacatureRadar() {return ${version};}\n`;
@@ -64,6 +68,70 @@ test('inspect reports hashes without any remote writes', async () => {
   assert.equal(result.liveHash,hashSource(sample(1)));
   assert.match(logs.join(' '),/DIFFERENT/);
   assert.equal(fake.calls.some((c)=>c.method==='PUT'),false);
+});
+
+test('strict healthcheck succeeds only for matching code and never writes', async () => {
+  const fake=mockGoogle();
+  const result=await synchronize({mode:'healthcheck',env,fetchImpl:fake.fetchImpl,
+    readSource:async()=>sample(1),log:()=>{}});
+  assert.equal(result.state,'HEALTHY');
+  assert.equal(result.liveHash,result.desiredHash);
+  assert.deepEqual(fake.calls.map(c=>c.method),['POST','GET','GET']);
+});
+
+test('strict healthcheck fails on drift after reporting both hashes without writing', async () => {
+  const fake=mockGoogle(); const logs=[];
+  await assert.rejects(synchronize({mode:'healthcheck',env,fetchImpl:fake.fetchImpl,
+    readSource:async()=>sample(2),log:s=>logs.push(s)}),/CODE_DRIFT/);
+  assert.ok(logs.includes('Live SHA256: '+hashSource(sample(1))));
+  assert.ok(logs.includes('GitHub SHA256: '+hashSource(sample(2))));
+  assert.deepEqual(fake.calls.map(c=>c.method),['POST','GET','GET']);
+});
+
+test('healthcheck fails closed on OAuth and API errors without retries or writes', async () => {
+  for (const failAt of ['oauth','project','content']) {
+    const calls=[];
+    const fake=mockGoogle();
+    const fetchImpl=async(url,opts)=>{
+      calls.push({url,method:opts.method});
+      if ((failAt==='oauth' && url==='https://oauth2.googleapis.com/token') ||
+          (failAt==='project' && url.endsWith(env.RADAR_SCRIPT_ID)) ||
+          (failAt==='content' && url.endsWith('/content'))) return {ok:false,status:401};
+      return fake.fetchImpl(url,opts);
+    };
+    await assert.rejects(synchronize({mode:'healthcheck',env,fetchImpl,
+      readSource:async()=>sample(1),log:()=>{}}),/HTTP 401/);
+    assert.equal(calls.length,{oauth:1,project:2,content:3}[failAt]);
+    assert.equal(calls.some(c=>c.method==='PUT'),false);
+  }
+});
+
+test('CLI healthcheck returns real exit codes from a path with spaces and URL characters', () => {
+  const dir=mkdtempSync(join(tmpdir(),'radar healthcheck #cli-'));
+  try {
+    const script=join(dir,'sync.mjs');
+    writeFileSync(script,readFileSync(new URL('./sync.mjs',import.meta.url),'utf8'));
+    writeFileSync(join(dir,'Code.gs'),sample(1));
+    for (const scenario of ['healthy','drift','oauth-error']) {
+      const fixture=JSON.stringify({env,manifest,files:[sourceFile(scenario==='drift'?2:1),otherFile,manifest],scenario});
+      const preload=`const f=${fixture}; globalThis.fetch=async(url,opts)=>{
+        const reply=body=>({ok:true,status:200,json:async()=>body});
+        if(url==='https://oauth2.googleapis.com/token' && opts.method==='POST')
+          return f.scenario==='oauth-error'?{ok:false,status:401}:reply({access_token:'mock'});
+        if(opts.method!=='GET') throw Error('Unexpected write');
+        if(url.endsWith('/projects/'+f.env.RADAR_SCRIPT_ID)) return reply({scriptId:f.env.RADAR_SCRIPT_ID,parentId:${JSON.stringify(RADAR_SHEET_ID)}});
+        if(url.endsWith('/content')) return reply({files:f.files});
+        throw Error('Unexpected request');
+      };`;
+      const result=spawnSync(process.execPath,['--import','data:text/javascript,'+encodeURIComponent(preload),script,'healthcheck'],
+        {encoding:'utf8',env:{...process.env,...env},timeout:10000});
+      assert.equal(result.error,undefined);
+      assert.equal(result.status,scenario==='healthy'?0:1,result.stderr);
+      if(scenario==='healthy') assert.match(result.stdout,/PASS: live code matches GitHub/);
+      if(scenario==='drift') assert.match(result.stderr,/BLOCKED: CODE_DRIFT/);
+      if(scenario==='oauth-error') assert.match(result.stderr,/Google OAuth failed: HTTP 401/);
+    }
+  } finally { rmSync(dir,{recursive:true,force:true}); }
 });
 
 test('deploy refuses to write without exact approved remote hash', async () => {
