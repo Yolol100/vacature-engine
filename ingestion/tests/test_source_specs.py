@@ -55,7 +55,7 @@ _DEPLOY_OPTION_FIELDS = {
     "page_size", "language", "feed_scope", "attribution_required",
     "canonical_verification_required", "query", "sort",
     "refresh_semantics", "tag", "rss_fallback_url",
-    "feed_delay_hours", "provider_date_not_original",
+    "feed_delay_hours", "provider_date_not_original", "api_region",
 }
 
 
@@ -88,10 +88,17 @@ def _validate_deploy_spec_contract(specs: object) -> None:
         if key in seen:
             raise ValueError("Duplicate source instance")
         seen.add(key)
-        if spec.get("source_type") not in {
-            "ats", "wordpress_discovery", "job_board", "discovery_api"
-        }:
-            raise ValueError("Unapproved source type")
+        expected_type = (
+            "wordpress_discovery" if adapter == "wordpressjobs" else
+            "job_board" if adapter in {"weworkremotely", "remoteok"}
+            or source_id == "working-nomads" else
+            "ats" if adapter in {
+                "greenhouse", "lever", "ashby", "smartrecruiters",
+                "personio", "workable", "teamtailor"
+            } else "discovery_api"
+        )
+        if spec.get("source_type") != expected_type:
+            raise ValueError("Unexpected adapter/source-type combination")
         if "listing_language" in spec and spec["listing_language"] not in {
             "en", "nl"
         }:
@@ -231,6 +238,8 @@ class SourceSpecTests(unittest.TestCase):
                 options={"rss_fallback_url": "https://unapproved.example/feed"}
             ),
             "unbounded_jobs": lambda rows: rows[0].update(max_jobs=100000),
+            "source_type_mismatch": lambda rows: rows[0].update(source_type="ats"),
+            "nested_unsafe_option": lambda rows: rows[0].update(options={"fetch_url": "https://unapproved.example/"}),
         }
         for description, change in cases.items():
             with self.subTest(mutation=description):
