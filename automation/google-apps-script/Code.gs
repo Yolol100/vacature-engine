@@ -146,11 +146,37 @@ function radarKnownUrls_(register, radar) {
       if (index == null) return;
       mapped.values.forEach(function (row) {
         var url = radarNormalizeUrl_(String(row[index] || ''));
-        if (url) found[url] = true;
+        if (url && !radarSharedCareersUrl_(url)) found[url] = true;
       });
     });
   });
   return found;
+}
+
+function radarIdentity_(employer, title) {
+  var clean = function (x) { return String(x || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().replace(/\s+/g, ' '); };
+  var e = clean(employer), t = clean(title);
+  return e && t ? e + '::' + t : '';
+}
+
+function radarSharedCareersUrl_(url) {
+  var normalized = radarNormalizeUrl_(url);
+  if (!normalized) return false;
+  var pathname = normalized.replace(/^https:\/\/[^/]+/i, '').split('?', 1)[0].replace(/\/+$/, '').toLowerCase();
+  return /^(?:\/(?:careers?|jobs?|vacatures?|werken-bij|werkenbij|work-with-us|open-positions|openings|join-us|join-our-team|opportunities|about\/careers?|company\/careers?|career\/openings|job-openings))$/.test(pathname);
+}
+
+function radarKnownRoleIds_(register, radar) {
+  var known = {};
+  [{sheet: radarTab_(register, 'Vacatures'), employer: 'employer', title: 'title'},
+   {sheet: radarTab_(radar, 'Bronvondsten'), employer: 'employer', title: 'title'}].forEach(function (target) {
+    var mapped = radarRecordMap_(target.sheet);
+    mapped.values.forEach(function (row) {
+      var role = radarIdentity_(row[mapped.names[target.employer]], row[mapped.names[target.title]]);
+      if (role) known[role] = true;
+    });
+  });
+  return known;
 }
 
 function radarSources_(register) {
@@ -575,6 +601,10 @@ function runVacatureRadar(event) {
     var register = SpreadsheetApp.openById(VACATURE_RADAR.registerId);
     var radar = SpreadsheetApp.openById(VACATURE_RADAR.radarId);
     var config = radarConfig_(register).config;
+    // Fail closed on policy drift: the skill and the live Register require NL-only.
+    if (String(config.allowed_work_locations || '').trim().toUpperCase() !== 'NL') {
+      throw new Error('Regional policy drift: radar expects Config.allowed_work_locations=NL');
+    }
     if (config.ingestion_schedule !== VACATURE_RADAR.allowedSchedule) {
       return {status: 'disabled_by_live_config', schedule: config.ingestion_schedule};
     }
@@ -593,10 +623,11 @@ function runVacatureRadar(event) {
       throw new Error('Bronvondsten columns differ from approved schema');
     }
     var oldKeys = {}, known = radarKnownUrls_(register, radar);
+    var knownRoleIds = radarKnownRoleIds_(register, radar);
     mapped.values.forEach(function (row) {
       if (row[0]) oldKeys[String(row[0])] = true;
       var url = radarNormalizeUrl_(String(row[7] || ''));
-      if (url) known[url] = true;
+      if (url && !radarSharedCareersUrl_(url)) known[url] = true;
     });
     var now = new Date().toISOString();
     var additions = [], alerts = [], attempts = 0, failures = 0, inspected = 0;
@@ -637,9 +668,14 @@ function runVacatureRadar(event) {
           var row = observations[j];
           if (!radarRelevant_(row.title, row.description, permittedFamily)) continue;
           var key = spec.adapter + ':' + row.sourceId + ':' + row.jobId;
-          if (oldKeys[key] || known[row.url]) continue;
+          var roleId = radarIdentity_(row.employer, row.title);
+          // Generic career listings may host multiple distinct roles under the same URL.
+          var sharedListing = radarSharedCareersUrl_(row.url);
+          if (oldKeys[key] || (!sharedListing && known[row.url]) ||
+              (sharedListing && roleId && knownRoleIds[roleId])) continue;
           oldKeys[key] = true;
-          known[row.url] = true;
+          if (roleId) knownRoleIds[roleId] = true;
+          if (!sharedListing) known[row.url] = true;
           var review = radarReview_(row, config, started);
           reviewCounts[review.status] = (reviewCounts[review.status] || 0) + 1;
           var saved = [
