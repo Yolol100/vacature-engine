@@ -307,7 +307,7 @@ function mockRun(schedule, jobOverrides = {}) {
     'location','review_status','source_type','review_note'];
   const register = {
     Config: dataSheet('Config', [['key','value'], ['ingestion_schedule', schedule],
-      ['target_role_families', 'wordpress_ecosystem']]),
+      ['target_role_families', 'wordpress_ecosystem'], ['allowed_work_locations', 'NL']]),
     Bronnen: dataSheet('Bronnen', [['source_id','status'], ['greenhouse','active']]),
     Vacatures: dataSheet('Vacatures', [['canonical_url','official_url']]),
     Applications: dataSheet('Applications', [['vacancy_id','application_url','status']]),
@@ -540,4 +540,42 @@ test('Servebolt RSS keeps the official job ID and never guesses a remote country
   assert.equal(result[0].jobId, 'servebolt:123');
   assert.equal(result[0].location, 'Remote');
   assert.equal(s.radarReview_(result[0], {max_posting_age_days:7}, Date.parse('2026-11-19')).alert, false);
+});
+
+test('shared generic careers listings keep separate employer roles while blocking duplicates', () => {
+  const s = load();
+  const cases = [
+    ['https://example.org/careers', true],
+    ['https://example.org/jobs/', true],
+    ['https://example.org/about/careers', true],
+    ['https://example.org/jobs/wordpress-developer', false],
+    ['https://example.org/careers/support-engineer', false]
+  ];
+  for (const [url, expected] of cases) assert.equal(s.radarSharedCareersUrl_(url), expected);
+  assert.notEqual(s.radarIdentity_('Themeco', 'Frontend Developer'),
+                  s.radarIdentity_('Themeco', 'Technical Support Advisor'));
+  assert.equal(s.radarIdentity_(' THEMeco ', ' Frontend DEVELOPER '),
+               s.radarIdentity_('Themeco', 'Frontend Developer'));
+  function sheet(rows) {return {getName(){return 'mock';},getDataRange(){return {getValues(){return rows;}};}};}
+  const register = {getSheetByName(name) {
+    if (name === 'Vacatures') return sheet([
+      ['employer','title','canonical_url','official_url'],
+      ['Themeco','Frontend Developer','https://themeco.com/careers','https://themeco.com/careers'],
+      ['MemberPress','Customer Success Agent','https://memberpress.com/careers/support-engineer','https://memberpress.com/careers/support-engineer']
+    ]);
+    if (name === 'Applications') return sheet([['application_url'],['https://themeco.com/careers']]);
+    if (name === 'JobSnapshots') return sheet([['canonical_url']]);
+    throw new Error(name);
+  }};
+  const radar = {getSheetByName(name) {
+    if (name === 'Nieuwe vacatures') return sheet([['officiele_url']]);
+    if (name === 'Bronvondsten') return sheet([['employer','title'],['Themeco','Frontend Developer']]);
+    throw new Error(name);
+  }};
+  const urls = s.radarKnownUrls_(register, radar);
+  const roles = s.radarKnownRoleIds_(register, radar);
+  assert.equal(Boolean(urls['https://themeco.com/careers']), false);
+  assert.equal(Boolean(urls['https://memberpress.com/careers/support-engineer']), true);
+  assert.equal(Boolean(roles[s.radarIdentity_('Themeco','Frontend Developer')]), true);
+  assert.equal(Boolean(roles[s.radarIdentity_('Themeco','Technical Support Advisor')]), false);
 });
