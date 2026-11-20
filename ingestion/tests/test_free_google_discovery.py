@@ -271,7 +271,11 @@ class FreeDiscoveryTests(unittest.TestCase):
         self.assertIn("vars.VACATURE_RADAR_AUTO_DEPLOY == 'true'", sync)
         self.assertIn("RADAR_EXPECTED_LIVE_SHA256", sync)
         self.assertIn("RADAR_EXPECTED_GITHUB_SHA256", sync)
-        self.assertNotIn("schedule:", sync)
+        # A weekly code/hash + OAuth check is permitted; the vacancy search stays manual.
+        self.assertIn("schedule:", sync)
+        self.assertIn("github.event_name == 'schedule'", sync)
+        self.assertIn("RADAR_SYNC_MODE=inspect", sync)
+        self.assertIn("Reject direct pushes for automatic Apps Script deployments", sync)
         self.assertNotIn("one_pass_vacancies.py", sync)
         self.assertNotIn("runVacatureRadar", sync)
 
