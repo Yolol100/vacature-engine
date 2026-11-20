@@ -69,7 +69,7 @@ jobs:
             exit 1
           fi
       - name: Run isolated no-network regression tests
-        run: node --test automation/google-apps-script/radar.test.cjs automation/google-apps-script/sync.test.mjs
+        run: node --test automation/google-apps-script/radar.test.cjs automation/google-apps-script/sync.test.mjs automation/google-apps-script/workflow.test.mjs
       - name: Choose safe mode and expected live hash
         shell: bash
         env:
