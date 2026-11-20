@@ -60,7 +60,7 @@ test('manual inspect is read-only and invalid manual deploy is rejected', () => 
   });
 });
 
-test('unreviewed direct push cannot automatically deploy, approved PR merge is allowed', () => {
+test('direct push cannot automatically deploy, merged PR commit provenance is accepted', () => {
   assert.match(workflow,/github\.event_name == 'push'[\s\S]*VACATURE_RADAR_AUTO_DEPLOY == 'true'/);
   assert.match(workflow,/repos\/\$RADAR_REPO\/commits\/\$RADAR_PUSH_SHA\/pulls/);
   assert.match(workflow,/\.merged_at != null and \.base.ref == "main"/);
