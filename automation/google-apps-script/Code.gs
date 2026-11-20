@@ -71,6 +71,7 @@ function radarRelevant_(title, description, family) {
     .replace(/<[^>]+>/g, ' ').replace(/&nbsp;|&#160;/g, ' ');
   // A standalone engineering, operations, sales, AI or product role is not
   // WordPress work merely because the company uses a WordPress website.
+  if (/\b(?:manager|management|director|head of|vp|vice president|chief executive|chief technology|team lead|technical lead)\b/.test(t)) return false;
   if (/\b(ai automation|sales engineer|systems engineer|onboarding engineer|product designer|mobile developer|data engineer)\b/.test(t) &&
       !/\b(wordpress|woocommerce|elementor|gutenberg|acf|wpml)\b/.test(t)) return false;
   if (/\b(wordpress|woocommerce|elementor|gutenberg|wpml|acf)\b/.test(t)) return true;
@@ -110,6 +111,11 @@ function radarReview_(job, config, nowMs) {
   if (/\b(?:us|usa|united states|canada)\s*(?:only|based|residents)|(?:only|based|residents)\s*(?:in|from)\s*(?:us|usa|united states|canada)\b/.test(geo) &&
       !/\b(?:netherlands|europe|emea|worldwide|global)\b/.test(location)) {
     return {status: 'geography_restricted_review', alert: false, reason: 'North America restriction; check NL eligibility'};
+  }
+  // Worldwide discovery must not be confused with permission to work from NL.
+  // Known employer restrictions are quarantined before any email alert.
+  if (/\b(?:w[- ]?2 only|us payroll only|us employees only|us work authorization required|must (?:reside|live|work|be based) in (?:the )?(?:us|u\.?s\.?a?\.?|united states)|no international hiring)\b/.test(geo)) {
+    return {status: 'geography_restricted_review', alert: false, reason: 'Employer payroll, residency or work-authorization restriction'};
   }
   if (/\b(hybrid|on.site|in.office|office.based)\b/.test(location)) {
     return {status: 'not_fully_remote_review', alert: false, reason: 'Location indicates hybrid/on-site'};
@@ -162,21 +168,39 @@ function radarIdentity_(employer, title) {
 function radarSharedCareersUrl_(url) {
   var normalized = radarNormalizeUrl_(url);
   if (!normalized) return false;
-  var pathname = normalized.replace(/^https:\/\/[^/]+/i, '').split('?', 1)[0].replace(/\/+$/, '').toLowerCase();
-  return /^(?:\/(?:careers?|jobs?|vacatures?|werken-bij|werkenbij|work-with-us|open-positions|openings|join-us|join-our-team|opportunities|about\/careers?|company\/careers?|career\/openings|job-openings))$/.test(pathname);
+  var match = normalized.match(/^https:\/\/([^/]+)(\/[^?]*)?(\?.*)?$/i);
+  if (!match) return false;
+  var host = match[1].toLowerCase();
+  var pathname = String(match[2] || '/').replace(/\/+$/, '').toLowerCase() || '/';
+  // Employer careers overviews, including ordinary pagination, are not role URLs.
+  var listing = /^(?:\/(?:careers?|jobs?|vacatures?|werken-bij|werkenbij|work-with-us|open-positions|openings|join-us|join-our-team|opportunities|about\/careers?|company\/careers?|career\/openings|job-openings))(?:\/(?:page\/\d+|\d+))?$/.test(pathname);
+  if (listing) return true;
+  // Hosted ATS tenant landing pages; an actual provider job path remains distinct.
+  if (/^(?:jobs\.lever\.co|boards\.greenhouse\.io|job-boards\.greenhouse\.io|apply\.workable\.com|jobs\.ashbyhq\.com|careers\.personio\.(?:de|com))$/.test(host)) {
+    return /^\/[a-z0-9_-]+(?:\/page\/\d+)?$/i.test(pathname);
+  }
+  if (/^(?:careers?|jobs?|werkenbij|vacatures?)\./.test(host)) {
+    return pathname === '/' || /^\/(?:page\/\d+|\d+)$/.test(pathname);
+  }
+  return false;
 }
 
-function radarKnownRoleIds_(register, radar) {
-  var known = {};
-  [{sheet: radarTab_(register, 'Vacatures'), employer: 'employer', title: 'title'},
-   {sheet: radarTab_(radar, 'Bronvondsten'), employer: 'employer', title: 'title'}].forEach(function (target) {
-    var mapped = radarRecordMap_(target.sheet);
-    mapped.values.forEach(function (row) {
-      var role = radarIdentity_(row[mapped.names[target.employer]], row[mapped.names[target.title]]);
-      if (role) known[role] = true;
-    });
-  });
-  return known;
+// A shared listing URL is never a sufficient job identity. A stable ATS job ID
+// distinguishes equal-title openings; when absent, title and employer do.
+function radarObservationKey_(spec, row) {
+  var provider = String(spec.adapter || '');
+  var source = String(row.sourceId || spec.source_id || '');
+  var jobId = String(row.jobId || '').trim();
+  var shared = radarSharedCareersUrl_(row.url);
+  var role = radarIdentity_(row.employer, row.title);
+  if (!shared && jobId) return provider + ':' + source + ':' + jobId;
+  if (!role) return '';
+  // The role disambiguator makes two different roles on one general URL distinct.
+  // Keep a real ATS-specific ID so two equal-title job postings stay distinct.
+  var explicitId = jobId && jobId !== row.url &&
+    !radarSharedCareersUrl_(jobId) ? jobId : '';
+  return provider + ':' + source + ':' + (explicitId || radarNormalizeUrl_(row.url)) +
+    ':role:' + encodeURIComponent(role).slice(0, 350);
 }
 
 function radarSources_(register) {
@@ -245,9 +269,8 @@ function radarFetchSource_(spec) {
   var url = radarSpecUrl_(spec);
   if (!url) throw new Error('Unsupported approved source');
   try {
-    // Workable's official public endpoint redirects to its hosted jobs widget.
-    // Follow that redirect only for this provider; keep other feeds strict.
-    return radarHttp_(url, spec.adapter === 'workable');
+    // Public ATS sources use directly verified HTTPS endpoints; no redirects.
+    return radarHttp_(url);
   } catch (error) {
     if (spec.adapter !== 'greenhouse' ||
         !/Source response exceeds safety budget/.test(String(error))) throw error;
@@ -269,7 +292,8 @@ function radarSpecUrl_(spec) {
       var region = spec.options && spec.options.api_region === 'eu' ? 'api.eu.lever.co' : 'api.lever.co';
       return 'https://' + region + '/v0/postings/' + encodeURIComponent(account) + '?mode=json&limit=100';
     case 'workable':
-      return 'https://www.workable.com/api/accounts/' + encodeURIComponent(account) + '?details=true';
+      // Direct official widget endpoint; avoid the old 302 hop that caused live cooldowns.
+      return 'https://apply.workable.com/api/v1/widget/accounts/' + encodeURIComponent(account) + '?details=true';
     case 'personio':
       return 'https://' + account + '.jobs.personio.com/xml?language=en';
     case 'teamtailor':
@@ -602,8 +626,12 @@ function runVacatureRadar(event) {
     var radar = SpreadsheetApp.openById(VACATURE_RADAR.radarId);
     var config = radarConfig_(register).config;
     // Fail closed on policy drift: the skill and the live Register require NL-only.
-    if (String(config.allowed_work_locations || '').trim().toUpperCase() !== 'NL') {
-      throw new Error('Regional policy drift: radar expects Config.allowed_work_locations=NL');
+    if (String(config.allowed_work_locations || '').trim().toUpperCase() !== 'NL' ||
+        String(config.remote_scope || '').trim().toLowerCase() !== 'worldwide') {
+      throw new Error('Regional policy drift: worldwide discovery, NL execution required');
+    }
+    if (String(config.allowed_listing_languages || '').replace(/\s/g, '').toLowerCase() !== 'nl,en') {
+      throw new Error('Language policy drift: NL and EN listings only');
     }
     if (config.ingestion_schedule !== VACATURE_RADAR.allowedSchedule) {
       return {status: 'disabled_by_live_config', schedule: config.ingestion_schedule};
@@ -614,8 +642,9 @@ function runVacatureRadar(event) {
     if (!Array.isArray(sourceFile)) throw new Error('Approved source specification format changed');
     var sourceSpecs = sourceFile.filter(function (spec) {
       var extra = (spec.options || {}).registry_source_id;
+      var listingLang = String(spec.listing_language || '').toLowerCase();
       return !!activeIds[spec.source_id] && (!extra || !!activeIds[extra]) &&
-        !!radarSpecUrl_(spec);
+        (!listingLang || listingLang === 'nl' || listingLang === 'en') && !!radarSpecUrl_(spec);
     });
     var leads = radarTab_(radar, 'Bronvondsten');
     var mapped = radarRecordMap_(leads);
@@ -623,7 +652,6 @@ function runVacatureRadar(event) {
       throw new Error('Bronvondsten columns differ from approved schema');
     }
     var oldKeys = {}, known = radarKnownUrls_(register, radar);
-    var knownRoleIds = radarKnownRoleIds_(register, radar);
     mapped.values.forEach(function (row) {
       if (row[0]) oldKeys[String(row[0])] = true;
       var url = radarNormalizeUrl_(String(row[7] || ''));
@@ -667,15 +695,14 @@ function runVacatureRadar(event) {
         for (var j = 0; j < observations.length; j++) {
           var row = observations[j];
           if (!radarRelevant_(row.title, row.description, permittedFamily)) continue;
-          var key = spec.adapter + ':' + row.sourceId + ':' + row.jobId;
-          var roleId = radarIdentity_(row.employer, row.title);
-          // Generic career listings may host multiple distinct roles under the same URL.
+          var key = radarObservationKey_(spec, row);
+          if (!key) continue;
+          // Normalise first: tracking and trailing slashes must not create repeats.
+          var normalizedUrl = radarNormalizeUrl_(row.url);
           var sharedListing = radarSharedCareersUrl_(row.url);
-          if (oldKeys[key] || (!sharedListing && known[row.url]) ||
-              (sharedListing && roleId && knownRoleIds[roleId])) continue;
+          if (oldKeys[key] || (!sharedListing && known[normalizedUrl])) continue;
           oldKeys[key] = true;
-          if (roleId) knownRoleIds[roleId] = true;
-          if (!sharedListing) known[row.url] = true;
+          if (!sharedListing) known[normalizedUrl] = true;
           var review = radarReview_(row, config, started);
           reviewCounts[review.status] = (reviewCounts[review.status] || 0) + 1;
           var saved = [

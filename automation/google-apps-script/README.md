@@ -5,6 +5,23 @@ WordPress-vacature**kandidaten** centraal bewaren. Geen automatische
 sollicitaties, geen automatische verificatieclaims, geen eigen tweede
 vacature-register, geen betaalde provider.
 
+## Wereldwijde vacatures, Nederland als werkland
+
+De ontdekking doorzoekt openbare werkgevers- en ATS-bronnen in Amerika, Europa,
+Azie en internationale remote-hubs, onafhankelijk van de vestigingsplaats.
+Het live Register moet remote_scope=worldwide en allowed_work_locations=NL
+hanteren. De radar bewaart voorlopige kandidaten maar meldt alleen recente,
+mogelijk 100% remote vanuit Nederland uitvoerbare functies. W2/US-only,
+verplichte lokale aanwezigheid, management, pure AI/automation-only en talen
+anders dan NL/EN zijn geen geverifieerde matches.
+De officiele werkgever/ATS moet daarna de oorspronkelijke plaatsingsdatum,
+Nederlandse contract-/werktoelating, werktijden en CandidateEvidence bevestigen.
+
+Verschillende functies op dezelfde algemene careers-pagina, op ATS-tenantroots
+of op pagineringspagina's krijgen afzonderlijke kandidaatidentiteiten op basis
+van werkgever, functie en specifieke job-ID indien beschikbaar. Bestaande
+historische kandidaten worden niet verwijderd.
+
 ## Huidige toestand
 
 - Centrale beleidsbron: [Vacature Register](https://docs.google.com/spreadsheets/d/1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0/edit), tabbladen
@@ -23,7 +40,7 @@ vacature-register, geen betaalde provider.
 - Maximaal 35 bronrondes en 150 nieuwe kandidaten per run. Langzamere
   aggregators worden minder vaak bevraagd. Grote Greenhouse-JSON-antwoorden
   zijn begrensd op 4,25 MB, met een officiële metadatafallback boven de limiet.
-  Workable gebruikt het gedocumenteerde openbare `www.workable.com/api/accounts/…` endpoint en volgt de redirect van Workable. Bij HTTP 429 of 503 houdt de radar rekening met `Retry-After` en de bestaande wachttijd.
+  Workable gebruikt direct het openbare officiele HTTPS-widgetendpoint; de oude 302-doorverwijzing wordt niet meer gebruikt. Bij HTTP 429 of 503 houdt de radar rekening met `Retry-After` en de bestaande wachttijd.
   Een lege of falende bron is **geen** bewijs dat er geen actuele vacatures zijn.
 - `Bronvondsten.review_status` onderscheidt recent mogelijke remote-NL-kansen
   (`needs_official_review`) van `historical_review`,

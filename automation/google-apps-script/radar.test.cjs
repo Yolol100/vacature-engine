@@ -168,15 +168,15 @@ test('Workable uses the official public careers API endpoint', () => {
   const s = load();
   assert.equal(
     s.radarSpecUrl_({adapter:'workable',account:'humanmade'}),
-    'https://www.workable.com/api/accounts/humanmade?details=true'
+    'https://apply.workable.com/api/v1/widget/accounts/humanmade?details=true'
   );
   assert.equal(
     s.radarSpecUrl_({adapter:'workable',account:'awesomemotive'}),
-    'https://www.workable.com/api/accounts/awesomemotive?details=true'
+    'https://apply.workable.com/api/v1/widget/accounts/awesomemotive?details=true'
   );
 });
 
-test('only Workable follows its official careers endpoint redirect', () => {
+test('all official ATS endpoints disallow redirects', () => {
   const options = [];
   const s = load({UrlFetchApp:{fetch(url, opts) {
     options.push({url, opts});
@@ -188,8 +188,8 @@ test('only Workable follows its official careers endpoint redirect', () => {
   s.radarFetchSource_({adapter:'workable',account:'humanmade'});
   s.radarFetchSource_({adapter:'greenhouse',account:'acme'});
   assert.equal(options[0].url,
-    'https://www.workable.com/api/accounts/humanmade?details=true');
-  assert.equal(options[0].opts.followRedirects, true);
+    'https://apply.workable.com/api/v1/widget/accounts/humanmade?details=true');
+  assert.equal(options[0].opts.followRedirects, false);
   assert.equal(options[1].opts.followRedirects, false);
 });
 
@@ -307,7 +307,7 @@ function mockRun(schedule, jobOverrides = {}) {
     'location','review_status','source_type','review_note'];
   const register = {
     Config: dataSheet('Config', [['key','value'], ['ingestion_schedule', schedule],
-      ['target_role_families', 'wordpress_ecosystem'], ['allowed_work_locations', 'NL']]),
+      ['target_role_families', 'wordpress_ecosystem'], ['allowed_work_locations', 'NL'], ['remote_scope','worldwide'], ['allowed_listing_languages','nl,en']]),
     Bronnen: dataSheet('Bronnen', [['source_id','status'], ['greenhouse','active']]),
     Vacatures: dataSheet('Vacatures', [['canonical_url','official_url']]),
     Applications: dataSheet('Applications', [['vacancy_id','application_url','status']]),
@@ -338,13 +338,13 @@ function mockRun(schedule, jobOverrides = {}) {
       fetches.push(url);
       let raw;
       if (url.includes('source-specs.deploy.json')) {
-        raw = JSON.stringify([{source_id:'greenhouse',source_type:'ats',adapter:'greenhouse',account:'acme',employer:'Acme'}]);
+        raw = JSON.stringify([{source_id:'greenhouse',source_type:'ats',adapter:'greenhouse',account:'acme',employer:'Acme',listing_language:'en'}]);
       } else if (url.startsWith('https://boards-api.greenhouse.io/')) {
-        raw = JSON.stringify({jobs:[{
-          id:1,title:'WordPress Developer',
+        const base = {id:1,title:'WordPress Developer',
           absolute_url:'https://boards.greenhouse.io/acme/jobs/1?utm_source=radar',
-          first_published:'2026-11-15T00:00:00Z', ...jobOverrides
-        }]});
+          first_published:'2026-11-15T00:00:00Z'};
+        const overrides = Array.isArray(jobOverrides) ? jobOverrides : [jobOverrides];
+        raw = JSON.stringify({jobs:overrides.map(extra => ({...base, ...extra}))});
       } else {
         throw new Error('Unexpected request: ' + url);
       }
@@ -573,9 +573,56 @@ test('shared generic careers listings keep separate employer roles while blockin
     throw new Error(name);
   }};
   const urls = s.radarKnownUrls_(register, radar);
-  const roles = s.radarKnownRoleIds_(register, radar);
   assert.equal(Boolean(urls['https://themeco.com/careers']), false);
   assert.equal(Boolean(urls['https://memberpress.com/careers/support-engineer']), true);
-  assert.equal(Boolean(roles[s.radarIdentity_('Themeco','Frontend Developer')]), true);
-  assert.equal(Boolean(roles[s.radarIdentity_('Themeco','Technical Support Advisor')]), false);
+  const spec = {adapter:'generic',source_id:'themeco'};
+  const career = 'https://themeco.com/careers?page=2';
+  const a = s.radarObservationKey_(spec,{sourceId:'themeco',jobId:career,url:career,employer:'Themeco',title:'Frontend Developer'});
+  const b = s.radarObservationKey_(spec,{sourceId:'themeco',jobId:career,url:career,employer:'Themeco',title:'Technical Support Advisor'});
+  assert.notEqual(a,b);
+  assert.equal(a,s.radarObservationKey_(spec,{sourceId:'themeco',jobId:career,url:career,employer:' THEMeco ',title:'frontend developer'}));
+  assert.notEqual(
+    s.radarObservationKey_({adapter:'lever'}, {sourceId:'lever',jobId:'1234',url:'https://jobs.lever.co/themeco',employer:'Themeco',title:'Web Developer'}),
+    s.radarObservationKey_({adapter:'lever'}, {sourceId:'lever',jobId:'9876',url:'https://jobs.lever.co/themeco',employer:'Themeco',title:'Web Developer'})
+  );
+  assert.equal(s.radarSharedCareersUrl_('https://jobs.lever.co/themeco'),true);
+  assert.equal(s.radarSharedCareersUrl_('https://boards.greenhouse.io/themeco'),true);
+  assert.equal(s.radarSharedCareersUrl_('https://jobs.lever.co/themeco/1234'),false);
+  assert.equal(s.radarSharedCareersUrl_('https://example.org/vacatures/page/10'),true);
+});
+
+
+test('global discovery retains NL-only execution and rejects management/W2-only leads', () => {
+  const s = load();
+  assert.equal(s.radarRelevant_('Senior WordPress Developer','',['wordpress_ecosystem','web_design_development']), true);
+  assert.equal(s.radarRelevant_('Engineering Manager - APAC','Build websites',['wordpress_ecosystem','web_design_development']), false);
+  assert.equal(s.radarRelevant_('WordPress Technical Lead','Build themes',['wordpress_ecosystem']), false);
+  const now=Date.parse('2026-11-20T12:00:00Z'), base={publishedHint:'2026-11-19T12:00:00Z',description:'100% remote role',location:'Remote'};
+  const us = s.radarReview_({...base,description:'W2 only. Must be based in the United States.'},{max_posting_age_days:'7'},now);
+  assert.equal(us.status,'geography_restricted_review');
+  assert.equal(us.alert,false);
+  const europe = s.radarReview_({...base,location:'Remote Europe'}, {max_posting_age_days:'7'},now);
+  assert.equal(europe.status,'needs_official_review');
+  const asia = s.radarReview_({...base,location:'Remote Japan'}, {max_posting_age_days:'7'},now);
+  assert.equal(asia.alert,false);
+});
+
+
+test('two role IDs on one generic careers URL are stored separately and deduped on replay', () => {
+  const listing='https://jobs.lever.co/acme?page=2';
+  const m=mockRun('apps_script_15m_fastlane_and_on_demand_deep',[
+    {id:711,title:'WordPress Developer',absolute_url:listing},
+    {id:712,title:'WooCommerce Developer',absolute_url:listing}
+  ]);
+  const first=m.s.runVacatureRadar({triggerUid:'test'});
+  assert.equal(first.newLeads,2);
+  const items=m.radar.Bronvondsten.getDataRange().getValues().slice(1);
+  assert.equal(items.length,2);
+  assert.notEqual(items[0][0],items[1][0]);
+  for(const k of [...m.props.keys()]) {
+    if(k.startsWith('RADAR_SOURCE_SUCCESS_')) m.props.delete(k);
+  }
+  const second=m.s.runVacatureRadar({triggerUid:'test'});
+  assert.equal(second.newLeads,0);
+  assert.equal(m.radar.Bronvondsten.getLastRow(),3);
 });
