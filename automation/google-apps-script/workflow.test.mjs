@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const workflow = readFileSync(new URL('../../.github/workflows/vacature-radar-script-sync.yml', import.meta.url), 'utf8');
+const regressionWorkflow = readFileSync(new URL('../../.github/workflows/ingestion-tests.yml', import.meta.url), 'utf8');
 
 function stepScript(name) {
   const anchor = '      - name: ' + name + '\n';
@@ -35,14 +36,16 @@ function runBash(script, dir, moreEnv={}) {
     stderr:result.stderr, stdout:result.stdout};
 }
 
-test('schedule checks OAuth once per week and never requests deploy mode', () => {
+test('schedule always selects strict read-only healthcheck, even with deploy input', () => {
   assert.match(workflow, /schedule:\s*\n\s*- cron:\s*'23 4 \* \* 0'/);
   assert.match(workflow, /github\.event_name == 'schedule'/);
   inTemp(dir => {
-    const result=runBash(stepScript('Choose safe mode and expected live hash'),dir,
-      {EVENT_NAME:'schedule',USER_MODE:'', USER_EXPECTED_SHA:'',USER_EXPECTED_GITHUB_SHA:''});
-    assert.equal(result.status,0,result.stderr);
-    assert.equal(result.output,'RADAR_SYNC_MODE=inspect\n');
+    for (const mode of ['', 'deploy', 'inspect']) {
+      const result=runBash(stepScript('Choose safe mode and expected live hash'),dir,
+        {EVENT_NAME:'schedule',USER_MODE:mode, USER_EXPECTED_SHA:'',USER_EXPECTED_GITHUB_SHA:''});
+      assert.equal(result.status,0,result.stderr);
+      assert.equal(result.output,'RADAR_SYNC_MODE=healthcheck\n');
+    }
   });
 });
 
@@ -52,12 +55,24 @@ test('manual inspect is read-only and invalid manual deploy is rejected', () => 
     const good=runBash(script,dir,{EVENT_NAME:'workflow_dispatch',USER_MODE:'inspect'});
     assert.equal(good.status,0,good.stderr);
     assert.equal(good.output,'RADAR_SYNC_MODE=inspect\n');
+    const health=runBash(script,dir,{EVENT_NAME:'workflow_dispatch',USER_MODE:'healthcheck'});
+    assert.equal(health.status,0,health.stderr);
+    assert.equal(health.output,'RADAR_SYNC_MODE=healthcheck\n');
     const bad=runBash(script,dir,{EVENT_NAME:'workflow_dispatch',USER_MODE:'deploy',
       USER_EXPECTED_SHA:'wrong',USER_EXPECTED_GITHUB_SHA:'wrong'});
     assert.notEqual(bad.status,0);
     assert.equal(bad.output,'');
     assert.match(bad.stdout,/BLOCKED:/);
   });
+});
+
+test('every PR to main runs all required checks, including workflow-only changes', () => {
+  const events=regressionWorkflow.split('\npermissions:')[0];
+  assert.match(events,/\n  pull_request:\n    branches: \[main\]\n/);
+  assert.doesNotMatch(events,/\bpaths(?:-ignore)?:/);
+  assert.match(regressionWorkflow,/name: Apps Script V8 mock tests \(no network\)/);
+  assert.match(regressionWorkflow,/unit-tests \(Python 3\.12\)/);
+  assert.match(regressionWorkflow,/python-version: \["3\.11", "3\.12", "3\.13"\]/);
 });
 
 test('direct push cannot automatically deploy, merged PR commit provenance is accepted', () => {

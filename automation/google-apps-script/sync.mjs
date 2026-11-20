@@ -1,6 +1,7 @@
 /** Safe, non-scheduling sync of an EXISTING spreadsheet-bound Apps Script. */
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
 
 export const RADAR_SHEET_ID = '1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ';
 export const REGISTER_ID = '1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0';
@@ -60,7 +61,7 @@ async function jsonResponse(response, label) {
 export async function synchronize({ mode, env = process.env, fetchImpl = fetch,
   readSource = () => readFile(new URL('./Code.gs', import.meta.url), 'utf8'),
   log = console.log } = {}) {
-  if (!['inspect', 'deploy'].includes(mode)) throw new Error('Use inspect or deploy');
+  if (!['inspect', 'healthcheck', 'deploy'].includes(mode)) throw new Error('Use inspect, healthcheck or deploy');
   const required = ['RADAR_SCRIPT_ID', 'RADAR_GOOGLE_CLIENT_ID',
     'RADAR_GOOGLE_CLIENT_SECRET', 'RADAR_GOOGLE_REFRESH_TOKEN'];
   for (const key of required) {
@@ -102,10 +103,15 @@ export async function synchronize({ mode, env = process.env, fetchImpl = fetch,
   log(`Live code file: ${snapshot.radarFile.name}`);
   log(`Live SHA256: ${snapshot.sha256}`);
   log(`GitHub SHA256: ${desiredHash}`);
-  if (mode === 'inspect') {
-    log(snapshot.sha256 === desiredHash ? 'PASS: live code matches GitHub' :
+  if (mode === 'inspect' || mode === 'healthcheck') {
+    const matches = snapshot.sha256 === desiredHash;
+    log(matches ? 'PASS: live code matches GitHub' :
       'DIFFERENT: inspect and approve the live baseline before deployment');
-    return { state: 'INSPECTED', liveHash: snapshot.sha256, desiredHash };
+    if (mode === 'healthcheck' && !matches) {
+      throw new Error('CODE_DRIFT: live scanner differs from GitHub; inspect before deployment');
+    }
+    return { state: mode === 'healthcheck' ? 'HEALTHY' : 'INSPECTED',
+      liveHash: snapshot.sha256, desiredHash };
   }
   if (snapshot.sha256 === desiredHash) {
     log('NO_CHANGE: same scanner code already installed; no write');
@@ -138,7 +144,7 @@ export async function synchronize({ mode, env = process.env, fetchImpl = fetch,
   return { state: 'DEPLOYED', liveHash: verified.sha256, desiredHash };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   synchronize({mode: process.argv[2]}).catch((error) => {
     console.error(`BLOCKED: ${error.message}`);
     process.exitCode = 1;
