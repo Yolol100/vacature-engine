@@ -18,20 +18,56 @@ automatically submit applications, send messages, or change application states.
 
 ## Workflow for a user-requested search
 
-1. Read the live policy, active sources, prior vacancies/applications and
-   `Feedback` before ranking or reintroducing any role.
-2. Search official employer/ATS pages first. Use permitted public feeds,
-   WordPress sources and fresh web discovery as supplementary inputs.
-3. Verify on the *official role page* that the opening is current, actually
-   published within the configured window (normally seven days), fully remote
-   and workable from the Netherlands. Search-index, first-seen and update
-   timestamps are **not** employer publication dates.
-4. Deduplicate on canonical role URLs and stable provider job IDs against
-   current and prior application/`Feedback` evidence. Never recommend a previously
-   submitted or rejected role as new.
-5. Require verified employer legitimacy, permitted Dutch/English language
-   and candidate fit supported by `CandidateEvidence`. Present only verified
-   matches, with their exact role URL, publication date and rationale.
+Live `Vacature Register:Config` is the policy source, including the
+`vacancy_on_demand_search_sequence`, `vacancy_candidate_primary_gates`,
+`vacancy_candidate_missing_secondary_max`, `vacancy_search_web_fallback`
+and `vacancy_candidate_storage_and_dedupe` rules.
+
+1. **Read the Register and Radar first.** Load `Config`, all active
+   `Bronnen`, `Radar:Bronvondsten`, `Vacatures`, `Applications`,
+   `ApplicationEvents`, `Feedback`, `JobSnapshots`, and relevant
+   `CandidateEvidence`. Recheck promising pending leads, and deduplicate
+   exact role URLs, tenant-specific ATS job IDs, and employer + exact title.
+   Do not reintroduce previously submitted or rejected roles. Different jobs
+   on one generic careers page are distinct.
+2. **If not enough new verified roles are already available**, run the
+   existing explicit on-demand exhaustive search. When live Config selects
+   `vacancy_search_mode=exhaustive_all_active_sources` and
+   `vacancy_search_stop_when_target_verified=FALSE`, attempt every active
+   registered source ID (233 as of 2026-11-21). Record a separate attempt
+   and limitation for each. A single HTML reachability check does not
+   prove all jobs at that source were inspected.
+3. **If still short, expand beyond the Register.** Search current public
+   Google results (including targeted ATS X-ray queries) and other permitted
+   public employer/ATS/web pages; use a browser when rendering is necessary,
+   available and authorized. On-demand native web search does not require a
+   paid SerpApi account. Do not bypass blocked sites, CAPTCHA, logins or
+   access restrictions; do not incur a paid browser cost without permission.
+4. **Keep promising incomplete candidates.** The two main signals are
+   **fully remote** and **material WordPress, WooCommerce, Elementor,
+   Gutenberg, website design/development or frontend web work**. A role
+   missing one or two *other* facts (e.g. original posting date, salary,
+   contract type or NL work eligibility) may be saved as an **unverified
+   candidate** in `Radar:Bronvondsten`, with an exact role link, source and
+   missing-fact notes. Do not discard it solely for those omissions.
+   Unknown permission to work from NL remains pending, never verified.
+   Proved non-remote, unrelated or NL-ineligible work is not suitable.
+5. **Only verify and recommend with evidence.** Confirm the official exact
+   job URL, original publication date within the live age limit (normally
+   seven days), fully remote work permitted from the Netherlands, NL/EN
+   language, legitimate employer, open application and candidate experience.
+   Google snippets, RSS timestamps and ATS update dates are not proof of
+   original publication. Unknown salary is a preference issue, not an
+   automatic disqualification. Present only verified opportunities as
+   application-ready; preserve the existing Register application history.
+
+The scheduled **15-minute Apps Script fast lane** polls only the approved
+subset of feeds/ATS accounts (currently 27 specifications across 17 source
+IDs), saves preliminary candidates to Radar and does **not** check all 233
+sources, Google and the wider browser each tick. The full deep search is
+triggered only by an explicit ChatGPT request. The verified Register
+`Vacatures` table remains distinct from unverified Radar observations.
+Never auto-apply or auto-send.
 
 Example: “Find new suitable remote jobs posted within the last seven days.”
 
