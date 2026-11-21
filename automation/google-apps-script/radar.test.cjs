@@ -431,6 +431,29 @@ test('a cooling-down source remains degraded while another source is due', () =>
   assert.equal(s.radarRunStatus_(0,1,0),'degraded_source_failures');
 });
 
+
+test('missing original date and secondary salary data keep remote WordPress lead pending', () => {
+  const m = mockRun('apps_script_15m_fastlane_and_on_demand_deep', {
+    first_published: '',
+    location: {name: 'Remote - Netherlands'},
+    content: '<p>Build WordPress and WooCommerce websites.</p>'
+    // The employer ATS does not provide salary information.
+  });
+  const result = m.s.runVacatureRadar();
+  assert.equal(result.attemptedSources, 1);
+  assert.equal(result.failedSources, 0);
+  assert.equal(result.newLeads, 1);
+  const row = m.radar['Bronvondsten'].getDataRange().getValues()[1];
+  assert.equal(row[6], 'WordPress Developer');
+  assert.equal(row[8], '');
+  assert.equal(row[9], 'Remote - Netherlands');
+  assert.equal(row[10], 'date_unknown_review');
+  assert.match(row[12], /Original posting date unverified/);
+  assert.equal(m.register.Vacatures.getLastRow(), 1);
+  assert.equal(m.register.Applications.getLastRow(), 1);
+  assert.equal(m.mails.length, 0);
+});
+
 test('a source cooling down after repeated errors remains visibly degraded', () => {
   const m=mockRun('apps_script_15m_fastlane_and_on_demand_deep');
   const now=Date.now();
