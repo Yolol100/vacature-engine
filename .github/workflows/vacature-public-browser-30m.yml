@@ -13,7 +13,7 @@ on:
         required: true
         type: choice
         default: smoke
-        options: [smoke, full, google_check]
+        options: [smoke, full, google_check, google_probe]
 
 permissions:
   contents: read
@@ -66,6 +66,11 @@ jobs:
           if [[ "$mode" == "google_check" ]]; then
             # Read-only account check: does not spend a search credit.
             python ingestion/scheduled_worker.py --google-check-only
+            exit 0
+          fi
+          if [[ "$mode" == "google_probe" ]]; then
+            # Explicit manual one-shot test; still refuses any paid/unknown plan.
+            python ingestion/scheduled_worker.py --google-probe-only
             exit 0
           fi
           # At most one free Google Jobs search per 4 hours (<=186/month).

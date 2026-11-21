@@ -603,6 +603,8 @@ def main() -> None:
     p.add_argument("--no-google", action="store_true")
     p.add_argument("--google-check-only", action="store_true",
                    help="Check existing free SerpApi plan without spending a search credit")
+    p.add_argument("--google-probe-only", action="store_true",
+                   help="Manually test ONE Google Jobs query; still blocks if plan is not verified free")
     a = p.parse_args()
     if a.google_check_only:
         key = os.environ.get("SERPAPI_API_KEY", "").strip()
@@ -612,6 +614,17 @@ def main() -> None:
             status = free_serpapi_account_status(_serpapi_json({"api_key":key}))
         print(json.dumps({"google_free_plan_status":status,
                           "safe_to_search":status=="free_verified"}))
+        return
+    if a.google_probe_only:
+        result, matches = discover_google_allowed(
+            "remote WordPress WooCommerce developer jobs Europe",
+            0, os.environ.get("SERPAPI_API_KEY", "").strip())
+        status = result["status"]
+        print(json.dumps({"google_provider_status":status,
+                          "unverified_candidate_count":len(matches),
+                          "application_ready_count":0}))
+        if status != "serpapi_google_jobs_success":
+            raise SystemExit(2)
         return
     result = run(Path(a.registry), Path(a.output), limit=a.limit,
                  chrome="" if a.no_browser else None, max_render=0 if a.no_browser else a.max_render,
