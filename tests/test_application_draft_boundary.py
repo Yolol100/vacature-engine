@@ -32,7 +32,8 @@ class ApplicationDraftBoundaryTests(unittest.TestCase):
     def test_engine_remains_read_only_and_prose_free(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("does not generate CV or motivation prose", readme)
-        self.assertIn("GitHub Actions are CI-only", readme)
+        self.assertIn("GitHub Actions retains offline CI", readme)
+        self.assertIn("No personal application history leaves Google Sheets.", readme)
 
 
 if __name__ == "__main__":
