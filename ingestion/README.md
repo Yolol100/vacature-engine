@@ -65,5 +65,11 @@ public source URLs and publishes only public job observations to a
 separate branch. Private Apps Script ingests and deduplicates pending leads.
 Official vacancy/NL eligibility verification remains on-demand.
 See \`docs/SCHEDULED-30M-BROWSER-WORKER.md\`.
+The approved public workflow also starts an ephemeral, localhost-only
+SearXNG Docker instance after checkout for free multi-engine discovery.
+Google may remain blocked, while DuckDuckGo, Bing or Brave can return
+role-specific links. Each result is still unverified, and blocked original
+job sites remain marked as such. No access-control evasion or paid API.
+
 
 See [FREE-GOOGLE-DISCOVERY.md](docs/FREE-GOOGLE-DISCOVERY.md).

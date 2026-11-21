@@ -484,6 +484,123 @@ def discover_google_allowed(query: str, index: int, key: str) -> tuple[dict, lis
             "candidate_count":len(rows),"browser":"authorized_api"},rows
 
 
+
+# SearXNG is ephemeral, bound to localhost by the GitHub job and never exposed
+# over the Internet. This fixed endpoint prevents arbitrary network fetching.
+SEARXNG_SEARCH_ENDPOINT = "http://127.0.0.1:8080/search"
+SEARXNG_ENGINE_SET = "duckduckgo,brave,bing,google"
+SEARXNG_PUBLIC_QUERIES = (
+    "remote WordPress WooCommerce developer jobs",
+    "fully remote Elementor website designer jobs",
+    "WordPress frontend developer remote Europe",
+    "remote website UI frontend developer Netherlands",
+)
+
+
+def _searxng_json(query: str) -> dict | None:
+    """Return the official SearXNG JSON shape; never retry blocked engines."""
+    from urllib.parse import urlencode
+    if not query or len(query) > 150:
+        return None
+    params = urlencode({"q":query,"format":"json","categories":"general",
+                        "engines":SEARXNG_ENGINE_SET,"safesearch":"0"})
+    request = Request(SEARXNG_SEARCH_ENDPOINT + "?" + params,
+                      headers={"Accept":"application/json",
+                               "User-Agent":"VacatureRadar/1.0 (local metasearch)"})
+    try:
+        with OPENER.open(request, timeout=18) as reply:
+            content_type = (reply.headers.get("Content-Type") or "").lower()
+            if "json" not in content_type:
+                return None
+            body = reply.read(650001)
+            if len(body) > 650000:
+                return None
+            data = json.loads(body.decode("utf-8"))
+            return data if isinstance(data,dict) else None
+    except (HTTPError,URLError,OSError,TimeoutError,UnicodeError,ValueError):
+        return None
+
+
+def _searxng_candidate_rows(data: dict) -> list[dict]:
+    """Search snippets are discovery hints, never employer/NL verification."""
+    matches = data.get("results") or []
+    if not isinstance(matches,list):
+        return []
+    jobs, unique = [], set()
+    for match in matches[:60]:
+        if not isinstance(match,dict):
+            continue
+        title = str(match.get("title") or "").strip()[:180]
+        snippet = re.sub(r"<[^>]+>"," ",str(match.get("content") or ""))[:800]
+        if not relevant(title,snippet) or not remote_signal(title,snippet,""):
+            continue
+        # Search engines rank directory/category pages above actual job ads.
+        # Never store those as distinct vacancies just because their snippet
+        # repeats a relevant query. Keep candidate records role-specific.
+        if re.search(r"\b(jobs|job openings|job listings|vacancies|opportunities|opdrachten)\b",
+                     title,re.I):
+            continue
+        url = job_url(str(match.get("url") or ""), "https://example.com/")
+        if not url or url in unique:
+            continue
+        parsed = urlparse(url)
+        if CAREERS_ROOT.match(parsed.path) or parsed.hostname in (
+                "google.com","www.google.com","bing.com","www.bing.com",
+                "searxng.org","search.brave.com","duckduckgo.com"):
+            continue
+        # Reject search/index URLs even if their snippet contains the query
+        # terms. Do not infer a role from a job-board landing page.
+        if re.search(r"/(?:search|job-search|remote-jobs|jobs-search)/?$",
+                     parsed.path, re.I):
+            continue
+        if re.search(r"^/(?:in|groups)/",parsed.path,re.I) or re.search(
+                r"^/(?:company|companies|freelance-jobs)/[^/]+/?$",
+                parsed.path,re.I):
+            continue
+        if re.search(r"^/(?:opdrachten|category|job-category|tags?)/",
+                     parsed.path, re.I):
+            continue
+        if re.search(r"^/q-[^/]+-jobs\.html$",parsed.path,re.I):
+            continue
+        unique.add(url)
+        jobs.append({
+            "source_id":"google-jobs","source_type":"discovery",
+            "job_id":url,"employer":"","title":title,"url":url,
+            "published_hint":"","location":"Remote - unverified",
+            "description":snippet,
+            "evidence":"SearXNG public multi-engine search snippet; exact employer, "
+                       "original posting date, remote-from-NL and role are unverified",
+            "review_status":"unverified"
+        })
+        if len(jobs) >= 15:
+            break
+    return jobs
+
+
+def discover_searxng(query: str, index: int) -> tuple[dict,list[dict]]:
+    """No API key; if all providers block, report unavailable, not 'zero jobs'."""
+    label = {"query":query,"search_index":index,"browser":"local_searxng",
+             "candidate_count":0}
+    data = _searxng_json(query)
+    if data is None or not isinstance(data.get("results"),list):
+        return {**label,"status":"searxng_unavailable_or_invalid_json"},[]
+    found = _searxng_candidate_rows(data)
+    failed = data.get("unresponsive_engines") or []
+    if not isinstance(failed,list):
+        failed = []
+    used = set()
+    for row in data["results"][:60]:
+        if isinstance(row,dict):
+            for provider in row.get("engines") or [row.get("engine")]:
+                if isinstance(provider,str) and len(provider)<36:
+                    used.add(provider)
+    status = "searxng_results" if data["results"] else (
+        "searxng_no_results_or_engines_blocked" if failed else "searxng_empty")
+    return {**label,"status":status,"candidate_count":len(found),
+            "engines_used":sorted(used)[:8],
+            "blocked_engine_count":len(failed)},found
+
+
 def run(registry_path: Path, output_path: Path, *, limit: int = 0,
         chrome: str | None = None, max_render: int = 90, google: bool = True) -> dict:
     start = time.monotonic()
@@ -546,8 +663,19 @@ def run(registry_path: Path, output_path: Path, *, limit: int = 0,
         google_log.append({"status":"google_source_inactive",
                            "browser":"not_attempted","candidate_count":0})
     elif google:
-        # Direct automated Google HTML scraping is not used. Use only a
-        # verified free account on a deliberately sparse 4-hour slot.
+        # Prefer self-hosted, optional public multi-engine discovery on EACH
+        # 30-minute run. One blocked backend does not suppress other engines.
+        # Only a known-local, healthy container is allowed to be queried.
+        if os.environ.get("SEARXNG_ENABLED","").lower() == "true":
+            for i,query in enumerate(SEARXNG_PUBLIC_QUERIES):
+                label, found = discover_searxng(query,i)
+                google_log.append(label)
+                jobs.extend(found)
+        else:
+            google_log.append({"status":"searxng_not_running",
+                               "browser":"not_attempted","candidate_count":0})
+        # Keep the existing strictly verified FREE SerpApi 4-hour fallback.
+        # Neither Google HTML scraping nor paid API calls are enabled.
         queries = [
             "remote WordPress WooCommerce developer jobs Europe",
             "remote Elementor web designer jobs Netherlands",

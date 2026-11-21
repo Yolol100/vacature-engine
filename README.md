@@ -82,6 +82,11 @@ rejects stale or mismatched inventories. The source list is only
 refreshed by an authorized update. No extra paid provider is needed.
 
 See [30-minute public browser worker](ingestion/docs/SCHEDULED-30M-BROWSER-WORKER.md).
+The GitHub job also uses a private, ephemeral SearXNG Docker process for
+DuckDuckGo/Bing/Brave/Google search fallback, started after checkout with
+inherited engine defaults and JSON output. Search snippets remain pending
+leads only; blocked employer websites are never bypassed.
+
 The on-demand \`vacature-search\` skill still verifies exact employer
 role, posting date, and NL eligibility. Never automatically apply.
 
