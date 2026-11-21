@@ -1,0 +1,18 @@
+# Local ephemeral SearXNG runner; loaded only AFTER checkout.
+# Preserve built-in engine settings, categories and timeouts.
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "Vacature Radar local search"
+
+search:
+  safe_search: 0
+  formats:
+    - html
+    - json
+
+server:
+  limiter: false
+  public_instance: false
+  image_proxy: false

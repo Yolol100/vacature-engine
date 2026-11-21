@@ -5,6 +5,31 @@ Radar remains the only writer of preliminary vacancy leads to the private
 Google Sheet. The separate GitHub Actions job performs browser/network work
 that exceeded Apps Script's six-minute execution limit.
 
+## Local SearXNG multi-engine discovery
+
+After checkout (never as a pre-checkout Actions service), the runner starts
+a private Docker container with the trusted \`searxng/settings.yml\` mounted
+read-only. Docker exposes **only 127.0.0.1:8080**, never a public port.
+\`use_default_settings: true\` preserves SearXNG's built-in engine settings
+and timeouts; \`search.formats\` explicitly enables JSON.
+
+Every half-hour run with a healthy container adds four targeted WordPress,
+WooCommerce, Elementor and website/frontend queries to SearXNG. It requests
+results from DuckDuckGo, Brave, Bing and Google, subject to upstream engines'
+actual availability. If Google or another engine blocks the runner IP,
+the remaining engines may still supply results. SearXNG **cannot guarantee**
+that any engine will return results and does not provide permission to
+circumvent CAPTCHAs, access restrictions or paid APIs.
+
+Only links with explicit remote and material web-role evidence become
+**unverified** candidates. Search-index snippets are not evidence of employer
+authenticity, original posting date or permission to work from the Netherlands.
+Failures are labeled \`searxng_unavailable_or_invalid_json\` or
+\`searxng_no_results_or_engines_blocked\`, not silently treated as zero jobs.
+If Docker fails, the approved official ATS/RSS sources keep running.
+The existing SerpApi Free Plan route remains optional, at its separate
+4-hour, verified-zero-cost limit. No new API keys or subscriptions are needed.
+
 ## Flow
 
 1. \`Vacature Register:Bronnen\` remains authoritative. This repository contains

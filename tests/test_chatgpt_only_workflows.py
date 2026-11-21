@@ -53,6 +53,31 @@ class ChatGPTOnlyWorkflowTests(unittest.TestCase):
         self.assertNotIn("CandidateEvidence", public)
         self.assertNotIn("submit_application", public)
 
+    def test_searxng_after_checkout_has_only_localhost_access_and_no_volume_precheckout(self):
+        root=Path(__file__).resolve().parents[1]
+        workflow=(root/".github/workflows/vacature-public-browser-30m.yml").read_text(encoding="utf8")
+        config=(root/"searxng/settings.yml").read_text(encoding="utf8")
+        self.assertLess(workflow.index("Checkout trusted main source"),
+                        workflow.index("Start private SearXNG after checkout"))
+        self.assertLess(workflow.index("Start private SearXNG after checkout"),
+                        workflow.index("Scan registered public sources"))
+        self.assertNotIn("\nservices:",workflow)
+        self.assertIn("docker run --detach",workflow)
+        self.assertIn("--publish 127.0.0.1:8080:8080",workflow)
+        self.assertIn("trusted-source/searxng/settings.yml",workflow)
+        self.assertIn("target=/etc/searxng/settings.yml,readonly",workflow)
+        self.assertIn("SEARXNG_ENABLED=true",workflow)
+        self.assertIn("docker rm --force vacancy-radar-searxng",workflow)
+        self.assertIn("use_default_settings: true",config)
+        self.assertIn("    - json",config)
+        self.assertNotIn("\nengines:",config)
+        self.assertNotIn("curl_cffi",workflow)
+        self.assertNotIn("proxy",workflow.lower())
+        self.assertNotIn("secrets.SEARXNG",workflow)
+        # Private candidates/applications remain managed by the Google Script.
+        self.assertNotIn("CandidateEvidence",workflow)
+        self.assertNotIn("submit_application",workflow)
+
     def test_register_is_policy_owner_and_static_specs_are_not_registry(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("Vacature Register", readme)
