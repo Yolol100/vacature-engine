@@ -824,6 +824,11 @@ function radarWorkerRows_(observations, sourceList, known, oldKeys, family, conf
     var title = String(item.title || '').slice(0, 180);
     var desc = String(item.description || '').slice(0, 800);
     var location = String(item.location || '').slice(0, 180);
+    // Reject overview/category links and non-website marketing/sales roles.
+    // A role word like WordPress or 'front end' by itself is not evidence.
+    if (/\b(?:browse|more|search|find)\b.{0,45}\bjobs?\b|(?:remote[ -]?)?(?:wordpress|front[ -]?end|frontend|web[ -]?developer)\b.{0,35}\bjobs\b/i.test(title) ||
+        /\b(marketer|marketing|sales support|sales specialist|lending manager)\b/i.test(title) ||
+        /\b(remote[ -]?friendly|u\.?s\.?[ -]+based|usa[ -]+based|us only|usa only|uk only|w2 only)\b/i.test(title + ' ' + location + ' ' + desc)) return;
     // Core gates precede optional publication-date checks.
     if (!radarRelevant_(title, desc, family) ||
         !/\b(remote|telecommut)\b/i.test(location) ||

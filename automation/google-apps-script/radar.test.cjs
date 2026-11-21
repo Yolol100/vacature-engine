@@ -191,6 +191,32 @@ test('public worker candidate intake never promotes, repeats or accepts hybrid/n
     ['wordpress_ecosystem'],config,when).length,0);
 });
 
+test('worker importer rejects generic listings, sales roles, US-based and remote-friendly', () => {
+  const s=load();
+  const src=[{id:'wordpress-jobs',type:'job_board',name:'WordPress Jobs',url:'https://jobs.wordpress.net/'}];
+  const common={source_id:'wordpress-jobs',review_status:'unverified',
+    employer:'WordPress Jobs',location:'Remote',description:''};
+  const titles=[
+    'Remote WordPress Jobs',
+    'Browse more remote WordPress jobs',
+    'Frontend Developer Remote Jobs',
+    'Remote Frontend Jobs in USA',
+    'WordPress Plugin Growth Marketer - Remote',
+    'WordPress Sales Support Specialist Remote',
+    'Web Developer: WordPress & HubSpot (U.S. Based, Remote Contractor)',
+    'Frontend Developer (Remote Friendly)'
+  ];
+  const bad=titles.map((title,i)=>({...common,title,
+    job_id:'blocked'+i,url:'https://jobs.wordpress.net/job/blocked-'+i}));
+  const ok={...common,title:'Remote WordPress Support Specialist',
+    job_id:'good',url:'https://jobs.wordpress.net/job/123'};
+  const rows=s.radarWorkerRows_([...bad,ok],src,{},{},
+      ['wordpress_ecosystem','web_design_development'],{max_posting_age_days:7},
+      Date.parse('2026-11-21T13:00:00Z'));
+  assert.equal(rows.length,1);
+  assert.equal(rows[0][6],ok.title);
+});
+
 test('Apps Script code parses in V8 without executing a schedule', () => {
   const ctx = load();
   assert.equal(typeof ctx.runVacatureRadar, 'function');
