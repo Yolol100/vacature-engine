@@ -12,6 +12,119 @@ function load(extras = {}) {
   return sandbox;
 }
 
+
+test('30-minute trigger migration is idempotent and preserves the old trigger until replacement', () => {
+  const events = [], data = new Map(), existing = {getHandlerFunction() {return 'runVacatureRadar';}};
+  let triggers = [existing];
+  const s = load({ScriptApp:{
+    getProjectTriggers() {return triggers;},
+    newTrigger(name) {
+      assert.equal(name, 'runVacatureRadar');
+      return {timeBased() {return this;},everyMinutes(n) {
+        events.push('create:' + n); assert.equal(n, 30); return this;
+      },create() {
+        const trigger = {getHandlerFunction() {return 'runVacatureRadar';}};
+        triggers.push(trigger); return trigger;
+      }};
+    },
+    deleteTrigger(trigger) {events.push('delete'); triggers = triggers.filter(x => x !== trigger);}
+  }});
+  const props={getProperty(k) {return data.get(k)||null;},setProperty(k,v){data.set(k,v);}};
+  assert.equal(s.radarEnsure30MinuteTrigger_(props),'30m_trigger_migrated');
+  assert.equal(triggers.length,1);
+  assert.equal(events[0],'create:30');
+  assert.equal(events[1],'delete');
+  assert.equal(s.radarEnsure30MinuteTrigger_(props),'30m_already_configured');
+  assert.equal(events.length,2);
+});
+
+test('ambiguous triggers block migration without deleting or creating any trigger', () => {
+  let creates = 0;
+  const s=load({ScriptApp:{
+    getProjectTriggers() {return [{getHandlerFunction(){return 'runVacatureRadar';}},
+      {getHandlerFunction(){return 'runVacatureRadar';}}];},
+    newTrigger() {creates++; throw Error('unexpected create');}
+  }});
+  const props={getProperty(){return null;}};
+  assert.throws(()=>s.radarEnsure30MinuteTrigger_(props),/Multiple Radar triggers/);
+  assert.equal(creates,0);
+});
+
+test('registered source URLs reject private and non-HTTPS targets', () => {
+  const s=load();
+  assert.equal(s.radarPublicRequestUrl_({id:'source',url:'http://example.com/jobs'},0),'');
+  assert.equal(s.radarPublicRequestUrl_({id:'source',url:'https://127.0.0.1/admin'},0),'');
+  assert.equal(s.radarPublicRequestUrl_({id:'source',url:'https://example.com/jobs'},0),'https://example.com/jobs');
+  assert.match(s.radarPublicRequestUrl_({id:'google-jobs',url:'https://www.google.com/search'},1),
+    /^https:\/\/www\.google\.com\/search\?q=.*Elementor/);
+});
+
+test('HTML JobPosting is saved only as an unverified remote role', () => {
+  const s=load();
+  const src={id:'company-demo',name:'Demo Employer',type:'employer_direct',url:'https://demo.example/jobs/'};
+  const html='<script type="application/ld+json">'+JSON.stringify({
+    '@context':'https://schema.org','@type':'JobPosting',title:'WordPress Developer',
+    datePosted:'2026-11-21',jobLocationType:'TELECOMMUTE',
+    applicantLocationRequirements:{name:'Europe'},
+    hiringOrganization:{name:'Demo Employer'},
+    description:'Build WooCommerce websites',url:'https://demo.example/jobs/123'
+  })+'</script>';
+  const jobs=s.radarPublicJobPostings_(html,src,src.url);
+  assert.equal(jobs.length,1);
+  assert.equal(jobs[0].location,'Remote - Europe');
+  assert.equal(jobs[0].url,'https://demo.example/jobs/123');
+  const pending=s.radarReview_(jobs[0],{max_posting_age_days:7},Date.parse('2026-11-21T12:00:00Z'));
+  assert.equal(pending.status,'needs_official_review');
+  const hybrid=s.radarPublicJobPostings_(html.replace('TELECOMMUTE','HYBRID'),src,src.url);
+  assert.equal(hybrid.length,0);
+});
+
+test('plain careers overview cannot manufacture remote vacancy candidates', () => {
+  const s=load();
+  const src={id:'company-demo',name:'Demo Employer',type:'employer_direct',url:'https://demo.example/careers/'};
+  const html='<a href="/careers">Visit careers</a><a href="/jobs/role1">WordPress Developer</a>'+
+    '<a href="/jobs/role2">Remote WordPress Developer</a>';
+  const jobs=s.radarPublicRemoteLinks_(html,src,src.url);
+  assert.equal(jobs.length,1);
+  assert.equal(jobs[0].url,'https://demo.example/jobs/role2');
+  assert.equal(jobs[0].publishedHint,'');
+});
+
+test('all 233 registered sources get a distinct outcome on a mocked fast public sweep', () => {
+  const s=load({UrlFetchApp:{fetchAll(items) {
+    return items.map(()=>({getResponseCode(){return 200;},
+      getContentText(){return '<html><title>Careers</title><p>No jobs identified</p></html>';}}));
+  }}});
+  const header=['source_id','source_name','source_type','base_url','status'];
+  const data=[header], log=[];
+  for(let i=0;i<233;i++){
+    data.push(['source-'+i,'Employer '+i,'employer_direct','https://demo.example/jobs/'+i,'active']);
+  }
+  const registry={
+    getSheetByName(n) {assert.equal(n,'Bronnen');
+      return {getName(){return 'Bronnen';},getDataRange(){return {getValues(){return data;}}}};}
+  };
+  let rows=0;
+  const radar={
+    getSheetByName(n){return null;},
+    insertSheet(n){assert.equal(n,'Broncontrole 30m');return {
+      getLastRow(){return rows;},getMaxRows(){return 1000;},
+      setFrozenRows(){},
+      getRange(r,c,ncol,width){return {setValues(v){log.push({r,c,v});rows=Math.max(rows,r+v.length-1);}};}
+    };}
+  };
+  const m=new Map();
+  const props={getProperty(k){return m.get(k)||null;},setProperty(k,v){m.set(k,v);}};
+  const result=s.radarSweepPublicRegistry_(registry,radar,props,Date.now(),{},{},
+    ['wordpress_ecosystem'],{max_posting_age_days:7});
+  assert.equal(result.total,233);
+  assert.equal(result.attempted,233);
+  assert.equal(result.pending,0);
+  assert.equal(result.added.length,0);
+  assert.equal(log.filter(x=>x.r===2)[0].v.length,233);
+  assert.match(log[0].v[0][0],/source_id/);
+});
+
 test('Apps Script code parses in V8 without executing a schedule', () => {
   const ctx = load();
   assert.equal(typeof ctx.runVacatureRadar, 'function');
@@ -467,7 +580,7 @@ test('a source cooling down after repeated errors remains visibly degraded', () 
   assert.equal(m.fetches.filter(x=>x.includes('greenhouse.io')).length,0);
 });
 
-test('an idle 15-minute run is reported as no sources due, not a fresh successful poll', () => {
+test('an idle scheduled run is reported as no sources due, not a fresh successful poll', () => {
   const m=mockRun('apps_script_15m_fastlane_and_on_demand_deep');
   m.props.set('RADAR_SOURCE_SUCCESS_greenhouse_acme',String(Date.now()));
   const result=m.s.runVacatureRadar();

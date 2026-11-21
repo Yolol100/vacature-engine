@@ -62,13 +62,27 @@ and `vacancy_candidate_storage_and_dedupe` rules.
    automatic disqualification. Present only verified opportunities as
    application-ready; preserve the existing Register application history.
 
-The scheduled **15-minute Apps Script fast lane** polls only the approved
-subset of feeds/ATS accounts (currently 27 specifications across 17 source
-IDs), saves preliminary candidates to Radar and does **not** check all 233
-sources, Google and the wider browser each tick. The full deep search is
-triggered only by an explicit ChatGPT request. The verified Register
-`Vacatures` table remains distinct from unverified Radar observations.
-Never auto-apply or auto-send.
+The existing **30-minute Apps Script Radar** (after successful trigger migration)
+keeps the 27 approved ATS/feed adapters (17 source IDs) and attempts a
+bounded public-HTTP discovery pass over **all active** Register `Bronnen`
+IDs (233 on 2026-11-21). The Radar's new `Broncontrole 30m` tab records
+each source's actual HTTP outcome, cooldown, or non-coverage; the Dashboard
+also reports attempted sources and incomplete coverage. Generic ATS/board
+homepages do not automatically expose individual vacancies, and merely
+fetching a page is NOT proof that all its openings were searched. HTML
+JobPosting entries and explicit remote-job links can create **unverified**
+`Bronvondsten` leads, with existing deduplication and remote/role filters.
+
+The public Google-search URL rotates four targeted queries without paid API
+access; Google may block or return no usable HTML, which is reported, not
+misrepresented. Apps Script has no JavaScript-rendering browser: dynamic
+jobs beyond public HTML require on-demand ChatGPT/browser research. Script
+runtime and daily UrlFetch quotas may leave some source IDs unprocessed in
+a round; the cursor resumes coverage and the audit lists all pending IDs.
+The existing `vacature-search` on-demand workflow continues to do deeper
+employer/ATS verification. Only officially verified opportunities can be
+recommended for applying, and `Register:Vacatures` stays distinct from
+unverified Radar observations. Never auto-apply or auto-submit.
 
 Example: “Find new suitable remote jobs posted within the last seven days.”
 
