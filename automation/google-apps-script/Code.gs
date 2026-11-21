@@ -514,6 +514,40 @@ function radarRunStatus_(dueCount, failureCount, coolingDownCount) {
   return dueCount === 0 ? 'idle_no_sources_due' : 'ok';
 }
 
+
+// Read-only observability for the two approved Workable sources.
+// Never override Retry-After or a source's exponential backoff.
+function radarWorkableHealth_(properties, nowMs) {
+  return ['awesomemotive', 'humanmade'].map(function (account) {
+    var spec = {adapter: 'workable', source_id: 'workable', account: account};
+    var state = radarSourceDue_(spec, nowMs, properties);
+    var lastSuccess = Number(properties.getProperty(state.key) || 0);
+    var lastFailure = Number(properties.getProperty(state.failAtKey) || 0);
+    var failCount = Math.max(0, Math.min(10,
+      Number(properties.getProperty(state.failCountKey) || 0)));
+    var backoffMs = failCount ?
+      Math.min(240, 15 * Math.pow(2, Math.min(5, failCount - 1))) * 60000 : 0;
+    var nextRetry = Math.max(Number(properties.getProperty(state.retryAtKey) || 0),
+      lastFailure && failCount ? lastFailure + backoffMs : 0);
+    var lastError = String(properties.getProperty('RADAR_SOURCE_ERROR_workable_' + account) || '');
+    var observations = Number(properties.getProperty('RADAR_SOURCE_OBSERVATIONS_workable_' + account) || 0);
+    var message;
+    if (lastSuccess && lastSuccess > lastFailure) {
+      message = 'SUCCES ' + new Date(lastSuccess).toISOString() +
+        ' | ingelezen: ' + observations;
+    } else if (lastFailure) {
+      message = 'FOUT ' + new Date(lastFailure).toISOString() +
+        ' | ' + (lastError || 'Details nog niet gelogd');
+    } else {
+      message = 'Nog geen succesvolle Apps Script-opvraag bekend';
+    }
+    if (state.coolingDown) {
+      message += ' | herstart niet eerder dan ' + new Date(nextRetry).toISOString();
+    }
+    return ['Workable / ' + account, message];
+  });
+}
+
 function radarProductionId_(id, config) {
   var value = String(id || '').trim();
   var prefixes = String(config.nonproduction_vacancy_id_prefixes || 'test:,history:')
@@ -593,6 +627,9 @@ function radarUpdateDashboard_(radar, active, run, applicationMetrics) {
     }[run.status] || run.status;
     dashboard.getRange('B19').setValue(statusText);
     dashboard.getRange('B21').setValue(run.configuredSources);
+    if (Array.isArray(run.workableHealth)) {
+      dashboard.getRange('A50:B51').setValues(run.workableHealth);
+    }
     dashboard.getRange('A23').setValue('Sollicitatiepakketten klaar');
     dashboard.getRange('A24').setValue('Ingediende sollicitaties');
     dashboard.getRange('A25').setValue('Werkgeversreacties');
@@ -711,6 +748,12 @@ function runVacatureRadar(event) {
         props.setProperty(successKeys.failAtKey, '0');
         props.setProperty(successKeys.failCountKey, '0');
         props.deleteProperty(successKeys.retryAtKey);
+        if (spec.adapter === 'workable' &&
+            ['awesomemotive', 'humanmade'].indexOf(spec.account) !== -1) {
+          props.deleteProperty('RADAR_SOURCE_ERROR_workable_' + spec.account);
+          props.setProperty('RADAR_SOURCE_OBSERVATIONS_workable_' + spec.account,
+            String(observations.length));
+        }
         for (var j = 0; j < observations.length; j++) {
           var row = observations[j];
           if (!radarRelevant_(row.title, row.description, permittedFamily)) continue;
@@ -743,6 +786,11 @@ function runVacatureRadar(event) {
           props.setProperty(failKeys.retryAtKey, String(error.retryAt));
         }
         props.setProperty(failKeys.failCountKey, String(count));
+        if (spec.adapter === 'workable' &&
+            ['awesomemotive', 'humanmade'].indexOf(spec.account) !== -1) {
+          props.setProperty('RADAR_SOURCE_ERROR_workable_' + spec.account,
+            String(error && error.message || error).slice(0, 120));
+        }
         console.warn('Source failed: ' + String(spec.source_id) + '/' +
           String(spec.account) +
           ' (' + String(error && error.message || error).slice(0, 120) + ')');
@@ -795,6 +843,7 @@ function runVacatureRadar(event) {
       inspected: inspected, attemptedSources: attempts, failedSources: failures,
       configuredSources: sourceSpecs.length, dueSources: sourceDue.length,
       coolingDownSources: coolingDownSources,
+      workableHealth: radarWorkableHealth_(props, started),
       lastSourceFetchAt: props.getProperty('VACATURE_RADAR_LAST_SOURCE_FETCH_AT') || '',
       lastSourceSuccessAt: props.getProperty('VACATURE_RADAR_LAST_SOURCE_SUCCESS_AT') || '',
       lastTriggerAt: props.getProperty('VACATURE_RADAR_LAST_TRIGGER_AT') || '',
