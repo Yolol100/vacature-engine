@@ -63,6 +63,16 @@ class ChatGPTOnlyWorkflowTests(unittest.TestCase):
                         workflow.index("Scan registered public sources"))
         self.assertNotIn("\nservices:",workflow)
         self.assertIn("docker run --detach",workflow)
+        markers=("docker run --detach","--memory=1g",
+                 "--publish 127.0.0.1","--mount ","--env ",
+                 "if curl --silent")
+        bash_lines=[line for line in workflow.splitlines()
+                    if any(marker in line for marker in markers)]
+        self.assertEqual(len(bash_lines),6)
+        self.assertTrue(all(line.endswith(chr(92)) and
+                            not line.endswith(chr(92)*2)
+                            for line in bash_lines))
+
         self.assertIn("--publish 127.0.0.1:8080:8080",workflow)
         self.assertIn("trusted-source/searxng/settings.yml",workflow)
         self.assertIn("target=/etc/searxng/settings.yml,readonly",workflow)
