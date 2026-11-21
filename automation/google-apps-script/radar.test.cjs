@@ -125,6 +125,15 @@ test('all 233 registered sources get a distinct outcome on a mocked fast public 
   assert.match(log[0].v[0][0],/source_id/);
 });
 
+test('scheduled 30-minute scanner fails closed after first public sweep timeout', () => {
+  const s = load();
+  assert.equal(s.VACATURE_RADAR.allowedSchedule,'apps_script_30m_safe_feed_and_on_demand_deep');
+  const runSource = code.slice(code.indexOf('function runVacatureRadar(event) {'),
+    code.indexOf('function enableVacatureRadar() {'));
+  assert.doesNotMatch(runSource,/radarSweepPublicRegistry_\(/);
+  assert.match(runSource,/googleStatus: 'not_run_quota_blocked'/);
+});
+
 test('Apps Script code parses in V8 without executing a schedule', () => {
   const ctx = load();
   assert.equal(typeof ctx.runVacatureRadar, 'function');

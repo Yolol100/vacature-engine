@@ -62,27 +62,25 @@ and `vacancy_candidate_storage_and_dedupe` rules.
    automatic disqualification. Present only verified opportunities as
    application-ready; preserve the existing Register application history.
 
-The existing **30-minute Apps Script Radar** (after successful trigger migration)
-keeps the 27 approved ATS/feed adapters (17 source IDs) and attempts a
-bounded public-HTTP discovery pass over **all active** Register `Bronnen`
-IDs (233 on 2026-11-21). The Radar's new `Broncontrole 30m` tab records
-each source's actual HTTP outcome, cooldown, or non-coverage; the Dashboard
-also reports attempted sources and incomplete coverage. Generic ATS/board
-homepages do not automatically expose individual vacancies, and merely
-fetching a page is NOT proof that all its openings were searched. HTML
-JobPosting entries and explicit remote-job links can create **unverified**
-`Bronvondsten` leads, with existing deduplication and remote/role filters.
+The existing **30-minute Apps Script Radar** uses one migrated
+spreadsheet-bound trigger and retains the approved 27 ATS/feed specifications
+(17 unique source IDs). The user requested 233 sources plus Google and
+browser coverage every 30 minutes. **The initial full public-HTTP sweep
+failed in production on 2026-11-21 after 360.7 seconds (Google Apps Script
+hard runtime limit)**. That sweep and automatic Google/browser coverage
+are **disabled for safety** in the deployed 30-minute mode. The Dashboard
+states 233 registered source IDs and honestly marks the public sweep as
+not run. A successful code unit test of 233 simulated URLs is NOT proof of
+real-world source coverage. Do not claim complete, 233-verified, or full GO.
 
-The public Google-search URL rotates four targeted queries without paid API
-access; Google may block or return no usable HTML, which is reported, not
-misrepresented. Apps Script has no JavaScript-rendering browser: dynamic
-jobs beyond public HTML require on-demand ChatGPT/browser research. Script
-runtime and daily UrlFetch quotas may leave some source IDs unprocessed in
-a round; the cursor resumes coverage and the audit lists all pending IDs.
-The existing `vacature-search` on-demand workflow continues to do deeper
-employer/ATS verification. Only officially verified opportunities can be
-recommended for applying, and `Register:Vacatures` stays distinct from
-unverified Radar observations. Never auto-apply or auto-submit.
+Publicly available HTML, JobPosting and Google discovery helpers remain
+in source for controlled offline tests; they are not invoked by the live
+schedule until a separately reviewed, quota-safe execution route exists.
+JavaScript-rendering browser research cannot run inside Apps Script.
+The `vacature-search` on-demand workflow remains available to attempt
+all active sources and live public Google/browser discovery, while
+application-ready matches still require employer/ATS and NL verification.
+No additional paid providers, automatic applications or messages are enabled.
 
 Example: “Find new suitable remote jobs posted within the last seven days.”
 
