@@ -9,7 +9,7 @@ var VACATURE_RADAR = {
   registerId: '1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0',
   radarId: '1uLr7snvnCw2JmzdIL_yN4Jln0tMZJnOZK-mfh_DygwQ',
   specsUrl: 'https://raw.githubusercontent.com/Yolol100/vacature-engine/main/ingestion/source-specs.deploy.json',
-  allowedSchedule: 'apps_script_30m_registered_sources_public_discovery',
+  allowedSchedule: 'apps_script_30m_safe_feed_and_on_demand_deep',
   legacySchedule: 'apps_script_15m_fastlane_and_on_demand_deep',
   maxRequests: 35,
   maxJobsPerSource: 250,
@@ -1098,14 +1098,13 @@ function runVacatureRadar(event) {
     }
     var publicSources = null;
     if (fullMode) {
-      var publicScan = radarSweepPublicRegistry_(register,radar,props,started,
-        known,oldKeys,permittedFamily,config);
-      if (publicScan.added.length) {
-        additions = additions.concat(publicScan.added).slice(0,VACATURE_RADAR.maxNewRows);
-      }
-      publicSources = {total: publicScan.total,attempted: publicScan.attempted,
-        errors: publicScan.errors,pending: publicScan.pending,
-        candidates: publicScan.added.length,googleStatus: publicScan.googleStatus};
+      // The first 233-source HTTP sweep exceeded the hard six-minute Apps
+      // Script execution limit. Fail closed: scheduled unbounded public HTTP
+      // must NOT resume until a separately tested, quota-safe worker exists.
+      // The proven ATS/feed scanner and 30-minute trigger keep running.
+      publicSources = {total: Object.keys(activeIds).length, attempted: 0,
+        errors: 0, pending: Object.keys(activeIds).length, candidates: 0,
+        googleStatus: 'not_run_quota_blocked'};
     }
     // Move the cursor past the attempted segment, even if a source failed.
     if (sourceDue.length) {
