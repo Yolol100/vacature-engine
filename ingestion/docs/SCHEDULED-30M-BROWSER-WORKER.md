@@ -41,9 +41,13 @@ that exceeded Apps Script's six-minute execution limit.
   Browser rendering is rotated across up to 90 relevant pages per run,
   with strict timeouts. The remainder may be visited in later runs.
   Browsers may be absent, blocked or delayed; the report says so.
-- Google is **public HTML search, not an authenticated Google Jobs API**.
-  If Google blocks or returns no readable results, that status is recorded.
-  No paid services, proxies, cloudbrowser credits or CAPTCHA bypass.
+- Google HTML scraping is disabled. A Google Jobs search runs via the
+  existing SerpApi account only when it has a verified zero-price Free Plan,
+  no extra credits, and at least 20 searches left. At most one search every
+  four hours (six per day, maximum 186 in a 31-day month). Other half-hour
+  runs are explicitly reported as not scheduled. The account-only preflight
+  costs zero search credits. The service must not spend paid API credits,
+  bypass CAPTCHA, reveal the API key, or store private applicant data.
 - GitHub schedules can be delayed, so the private Apps Script importer may
   show results from the previous scan. Results older than three hours
   are rejected. The fallback 27 approved ATS/feed adapters continue.

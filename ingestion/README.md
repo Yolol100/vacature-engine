@@ -58,7 +58,9 @@ snapshots for vacancy closure.
 
 GitHub Actions retains offline regression tests. Additionally, the owner
 expressly approved a 30-minute **public-only browser discovery worker**.
-It does not use SerpApi or the old local ingest CLI: it scans sanitized
+It uses the existing SerpApi secret ONLY after a free-plan account check and
+only at a 4-hour search slot. It never scrapes Google Search directly. It
+scans sanitized
 public source URLs and publishes only public job observations to a
 separate branch. Private Apps Script ingests and deduplicates pending leads.
 Official vacancy/NL eligibility verification remains on-demand.

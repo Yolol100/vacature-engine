@@ -127,6 +127,101 @@ class WorkerTests(unittest.TestCase):
         ok = '<a href="https://example.com/jobs/123">Remote WordPress Support Specialist</a>'
         self.assertEqual(len(worker.discover(ok, self.src, self.src["base_url"])), 1)
 
+    def test_google_account_only_zero_price_free_plan_passes(self):
+        free = {
+            "account_status": "Active", "plan_id": "free",
+            "plan_name": "Free Plan", "plan_monthly_price": 0,
+            "searches_per_month": 250, "plan_searches_left": 120,
+            "total_searches_left": 120, "extra_credits": 0,
+            "account_rate_limit_per_hour": 50, "this_hour_searches": 0
+        }
+        self.assertEqual(worker.free_serpapi_account_status(free), "free_verified")
+        for updates in (
+            {"plan_id":"developer"},
+            {"plan_monthly_price":25},
+            {"plan_searches_left":9},
+            {"total_searches_left":9},
+            {"extra_credits":1},
+            {"searches_per_month":1000},
+            {"account_rate_limit_per_hour":10,"this_hour_searches":10},
+            {"plan_name":"unknown"},
+        ):
+            with self.subTest(updates=updates):
+                self.assertNotEqual(worker.free_serpapi_account_status({**free,**updates}), "free_verified")
+        self.assertNotEqual(worker.free_serpapi_account_status({}), "free_verified")
+
+    def test_google_jobs_uses_free_account_gate_and_official_detail_link(self):
+        free = {
+            "account_status":"Active","plan_id":"free","plan_name":"Free",
+            "plan_monthly_price":0,"searches_per_month":250,
+            "plan_searches_left":60,"total_searches_left":60,
+            "extra_credits":0,"account_rate_limit_per_hour":50,"this_hour_searches":0
+        }
+        response = {"search_metadata":{"status":"Success"},
+                    "jobs_results":[{"title":"Remote WordPress Developer",
+                        "company_name":"Example Team",
+                        "location":"Anywhere Europe",
+                        "description":"Build WooCommerce storefronts",
+                        "job_id":"safe-external-id",
+                        "detected_extensions":{"work_from_home":True,"posted_at":"2 days ago"},
+                        "apply_options":[{"link":"https://jobs.lever.co/example/123"}]}]}
+        with patch.object(worker, "_serpapi_json", side_effect=[free,response]) as req:
+            log, found = worker.discover_google_allowed("remote WordPress developer",0,"dummytestkey")
+        self.assertEqual(req.call_count,2)
+        self.assertEqual(log["status"],"serpapi_google_jobs_success")
+        self.assertEqual(len(found),1)
+        self.assertEqual(found[0]["url"],"https://jobs.lever.co/example/123")
+        self.assertEqual(found[0]["review_status"],"unverified")
+        self.assertEqual(found[0]["published_hint"],"")
+        self.assertNotIn("dummytestkey",json.dumps(log)+json.dumps(found))
+        with patch.object(worker, "_serpapi_json",return_value={**free,"plan_monthly_price":25}) as req:
+            denied, rows=worker.discover_google_allowed("remote WordPress",0,"dummytestkey")
+        self.assertEqual(req.call_count,1)
+        self.assertEqual(rows,[])
+        self.assertEqual(denied["status"],"not_verified_free_plan")
+
+    def test_no_google_scraping_or_credit_spend_outside_free_slot(self):
+        path=Path(__file__).resolve().parents[1]/"sources.public-snapshot.json"
+        def healthy(src):
+            return ({
+              "source_id":src["source_id"],"url":src["base_url"],"status":"http_200",
+              "checked_at":worker.utc_now(),"browser":"not_attempted",
+              "candidate_count":0,"coverage":"public_response_only"
+            },[])
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.dict(worker.os.environ, {"RADAR_GOOGLE_FREE_SLOT":"false",
+                                                "SERPAPI_API_KEY":"some-existing-key"}):
+                with patch.object(worker,"source_check",side_effect=healthy), patch.object(
+                        worker,"_serpapi_json") as api:
+                    result=worker.run(path,Path(tmp)/"result.json",max_render=0,google=True)
+            self.assertEqual(api.call_count,0)
+            self.assertEqual(result["google"][0]["status"],"free_api_not_scheduled_this_round")
+
+    def test_official_remote_rss_parser_scans_beyond_first_200_xml_nodes(self):
+        entries=[]
+        for i in range(48):
+            title="Remote WordPress Developer" if i==40 else "Warehouse Supervisor"
+            entries.append("<item><title>"+title+"</title><link>https://example.com/job/"+str(i)+
+                           "</link><description>Build WooCommerce storefronts</description>"+
+                           "<author>Acme</author><category>Development</category>"+
+                           "<pubDate>Sat, 21 Nov 2026 10:00:00 GMT</pubDate></item>")
+        xml="<rss><channel>"+"".join(entries)+"</channel></rss>"
+        src={**self.src,"source_id":"we-work-remotely"}
+        found=worker.discover(xml,src,"https://weworkremotely.com/remote-jobs.rss")
+        self.assertEqual(len(found),1)
+        self.assertEqual(found[0]["location"],"Remote")
+        self.assertEqual(found[0]["review_status"],"unverified")
+
+    def test_remoteok_json_api_uses_explicit_remote_feed_provenance(self):
+        data=[{"legal":"source attribution required"},
+              {"position":"WordPress Developer","company":"Example",
+               "url":"https://remoteok.com/remote-jobs/wordpress-developer-123",
+               "location":"Worldwide","description":"Build custom WooCommerce shops"}]
+        src={**self.src,"source_id":"remote-ok"}
+        found=worker.discover(json.dumps(data),src,"https://remoteok.com/api?tag=dev")
+        self.assertEqual(len(found),1)
+        self.assertEqual(found[0]["location"],"Remote - Worldwide")
+
     def test_browser_unavailable_is_honest(self):
         self.assertEqual(worker.render_with_chrome("https://example.com/", ""), ("browser_unavailable", ""))
 

@@ -23,6 +23,7 @@ from urllib.parse import parse_qs, quote, urljoin, urlparse, urlunparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 MAX_BODY = 350_000
+MAX_STRUCTURED_FEED_BODY = 1_800_000
 MAX_OUTPUT_LEADS = 150
 HEADERS = {"User-Agent": "VacatureRadar/1.0 (+public vacancies; no credentials)", "Accept": "text/html,application/ld+json"}
 ROLE = re.compile(r"\b(wordpress|woocommerce|elementor|gutenberg|acf|web[\s-]?design|web[\s-]?develop|front[\s-]?end|frontend|website|webshop)\b", re.I)
@@ -33,6 +34,11 @@ BAD_ROLE = re.compile(r"\b(ai automation|automation engineer|sales engineer|syst
 LISTING_TITLE = re.compile(r"\b(?:browse|more|search|find)\b.{0,45}\bjobs?\b|(?:remote[ -]?)?(?:wordpress|front[ -]?end|frontend|web[ -]?developer)\b.{0,35}\bjobs\b", re.I)
 PRIVATE_NAMES = re.compile(r"(^localhost$|(^|\.)local$|(^|\.)internal$)", re.I)
 CAREERS_ROOT = re.compile(r"^/(?:careers?|jobs?|openings?|vacancies|about/careers?)/?$", re.I)
+# Explicitly published no-auth RSS feeds; do not invent paths on blocked sites.
+OFFICIAL_REMOTE_RSS = {
+    "we-work-remotely": "https://weworkremotely.com/remote-jobs.rss",
+    "remote-ok": "https://remoteok.com/api?tag=dev",
+}
 
 
 def utc_now() -> str:
@@ -199,7 +205,7 @@ def discover(html: str, source: dict, from_url: str) -> list[dict]:
                 items = payload
             if isinstance(items, dict):
                 items = items.get("jobs") or items.get("items") or []
-            for item in (items[:75] if isinstance(items, list) else []):
+            for item in (items[:150] if isinstance(items, list) else []):
                 if not isinstance(item, dict):
                     continue
                 loc = (item.get("candidate_required_location") or item.get("jobGeo") or
@@ -212,7 +218,8 @@ def discover(html: str, source: dict, from_url: str) -> list[dict]:
                 desc = str(item.get("description") or item.get("jobDescription") or
                            item.get("content") or "")
                 remote = item.get("remote") is True or item.get("isRemote") is True or (
-                    item.get("telecommuting") is True)
+                    item.get("telecommuting") is True) or (
+                    source.get("source_id") == "remote-ok")
                 place = ("Remote - " + str(loc)) if remote and loc else "Remote" if remote else str(loc)
                 employer = item.get("company") or item.get("company_name") or item.get("companyName") or ""
                 if isinstance(employer, dict):
@@ -230,19 +237,28 @@ def discover(html: str, source: dict, from_url: str) -> list[dict]:
     if "<rss" in stripped[:250] or "<feed" in stripped[:250]:
         try:
             root = ET.fromstring(stripped)
-            for node in list(root.iter())[:200]:
+            count = 0
+            for node in root.iter():
                 tag = node.tag.split("}")[-1].lower()
                 if tag not in ("item", "entry"):
                     continue
+                count += 1
+                if count > 150:
+                    break
                 fields = {}
                 for child in node:
                     key = child.tag.split("}")[-1].lower()
                     fields[key] = child.text or child.attrib.get("href", "")
+                official_remote = source.get("source_id") in OFFICIAL_REMOTE_RSS
                 add(fields.get("link", ""), fields.get("title", ""),
                     re.sub("<[^>]+>", " ", fields.get("description") or fields.get("summary") or ""),
-                    "", fields.get("pubdate", "") or fields.get("published", ""),
+                    "Remote" if official_remote else "",
+                    fields.get("pubdate", "") or fields.get("published", ""),
                     source.get("source_name", ""),
-                    "Public RSS listing; employer/original date/NL eligibility unverified")
+                    "Official remote-only RSS discovery; employer/original date/NL eligibility unverified"
+                      if official_remote else
+                    "Public RSS listing; employer/original date/NL eligibility unverified",
+                    explicit_remote=official_remote)
         except ET.ParseError:
             pass
     for chunk in parser.scripts[:60]:
@@ -267,7 +283,7 @@ class NoRedirect(HTTPRedirectHandler):
 OPENER = build_opener(NoRedirect)
 
 
-def fetch_public(url: str, timeout: int = 8) -> tuple[str, str, str]:
+def fetch_public(url: str, timeout: int = 8, max_chars: int = MAX_BODY) -> tuple[str, str, str]:
     checked = safe_url(url)
     if not checked:
         return "invalid", "", url
@@ -279,9 +295,9 @@ def fetch_public(url: str, timeout: int = 8) -> tuple[str, str, str]:
                 content_type = (response.headers.get("Content-Type") or "").lower()
                 if not any(x in content_type for x in ("html", "json", "xml", "text")):
                     return "unsupported_content", "", current
-                data = response.read(MAX_BODY + 1)
-                if len(data) > MAX_BODY:
-                    data = data[:MAX_BODY]
+                data = response.read(max_chars + 1)
+                if len(data) > max_chars:
+                    data = data[:max_chars]
                 return "http_200", data.decode("utf-8", errors="replace"), current
         except HTTPError as error:
             if error.code in (301, 302, 303, 307, 308):
@@ -323,6 +339,27 @@ def render_with_chrome(url: str, chrome: str, timeout: int = 12) -> tuple[str, s
 
 def source_check(src: dict) -> tuple[dict, list[dict]]:
     now = utc_now()
+    official_feed = OFFICIAL_REMOTE_RSS.get(src["source_id"])
+    if official_feed:
+        status, body, resolved = fetch_public(official_feed, timeout=12,
+                max_chars=MAX_STRUCTURED_FEED_BODY)
+        if status == "http_200":
+            observations = discover(body, src, resolved)
+            return {
+                "source_id":src["source_id"],"status":status,
+                "checked_at":now,"browser":"not_needed_official_feed",
+                "candidate_count":len(observations),
+                "coverage":"official_public_rss_not_full_historical_catalog",
+                "url":src["base_url"]
+            },observations
+        if status in ("http_401","http_403","http_429"):
+            return {
+                "source_id":src["source_id"],"status":status,
+                "checked_at":now,"browser":"not_attempted",
+                "candidate_count":0,"coverage":"official_feed_access_limited",
+                "url":src["base_url"]
+            },[]
+        # A missing official feed is not proof that the public homepage is empty.
     status, html, final_url = fetch_public(src["base_url"])
     observations = discover(html, src, final_url) if status == "http_200" else []
     return {
@@ -334,20 +371,117 @@ def source_check(src: dict) -> tuple[dict, list[dict]]:
     }, observations
 
 
-def discover_google(query: str, index: int, chrome: str | None) -> tuple[dict, list[dict]]:
-    url = "https://www.google.com/search?q=" + quote(query, safe="") + "&tbs=qdr:w"
-    source = {"source_id": "google-jobs", "source_name": "Google public discovery",
+
+def free_serpapi_account_status(account: dict) -> str:
+    """Reject unknown plans, paid plans or low quota before any billable query."""
+    if not isinstance(account, dict):
+        return "provider_unavailable"
+    if str(account.get("account_status", "")).lower() != "active":
+        return "account_inactive"
+    if str(account.get("plan_id", "")).lower() != "free" or \
+       str(account.get("plan_name", "")).strip().lower() not in ("free", "free plan"):
+        return "not_verified_free_plan"
+    if type(account.get("plan_monthly_price")) not in (int, float) or \
+       account["plan_monthly_price"] != 0:
+        return "not_verified_free_plan"
+    quota = account.get("searches_per_month")
+    left = account.get("plan_searches_left")
+    total = account.get("total_searches_left")
+    extra = account.get("extra_credits")
+    if type(quota) is not int or not 1 <= quota <= 250 or type(extra) is not int or extra != 0:
+        return "not_verified_free_plan"
+    if type(left) is not int or type(total) is not int or min(left, total) < 20:
+        return "free_quota_low"
+    hourly = account.get("account_rate_limit_per_hour")
+    used = account.get("this_hour_searches")
+    if type(hourly) is not int or type(used) is not int or hourly - used < 1:
+        return "hourly_limit"
+    return "free_verified"
+
+
+def _serpapi_json(params: dict[str, str], endpoint: str = "account.json") -> dict | None:
+    """Never include private API keys or request URLs in logs/exceptions."""
+    from urllib.parse import urlencode
+    url = "https://serpapi.com/" + endpoint + "?" + urlencode(params)
+    try:
+        with OPENER.open(Request(url, headers={"Accept": "application/json",
+                "User-Agent": "VacatureRadarPublicDiscovery/1.0"}), timeout=15) as result:
+            raw = result.read(350001)
+            if len(raw) > 350000:
+                return None
+            value = json.loads(raw.decode("utf-8"))
+            return value if isinstance(value, dict) else None
+    except (HTTPError, URLError, OSError, TimeoutError, ValueError, UnicodeError):
+        return None
+
+
+def _google_jobs_candidates(payload: dict, query: str) -> list[dict]:
+    """Unverified discovery only: require a real apply/source role URL."""
+    source = {"source_id": "google-jobs", "source_name": "Google Jobs via SerpApi",
               "source_type": "discovery"}
-    status, html, _ = fetch_public(url)
-    browser = "not_needed"
-    if status != "http_200" or not discover(html, source, url):
-        if chrome:
-            browser, rendered = render_with_chrome(url, chrome)
-            if browser == "rendered":
-                html = rendered
-    leads = discover(html, source, url)
-    return {"query": query, "status": status, "browser": browser,
-            "candidate_count": len(leads), "search_index": index}, leads
+    rows = payload.get("jobs_results") or []
+    if not isinstance(rows, list):
+        return []
+    out, seen = [], set()
+    for job in rows[:45]:
+        if not isinstance(job, dict):
+            continue
+        title = str(job.get("title") or "")[:180]
+        desc = str(job.get("description") or "")[:800]
+        location = str(job.get("location") or "")[:160]
+        ext = job.get("detected_extensions") or {}
+        if not isinstance(ext, dict):
+            ext = {}
+        if not relevant(title, desc):
+            continue
+        explicit = ext.get("work_from_home") is True
+        evidence = " ".join((title, desc, location))
+        if not remote_signal(title, desc, location, explicit):
+            continue
+        links = [x.get("link") for x in (job.get("apply_options") or [])
+                 if isinstance(x, dict)]
+        links.append(job.get("source_link"))
+        for link in links:
+            url = job_url(link, "https://serpapi.com/") if link else ""
+            if not url or url in seen or CAREERS_ROOT.match(urlparse(url).path):
+                continue
+            if urlparse(url).hostname in ("www.google.com","google.com","serpapi.com"):
+                continue
+            seen.add(url)
+            out.append({
+                "source_id":source["source_id"],"source_type":source["source_type"],
+                "job_id":str(job.get("job_id") or url)[:500],
+                "employer":str(job.get("company_name") or "")[:120],
+                "title":title,"url":url,"published_hint":"",
+                "location":"Remote - " + location if explicit else location or "Remote",
+                "description":desc,
+                "evidence":"SerpApi Google Jobs discovery; original date/NL eligibility and employer URL unverified",
+                "review_status":"unverified"
+            })
+            break
+    return out
+
+
+def discover_google_allowed(query: str, index: int, key: str) -> tuple[dict, list[dict]]:
+    """One Google Jobs query, only if the SerpApi account proves free+quota."""
+    label = {"query":query,"search_index":index,"browser":"not_attempted",
+             "candidate_count":0}
+    if not key:
+        return {**label, "status":"api_key_missing"}, []
+    account = _serpapi_json({"api_key":key})
+    status = free_serpapi_account_status(account)
+    if status != "free_verified":
+        return {**label,"status":status}, []
+    payload = _serpapi_json({
+        "api_key":key,"engine":"google_jobs","q":query,
+        "gl":"nl","hl":"en"
+    },endpoint="search.json")
+    if not payload or payload.get("error") or str(
+            (payload.get("search_metadata") or {}).get("status") or "").lower() != "success":
+        return {**label,"status":"google_jobs_provider_error"}, []
+    rows = _google_jobs_candidates(payload,query)
+    return {**label,"status":"serpapi_google_jobs_success",
+            "candidate_count":len(rows),"browser":"authorized_api"},rows
 
 
 def run(registry_path: Path, output_path: Path, *, limit: int = 0,
@@ -379,7 +513,8 @@ def run(registry_path: Path, output_path: Path, *, limit: int = 0,
         chrome = path if os.path.isfile(path) else None
     # Round robin browser sampling across all remaining JS-dependent sources.
     choices = [s for s in checked if statuses[s["source_id"]]["status"] == "http_200" and
-               not statuses[s["source_id"]]["candidate_count"]]
+               not statuses[s["source_id"]]["candidate_count"] and
+               statuses[s["source_id"]]["coverage"] != "official_public_rss_not_full_historical_catalog"]
     epoch = int(time.time() // 1800)
     if choices:
         offset = (epoch * max_render) % len(choices)
@@ -407,23 +542,29 @@ def run(registry_path: Path, output_path: Path, *, limit: int = 0,
                 "coverage": "not_checked", "url": src["base_url"]
             }
     google_log: list[dict] = []
-    if google:
-        searches = [
-            'remote WordPress WooCommerce developer job',
-            'remote Elementor web designer jobs Europe',
-            'fully remote frontend website developer job Netherlands',
-            'site:jobs.ashbyhq.com "WordPress" "remote" jobs',
-            'site:boards.greenhouse.io "WordPress" "remote"'
+    if google and not any(s["source_id"] == "google-jobs" for s in entries):
+        google_log.append({"status":"google_source_inactive",
+                           "browser":"not_attempted","candidate_count":0})
+    elif google:
+        # Direct automated Google HTML scraping is not used. Use only a
+        # verified free account on a deliberately sparse 4-hour slot.
+        queries = [
+            "remote WordPress WooCommerce developer jobs Europe",
+            "remote Elementor web designer jobs Netherlands",
+            "fully remote frontend website developer jobs Europe",
+            "remote WordPress support specialist jobs Europe",
+            "remote website designer developer jobs worldwide",
+            "remote WooCommerce Gutenberg developer jobs"
         ]
-        with ThreadPoolExecutor(max_workers=3) as pool:
-            futures = {pool.submit(discover_google, q, i, chrome): q for i, q in enumerate(searches)}
-            for future in as_completed(futures):
-                try:
-                    status, found = future.result()
-                except Exception:
-                    status, found = {"query": futures[future], "status": "error", "candidate_count": 0}, []
-                google_log.append(status)
-                jobs.extend(found)
+        if os.environ.get("RADAR_GOOGLE_FREE_SLOT") != "true":
+            google_log.append({"status":"free_api_not_scheduled_this_round",
+                               "browser":"not_attempted","candidate_count":0})
+        else:
+            index = int(time.time() // 14400) % len(queries)
+            label, found = discover_google_allowed(queries[index], index,
+                          os.environ.get("SERPAPI_API_KEY","").strip())
+            google_log.append(label)
+            jobs.extend(found)
     unique: dict[str, dict] = {}
     for job in jobs:
         key = job_url(job.get("url", ""), "https://example.com/")
@@ -460,7 +601,18 @@ def main() -> None:
     p.add_argument("--max-render", type=int, default=90)
     p.add_argument("--no-browser", action="store_true")
     p.add_argument("--no-google", action="store_true")
+    p.add_argument("--google-check-only", action="store_true",
+                   help="Check existing free SerpApi plan without spending a search credit")
     a = p.parse_args()
+    if a.google_check_only:
+        key = os.environ.get("SERPAPI_API_KEY", "").strip()
+        if not key:
+            status = "api_key_missing"
+        else:
+            status = free_serpapi_account_status(_serpapi_json({"api_key":key}))
+        print(json.dumps({"google_free_plan_status":status,
+                          "safe_to_search":status=="free_verified"}))
+        return
     result = run(Path(a.registry), Path(a.output), limit=a.limit,
                  chrome="" if a.no_browser else None, max_render=0 if a.no_browser else a.max_render,
                  google=not a.no_google)
