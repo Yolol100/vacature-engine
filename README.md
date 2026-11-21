@@ -226,10 +226,12 @@ Only complete verified inputs reach `top_vacancies`; existing score anchors,
 thresholds, weights and ordering are unchanged. Public output contains the
 score components and proof digests, not private CandidateEvidence claims/IDs.
 
-GitHub Actions are CI-only for vacancy research and review; an opt-in
-code-only Apps Script API sync has no search or scheduler authority. Public
-discovery and private specialist review are started exclusively by explicit
-ChatGPT vacancy-search requests. A caller using the Python API can retain the
+GitHub Actions retains offline CI and separate code-only Apps Script API
+sync. As explicitly authorized on 21 November 2026, a **public-only**
+30-minute browser worker now researches public employer/source pages and
+search results, publishing public observations without private applicant
+information. Specialist verification, private ranking and applications still
+require explicit ChatGPT/user requests. A caller using the Python API can retain the
 observations and page cache, review them and call `evaluate_observations` again
 within the same current evidence session. Never commit these private inputs or
 upload them as public workflow artifacts. A local run may use Python 3.13 when
