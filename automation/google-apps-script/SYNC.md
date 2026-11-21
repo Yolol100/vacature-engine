@@ -1,6 +1,6 @@
 # Safe Google Apps Script API sync from GitHub
 
-This is **code synchronization only**. It does not create a script, timer, scanner, candidate, application, or vacancy search. The existing **one** `runVacatureRadar` timer remains owned by the original spreadsheet-bound Apps Script project. The [Vacature Register](https://docs.google.com/spreadsheets/d/1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0/edit) remains authoritative.
+The separate 30-minute **public-only browser worker** is documented at \`../../ingestion/docs/SCHEDULED-30M-BROWSER-WORKER.md\`; this code-sync workflow never scans job websites.\n\nThis is **code synchronization only**. It does not create a script, timer, scanner, candidate, application, or vacancy search. The existing **one** `runVacatureRadar` timer remains owned by the original spreadsheet-bound Apps Script project. The [Vacature Register](https://docs.google.com/spreadsheets/d/1Owg3s5ZzPuCYTucp6ArgUNoWijKDr2TwvgbAUsJWdz0/edit) remains authoritative.
 
 ## Safeguards
 

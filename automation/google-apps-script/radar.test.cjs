@@ -125,13 +125,70 @@ test('all 233 registered sources get a distinct outcome on a mocked fast public 
   assert.match(log[0].v[0][0],/source_id/);
 });
 
-test('scheduled 30-minute scanner fails closed after first public sweep timeout', () => {
+test('30-minute Apps Script imports external worker without repeating 233 slow network requests', () => {
   const s = load();
   assert.equal(s.VACATURE_RADAR.allowedSchedule,'apps_script_30m_safe_feed_and_on_demand_deep');
   const runSource = code.slice(code.indexOf('function runVacatureRadar(event) {'),
     code.indexOf('function enableVacatureRadar() {'));
   assert.doesNotMatch(runSource,/radarSweepPublicRegistry_\(/);
-  assert.match(runSource,/googleStatus: 'not_run_quota_blocked'/);
+  assert.match(runSource,/radarWorkerImport_\(/);
+  assert.match(runSource,/worker_unavailable_or_stale/);
+});
+
+
+test('worker feed source inventory is checked against live Register and freshness', () => {
+  const s=load();
+  const now=Date.parse('2026-11-21T12:00:00Z');
+  const sources=[
+    {id:'company-demo',name:'Demo Corp',type:'employer_direct',url:'https://demo.example/jobs/'},
+    {id:'google-jobs',name:'Google',type:'discovery',url:'https://www.google.com/search'}
+  ];
+  const payload={schema_version:1,generated_at:'2026-11-21T11:58:00Z',source_count:2,
+    sources:sources.map(x=>({source_id:x.id,url:x.url,status:'http_200',
+      checked_at:'2026-11-21T11:58:00Z',browser:'rendered',candidate_count:1,
+      coverage:'rendered_public_page_only'})),observations:[],google:[{status:'http_200',browser:'rendered'}]};
+  const ok=s.radarWorkerParse_(JSON.stringify(payload),sources,now);
+  assert.equal(ok.registered,2);
+  assert.equal(ok.attempted,2);
+  assert.equal(ok.browserCount,2);
+  assert.match(ok.googleStatus,/http_200/);
+  assert.throws(()=>s.radarWorkerParse_(JSON.stringify({...payload,
+    generated_at:'2026-11-21T01:00:00Z'}),sources,now),/stale/);
+  assert.throws(()=>s.radarWorkerParse_(JSON.stringify({...payload,
+    sources:[{...payload.sources[0],url:'https://evil.example/'},payload.sources[1]]}),sources,now),
+    /Untrusted/);
+  assert.throws(()=>s.radarWorkerParse_(JSON.stringify({...payload,source_count:233}),sources,now),
+    /mismatch/);
+});
+
+test('public worker candidate intake never promotes, repeats or accepts hybrid/non-remote', () => {
+  const s=load();
+  const sources=[{id:'company-demo',name:'Demo Corp',
+    type:'employer_direct',url:'https://demo.example/jobs/'}];
+  const core={source_id:'company-demo',job_id:'job-1',employer:'Demo Corp',
+    title:'WordPress Developer',url:'https://demo.example/jobs/1',
+    description:'Building WooCommerce stores',location:'Remote - Netherlands',
+    review_status:'unverified',published_hint:'',
+    evidence:'Official JobPosting candidate'};
+  const rejected=[
+    {...core,url:'https://demo.example/jobs/2',location:'Hybrid - Amsterdam'},
+    {...core,url:'https://demo.example/jobs/3',location:'Remote - US only'},
+    {...core,url:'https://demo.example/jobs/4',title:'AI Automation Engineer'},
+    {...core,url:'http://demo.example/jobs/5'},
+    {...core,source_id:'not-active',url:'https://demo.example/jobs/6'},
+    {...core,url:'https://demo.example/jobs/7',review_status:'verified'}
+  ];
+  const seen={},old={};
+  const config={max_posting_age_days:7};
+  const when=Date.parse('2026-11-21T12:00:00Z');
+  const rows=s.radarWorkerRows_([core,...rejected],sources,seen,old,
+    ['wordpress_ecosystem','web_design_development'],config,when);
+  assert.equal(rows.length,1);
+  assert.equal(rows[0][6],'WordPress Developer');
+  assert.equal(rows[0][10],'date_unknown_review');
+  assert.match(rows[0][12],/unverified|unknown/i);
+  assert.equal(s.radarWorkerRows_([core],sources,seen,old,
+    ['wordpress_ecosystem'],config,when).length,0);
 });
 
 test('Apps Script code parses in V8 without executing a schedule', () => {

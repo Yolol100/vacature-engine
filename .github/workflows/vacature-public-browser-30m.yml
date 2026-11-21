@@ -1,0 +1,102 @@
+name: Vacature Radar - openbare bronnen en browser (30m)
+
+# Explicitly requested by the account owner on 2026-11-21.
+# Scan ONLY public job data. No application or private Register data in Actions.
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'smoke (6 sources, no publish) or full (public 233-source sweep)'
+        required: true
+        type: choice
+        default: smoke
+        options: [smoke, full]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vacature-public-browser-worker
+  cancel-in-progress: false
+
+jobs:
+  public-vacancy-sweep:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write # publish only public job source observations to radar-public-data
+    steps:
+      - name: Checkout trusted main source without a persisted credential
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          path: trusted-source
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Run no-network security and parsing tests
+        working-directory: trusted-source
+        run: python -m unittest discover -s ingestion/tests -p test_scheduled_worker.py -v
+      - name: Inspect installed Chrome (do not claim browser coverage if missing)
+        shell: bash
+        run: |
+          if command -v google-chrome >/dev/null; then
+            google-chrome --version
+          else
+            echo 'BROWSER_NOT_AVAILABLE: JS rendering will be recorded as not attempted'
+          fi
+      - name: Scan registered public sources and targeted search results
+        working-directory: trusted-source
+        timeout-minutes: 21
+        shell: bash
+        run: |
+          set -euo pipefail
+          mode="full"
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            mode="$(python -c "import json,os;print(json.load(open(os.environ['GITHUB_EVENT_PATH'])).get('inputs',{}).get('mode','smoke'))")"
+          fi
+          if [[ "$mode" == "smoke" ]]; then
+            python ingestion/scheduled_worker.py --registry ingestion/sources.public-snapshot.json \
+              --output "$RUNNER_TEMP/radar-latest.json" --limit 6 --no-browser --no-google
+          else
+            python ingestion/scheduled_worker.py --registry ingestion/sources.public-snapshot.json \
+              --output "$RUNNER_TEMP/radar-latest.json" --max-render 90
+          fi
+          python - "$RUNNER_TEMP/radar-latest.json" <<'PY'
+          import json,sys
+          from pathlib import Path
+          x=json.loads(Path(sys.argv[1]).read_text(encoding="utf8"))
+          assert x["schema_version"]==1 and x["source_count"]==233
+          assert len(x["sources"])==233
+          assert all(s["source_id"] and s["status"] for s in x["sources"])
+          assert all(j["review_status"]=="unverified" for j in x["observations"])
+          print("Scan saved:",x["summary"])
+          PY
+      - name: Checkout isolated public-results branch after browsing is complete
+        if: github.event_name == 'schedule' || inputs.mode == 'full'
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: radar-public-data
+          path: public-results
+          persist-credentials: true
+      - name: Publish ONLY public-source observations for existing Apps Script intake
+        if: github.event_name == 'schedule' || inputs.mode == 'full'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/radar-latest.json" public-results/latest.json
+          cd public-results
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add latest.json
+          if git diff --cached --quiet; then
+            echo 'NO_CHANGE: public snapshot unchanged'
+            exit 0
+          fi
+          git commit -m 'data: refresh public vacancy source observations'
+          git push origin HEAD:radar-public-data
+          echo 'PASS: public observations published; Google Sheets ingestion is separate'
