@@ -253,13 +253,12 @@ class FreeDiscoveryTests(unittest.TestCase):
             runner.close()
 
 
-    def test_chatgpt_only_discovery_not_in_github_actions(self):
+    def test_manual_serpapi_remains_disabled_in_authorized_public_browser_worker(self):
         root = Path(__file__).resolve().parents[2]
         workflow_files = sorted(p.name for p in (root / ".github/workflows").glob("*.yml"))
-        # GitHub may inspect/sync an existing script's source, but may never
-        # start Google discovery or create a second vacancy scheduler.
         self.assertEqual(
-            ["ingestion-tests.yml", "vacature-radar-script-sync.yml"], workflow_files
+            ["ingestion-tests.yml", "vacature-public-browser-30m.yml",
+             "vacature-radar-script-sync.yml"], workflow_files
         )
         ci = (root / ".github/workflows/ingestion-tests.yml").read_text(encoding="utf-8")
         self.assertIn("pull_request:", ci)
@@ -271,13 +270,22 @@ class FreeDiscoveryTests(unittest.TestCase):
         self.assertIn("vars.VACATURE_RADAR_AUTO_DEPLOY == 'true'", sync)
         self.assertIn("RADAR_EXPECTED_LIVE_SHA256", sync)
         self.assertIn("RADAR_EXPECTED_GITHUB_SHA256", sync)
-        # A weekly code/hash + OAuth check is permitted; the vacancy search stays manual.
         self.assertIn("schedule:", sync)
         self.assertIn("github.event_name == 'schedule'", sync)
         self.assertIn("RADAR_SYNC_MODE=inspect", sync)
         self.assertIn("Reject direct pushes for automatic Apps Script deployments", sync)
         self.assertNotIn("one_pass_vacancies.py", sync)
         self.assertNotIn("runVacatureRadar", sync)
+        browser = (root / ".github/workflows/vacature-public-browser-30m.yml").read_text(encoding="utf-8")
+        self.assertIn("'7,37 * * * *'", browser)
+        self.assertIn("ingestion/scheduled_worker.py", browser)
+        self.assertIn("radar-public-data", browser)
+        # This extra explicitly authorized public-only route never consumes
+        # SerpApi keys, applicant data or live Register mutation credentials.
+        self.assertNotIn("SERPAPI_API_KEY", browser)
+        self.assertNotIn("secrets.", browser)
+        self.assertNotIn("CandidateEvidence", browser)
+        self.assertNotIn("one_pass_vacancies.py", browser)
 
     @patch("vacature_ingestion.adapters.serpapi_google._get_json")
     def test_repeating_query_terms_do_not_spend_extra_requests(self, get):
