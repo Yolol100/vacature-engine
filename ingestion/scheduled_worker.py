@@ -27,9 +27,10 @@ MAX_OUTPUT_LEADS = 150
 HEADERS = {"User-Agent": "VacatureRadar/1.0 (+public vacancies; no credentials)", "Accept": "text/html,application/ld+json"}
 ROLE = re.compile(r"\b(wordpress|woocommerce|elementor|gutenberg|acf|web[\s-]?design|web[\s-]?develop|front[\s-]?end|frontend|website|webshop)\b", re.I)
 REMOTE = re.compile(r"\b(fully remote|100%\s*remote|remote\b|work from anywhere|telecommut)", re.I)
-NONREMOTE = re.compile(r"\b(hybrid|on[\s-]?site|in office|office[\s-]?based|not remote|no remote)\b", re.I)
-REGION_BLOCK = re.compile(r"\b(us only|usa only|united states only|uk only|u\.s\.\s*only|w2 only)\b", re.I)
-BAD_ROLE = re.compile(r"\b(ai automation|automation engineer|sales engineer|systems engineer|product manager|mobile developer|data engineer)\b", re.I)
+NONREMOTE = re.compile(r"\b(hybrid|on[\s-]?site|in office|office[\s-]?based|not remote|no remote|remote[\s-]?friendly)\b", re.I)
+REGION_BLOCK = re.compile(r"\b(us only|usa only|united states only|uk only|u\.s\.\s*only|w2 only|u\.?s\.?[\s-]+based|usa[\s-]+based)\b", re.I)
+BAD_ROLE = re.compile(r"\b(ai automation|automation engineer|sales engineer|systems engineer|product manager|mobile developer|data engineer|marketer|marketing|sales support|sales specialist|lending manager)\b", re.I)
+LISTING_TITLE = re.compile(r"\b(?:browse|more|search|find)\b.{0,45}\bjobs?\b|(?:remote[ -]?)?(?:wordpress|front[ -]?end|frontend|web[ -]?developer)\b.{0,35}\bjobs\b", re.I)
 PRIVATE_NAMES = re.compile(r"(^localhost$|(^|\.)local$|(^|\.)internal$)", re.I)
 CAREERS_ROOT = re.compile(r"^/(?:careers?|jobs?|openings?|vacancies|about/careers?)/?$", re.I)
 
@@ -84,8 +85,7 @@ def job_url(href: str, base: str) -> str:
 
 def relevant(title: str, desc: str = "") -> bool:
     title = (title or "").strip()[:200]
-    return bool(ROLE.search(title) and not (BAD_ROLE.search(title) and not
-                re.search(r"wordpress|woocommerce|elementor|gutenberg", title, re.I)))
+    return bool(ROLE.search(title) and not BAD_ROLE.search(title) and not LISTING_TITLE.search(title))
 
 
 def remote_signal(title: str, description: str, location: str, explicit: bool = False) -> bool:

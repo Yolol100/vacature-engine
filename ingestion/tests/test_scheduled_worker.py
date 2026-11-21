@@ -108,6 +108,25 @@ class WorkerTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["location"], "Remote")
 
+    def test_listing_pages_marketing_and_us_based_are_not_job_leads(self):
+        titles = [
+            ("Remote WordPress Jobs", "https://example.com/remote-jobs/wordpress"),
+            ("Browse more remote WordPress jobs", "https://example.com/jobs?skills=WordPress"),
+            ("Frontend Developer Remote Jobs", "https://example.com/remote-frontend-developer-jobs"),
+            ("Remote Frontend Jobs in USA", "https://example.com/remote-frontend-jobs-usa"),
+            ("WordPress Plugin Growth Marketer - Remote", "https://example.com/jobs/marketer"),
+            ("WordPress Sales Support Specialist Remote", "https://example.com/jobs/sales"),
+            ("Web Developer: WordPress & HubSpot (U.S. Based, Remote Contractor)",
+             "https://example.com/jobs/usa"),
+            ("Frontend Developer (Remote Friendly)", "https://example.com/jobs/hybrid"),
+        ]
+        for title, url in titles:
+            with self.subTest(title=title):
+                data = '<a href="' + url + '">' + title + '</a>'
+                self.assertEqual(worker.discover(data, self.src, self.src["base_url"]), [])
+        ok = '<a href="https://example.com/jobs/123">Remote WordPress Support Specialist</a>'
+        self.assertEqual(len(worker.discover(ok, self.src, self.src["base_url"])), 1)
+
     def test_browser_unavailable_is_honest(self):
         self.assertEqual(worker.render_with_chrome("https://example.com/", ""), ("browser_unavailable", ""))
 
