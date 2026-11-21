@@ -755,6 +755,127 @@ function radarEnsure30MinuteTrigger_(properties) {
   return '30m_trigger_migrated';
 }
 
+
+// Scheduled public-browser worker writes only publicly observable job postings
+// to its isolated data branch. Validate against live active Bronnen before any
+// unverified Radar intake. Never read or publish application history in Actions.
+function radarWorkerParse_(raw, activeSources, nowMs) {
+  var data = JSON.parse(raw);
+  var sources = activeSources || [];
+  if (!data || data.schema_version !== 1 ||
+      !Array.isArray(data.sources) || !Array.isArray(data.observations) ||
+      !Array.isArray(data.google) || data.source_count !== sources.length ||
+      data.sources.length !== sources.length || data.observations.length > 150) {
+    throw new Error('Public worker schema or live source-count mismatch');
+  }
+  var time = Date.parse(String(data.generated_at || ''));
+  if (!isFinite(time) || time < nowMs - 3 * 60 * 60 * 1000 ||
+      time > nowMs + 10 * 60 * 1000) throw new Error('Public worker data stale or future-dated');
+  var index = {};
+  sources.forEach(function (s) {
+    if (!s.id || index[s.id]) throw new Error('Duplicate active Register source');
+    index[s.id] = s;
+  });
+  var seen = {};
+  data.sources.forEach(function (s) {
+    var id = String(s.source_id || '');
+    var canonical = index[id];
+    if (!canonical || seen[id] || canonical.url !== s.url ||
+        typeof s.status !== 'string') {
+      throw new Error('Untrusted or stale public source inventory');
+    }
+    seen[id] = true;
+  });
+  var attempted = 0, errors = 0, browserCount = 0;
+  var logs = sources.map(function (s) {
+    var item = data.sources.filter(function (entry) {
+      return entry.source_id === s.id;
+    })[0];
+    var checked = String(item.checked_at || '');
+    var code = String(item.status || '').slice(0, 55);
+    var browser = String(item.browser || '').slice(0, 40);
+    if (checked) attempted++;
+    if (code !== 'http_200') errors++;
+    if (browser === 'rendered') browserCount++;
+    return [s.id,s.type,s.url,checked,code,Number(item.candidate_count || 0),
+      String(item.coverage || '').slice(0, 100) +
+      '; browser=' + browser];
+  });
+  var google = data.google.map(function (q) {
+    return String(q.status || 'not_available') + '/' +
+      String(q.browser || 'not_attempted');
+  });
+  return {
+    observations: data.observations, logs: logs, registered: sources.length,
+    attempted: attempted, errors: errors, pending: sources.length - attempted,
+    browserCount: browserCount,
+    googleStatus: google.length ? google.join(', ').slice(0, 200) : 'not_checked',
+    generatedAt: String(data.generated_at)
+  };
+}
+
+function radarWorkerRows_(observations, sourceList, known, oldKeys, family, config, nowMs) {
+  var sourceMap = {}, added = [], already = {};
+  sourceList.forEach(function (s) {sourceMap[s.id] = s;});
+  (observations || []).slice(0, 150).forEach(function (item) {
+    if (!item || item.review_status !== 'unverified') return;
+    var s = sourceMap[String(item.source_id || '')];
+    if (!s) return;
+    var title = String(item.title || '').slice(0, 180);
+    var desc = String(item.description || '').slice(0, 800);
+    var location = String(item.location || '').slice(0, 180);
+    // Core gates precede optional publication-date checks.
+    if (!radarRelevant_(title, desc, family) ||
+        !/\b(remote|telecommut)\b/i.test(location) ||
+        /\b(hybrid|on[ -]?site|in.office|us only|usa only|united states only|uk only|w2 only)\b/i.test(location + ' ' + desc)) return;
+    var url = radarNormalizeUrl_(String(item.url || ''));
+    if (!url || already[url]) return;
+    var employer = String(item.employer || s.name || '').slice(0, 120);
+    var role = {
+      sourceId: s.id, sourceType: s.type, jobId: String(item.job_id || url).slice(0, 500),
+      employer: employer, title: title, url: url, location: location,
+      publishedHint: String(item.published_hint || '').slice(0, 40),
+      description: desc, note: String(item.evidence || 'public browser discovery').slice(0, 180)
+    };
+    var key = radarObservationKey_({adapter:'public_browser',source_id:s.id},role);
+    if (!key || oldKeys[key] ||
+        (!radarSharedCareersUrl_(url) && known[url])) return;
+    var result = radarReview_(role,config,nowMs);
+    if (result.status === 'not_fully_remote_review' ||
+        result.status === 'geography_restricted_review') return;
+    oldKeys[key] = true;
+    already[url] = true;
+    if (!radarSharedCareersUrl_(url)) known[url] = true;
+    var stamp = new Date(nowMs).toISOString();
+    added.push([
+      key,stamp,stamp,role.sourceId,role.jobId,role.employer,role.title,
+      role.url,role.publishedHint,role.location,result.status,role.sourceType,
+      'Public GitHub browser-worker: ' + role.note + '; ' + result.reason
+    ].map(radarSafeCell_));
+  });
+  return added;
+}
+
+function radarWorkerImport_(register,radar,activeIds,known,oldKeys,family,config,started) {
+  var sourceList = radarPublicSources_(register);
+  if (sourceList.length !== Object.keys(activeIds).length)
+    throw new Error('Register source identities disagree');
+  var feed = radarHttp_(
+    'https://raw.githubusercontent.com/Yolol100/vacature-engine/radar-public-data/latest.json');
+  var parsed = radarWorkerParse_(feed,sourceList,started);
+  var added = radarWorkerRows_(parsed.observations,sourceList,known,oldKeys,
+                               family,config,started);
+  radarPublicHealthSheet_(radar,parsed.logs);
+  return {
+    total:parsed.registered,attempted:parsed.attempted,
+    errors:parsed.errors,pending:parsed.pending,
+    candidates:added.length,added:added,
+    googleStatus:parsed.googleStatus,
+    browserStatus:parsed.browserCount + ' public JS-pagina(s) gerenderd; onvolledige vacaturedekking',
+    generatedAt:parsed.generatedAt
+  };
+}
+
 function radarSourceDue_(spec, nowMs, properties) {
   // Public aggregators update slowly; avoid repeated polling and wasted quota.
   var cadenceMinutes = ({
@@ -885,7 +1006,7 @@ function radarUpdateDashboard_(radar, active, run, applicationMetrics) {
     dashboard.getRange('A10').setValue('Laatste uitvoering (UTC)');
     dashboard.getRange('B10').setValue(run.at);
     // An idle trigger is not a source scan. Keep the last real round's counts.
-    if (run.attemptedSources > 0) {
+    if (run.attemptedSources > 0 || (run.publicSources && run.publicSources.attempted > 0)) {
       dashboard.getRange('B11').setValue(run.attemptedSources);
       dashboard.getRange('B12').setValue(run.failedSources);
       dashboard.getRange('B13').setValue(run.newLeads);
@@ -912,7 +1033,7 @@ function radarUpdateDashboard_(radar, active, run, applicationMetrics) {
         ['Niet binnen budget verwerkt',run.publicSources.pending],
         ['Openbare bronfouten / beperkte toegang',run.publicSources.errors],
         ['Google publieke zoekroute',run.publicSources.googleStatus],
-        ['Javascript-browserpagina\'s','Niet automatisch gerenderd door Apps Script'],
+        ['Javascript-browserpagina\'s',run.publicSources.browserStatus || 'Geen browserdekking bevestigd'],
         ['30-minuten trigger',run.triggerState || 'onbekend']
       ]);
     }
@@ -1098,13 +1219,25 @@ function runVacatureRadar(event) {
     }
     var publicSources = null;
     if (fullMode) {
-      // The first 233-source HTTP sweep exceeded the hard six-minute Apps
-      // Script execution limit. Fail closed: scheduled unbounded public HTTP
-      // must NOT resume until a separately tested, quota-safe worker exists.
-      // The proven ATS/feed scanner and 30-minute trigger keep running.
-      publicSources = {total: Object.keys(activeIds).length, attempted: 0,
-        errors: 0, pending: Object.keys(activeIds).length, candidates: 0,
-        googleStatus: 'not_run_quota_blocked'};
+      // Heavy browser work is safely performed by GitHub Actions on a separate
+      // runner and published as public-only data. This Apps Script imports
+      // candidates and source evidence in one bounded JSON request.
+      try {
+        var worker = radarWorkerImport_(register,radar,activeIds,known,
+          oldKeys,permittedFamily,config,started);
+        additions = additions.concat(worker.added).slice(0,VACATURE_RADAR.maxNewRows);
+        publicSources = {total:worker.total,attempted:worker.attempted,
+          errors:worker.errors,pending:worker.pending,candidates:worker.candidates,
+          googleStatus:worker.googleStatus,browserStatus:worker.browserStatus,
+          generatedAt:worker.generatedAt};
+      } catch (workerError) {
+        console.warn('Public browser worker unavailable or stale; safe feeds continue: ' +
+          String(workerError && workerError.message || workerError).slice(0,150));
+        publicSources = {total:Object.keys(activeIds).length,attempted:0,
+          errors:0,pending:Object.keys(activeIds).length,candidates:0,
+          googleStatus:'worker_unavailable_or_stale',
+          browserStatus:'No confirmed browser coverage'};
+      }
     }
     // Move the cursor past the attempted segment, even if a source failed.
     if (sourceDue.length) {

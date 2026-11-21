@@ -56,9 +56,12 @@ configuration. Only the registered `google-jobs` discovery source is allowed.
 Search hits are *not* final verified vacancies and are never complete
 snapshots for vacancy closure.
 
-GitHub Actions contains only offline tests. The only user-facing vacancy
-search entrypoint is an explicit ChatGPT `vacature-search` request. The
-optional free Google adapter remains source-gated and must not be scheduled
-or launched through GitHub Actions.
+GitHub Actions retains offline regression tests. Additionally, the owner
+expressly approved a 30-minute **public-only browser discovery worker**.
+It does not use SerpApi or the old local ingest CLI: it scans sanitized
+public source URLs and publishes only public job observations to a
+separate branch. Private Apps Script ingests and deduplicates pending leads.
+Official vacancy/NL eligibility verification remains on-demand.
+See \`docs/SCHEDULED-30M-BROWSER-WORKER.md\`.
 
 See [FREE-GOOGLE-DISCOVERY.md](docs/FREE-GOOGLE-DISCOVERY.md).

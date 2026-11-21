@@ -1,0 +1,1406 @@
+{
+  "schema_version": 1,
+  "source": "Vacature Register:Bronnen",
+  "snapshotted_at": "2026-11-21",
+  "count": 233,
+  "entries": [
+    {
+      "source_id": "linkedin-jobs",
+      "source_name": "LinkedIn Jobs",
+      "source_type": "job_board",
+      "base_url": "https://www.linkedin.com/jobs/"
+    },
+    {
+      "source_id": "indeed-nl",
+      "source_name": "Indeed NL",
+      "source_type": "job_board",
+      "base_url": "https://nl.indeed.com/"
+    },
+    {
+      "source_id": "indeed-uk",
+      "source_name": "Indeed UK",
+      "source_type": "job_board",
+      "base_url": "https://uk.indeed.com/"
+    },
+    {
+      "source_id": "indeed-us",
+      "source_name": "Indeed US",
+      "source_type": "job_board",
+      "base_url": "https://www.indeed.com/"
+    },
+    {
+      "source_id": "glassdoor",
+      "source_name": "Glassdoor",
+      "source_type": "discovery",
+      "base_url": "https://www.glassdoor.com/"
+    },
+    {
+      "source_id": "welcome-jungle",
+      "source_name": "Welcome to the Jungle",
+      "source_type": "discovery",
+      "base_url": "https://www.welcometothejungle.com/"
+    },
+    {
+      "source_id": "eures",
+      "source_name": "EURES",
+      "source_type": "job_board",
+      "base_url": "https://eures.europa.eu/"
+    },
+    {
+      "source_id": "nationale-vacaturebank",
+      "source_name": "Nationale Vacaturebank",
+      "source_type": "job_board",
+      "base_url": "https://www.nationalevacaturebank.nl/"
+    },
+    {
+      "source_id": "intermediair",
+      "source_name": "Intermediair",
+      "source_type": "job_board",
+      "base_url": "https://www.intermediair.nl/"
+    },
+    {
+      "source_id": "tweakers-it",
+      "source_name": "Tweakers IT Banen",
+      "source_type": "job_board",
+      "base_url": "https://tweakers.net/carriere/"
+    },
+    {
+      "source_id": "iamexpat",
+      "source_name": "IamExpat Jobs",
+      "source_type": "job_board",
+      "base_url": "https://www.iamexpat.nl/career/jobs-netherlands"
+    },
+    {
+      "source_id": "eu-startups",
+      "source_name": "EU-Startups Jobs",
+      "source_type": "job_board",
+      "base_url": "https://www.eu-startups.com/job-board/"
+    },
+    {
+      "source_id": "yc-jobs",
+      "source_name": "Y Combinator Jobs",
+      "source_type": "job_board",
+      "base_url": "https://www.ycombinator.com/jobs"
+    },
+    {
+      "source_id": "we-work-remotely",
+      "source_name": "We Work Remotely",
+      "source_type": "job_board",
+      "base_url": "https://weworkremotely.com/"
+    },
+    {
+      "source_id": "remote-ok",
+      "source_name": "Remote OK",
+      "source_type": "job_board",
+      "base_url": "https://remoteok.com/"
+    },
+    {
+      "source_id": "remotive",
+      "source_name": "Remotive Public API",
+      "source_type": "discovery_api",
+      "base_url": "https://remotive.com/remote-jobs/api"
+    },
+    {
+      "source_id": "himalayas",
+      "source_name": "Himalayas",
+      "source_type": "job_board",
+      "base_url": "https://himalayas.app/jobs"
+    },
+    {
+      "source_id": "working-nomads",
+      "source_name": "Working Nomads",
+      "source_type": "job_board",
+      "base_url": "https://www.workingnomads.com/jobs"
+    },
+    {
+      "source_id": "remote-co",
+      "source_name": "Remote.co",
+      "source_type": "job_board",
+      "base_url": "https://remote.co/remote-jobs/"
+    },
+    {
+      "source_id": "flexa",
+      "source_name": "Flexa",
+      "source_type": "job_board",
+      "base_url": "https://flexa.careers/"
+    },
+    {
+      "source_id": "authentic-jobs",
+      "source_name": "Authentic Jobs",
+      "source_type": "job_board",
+      "base_url": "https://authenticjobs.com/"
+    },
+    {
+      "source_id": "jobgether",
+      "source_name": "Jobgether",
+      "source_type": "discovery",
+      "base_url": "https://jobgether.com/"
+    },
+    {
+      "source_id": "wordpress-jobs",
+      "source_name": "WordPress Jobs",
+      "source_type": "job_board",
+      "base_url": "https://jobs.wordpress.net/"
+    },
+    {
+      "source_id": "smashing-jobs",
+      "source_name": "Smashing Magazine Jobs",
+      "source_type": "job_board",
+      "base_url": "https://www.smashingmagazine.com/jobs/"
+    },
+    {
+      "source_id": "wellfound",
+      "source_name": "Wellfound",
+      "source_type": "job_board",
+      "base_url": "https://wellfound.com/jobs"
+    },
+    {
+      "source_id": "built-in",
+      "source_name": "Built In",
+      "source_type": "job_board",
+      "base_url": "https://builtin.com/jobs"
+    },
+    {
+      "source_id": "google-jobs",
+      "source_name": "Google Jobs",
+      "source_type": "discovery",
+      "base_url": "https://www.google.com/search"
+    },
+    {
+      "source_id": "greenhouse",
+      "source_name": "Greenhouse public ATS",
+      "source_type": "ats",
+      "base_url": "https://boards.greenhouse.io/"
+    },
+    {
+      "source_id": "lever",
+      "source_name": "Lever public ATS",
+      "source_type": "ats",
+      "base_url": "https://jobs.lever.co/"
+    },
+    {
+      "source_id": "ashby",
+      "source_name": "Ashby public ATS",
+      "source_type": "ats",
+      "base_url": "https://jobs.ashbyhq.com/"
+    },
+    {
+      "source_id": "workable",
+      "source_name": "Workable public ATS",
+      "source_type": "ats",
+      "base_url": "https://apply.workable.com/"
+    },
+    {
+      "source_id": "personio",
+      "source_name": "Personio public ATS",
+      "source_type": "ats",
+      "base_url": "https://www.personio.com/"
+    },
+    {
+      "source_id": "recruitee",
+      "source_name": "Recruitee public ATS",
+      "source_type": "ats",
+      "base_url": "https://recruitee.com/"
+    },
+    {
+      "source_id": "teamtailor",
+      "source_name": "Teamtailor public ATS",
+      "source_type": "ats",
+      "base_url": "https://www.teamtailor.com/"
+    },
+    {
+      "source_id": "smartrecruiters",
+      "source_name": "SmartRecruiters public ATS",
+      "source_type": "ats",
+      "base_url": "https://www.smartrecruiters.com/"
+    },
+    {
+      "source_id": "bamboohr",
+      "source_name": "BambooHR public ATS",
+      "source_type": "ats",
+      "base_url": "https://www.bamboohr.com/"
+    },
+    {
+      "source_id": "comeet",
+      "source_name": "Comeet public ATS",
+      "source_type": "ats",
+      "base_url": "https://www.comeet.com/"
+    },
+    {
+      "source_id": "breezyhr",
+      "source_name": "Breezy HR public ATS",
+      "source_type": "ats",
+      "base_url": "https://breezy.hr/"
+    },
+    {
+      "source_id": "company-automattic",
+      "source_name": "Automattic",
+      "source_type": "employer_direct",
+      "base_url": "https://automattic.com/work-with-us/jobs/"
+    },
+    {
+      "source_id": "company-elementor",
+      "source_name": "Elementor",
+      "source_type": "employer_direct",
+      "base_url": "https://elementor.careers/explore/"
+    },
+    {
+      "source_id": "company-yoast",
+      "source_name": "Yoast",
+      "source_type": "employer_direct",
+      "base_url": "https://yoast.com/careers/"
+    },
+    {
+      "source_id": "company-wp-engine",
+      "source_name": "WP Engine",
+      "source_type": "employer_direct",
+      "base_url": "https://wpengine.com/careers/"
+    },
+    {
+      "source_id": "company-kinsta",
+      "source_name": "Kinsta",
+      "source_type": "employer_direct",
+      "base_url": "https://kinsta.com/careers/"
+    },
+    {
+      "source_id": "company-hostinger",
+      "source_name": "Hostinger",
+      "source_type": "employer_direct",
+      "base_url": "https://www.hostinger.com/career"
+    },
+    {
+      "source_id": "company-siteground",
+      "source_name": "SiteGround",
+      "source_type": "employer_direct",
+      "base_url": "https://careers.siteground.com/"
+    },
+    {
+      "source_id": "company-godaddy",
+      "source_name": "GoDaddy",
+      "source_type": "employer_direct",
+      "base_url": "https://careers.godaddy/"
+    },
+    {
+      "source_id": "company-10up",
+      "source_name": "10up",
+      "source_type": "employer_direct",
+      "base_url": "https://10up.com/careers/"
+    },
+    {
+      "source_id": "company-human-made",
+      "source_name": "Human Made",
+      "source_type": "employer_direct",
+      "base_url": "https://humanmade.com/careers/"
+    },
+    {
+      "source_id": "company-xwp",
+      "source_name": "XWP",
+      "source_type": "employer_direct",
+      "base_url": "https://xwp.co/about/careers/"
+    },
+    {
+      "source_id": "company-rtcamp",
+      "source_name": "rtCamp",
+      "source_type": "employer_direct",
+      "base_url": "https://careers.rtcamp.com/"
+    },
+    {
+      "source_id": "company-syde",
+      "source_name": "Syde",
+      "source_type": "employer_direct",
+      "base_url": "https://syde.com/career/"
+    },
+    {
+      "source_id": "company-wpmu-dev",
+      "source_name": "WPMU DEV",
+      "source_type": "employer_direct",
+      "base_url": "https://wpmudev.com/careers/"
+    },
+    {
+      "source_id": "company-awesome-motive",
+      "source_name": "Awesome Motive",
+      "source_type": "employer_direct",
+      "base_url": "https://awesomemotive.com/careers/"
+    },
+    {
+      "source_id": "company-wp-media",
+      "source_name": "WP Media",
+      "source_type": "employer_direct",
+      "base_url": "https://wp-media.me/"
+    },
+    {
+      "source_id": "company-pantheon",
+      "source_name": "Pantheon",
+      "source_type": "employer_direct",
+      "base_url": "https://pantheon.io/about/careers/openings"
+    },
+    {
+      "source_id": "company-acquia",
+      "source_name": "Acquia",
+      "source_type": "employer_direct",
+      "base_url": "https://www.acquia.com/careers/open-positions"
+    },
+    {
+      "source_id": "company-digitalocean",
+      "source_name": "DigitalOcean",
+      "source_type": "employer_direct",
+      "base_url": "https://www.digitalocean.com/careers"
+    },
+    {
+      "source_id": "company-gitlab",
+      "source_name": "GitLab",
+      "source_type": "employer_direct",
+      "base_url": "https://about.gitlab.com/jobs/"
+    },
+    {
+      "source_id": "company-team-blue",
+      "source_name": "team.blue",
+      "source_type": "employer_direct",
+      "base_url": "https://careers.team.blue/"
+    },
+    {
+      "source_id": "arbeitnow-api",
+      "source_name": "Arbeitnow Public Job API",
+      "source_type": "discovery_api",
+      "base_url": "https://www.arbeitnow.com/api/job-board-api"
+    },
+    {
+      "source_id": "the-wp-world-jobs",
+      "source_name": "The WP World Get Hired",
+      "source_type": "wordpress_discovery",
+      "base_url": "https://thewp.world/get-hired/"
+    },
+    {
+      "source_id": "remote-landers-api",
+      "source_name": "Remote Landers Public API",
+      "source_type": "discovery_api",
+      "base_url": "https://remotelanders.com/api"
+    },
+    {
+      "source_id": "no-fluff-jobs",
+      "source_name": "No Fluff Jobs",
+      "source_type": "job_board",
+      "base_url": "https://nofluffjobs.com/remote/wordpress"
+    },
+    {
+      "source_id": "dynamite-jobs",
+      "source_name": "Dynamite Jobs",
+      "source_type": "job_board",
+      "base_url": "https://dynamitejobs.com/skill/remote-wordpress-jobs"
+    },
+    {
+      "source_id": "remote-com",
+      "source_name": "Remote.com Jobs",
+      "source_type": "job_board",
+      "base_url": "https://remote.com/jobs"
+    },
+    {
+      "source_id": "wordpress-shepherd",
+      "source_name": "WordPress Shepherd",
+      "source_type": "wordpress_discovery",
+      "base_url": "https://wordpressshepherd.com/"
+    },
+    {
+      "source_id": "workday",
+      "source_name": "Workday public ATS",
+      "source_type": "ats",
+      "base_url": "https://www.myworkdayjobs.com/"
+    },
+    {
+      "source_id": "icims",
+      "source_name": "iCIMS public ATS",
+      "source_type": "ats",
+      "base_url": "https://careers.icims.com/"
+    },
+    {
+      "source_id": "jobvite",
+      "source_name": "Jobvite public ATS",
+      "source_type": "ats",
+      "base_url": "https://jobs.jobvite.com/"
+    },
+    {
+      "source_id": "pinpoint",
+      "source_name": "Pinpoint public ATS",
+      "source_type": "ats",
+      "base_url": "https://www.pinpointhq.com/"
+    },
+    {
+      "source_id": "jazzhr",
+      "source_name": "JazzHR public ATS",
+      "source_type": "ats",
+      "base_url": "https://www.jazzhr.com/"
+    },
+    {
+      "source_id": "indeed-fr",
+      "source_name": "Indeed France",
+      "source_type": "job_board",
+      "base_url": "https://fr.indeed.com/"
+    },
+    {
+      "source_id": "indeed-de",
+      "source_name": "Indeed Germany",
+      "source_type": "job_board",
+      "base_url": "https://de.indeed.com/"
+    },
+    {
+      "source_id": "indeed-be",
+      "source_name": "Indeed Belgium",
+      "source_type": "job_board",
+      "base_url": "https://be.indeed.com/"
+    },
+    {
+      "source_id": "indeed-at",
+      "source_name": "Indeed Austria",
+      "source_type": "job_board",
+      "base_url": "https://at.indeed.com/"
+    },
+    {
+      "source_id": "indeed-ch",
+      "source_name": "Indeed Switzerland",
+      "source_type": "job_board",
+      "base_url": "https://ch.indeed.com/"
+    },
+    {
+      "source_id": "indeed-es",
+      "source_name": "Indeed Spain",
+      "source_type": "job_board",
+      "base_url": "https://es.indeed.com/"
+    },
+    {
+      "source_id": "indeed-pt",
+      "source_name": "Indeed Portugal",
+      "source_type": "job_board",
+      "base_url": "https://pt.indeed.com/"
+    },
+    {
+      "source_id": "indeed-it",
+      "source_name": "Indeed Italy",
+      "source_type": "job_board",
+      "base_url": "https://it.indeed.com/"
+    },
+    {
+      "source_id": "indeed-ie",
+      "source_name": "Indeed Ireland",
+      "source_type": "job_board",
+      "base_url": "https://ie.indeed.com/"
+    },
+    {
+      "source_id": "indeed-dk",
+      "source_name": "Indeed Denmark",
+      "source_type": "job_board",
+      "base_url": "https://dk.indeed.com/"
+    },
+    {
+      "source_id": "indeed-se",
+      "source_name": "Indeed Sweden",
+      "source_type": "job_board",
+      "base_url": "https://se.indeed.com/"
+    },
+    {
+      "source_id": "indeed-no",
+      "source_name": "Indeed Norway",
+      "source_type": "job_board",
+      "base_url": "https://no.indeed.com/"
+    },
+    {
+      "source_id": "indeed-fi",
+      "source_name": "Indeed Finland",
+      "source_type": "job_board",
+      "base_url": "https://fi.indeed.com/"
+    },
+    {
+      "source_id": "indeed-lu",
+      "source_name": "Indeed Luxembourg",
+      "source_type": "job_board",
+      "base_url": "https://lu.indeed.com/"
+    },
+    {
+      "source_id": "indeed-ca",
+      "source_name": "Indeed Canada",
+      "source_type": "job_board",
+      "base_url": "https://ca.indeed.com/"
+    },
+    {
+      "source_id": "indeed-au",
+      "source_name": "Indeed Australia",
+      "source_type": "job_board",
+      "base_url": "https://au.indeed.com/"
+    },
+    {
+      "source_id": "indeed-nz",
+      "source_name": "Indeed New Zealand",
+      "source_type": "job_board",
+      "base_url": "https://nz.indeed.com/"
+    },
+    {
+      "source_id": "hellowork-fr",
+      "source_name": "HelloWork France",
+      "source_type": "job_board",
+      "base_url": "https://www.hellowork.com/fr-fr/"
+    },
+    {
+      "source_id": "france-travail",
+      "source_name": "France Travail",
+      "source_type": "job_board",
+      "base_url": "https://www.francetravail.fr/"
+    },
+    {
+      "source_id": "apec-fr",
+      "source_name": "Apec France",
+      "source_type": "job_board",
+      "base_url": "https://www.apec.fr/"
+    },
+    {
+      "source_id": "stepstone-de",
+      "source_name": "StepStone Germany",
+      "source_type": "job_board",
+      "base_url": "https://www.stepstone.de/"
+    },
+    {
+      "source_id": "arbeitsagentur-de",
+      "source_name": "Bundesagentur für Arbeit Jobsuche",
+      "source_type": "job_board",
+      "base_url": "https://www.arbeitsagentur.de/jobsuche/"
+    },
+    {
+      "source_id": "vdab-be",
+      "source_name": "VDAB Vacatures",
+      "source_type": "job_board",
+      "base_url": "https://www.vdab.be/vindeenjob/vacatures"
+    },
+    {
+      "source_id": "jobat-be",
+      "source_name": "Jobat Belgium",
+      "source_type": "job_board",
+      "base_url": "https://www.jobat.be/"
+    },
+    {
+      "source_id": "leforem-be",
+      "source_name": "Le Forem",
+      "source_type": "job_board",
+      "base_url": "https://www.leforem.be/citoyens/offres-emploi.html"
+    },
+    {
+      "source_id": "actiris-be",
+      "source_name": "Actiris Brussels",
+      "source_type": "job_board",
+      "base_url": "https://www.actiris.brussels/"
+    },
+    {
+      "source_id": "karriere-at",
+      "source_name": "karriere.at",
+      "source_type": "job_board",
+      "base_url": "https://www.karriere.at/jobs"
+    },
+    {
+      "source_id": "jobs-ch",
+      "source_name": "jobs.ch",
+      "source_type": "job_board",
+      "base_url": "https://www.jobs.ch/en/"
+    },
+    {
+      "source_id": "jobup-ch",
+      "source_name": "jobup.ch",
+      "source_type": "job_board",
+      "base_url": "https://www.jobup.ch/"
+    },
+    {
+      "source_id": "infojobs-es",
+      "source_name": "InfoJobs Spain",
+      "source_type": "job_board",
+      "base_url": "https://www.infojobs.net/"
+    },
+    {
+      "source_id": "itjobs-pt",
+      "source_name": "ITJobs Portugal",
+      "source_type": "job_board",
+      "base_url": "https://www.itjobs.pt/emprego"
+    },
+    {
+      "source_id": "net-empregos-pt",
+      "source_name": "Net-Empregos Portugal",
+      "source_type": "job_board",
+      "base_url": "https://www.net-empregos.com/"
+    },
+    {
+      "source_id": "subito-lavoro-it",
+      "source_name": "Subito Lavoro Italy",
+      "source_type": "job_board",
+      "base_url": "https://www.subito.it/annunci-italia/vendita/offerte-lavoro/"
+    },
+    {
+      "source_id": "irishjobs-ie",
+      "source_name": "IrishJobs",
+      "source_type": "job_board",
+      "base_url": "https://www.irishjobs.ie/"
+    },
+    {
+      "source_id": "jobsireland-ie",
+      "source_name": "JobsIreland",
+      "source_type": "job_board",
+      "base_url": "https://jobsireland.ie/?lang=en"
+    },
+    {
+      "source_id": "reed-uk",
+      "source_name": "Reed UK",
+      "source_type": "job_board",
+      "base_url": "https://www.reed.co.uk/jobs"
+    },
+    {
+      "source_id": "totaljobs-uk",
+      "source_name": "Totaljobs UK",
+      "source_type": "job_board",
+      "base_url": "https://www.totaljobs.com/jobs"
+    },
+    {
+      "source_id": "cv-library-uk",
+      "source_name": "CV-Library UK",
+      "source_type": "job_board",
+      "base_url": "https://www.cv-library.co.uk/search-jobs"
+    },
+    {
+      "source_id": "jobindex-dk",
+      "source_name": "Jobindex Denmark",
+      "source_type": "job_board",
+      "base_url": "https://www.jobindex.dk/"
+    },
+    {
+      "source_id": "jobnet-dk",
+      "source_name": "Jobnet Denmark",
+      "source_type": "job_board",
+      "base_url": "https://jobnet.dk/"
+    },
+    {
+      "source_id": "workindenmark-dk",
+      "source_name": "Workindenmark",
+      "source_type": "job_board",
+      "base_url": "https://www.workindenmark.dk/"
+    },
+    {
+      "source_id": "platsbanken-se",
+      "source_name": "Platsbanken Sweden",
+      "source_type": "job_board",
+      "base_url": "https://arbetsformedlingen.se/platsbanken"
+    },
+    {
+      "source_id": "arbeidsplassen-no",
+      "source_name": "Arbeidsplassen Norway",
+      "source_type": "job_board",
+      "base_url": "https://arbeidsplassen.nav.no/stillinger"
+    },
+    {
+      "source_id": "finn-job-no",
+      "source_name": "FINN Jobb Norway",
+      "source_type": "job_board",
+      "base_url": "https://www.finn.no/job/"
+    },
+    {
+      "source_id": "duunitori-fi",
+      "source_name": "Duunitori Finland",
+      "source_type": "job_board",
+      "base_url": "https://duunitori.fi/tyopaikat"
+    },
+    {
+      "source_id": "alfred-is",
+      "source_name": "Alfreð Iceland",
+      "source_type": "job_board",
+      "base_url": "https://alfred.is/"
+    },
+    {
+      "source_id": "jobs-lu",
+      "source_name": "jobs.lu",
+      "source_type": "job_board",
+      "base_url": "https://www.jobs.lu/"
+    },
+    {
+      "source_id": "moovijob-lu",
+      "source_name": "Moovijob Luxembourg",
+      "source_type": "job_board",
+      "base_url": "https://www.moovijob.com/"
+    },
+    {
+      "source_id": "jobbank-ca",
+      "source_name": "Canada Job Bank",
+      "source_type": "job_board",
+      "base_url": "https://www.jobbank.gc.ca/findajob"
+    },
+    {
+      "source_id": "seek-au",
+      "source_name": "SEEK Australia",
+      "source_type": "job_board",
+      "base_url": "https://www.seek.com.au/"
+    },
+    {
+      "source_id": "seek-nz",
+      "source_name": "SEEK New Zealand",
+      "source_type": "job_board",
+      "base_url": "https://www.seek.co.nz/"
+    },
+    {
+      "source_id": "post-status-jobs",
+      "source_name": "Post Status Jobs",
+      "source_type": "wordpress_discovery",
+      "base_url": "https://poststatus.com/jobs/"
+    },
+    {
+      "source_id": "rippling-ats",
+      "source_name": "Rippling public ATS",
+      "source_type": "ats",
+      "base_url": "https://ats.rippling.com/"
+    },
+    {
+      "source_id": "homerun-ats",
+      "source_name": "Homerun public ATS",
+      "source_type": "ats",
+      "base_url": "https://jobs.homerun.co/"
+    },
+    {
+      "source_id": "dover-ats",
+      "source_name": "Dover public ATS",
+      "source_type": "ats",
+      "base_url": "https://jobs.dover.com/"
+    },
+    {
+      "source_id": "manatal-ats",
+      "source_name": "Manatal Career Pages",
+      "source_type": "ats",
+      "base_url": "https://careers-page.com/"
+    },
+    {
+      "source_id": "jobicy-api",
+      "source_name": "Jobicy Remote Jobs API",
+      "source_type": "discovery_api",
+      "base_url": "https://jobicy.com/api/v2/remote-jobs"
+    },
+    {
+      "source_id": "wp-career-pages",
+      "source_name": "WP Career Pages",
+      "source_type": "wordpress_directory",
+      "base_url": "https://wpcareerpages.com/"
+    },
+    {
+      "source_id": "wp-career-hub",
+      "source_name": "WP Career Hub",
+      "source_type": "wordpress_discovery",
+      "base_url": "https://wpcareerhub.com/jobs/"
+    },
+    {
+      "source_id": "nodesk-wordpress",
+      "source_name": "NoDesk WordPress",
+      "source_type": "job_board",
+      "base_url": "https://nodesk.co/remote-jobs/wordpress/"
+    },
+    {
+      "source_id": "wpjobs-com",
+      "source_name": "WPJobs.com",
+      "source_type": "wordpress_discovery",
+      "base_url": "https://wpjobs.com/job-modes/remote"
+    },
+    {
+      "source_id": "remote-io-europe",
+      "source_name": "Remote.io Europe",
+      "source_type": "job_board",
+      "base_url": "https://remote.io/remote-jobs/europe"
+    },
+    {
+      "source_id": "jobdex-eu",
+      "source_name": "Jobdex Europe",
+      "source_type": "discovery",
+      "base_url": "https://jobdex.io/"
+    },
+    {
+      "source_id": "landing-jobs-eu",
+      "source_name": "Landing.Jobs Europe",
+      "source_type": "job_board",
+      "base_url": "https://landing.jobs/"
+    },
+    {
+      "source_id": "eurotoptech-remote",
+      "source_name": "Euro Top Tech Remote",
+      "source_type": "discovery",
+      "base_url": "https://www.eurotoptech.com/data/jobs/remote"
+    },
+    {
+      "source_id": "remoteleaf",
+      "source_name": "RemoteLeaf",
+      "source_type": "job_board",
+      "base_url": "https://remoteleaf.com/"
+    },
+    {
+      "source_id": "remote-rocketship",
+      "source_name": "Remote Rocketship",
+      "source_type": "job_board",
+      "base_url": "https://www.remoterocketship.com/"
+    },
+    {
+      "source_id": "jobspresso",
+      "source_name": "Jobspresso",
+      "source_type": "job_board",
+      "base_url": "https://jobspresso.co/find-a-job/"
+    },
+    {
+      "source_id": "cord-tech",
+      "source_name": "cord",
+      "source_type": "job_board",
+      "base_url": "https://cord.com/"
+    },
+    {
+      "source_id": "company-multidots",
+      "source_name": "Multidots",
+      "source_type": "employer_direct",
+      "base_url": "https://careers.multidots.com/"
+    },
+    {
+      "source_id": "company-onthegosystems",
+      "source_name": "OnTheGoSystems / WPML",
+      "source_type": "employer_direct",
+      "base_url": "https://onthegosystems.com/jobs/"
+    },
+    {
+      "source_id": "company-brainstorm-force",
+      "source_name": "Brainstorm Force",
+      "source_type": "employer_direct",
+      "base_url": "https://brainstormforce.com/join/"
+    },
+    {
+      "source_id": "company-wordfence",
+      "source_name": "Wordfence / Defiant",
+      "source_type": "employer_direct",
+      "base_url": "https://www.wordfence.com/employment/"
+    },
+    {
+      "source_id": "company-servebolt",
+      "source_name": "Servebolt",
+      "source_type": "employer_direct",
+      "base_url": "https://careers.servebolt.com/jobs"
+    },
+    {
+      "source_id": "company-newfold-digital",
+      "source_name": "Newfold Digital",
+      "source_type": "employer_direct",
+      "base_url": "https://www.newfold.com/careers"
+    },
+    {
+      "source_id": "company-liquid-web",
+      "source_name": "Liquid Web",
+      "source_type": "employer_direct",
+      "base_url": "https://www.liquidweb.com/careers/"
+    },
+    {
+      "source_id": "wpvip-partners",
+      "source_name": "WordPress VIP Partners",
+      "source_type": "wordpress_directory",
+      "base_url": "https://wpvip.com/partners/"
+    },
+    {
+      "source_id": "gohire-ats",
+      "source_name": "GoHire public ATS",
+      "source_type": "ats",
+      "base_url": "https://jobs.gohire.io/"
+    },
+    {
+      "source_id": "join-ats",
+      "source_name": "JOIN public ATS",
+      "source_type": "ats",
+      "base_url": "https://join.com/"
+    },
+    {
+      "source_id": "talentlyft-ats",
+      "source_name": "TalentLyft public ATS",
+      "source_type": "ats",
+      "base_url": "https://talentlyft.com/"
+    },
+    {
+      "source_id": "freshteam-ats",
+      "source_name": "Freshteam public ATS",
+      "source_type": "ats",
+      "base_url": "https://freshteam.com/"
+    },
+    {
+      "source_id": "factorial-ats",
+      "source_name": "Factorial public ATS",
+      "source_type": "ats",
+      "base_url": "https://factorialhr.com/"
+    },
+    {
+      "source_id": "softgarden-ats",
+      "source_name": "softgarden public ATS",
+      "source_type": "ats",
+      "base_url": "https://career.softgarden.de/"
+    },
+    {
+      "source_id": "jobylon-ats",
+      "source_name": "Jobylon public ATS",
+      "source_type": "ats",
+      "base_url": "https://emp.jobylon.com/jobs/"
+    },
+    {
+      "source_id": "the-hub",
+      "source_name": "The Hub",
+      "source_type": "job_board",
+      "base_url": "https://thehub.io/jobs"
+    },
+    {
+      "source_id": "ictergezocht",
+      "source_name": "ICTerGezocht",
+      "source_type": "job_board",
+      "base_url": "https://www.ictergezocht.nl/"
+    },
+    {
+      "source_id": "company-rocket-net",
+      "source_name": "Rocket.net",
+      "source_type": "employer_direct",
+      "base_url": "https://rocket.net/careers/"
+    },
+    {
+      "source_id": "company-elegant-themes",
+      "source_name": "Elegant Themes",
+      "source_type": "employer_direct",
+      "base_url": "https://www.elegantthemes.com/careers/"
+    },
+    {
+      "source_id": "company-crowd-favorite",
+      "source_name": "Crowd Favorite",
+      "source_type": "employer_direct",
+      "base_url": "https://crowdfavorite.com/about/careers/"
+    },
+    {
+      "source_id": "company-webdevstudios",
+      "source_name": "WebDevStudios",
+      "source_type": "employer_direct",
+      "base_url": "https://webdevstudios.com/careers/"
+    },
+    {
+      "source_id": "company-illustrate-digital",
+      "source_name": "Illustrate Digital",
+      "source_type": "employer_direct",
+      "base_url": "https://illustrate.digital/careers/"
+    },
+    {
+      "source_id": "flexjobs",
+      "source_name": "FlexJobs",
+      "source_type": "job_board",
+      "base_url": "https://www.flexjobs.com/remote-jobs"
+    },
+    {
+      "source_id": "eu-remote-jobs",
+      "source_name": "EU Remote Jobs",
+      "source_type": "job_board",
+      "base_url": "https://euremotejobs.com/"
+    },
+    {
+      "source_id": "dailyremote",
+      "source_name": "DailyRemote",
+      "source_type": "job_board",
+      "base_url": "https://dailyremote.com/"
+    },
+    {
+      "source_id": "justremote",
+      "source_name": "JustRemote",
+      "source_type": "job_board",
+      "base_url": "https://justremote.co/remote-jobs"
+    },
+    {
+      "source_id": "skipthedrive",
+      "source_name": "SkipTheDrive",
+      "source_type": "job_board",
+      "base_url": "https://www.skipthedrive.com/"
+    },
+    {
+      "source_id": "dice",
+      "source_name": "Dice",
+      "source_type": "job_board",
+      "base_url": "https://www.dice.com/jobs"
+    },
+    {
+      "source_id": "powertofly",
+      "source_name": "PowerToFly",
+      "source_type": "job_board",
+      "base_url": "https://powertofly.com/jobs"
+    },
+    {
+      "source_id": "talent-com-nl",
+      "source_name": "Talent.com Netherlands",
+      "source_type": "job_board",
+      "base_url": "https://nl.talent.com/"
+    },
+    {
+      "source_id": "adzuna-nl",
+      "source_name": "Adzuna Netherlands",
+      "source_type": "job_board",
+      "base_url": "https://www.adzuna.nl/"
+    },
+    {
+      "source_id": "jooble-nl",
+      "source_name": "Jooble Netherlands",
+      "source_type": "job_board",
+      "base_url": "https://nl.jooble.org/"
+    },
+    {
+      "source_id": "ziprecruiter",
+      "source_name": "ZipRecruiter",
+      "source_type": "job_board",
+      "base_url": "https://www.ziprecruiter.com/Jobs/Remote"
+    },
+    {
+      "source_id": "monster",
+      "source_name": "Monster",
+      "source_type": "job_board",
+      "base_url": "https://www.monster.com/"
+    },
+    {
+      "source_id": "remotehub",
+      "source_name": "RemoteHub",
+      "source_type": "job_board",
+      "base_url": "https://www.remotehub.com/jobs.hub"
+    },
+    {
+      "source_id": "huzzle",
+      "source_name": "Huzzle",
+      "source_type": "discovery",
+      "base_url": "https://www.huzzle.com/"
+    },
+    {
+      "source_id": "trulyremotework",
+      "source_name": "TrulyRemoteWork",
+      "source_type": "job_board",
+      "base_url": "https://trulyremotework.com/"
+    },
+    {
+      "source_id": "remotehunt",
+      "source_name": "RemoteHunt",
+      "source_type": "discovery",
+      "base_url": "https://remotehunt.app/jobs"
+    },
+    {
+      "source_id": "secretremote",
+      "source_name": "SecretRemote",
+      "source_type": "discovery",
+      "base_url": "https://secretremote.com/"
+    },
+    {
+      "source_id": "remote-yeah",
+      "source_name": "RemoteYeah",
+      "source_type": "job_board",
+      "base_url": "https://remoteyeah.com/"
+    },
+    {
+      "source_id": "four-day-week",
+      "source_name": "4dayweek.io",
+      "source_type": "job_board",
+      "base_url": "https://4dayweek.io/jobs"
+    },
+    {
+      "source_id": "getonboard",
+      "source_name": "Get on Board",
+      "source_type": "job_board",
+      "base_url": "https://www.getonbrd.com/jobs-remote"
+    },
+    {
+      "source_id": "company-higglo",
+      "source_name": "Higglo",
+      "source_type": "employer_direct",
+      "base_url": "https://www.higglo.io/careers"
+    },
+    {
+      "source_id": "company-walterions",
+      "source_name": "Walterions",
+      "source_type": "employer_direct",
+      "base_url": "https://walterions.io/"
+    },
+    {
+      "source_id": "company-accesstive",
+      "source_name": "Accesstive",
+      "source_type": "employer_direct",
+      "base_url": "https://accesstive.com/careers/"
+    },
+    {
+      "source_id": "openjobseu",
+      "source_name": "OpenJobsEU",
+      "source_type": "discovery",
+      "base_url": "https://openjobseu.org/"
+    },
+    {
+      "source_id": "devitjobs-nl",
+      "source_name": "DevITjobs.nl Remote",
+      "source_type": "job_board",
+      "base_url": "https://devitjobs.nl/jobs/all/remote"
+    },
+    {
+      "source_id": "together-abroad",
+      "source_name": "Together Abroad",
+      "source_type": "job_board",
+      "base_url": "https://www.togetherabroad.nl/jobs/"
+    },
+    {
+      "source_id": "undutchables",
+      "source_name": "Undutchables Vacancies",
+      "source_type": "job_board",
+      "base_url": "https://undutchables.nl/vacancies"
+    },
+    {
+      "source_id": "jobbird-thuiswerk",
+      "source_name": "Jobbird Thuiswerk",
+      "source_type": "job_board",
+      "base_url": "https://www.jobbird.com/nl/dienstverband/thuiswerk"
+    },
+    {
+      "source_id": "magnetme",
+      "source_name": "Magnet.me",
+      "source_type": "job_board",
+      "base_url": "https://magnet.me/nl-NL/vacatures"
+    },
+    {
+      "source_id": "werkzoeken-nl",
+      "source_name": "Werkzoeken.nl",
+      "source_type": "job_board",
+      "base_url": "https://www.werkzoeken.nl/"
+    },
+    {
+      "source_id": "youngcapital-thuiswerk",
+      "source_name": "YoungCapital Thuiswerk",
+      "source_type": "job_board",
+      "base_url": "https://www.youngcapital.nl/thuiswerk-vacatures"
+    },
+    {
+      "source_id": "careerjet-nl",
+      "source_name": "Careerjet Netherlands",
+      "source_type": "job_board",
+      "base_url": "https://www.careerjet.nl/"
+    },
+    {
+      "source_id": "remote-rebellion",
+      "source_name": "Remote Rebellion",
+      "source_type": "job_board",
+      "base_url": "https://remoterebellion.com/weekly-remote-jobs"
+    },
+    {
+      "source_id": "nodesk-europe",
+      "source_name": "NoDesk Europe",
+      "source_type": "job_board",
+      "base_url": "https://nodesk.co/remote-jobs/europe/"
+    },
+    {
+      "source_id": "wearedevelopers",
+      "source_name": "WeAreDevelopers Jobs",
+      "source_type": "job_board",
+      "base_url": "https://www.wearedevelopers.com/jobs"
+    },
+    {
+      "source_id": "successfactors-ats",
+      "source_name": "SAP SuccessFactors public ATS",
+      "source_type": "ats",
+      "base_url": "https://career2.successfactors.eu/"
+    },
+    {
+      "source_id": "hrmanager-ats",
+      "source_name": "Talentech HR-Manager public ATS",
+      "source_type": "ats",
+      "base_url": "https://candidate.hr-manager.net/"
+    },
+    {
+      "source_id": "jobscore-ats",
+      "source_name": "JobScore public ATS",
+      "source_type": "ats",
+      "base_url": "https://careers.jobscore.com/"
+    },
+    {
+      "source_id": "pageup-ats",
+      "source_name": "PageUp public ATS",
+      "source_type": "ats",
+      "base_url": "https://careers.pageuppeople.com/"
+    },
+    {
+      "source_id": "cvwarehouse-ats",
+      "source_name": "CVWarehouse public ATS",
+      "source_type": "ats",
+      "base_url": "https://jobpage.cvwarehouse.com/"
+    },
+    {
+      "source_id": "otys-ats",
+      "source_name": "OTYS public ATS footprint",
+      "source_type": "ats",
+      "base_url": "https://www.otys.com/"
+    },
+    {
+      "source_id": "hroffice-ats",
+      "source_name": "HROffice public ATS footprint",
+      "source_type": "ats",
+      "base_url": "https://hroffice.eu/"
+    },
+    {
+      "source_id": "carerix-ats",
+      "source_name": "Carerix public ATS footprint",
+      "source_type": "ats",
+      "base_url": "https://carerix.com/"
+    },
+    {
+      "source_id": "consultant-nl-freelance",
+      "source_name": "Consultant.nl Freelance",
+      "source_type": "job_board",
+      "base_url": "https://www.consultant.nl/freelance"
+    },
+    {
+      "source_id": "litz-digital-careers",
+      "source_name": "Litz Digital Careers",
+      "source_type": "employer_direct",
+      "base_url": "https://litzdigital.com/about/careers/"
+    },
+    {
+      "source_id": "arc-wordpress",
+      "source_name": "Arc Remote WordPress Jobs",
+      "source_type": "job_board",
+      "base_url": "https://arc.dev/remote-jobs/wordpress"
+    },
+    {
+      "source_id": "jobserve-nl",
+      "source_name": "JobServe Netherlands IT Jobs",
+      "source_type": "job_board",
+      "base_url": "https://www.jobserve.com/nl/en/Job-Search/"
+    },
+    {
+      "source_id": "remotejobs-org",
+      "source_name": "RemoteJobs.org Public Jobs API",
+      "source_type": "discovery_api",
+      "base_url": "https://remotejobs.org/api/v1/jobs"
+    },
+    {
+      "source_id": "hn-who-is-hiring",
+      "source_name": "Hacker News Who Is Hiring",
+      "source_type": "discovery",
+      "base_url": "https://news.ycombinator.com/"
+    },
+    {
+      "source_id": "sama-talent-careers",
+      "source_name": "Sama Talent Group Careers",
+      "source_type": "employer_direct",
+      "base_url": "https://samatalent.com/job/"
+    },
+    {
+      "source_id": "eneba-ashby-careers",
+      "source_name": "Eneba Careers (Ashby)",
+      "source_type": "employer_direct",
+      "base_url": "https://jobs.ashbyhq.com/eneba"
+    },
+    {
+      "source_id": "awwwards-jobs",
+      "source_name": "Awwwards Jobs",
+      "source_type": "job_board",
+      "base_url": "https://www.awwwards.com/jobs/full/"
+    },
+    {
+      "source_id": "dribbble-jobs",
+      "source_name": "Dribbble Jobs",
+      "source_type": "job_board",
+      "base_url": "https://dribbble.com/jobs"
+    },
+    {
+      "source_id": "company-foursets",
+      "source_name": "Foursets",
+      "source_type": "employer_direct",
+      "base_url": "https://www.foursets.com/careers"
+    },
+    {
+      "source_id": "designbetter-jobs",
+      "source_name": "Design Better Jobs",
+      "source_type": "job_board",
+      "base_url": "https://designbetter.com/jobs"
+    },
+    {
+      "source_id": "hiddenjobs",
+      "source_name": "Hidden Jobs",
+      "source_type": "discovery",
+      "base_url": "https://hiddenjobs.dev/"
+    },
+    {
+      "source_id": "frontendengineers-europe",
+      "source_name": "Frontend Engineers Europe",
+      "source_type": "job_board",
+      "base_url": "https://www.frontendengineers.com/remote-frontend-jobs-europe"
+    },
+    {
+      "source_id": "aworkado-nl-remote",
+      "source_name": "Aworkado Remote NL",
+      "source_type": "job_board",
+      "base_url": "https://aworkado.co/remote/software-engineering/netherlands"
+    },
+    {
+      "source_id": "company-level-level",
+      "source_name": "Level Level",
+      "source_type": "employer_direct",
+      "base_url": "https://level-level.com/team/werken-bij/"
+    },
+    {
+      "source_id": "company-caballero",
+      "source_name": "Caballero Careers (WordPress/PHP)",
+      "source_type": "employer_direct",
+      "base_url": "https://www.caballero.lv/careers/wordpress-php-developer-mid-sen/"
+    },
+    {
+      "source_id": "dou-ua-jobs",
+      "source_name": "DOU Ukraine IT Vacancies",
+      "source_type": "job_board",
+      "base_url": "https://jobs.dou.ua/"
+    },
+    {
+      "source_id": "company-kortingscodeheld",
+      "source_name": "Kortingscodeheld careers",
+      "source_type": "employer_direct",
+      "base_url": "https://kortingscodeheld.nl/vacatures/"
+    },
+    {
+      "source_id": "company-seed-light",
+      "source_name": "Seed Light careers",
+      "source_type": "employer_direct",
+      "base_url": "https://seed-light.com/careers/"
+    },
+    {
+      "source_id": "djinni-remote-wordpress",
+      "source_name": "Djinni jobs",
+      "source_type": "job_board",
+      "base_url": "https://djinni.co/jobs/"
+    },
+    {
+      "source_id": "company-memberpress",
+      "source_name": "MemberPress careers",
+      "source_type": "employer_direct",
+      "base_url": "https://memberpress.com/careers/"
+    },
+    {
+      "source_id": "company-zen-wp",
+      "source_name": "Zen WP careers",
+      "source_type": "employer_direct",
+      "base_url": "https://zenwp.co/careers/"
+    },
+    {
+      "source_id": "company-fixmysite",
+      "source_name": "Fixmysite careers",
+      "source_type": "employer_direct",
+      "base_url": "https://fixmysite.com/join-the-team/"
+    },
+    {
+      "source_id": "company-genips",
+      "source_name": "Genips careers",
+      "source_type": "employer_direct",
+      "base_url": "https://genips.nl/werken-bij"
+    },
+    {
+      "source_id": "company-themeco",
+      "source_name": "Themeco careers",
+      "source_type": "employer_direct",
+      "base_url": "https://theme.co/careers"
+    },
+    {
+      "source_id": "company-fixrunner",
+      "source_name": "FixRunner careers",
+      "source_type": "employer_direct",
+      "base_url": "https://apply.fixrunner.org/open-positions/"
+    },
+    {
+      "source_id": "company-fun-studio",
+      "source_name": "Fun Studio careers",
+      "source_type": "employer_direct",
+      "base_url": "https://thisisfun.studio/careers/"
+    }
+  ]
+}

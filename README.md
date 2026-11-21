@@ -62,25 +62,28 @@ and `vacancy_candidate_storage_and_dedupe` rules.
    automatic disqualification. Present only verified opportunities as
    application-ready; preserve the existing Register application history.
 
-The existing **30-minute Apps Script Radar** uses one migrated
-spreadsheet-bound trigger and retains the approved 27 ATS/feed specifications
-(17 unique source IDs). The user requested 233 sources plus Google and
-browser coverage every 30 minutes. **The initial full public-HTTP sweep
-failed in production on 2026-11-21 after 360.7 seconds (Google Apps Script
-hard runtime limit)**. That sweep and automatic Google/browser coverage
-are **disabled for safety** in the deployed 30-minute mode. The Dashboard
-states 233 registered source IDs and honestly marks the public sweep as
-not run. A successful code unit test of 233 simulated URLs is NOT proof of
-real-world source coverage. Do not claim complete, 233-verified, or full GO.
+The existing **30-minute Apps Script Radar** retains the 27 approved
+ATS/feed specifications (17 unique source IDs), and imports public
+observations from a separately scheduled **GitHub Actions browser worker**.
+This worker attempts all **233 registered public source URLs** from a
+sanitized snapshot, renders JavaScript pages in headless Chrome and also
+performs public Google discovery queries. Public observations live on the
+isolated \`radar-public-data\` branch and go to **unverified**
+Radar \`Bronvondsten\`. No personal application history leaves Google Sheets.
 
-Publicly available HTML, JobPosting and Google discovery helpers remain
-in source for controlled offline tests; they are not invoked by the live
-schedule until a separately reviewed, quota-safe execution route exists.
-JavaScript-rendering browser research cannot run inside Apps Script.
-The `vacature-search` on-demand workflow remains available to attempt
-all active sources and live public Google/browser discovery, while
-application-ready matches still require employer/ATS and NL verification.
-No additional paid providers, automatic applications or messages are enabled.
+The first direct Apps Script 233-source sweep exceeded the hard
+360.7-second execution limit on 2026-11-21, and remains disabled.
+The browser worker reports honest HTTP status, JS coverage and Google
+blocking. It does NOT guarantee every vacancy on a generic portal was
+found or prove a candidate eligible to work from the Netherlands.
+Up to 90 public JS pages are rendered per run on a rotating basis.
+The source mirror must match live active source IDs/URLs; Apps Script
+rejects stale or mismatched inventories. The source list is only
+refreshed by an authorized update. No extra paid provider is needed.
+
+See [30-minute public browser worker](ingestion/docs/SCHEDULED-30M-BROWSER-WORKER.md).
+The on-demand \`vacature-search\` skill still verifies exact employer
+role, posting date, and NL eligibility. Never automatically apply.
 
 Example: “Find new suitable remote jobs posted within the last seven days.”
 
@@ -223,10 +226,12 @@ Only complete verified inputs reach `top_vacancies`; existing score anchors,
 thresholds, weights and ordering are unchanged. Public output contains the
 score components and proof digests, not private CandidateEvidence claims/IDs.
 
-GitHub Actions are CI-only for vacancy research and review; an opt-in
-code-only Apps Script API sync has no search or scheduler authority. Public
-discovery and private specialist review are started exclusively by explicit
-ChatGPT vacancy-search requests. A caller using the Python API can retain the
+GitHub Actions retains offline CI and separate code-only Apps Script API
+sync. As explicitly authorized on 21 November 2026, a **public-only**
+30-minute browser worker now researches public employer/source pages and
+search results, publishing public observations without private applicant
+information. Specialist verification, private ranking and applications still
+require explicit ChatGPT/user requests. A caller using the Python API can retain the
 observations and page cache, review them and call `evaluate_observations` again
 within the same current evidence session. Never commit these private inputs or
 upload them as public workflow artifacts. A local run may use Python 3.13 when
