@@ -60,18 +60,18 @@ jobs:
           config="$GITHUB_WORKSPACE/trusted-source/searxng/settings.yml"
           test -s "$config"
           secret="$(openssl rand -hex 32)"
-          if ! docker run --detach --rm --name vacancy-radar-searxng \\
-            --memory=1g --cpus=2 --pids-limit=256 \\
-            --publish 127.0.0.1:8080:8080 \\
-            --mount "type=bind,source=$config,target=/etc/searxng/settings.yml,readonly" \\
-            --env "SEARXNG_SECRET=$secret" \\
+          if ! docker run --detach --rm --name vacancy-radar-searxng \
+            --memory=1g --cpus=2 --pids-limit=256 \
+            --publish 127.0.0.1:8080:8080 \
+            --mount "type=bind,source=$config,target=/etc/searxng/settings.yml,readonly" \
+            --env "SEARXNG_SECRET=$secret" \
             docker.io/searxng/searxng@sha256:fc1d81d7e9d04d3c8b3e23c7162feddf5c3d6aecd32e67a56eaabcb8d8747f79; then
             echo '::warning::Local SearXNG unavailable; using official feeds / safe API only'
             exit 0
           fi
           ready=false
           for i in $(seq 1 35); do
-            if curl --silent --show-error --fail --max-time 3 \\
+            if curl --silent --show-error --fail --max-time 3 \
                  http://127.0.0.1:8080/ >/dev/null 2>&1; then
               ready=true
               break
@@ -166,6 +166,6 @@ jobs:
           git push origin HEAD:radar-public-data
           echo 'PASS: public observations published; Google Sheets ingestion is separate'
       - name: Remove ephemeral localhost SearXNG
-        if: always() && (github.event_name == 'schedule' || inputs.mode == 'full')
+        if: always() && (github.event_name == 'schedule' || inputs.mode == 'full' || inputs.mode == 'searxng_smoke')
         shell: bash
         run: docker rm --force vacancy-radar-searxng >/dev/null 2>&1 || true
