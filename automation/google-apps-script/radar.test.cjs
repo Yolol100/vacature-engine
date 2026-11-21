@@ -46,6 +46,41 @@ test('idle trigger preserves the last real scan counts and records trigger separ
   assert.equal(writes['A28:B34'][6][1], 'Handmatig');
 });
 
+
+test('Workable diagnostics never assert success without an Apps Script success property', () => {
+  const s = load();
+  const data = new Map();
+  const p = {getProperty(key) {return data.get(key) || null;}};
+  const now = Date.parse('2026-11-21T10:00:00Z');
+  const rows = s.radarWorkableHealth_(p, now);
+  assert.equal(rows.length, 2);
+  assert.match(rows[0][1], /Nog geen succesvolle/);
+  assert.match(rows[1][1], /Nog geen succesvolle/);
+  data.set('RADAR_SOURCE_SUCCESS_workable_awesomemotive', String(now - 5 * 60000));
+  data.set('RADAR_SOURCE_OBSERVATIONS_workable_awesomemotive', '3');
+  const success = s.radarWorkableHealth_(p, now);
+  assert.match(success[0][1], /SUCCES/);
+  assert.match(success[0][1], /ingelezen: 3/);
+  assert.doesNotMatch(success[1][1], /SUCCES/);
+});
+
+test('Workable diagnostic respects retry-after and exponential cooldown', () => {
+  const s = load();
+  const now = Date.parse('2026-11-21T10:00:00Z');
+  const data = new Map([
+    ['RADAR_SOURCE_FAILURE_AT_workable_humanmade', String(now - 30 * 60000)],
+    ['RADAR_SOURCE_FAILURE_COUNT_workable_humanmade', '4'],
+    ['RADAR_SOURCE_RETRY_AT_workable_humanmade', String(now + 2 * 3600000)],
+    ['RADAR_SOURCE_ERROR_workable_humanmade', 'Source HTTP 429']
+  ]);
+  const p = {getProperty(key) {return data.get(key) || null;}};
+  const rows = s.radarWorkableHealth_(p, now);
+  assert.match(rows[1][1], /FOUT/);
+  assert.match(rows[1][1], /429/);
+  assert.match(rows[1][1], /2026-11-21T12:00:00.000Z/);
+  assert.equal(s.radarSourceDue_({adapter:'workable',source_id:'workable',account:'humanmade'},now,p).ready, false);
+});
+
 test('application dashboard metrics exclude test records', () => {
   const s = load();
   function sheet(rows) {return {getName() {return 'mock';}, getDataRange() {
