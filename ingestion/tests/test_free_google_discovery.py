@@ -277,13 +277,15 @@ class FreeDiscoveryTests(unittest.TestCase):
         self.assertNotIn("one_pass_vacancies.py", sync)
         self.assertNotIn("runVacatureRadar", sync)
         browser = (root / ".github/workflows/vacature-public-browser-30m.yml").read_text(encoding="utf-8")
-        self.assertIn("'7,37 * * * *'", browser)
+        self.assertIn("'7 * * * *'", browser)
+        self.assertIn("'37 * * * *'", browser)
         self.assertIn("ingestion/scheduled_worker.py", browser)
         self.assertIn("radar-public-data", browser)
         # This extra explicitly authorized public-only route never consumes
         # SerpApi keys, applicant data or live Register mutation credentials.
-        self.assertNotIn("SERPAPI_API_KEY", browser)
-        self.assertNotIn("secrets.", browser)
+        self.assertIn("secrets.SERPAPI_API_KEY", browser)
+        self.assertEqual(browser.count("secrets."), 1)
+        self.assertNotIn("secrets.GOOGLE_SERVICE_ACCOUNT_JSON", browser)
         self.assertNotIn("CandidateEvidence", browser)
         self.assertNotIn("one_pass_vacancies.py", browser)
 

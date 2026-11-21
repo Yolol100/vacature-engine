@@ -4,15 +4,16 @@ name: Vacature Radar - openbare bronnen en browser (30m)
 # Scan ONLY public job data. No application or private Register data in Actions.
 on:
   schedule:
-    - cron: '7,37 * * * *'
+    - cron: '7 * * * *'
+    - cron: '37 * * * *'
   workflow_dispatch:
     inputs:
       mode:
-        description: 'smoke (6 sources, no publish) or full (public 233-source sweep)'
+        description: 'smoke, full public sweep, or free-Google-account check (no search)'
         required: true
         type: choice
         default: smoke
-        options: [smoke, full]
+        options: [smoke, full, google_check]
 
 permissions:
   contents: read
@@ -53,11 +54,26 @@ jobs:
         working-directory: trusted-source
         timeout-minutes: 21
         shell: bash
+        env:
+          SERPAPI_API_KEY: ${{ secrets.SERPAPI_API_KEY }}
+          RADAR_TRIGGER_CRON: ${{ github.event.schedule }}
         run: |
           set -euo pipefail
           mode="full"
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
             mode="$(python -c "import json,os;print(json.load(open(os.environ['GITHUB_EVENT_PATH'])).get('inputs',{}).get('mode','smoke'))")"
+          fi
+          if [[ "$mode" == "google_check" ]]; then
+            # Read-only account check: does not spend a search credit.
+            python ingestion/scheduled_worker.py --google-check-only
+            exit 0
+          fi
+          # At most one free Google Jobs search per 4 hours (<=186/month).
+          if [[ "$GITHUB_EVENT_NAME" == "schedule" && "$RADAR_TRIGGER_CRON" == "7 * * * *" ]]; then
+            hour="$(date -u +%H)"
+            if (( 10#$hour % 4 == 0 )); then
+              export RADAR_GOOGLE_FREE_SLOT=true
+            fi
           fi
           if [[ "$mode" == "smoke" ]]; then
             python ingestion/scheduled_worker.py --registry ingestion/sources.public-snapshot.json \

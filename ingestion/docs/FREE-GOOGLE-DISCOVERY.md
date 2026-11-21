@@ -1,8 +1,8 @@
-# Free Google discovery (ChatGPT-only)
+# Free Google discovery (on-demand plus authorized public worker)
 
 The active `Vacature Register` is the only source of truth for source activation.
 Only an active `google-jobs` row allows the optional SerpApi adapter.
-There is **no GitHub Actions vacancy search** and no recurring scheduler.
+The user explicitly authorized a public-only GitHub Actions job search on 21 November 2026. The scheduled Google portion uses verified free-plan SerpApi Google Jobs no more than once every four hours. It is separate from the on-demand SerpApi adapter.
 
 ## On-demand route
 
