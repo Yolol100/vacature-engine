@@ -23,7 +23,8 @@ Live `Vacature Register:Config` is the policy source, including the
 `vacancy_candidate_missing_secondary_max`, `vacancy_search_web_fallback`
 and `vacancy_candidate_storage_and_dedupe` rules.
 
-1. **Read the Register and Radar first.** Load `Config`, all active
+1. **Read the Register and Radar first.** Always check prior vacancies/applications and
+   `Feedback` before presenting a job. Load `Config`, all active
    `Bronnen`, `Radar:Bronvondsten`, `Vacatures`, `Applications`,
    `ApplicationEvents`, `Feedback`, `JobSnapshots`, and relevant
    `CandidateEvidence`. Recheck promising pending leads, and deduplicate
